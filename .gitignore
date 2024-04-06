@@ -1,3 +1,7 @@
+# Koweb ignores
+kotlin-js-store
+/*.ipr
+
 # Created by https://www.toptal.com/developers/gitignore/api/yarn,macos,kotlin,windows,intellij,visualstudiocode,android,androidstudio
 # Edit at https://www.toptal.com/developers/gitignore?templates=yarn,macos,kotlin,windows,intellij,visualstudiocode,android,androidstudio
 
