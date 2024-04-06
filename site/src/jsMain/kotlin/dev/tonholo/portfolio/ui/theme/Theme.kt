@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.ReadOnlyComposable
+import cafe.adriel.lyricist.ProvideStrings
 import com.varabyte.kobweb.compose.css.BoxSizing
 import com.varabyte.kobweb.compose.css.ScrollBehavior
 import com.varabyte.kobweb.compose.ui.Modifier
@@ -122,13 +123,15 @@ fun Theme(
     CompositionLocalProvider(
         LocalColorScheme provides colorScheme,
     ) {
-        SilkApp {
-            Surface(
-                SmoothColorStyle.toModifier()
-                    .minHeight(100.vh)
-                    .scrollBehavior(ScrollBehavior.Smooth)
-            ) {
-                content()
+        ProvideStrings {
+            SilkApp {
+                Surface(
+                    SmoothColorStyle.toModifier()
+                        .minHeight(100.vh)
+                        .scrollBehavior(ScrollBehavior.Smooth)
+                ) {
+                    content()
+                }
             }
         }
     }

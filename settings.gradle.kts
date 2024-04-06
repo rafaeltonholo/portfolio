@@ -14,4 +14,5 @@ pluginManagement {
 rootProject.name = "portfolio"
 
 include(":site")
+include(":resources")
 

@@ -1,5 +1,7 @@
 plugins {
     alias(libs.plugins.kotlin.multiplatform) apply false
+    alias(libs.plugins.jetbrains.compose) apply false
+    alias(libs.plugins.com.google.devtools.ksp) apply false
 }
 
 subprojects {
