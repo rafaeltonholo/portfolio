@@ -4,13 +4,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.runtime.staticCompositionLocalOf
+import cafe.adriel.lyricist.Lyricist
 import cafe.adriel.lyricist.ProvideStrings
+import cafe.adriel.lyricist.rememberStrings
 import com.varabyte.kobweb.compose.css.BoxSizing
 import com.varabyte.kobweb.compose.css.ScrollBehavior
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.boxSizing
 import com.varabyte.kobweb.compose.ui.modifiers.fillMaxSize
-import com.varabyte.kobweb.compose.ui.modifiers.font
 import com.varabyte.kobweb.compose.ui.modifiers.margin
 import com.varabyte.kobweb.compose.ui.modifiers.minHeight
 import com.varabyte.kobweb.compose.ui.modifiers.outline
@@ -18,17 +20,22 @@ import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.compose.ui.modifiers.scrollBehavior
 import com.varabyte.kobweb.silk.SilkApp
 import com.varabyte.kobweb.silk.components.layout.Surface
+import com.varabyte.kobweb.silk.components.style.ComponentModifiers
 import com.varabyte.kobweb.silk.components.style.common.SmoothColorStyle
 import com.varabyte.kobweb.silk.components.style.toModifier
 import com.varabyte.kobweb.silk.init.InitSilk
 import com.varabyte.kobweb.silk.init.InitSilkContext
 import com.varabyte.kobweb.silk.init.registerStyleBase
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
+import dev.tonholo.portfolio.locale.Locale
+import dev.tonholo.portfolio.locale.localStorageKey
+import dev.tonholo.portfolio.resources.Strings
 import dev.tonholo.portfolio.ui.theme.color.ColorScheme
 import dev.tonholo.portfolio.ui.theme.color.LocalColorScheme
 import dev.tonholo.portfolio.ui.theme.color.from
 import dev.tonholo.portfolio.ui.theme.typography.LocalTypography
 import dev.tonholo.portfolio.ui.theme.typography.Typography
+import dev.tonholo.portfolio.ui.theme.typography.toModifier
 import kotlinx.browser.localStorage
 import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.css.vh
@@ -76,6 +83,24 @@ object Theme {
         get() = LocalTypography.current
 }
 
+/**
+ * Workaround to enable [com.varabyte.kobweb.silk.components.style.ComponentStyle]
+ * to use [Theme.colorScheme].
+ */
+val ComponentModifiers.colorScheme
+    get() = if (colorMode == ColorMode.DARK) {
+        DarkColorScheme
+    } else {
+        LightColorScheme
+    }
+
+/**
+ * Workaround to enable [com.varabyte.kobweb.silk.components.style.ComponentStyle]
+ * to use [Theme.typography].
+ */
+val ComponentModifiers.typography
+    get() = Typography
+
 @InitSilk
 fun initTheme(context: InitSilkContext) = with(context) {
     config.initialColorMode = localStorage
@@ -95,11 +120,8 @@ fun initTheme(context: InitSilkContext) = with(context) {
                 .boxSizing(BoxSizing.BorderBox)
         }
         registerStyleBase("body") {
-            Modifier
-                .font {
-                    family("Roboto Condensed", "sans-serif")
-                    size(16.px)
-                }
+            Typography.bodyMedium
+                .toModifier()
                 .fillMaxSize()
         }
     }
@@ -120,11 +142,17 @@ fun Theme(
         LightColorScheme
     }
 
+    val lyricist = rememberStrings(
+        currentLanguageTag = localStorage.getItem(Locale.localStorageKey) ?: Locale.DEFAULT,
+    )
+
     CompositionLocalProvider(
         LocalColorScheme provides colorScheme,
+        LocalLyricist provides lyricist,
+        LocalTypography provides Typography,
     ) {
-        ProvideStrings {
-            SilkApp {
+        SilkApp {
+            ProvideStrings(lyricist) {
                 Surface(
                     SmoothColorStyle.toModifier()
                         .minHeight(100.vh)
@@ -136,3 +164,5 @@ fun Theme(
         }
     }
 }
+
+val LocalLyricist = staticCompositionLocalOf<Lyricist<Strings>> { error("Lyricist not provided") }
