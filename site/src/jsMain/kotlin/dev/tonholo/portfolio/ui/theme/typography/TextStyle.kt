@@ -11,6 +11,7 @@ import com.varabyte.kobweb.compose.ui.graphics.Color
 import com.varabyte.kobweb.compose.ui.modifiers.background
 import com.varabyte.kobweb.compose.ui.modifiers.color
 import com.varabyte.kobweb.compose.ui.modifiers.font
+import com.varabyte.kobweb.compose.ui.modifiers.fontSize
 import com.varabyte.kobweb.compose.ui.modifiers.fontStyle
 import com.varabyte.kobweb.compose.ui.modifiers.fontWeight
 import com.varabyte.kobweb.compose.ui.modifiers.letterSpacing
@@ -39,6 +40,7 @@ data class TextStyle(
 
 fun TextStyle.toModifier(): Modifier = (color?.let(Modifier::color) ?: Modifier) then
     (fontFamilyModifier()) then
+    (fontSize?.let(Modifier::fontSize) ?: Modifier) then
     (letterSpacing?.let { Modifier.letterSpacing(it.unsafeCast<CSSLengthNumericValue>()) } ?: Modifier) then
     (background?.let(Modifier::background) ?: Modifier) then
     (textDecoration?.let(Modifier::textDecorationLine) ?: Modifier) then

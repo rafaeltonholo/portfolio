@@ -121,6 +121,7 @@ fun initTheme(context: InitSilkContext) = with(context) {
         }
         registerStyleBase("body") {
             Typography.bodyMedium
+                .copy(lineHeight = null)
                 .toModifier()
                 .fillMaxSize()
         }
