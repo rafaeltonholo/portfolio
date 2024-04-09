@@ -18,17 +18,32 @@ import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.compose.ui.modifiers.textAlign
 import com.varabyte.kobweb.silk.components.graphics.Image
 import com.varabyte.kobweb.silk.components.navigation.Link
+import com.varabyte.kobweb.silk.components.style.ComponentStyle
+import com.varabyte.kobweb.silk.components.style.toModifier
 import dev.tonholo.portfolio.components.Divider
 import dev.tonholo.portfolio.components.text.Paragraph
 import dev.tonholo.portfolio.components.text.Text
 import dev.tonholo.portfolio.features.home.components.DownloadButton
 import dev.tonholo.portfolio.ui.theme.Theme
+import dev.tonholo.portfolio.ui.theme.typography
+import dev.tonholo.portfolio.ui.theme.typography.toModifier
 import org.jetbrains.compose.web.css.AlignItems
 import org.jetbrains.compose.web.css.DisplayStyle
 import org.jetbrains.compose.web.css.FlexDirection
 import org.jetbrains.compose.web.css.em
 import org.jetbrains.compose.web.css.percent
 import org.jetbrains.compose.web.css.px
+
+val ProfileImageStyle by ComponentStyle {
+    base {
+        typography
+            .headlineLarge.copy(
+                fontSize = 2.3.em,
+            )
+            .toModifier()
+
+    }
+}
 
 @Composable
 fun Summary(
@@ -52,7 +67,8 @@ fun Summary(
         )
         Text(
             text = "Rafael R. Tonholo",
-            style = Theme.typography.titleLarge,
+            style = Theme.typography.headlineLarge,
+            modifier = ProfileImageStyle.toModifier(),
         )
         Text(
             text = strings.screens.home.info.jobTitle,

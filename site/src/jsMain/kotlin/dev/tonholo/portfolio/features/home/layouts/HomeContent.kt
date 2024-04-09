@@ -6,25 +6,27 @@ import com.varabyte.kobweb.compose.css.CSSTransition
 import com.varabyte.kobweb.compose.css.TransitionProperty
 import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.ui.Modifier
+import com.varabyte.kobweb.compose.ui.modifiers.background
+import com.varabyte.kobweb.compose.ui.modifiers.fillMaxWidth
 import com.varabyte.kobweb.compose.ui.modifiers.height
 import com.varabyte.kobweb.compose.ui.modifiers.margin
 import com.varabyte.kobweb.compose.ui.modifiers.maxWidth
 import com.varabyte.kobweb.compose.ui.modifiers.minWidth
 import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.compose.ui.modifiers.transition
-import com.varabyte.kobweb.compose.ui.modifiers.width
 import com.varabyte.kobweb.silk.components.style.ComponentStyle
 import com.varabyte.kobweb.silk.components.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.components.style.toModifier
 import dev.tonholo.portfolio.breakpoints
 import dev.tonholo.portfolio.components.AdaptiveLayout
-import dev.tonholo.portfolio.components.text.Text
+import dev.tonholo.portfolio.extensions.padding
 import dev.tonholo.portfolio.features.home.components.LanguageChanger
 import dev.tonholo.portfolio.features.home.sections.AppBar
+import dev.tonholo.portfolio.features.home.sections.Experiences
 import dev.tonholo.portfolio.features.home.sections.Summary
+import dev.tonholo.portfolio.ui.theme.colorScheme
 import org.jetbrains.compose.web.css.AnimationTimingFunction
 import org.jetbrains.compose.web.css.em
-import org.jetbrains.compose.web.css.percent
 import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.css.s
 import org.jetbrains.compose.web.css.vh
@@ -50,6 +52,16 @@ val HomeContentStyle by ComponentStyle {
 }
 
 val ListPanel by ComponentStyle {
+    base {
+        Modifier.transition(
+            CSSTransition(
+                property = TransitionProperty.All,
+                duration = 0.4.s,
+                timingFunction = AnimationTimingFunction.Ease,
+                delay = 0.s,
+            )
+        )
+    }
     Breakpoint.MD {
         val breakpointValue = breakpoints.md.width.value
         Modifier
@@ -73,7 +85,7 @@ val DetailPanel by ComponentStyle {
     val gap = 1.em
     base {
         Modifier
-            .width(100.percent)
+            .padding(vertical = 2.em, horizontal = 1.5.em)
             .margin { top(gap) }
             .transition(
                 CSSTransition(
@@ -83,10 +95,27 @@ val DetailPanel by ComponentStyle {
                     delay = 0.s,
                 )
             )
+            .background(color = colorScheme.surface)
+            .fillMaxWidth()
     }
-    Breakpoint.MD { Modifier.margin { left(gap) } }
-    Breakpoint.LG { Modifier.margin { left(gap) } }
-    Breakpoint.XL { Modifier.margin { left(gap) } }
+    Breakpoint.MD {
+        Modifier.margin {
+            top(0.px)
+            left(gap)
+        }
+    }
+    Breakpoint.LG {
+        Modifier.margin {
+            top(0.px)
+            left(gap)
+        }
+    }
+    Breakpoint.XL {
+        Modifier.margin {
+            top(0.px)
+            left(gap)
+        }
+    }
 }
 
 @Composable
@@ -105,9 +134,10 @@ fun HomeContent(
             },
             detailPanel = {
                 Column(modifier = DetailPanel.toModifier()) {
-                    Text("That is a test.")
+                    Experiences()
                 }
             },
+            modifier = Modifier.fillMaxWidth(),
         )
     }
 }

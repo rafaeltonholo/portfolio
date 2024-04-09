@@ -52,6 +52,7 @@ private val DarkColorScheme = ColorScheme(
     surface = Secondary,
     onSurface = TextSecondary,
     outline = AccentBorder,
+    outlineVariant = AccentGray,
     error = AccentOrange,
     onError = Primary,
 )
@@ -67,6 +68,7 @@ private val LightColorScheme = ColorScheme(
     surface = Primary,
     onSurface = TextSecondary,
     outline = AccentBorder,
+    outlineVariant = AccentGray,
     error = AccentOrange,
     onError = Primary,
 )
@@ -120,7 +122,7 @@ fun initTheme(context: InitSilkContext) = with(context) {
                 .boxSizing(BoxSizing.BorderBox)
         }
         registerStyleBase("body") {
-            Typography.bodyMedium
+            Typography.bodyLarge
                 .copy(lineHeight = null)
                 .toModifier()
                 .fillMaxSize()

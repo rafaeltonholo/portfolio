@@ -24,7 +24,6 @@ val AdaptiveLayoutStyles by ComponentStyle {
     Breakpoint.MD {
         Modifier
             .flexDirection(FlexDirection.Row)
-            .alignItems(AlignItems.Start)
     }
 }
 

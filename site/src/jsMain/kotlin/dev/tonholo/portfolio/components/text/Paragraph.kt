@@ -2,12 +2,21 @@ package dev.tonholo.portfolio.components.text
 
 import androidx.compose.runtime.Composable
 import com.varabyte.kobweb.compose.ui.Modifier
+import com.varabyte.kobweb.compose.ui.thenIf
 import com.varabyte.kobweb.compose.ui.toAttrs
-import dev.tonholo.portfolio.ui.theme.typography.LocalTypography
+import com.varabyte.kobweb.silk.components.style.ComponentStyle
+import com.varabyte.kobweb.silk.components.style.toModifier
+import dev.tonholo.portfolio.ui.theme.typography
 import dev.tonholo.portfolio.ui.theme.typography.TextStyle
 import dev.tonholo.portfolio.ui.theme.typography.toModifier
 import org.jetbrains.compose.web.dom.P
 import org.jetbrains.compose.web.dom.Text
+
+val ParagraphStyle by ComponentStyle {
+    base {
+        typography.bodyLarge.toModifier()
+    }
+}
 
 @Composable
 fun Paragraph(
@@ -15,7 +24,9 @@ fun Paragraph(
     style: TextStyle? = null,
     modifier: Modifier = Modifier,
 ) {
-    val paragraphModifier = (style?.toModifier() ?: LocalTypography.current.bodyMedium.toModifier())
+    val paragraphModifier = ParagraphStyle.toModifier().thenIf(style != null) {
+        style?.toModifier() ?: Modifier
+    }
     P(attrs = (paragraphModifier then modifier).toAttrs()) {
         Text(value = text)
     }
