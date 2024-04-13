@@ -8,4 +8,4 @@ import org.jetbrains.compose.web.css.px
 fun Modifier.padding(
     vertical: CSSLengthOrPercentageNumericValue = 0.px,
     horizontal: CSSLengthOrPercentageNumericValue = 0.px,
-) = Modifier.padding(topBottom = vertical, leftRight = horizontal)
+) = this then Modifier.padding(topBottom = vertical, leftRight = horizontal)

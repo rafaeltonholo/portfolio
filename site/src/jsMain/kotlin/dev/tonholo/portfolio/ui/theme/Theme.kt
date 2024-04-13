@@ -20,7 +20,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.compose.ui.modifiers.scrollBehavior
 import com.varabyte.kobweb.silk.SilkApp
 import com.varabyte.kobweb.silk.components.layout.Surface
-import com.varabyte.kobweb.silk.components.style.ComponentModifiers
+import com.varabyte.kobweb.silk.components.style.ComponentModifier
 import com.varabyte.kobweb.silk.components.style.common.SmoothColorStyle
 import com.varabyte.kobweb.silk.components.style.toModifier
 import com.varabyte.kobweb.silk.init.InitSilk
@@ -89,7 +89,7 @@ object Theme {
  * Workaround to enable [com.varabyte.kobweb.silk.components.style.ComponentStyle]
  * to use [Theme.colorScheme].
  */
-val ComponentModifiers.colorScheme
+val ComponentModifier.colorScheme
     get() = if (colorMode == ColorMode.DARK) {
         DarkColorScheme
     } else {
@@ -100,7 +100,7 @@ val ComponentModifiers.colorScheme
  * Workaround to enable [com.varabyte.kobweb.silk.components.style.ComponentStyle]
  * to use [Theme.typography].
  */
-val ComponentModifiers.typography
+val ComponentModifier.typography
     get() = Typography
 
 @InitSilk

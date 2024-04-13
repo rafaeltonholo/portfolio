@@ -105,11 +105,11 @@ val EnStrings = Strings(
     screens = Screen(
         home = HomePage(
             info = HomePage.InfoSection(
-                jobTitle = "Software Engineer",
+                jobTitle = "A Android Mage. Kotlin/Compose 💜",
                 about = listOf(
-                    "Software engineer with 10 years of experience delivering tech solutions. An avid programmer and fast learner.",
-                    "Always advocating for optimal user experience while ensuring technological feasibility. Ability to work with several languages, frameworks, and paradigms at the same time.",
-                    "A team-oriented developer which understands helping my colleagues we'll grow together. I love simple and elegant solutions for every problem, but understanding that simplicity and elegance must not degrade performance.",
+                    "Experienced Android engineer with 10+ years in software development, 5+ years specializing in Kotlin for native Android apps.",
+                    "Deep grasp of Android best practices, keen on user-centric design, adept at translating complex ideas into scalable solutions.",
+                    "Skilled at fostering growth in collaborative, fast-paced settings.",
                 ),
             ),
             skills = HomePage.SkillSection(
@@ -185,11 +185,11 @@ val PtStrings = Strings(
     screens = Screen(
         home = HomePage(
             info = HomePage.InfoSection(
-                jobTitle = "Engenheiro de Software",
+                jobTitle = "Um Mago do Android. Kotlin/Compose 💜",
                 about = listOf(
-                    "Engenheiro de software com 10 anos de experiência entregando soluções tecnológicas. Um programador ávido e com habilidade de aprendizado rápida.",
-                    "Sempre advogo para a melhor experiência de usuário garantindo viabilidade tecnológica. Tenho facilidade em trabalhar com\\ndiversas linguagens, frameworks e paradigmas ao mesmo tempo.",
-                    "Um desenvolvedor orientado a time que entende que juntos, todos crescemos. Amo soluções elegantes e simples para todos os problemas, mas entendendo que esta elegância e simplicidade não podem sobrepor a performance do software.",
+                    "Engenheiro Android experiente com mais de 10 anos em desenvolvimento de software, e mais de 5 anos desenvolvendo em Kotlin para aplicações Android nativas.",
+                    "Adepto das melhores práticas do Android, sempre busco um desenvolvimento centrado à experiência de usuário traduzindo ideias complexas em soluções escaláveis.",
+                    "Busco promover o crescimento do time em ambientes colaborativos e de ritmo acelerado.",
                 ),
             ),
             skills = HomePage.SkillSection(

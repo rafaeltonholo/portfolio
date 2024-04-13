@@ -47,7 +47,7 @@ val HomeContentStyle by ComponentStyle {
     Breakpoint.MD {
         Modifier
             .height(90.vh)
-            .padding(topBottom = 5.vh, leftRight = 3.vw)
+            .padding(topBottom = 2.vh, leftRight = 3.vw)
     }
 }
 

@@ -22,7 +22,7 @@ val TextTagStyle by ComponentStyle {
     base {
         Modifier
             .display(DisplayStyle.InlineBlock)
-            .padding(vertical = 0.3.em, horizontal = 0.3.em)
+            .padding(vertical = 0.15.em, horizontal = 0.3.em)
             .borderRadius(3.px)
             .border {
                 width(1.px)
