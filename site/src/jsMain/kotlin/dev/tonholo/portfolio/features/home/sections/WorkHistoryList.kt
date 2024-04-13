@@ -15,11 +15,11 @@ import com.varabyte.kobweb.silk.components.style.firstChild
 import com.varabyte.kobweb.silk.components.style.lastChild
 import com.varabyte.kobweb.silk.components.style.not
 import com.varabyte.kobweb.silk.components.style.toAttrs
-import dev.tonholo.portfolio.components.text.Text
+import dev.tonholo.portfolio.core.components.text.Text
 import dev.tonholo.portfolio.features.home.components.HistoryCard
 import dev.tonholo.portfolio.resources.HomePage
-import dev.tonholo.portfolio.ui.theme.Theme
-import dev.tonholo.portfolio.ui.theme.colorScheme
+import dev.tonholo.portfolio.core.ui.theme.Theme
+import dev.tonholo.portfolio.core.ui.theme.colorScheme
 import org.jetbrains.compose.web.css.LineStyle
 import org.jetbrains.compose.web.css.em
 import org.jetbrains.compose.web.css.px

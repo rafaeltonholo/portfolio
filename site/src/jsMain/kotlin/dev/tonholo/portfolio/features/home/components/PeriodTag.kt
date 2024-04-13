@@ -9,9 +9,9 @@ import com.varabyte.kobweb.compose.ui.modifiers.color
 import com.varabyte.kobweb.compose.ui.thenIf
 import com.varabyte.kobweb.silk.components.style.ComponentStyle
 import com.varabyte.kobweb.silk.components.style.toModifier
-import dev.tonholo.portfolio.components.TextTag
-import dev.tonholo.portfolio.ui.theme.Theme
-import dev.tonholo.portfolio.ui.theme.colorScheme
+import dev.tonholo.portfolio.core.components.TextTag
+import dev.tonholo.portfolio.core.ui.theme.Theme
+import dev.tonholo.portfolio.core.ui.theme.colorScheme
 import kotlinx.datetime.LocalDate
 
 val PeriodTagStyle by ComponentStyle {

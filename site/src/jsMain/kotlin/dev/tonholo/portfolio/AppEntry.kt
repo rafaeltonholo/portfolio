@@ -6,7 +6,7 @@ import com.varabyte.kobweb.silk.components.style.ComponentModifiers
 import com.varabyte.kobweb.silk.components.style.breakpoint.BreakpointSizes
 import com.varabyte.kobweb.silk.init.InitSilk
 import com.varabyte.kobweb.silk.init.InitSilkContext
-import dev.tonholo.portfolio.ui.theme.Theme
+import dev.tonholo.portfolio.core.ui.theme.Theme
 import org.jetbrains.compose.web.css.px
 
 private val Breakpoints = BreakpointSizes(

@@ -7,7 +7,7 @@ import com.varabyte.kobweb.core.Page
 import dev.tonholo.portfolio.features.home.layouts.HomeContent
 import dev.tonholo.portfolio.locale.Locale
 import dev.tonholo.portfolio.locale.localStorageKey
-import dev.tonholo.portfolio.ui.theme.LocalLyricist
+import dev.tonholo.portfolio.core.ui.theme.LocalLyricist
 import kotlinx.browser.localStorage
 
 @Page

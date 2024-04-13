@@ -38,6 +38,14 @@ kobweb {
 kotlin {
     configAsKobwebApplication("portfolio")
 
+    targets.all {
+        compilations.all {
+            compilerOptions.configure {
+                freeCompilerArgs.add("-Xexpect-actual-classes")
+            }
+        }
+    }
+
     sourceSets {
         commonMain.dependencies {
             implementation(compose.runtime)

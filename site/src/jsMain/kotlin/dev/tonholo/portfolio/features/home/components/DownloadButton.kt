@@ -17,9 +17,9 @@ import com.varabyte.kobweb.silk.components.forms.Button
 import com.varabyte.kobweb.silk.components.icons.fa.FaDownload
 import com.varabyte.kobweb.silk.components.style.ComponentStyle
 import com.varabyte.kobweb.silk.components.style.toModifier
-import dev.tonholo.portfolio.components.text.Text
-import dev.tonholo.portfolio.extensions.padding
-import dev.tonholo.portfolio.ui.theme.colorScheme
+import dev.tonholo.portfolio.core.components.text.Text
+import dev.tonholo.portfolio.core.extensions.padding
+import dev.tonholo.portfolio.core.ui.theme.colorScheme
 import org.jetbrains.compose.web.css.AlignItems
 import org.jetbrains.compose.web.css.DisplayStyle
 import org.jetbrains.compose.web.css.LineStyle

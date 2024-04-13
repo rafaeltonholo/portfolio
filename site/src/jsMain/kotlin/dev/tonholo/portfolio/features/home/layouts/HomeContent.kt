@@ -18,13 +18,13 @@ import com.varabyte.kobweb.silk.components.style.ComponentStyle
 import com.varabyte.kobweb.silk.components.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.components.style.toModifier
 import dev.tonholo.portfolio.breakpoints
-import dev.tonholo.portfolio.components.AdaptiveLayout
-import dev.tonholo.portfolio.extensions.padding
+import dev.tonholo.portfolio.core.components.AdaptiveLayout
+import dev.tonholo.portfolio.core.extensions.padding
 import dev.tonholo.portfolio.features.home.components.LanguageChanger
-import dev.tonholo.portfolio.features.home.sections.AppBar
+import dev.tonholo.portfolio.core.sections.AppBar
 import dev.tonholo.portfolio.features.home.sections.Experiences
 import dev.tonholo.portfolio.features.home.sections.Summary
-import dev.tonholo.portfolio.ui.theme.colorScheme
+import dev.tonholo.portfolio.core.ui.theme.colorScheme
 import org.jetbrains.compose.web.css.AnimationTimingFunction
 import org.jetbrains.compose.web.css.em
 import org.jetbrains.compose.web.css.px

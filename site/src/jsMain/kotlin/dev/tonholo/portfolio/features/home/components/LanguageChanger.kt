@@ -23,9 +23,9 @@ import com.varabyte.kobweb.silk.components.style.after
 import com.varabyte.kobweb.silk.components.style.firstChild
 import com.varabyte.kobweb.silk.components.style.hover
 import com.varabyte.kobweb.silk.components.style.toModifier
-import dev.tonholo.portfolio.components.text.Text
+import dev.tonholo.portfolio.core.components.text.Text
 import dev.tonholo.portfolio.locale.Locales
-import dev.tonholo.portfolio.ui.theme.colorScheme
+import dev.tonholo.portfolio.core.ui.theme.colorScheme
 import org.jetbrains.compose.web.css.Color
 import org.jetbrains.compose.web.css.LineStyle
 import org.jetbrains.compose.web.css.Position
