@@ -8,29 +8,25 @@ import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.background
 import com.varabyte.kobweb.compose.ui.modifiers.fillMaxWidth
-import com.varabyte.kobweb.compose.ui.modifiers.height
 import com.varabyte.kobweb.compose.ui.modifiers.margin
 import com.varabyte.kobweb.compose.ui.modifiers.maxWidth
 import com.varabyte.kobweb.compose.ui.modifiers.minWidth
-import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.compose.ui.modifiers.transition
 import com.varabyte.kobweb.silk.components.style.ComponentStyle
 import com.varabyte.kobweb.silk.components.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.components.style.toModifier
 import dev.tonholo.portfolio.breakpoints
 import dev.tonholo.portfolio.core.components.AdaptiveLayout
+import dev.tonholo.portfolio.core.components.Scaffold
 import dev.tonholo.portfolio.core.extensions.padding
-import dev.tonholo.portfolio.features.home.components.LanguageChanger
 import dev.tonholo.portfolio.core.sections.AppBar
+import dev.tonholo.portfolio.core.ui.theme.colorScheme
 import dev.tonholo.portfolio.features.home.sections.Experiences
 import dev.tonholo.portfolio.features.home.sections.Summary
-import dev.tonholo.portfolio.core.ui.theme.colorScheme
 import org.jetbrains.compose.web.css.AnimationTimingFunction
 import org.jetbrains.compose.web.css.em
 import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.css.s
-import org.jetbrains.compose.web.css.vh
-import org.jetbrains.compose.web.css.vw
 
 val HomeContentStyle by ComponentStyle {
     base {
@@ -42,12 +38,6 @@ val HomeContentStyle by ComponentStyle {
                 delay = 0.s,
             )
         )
-    }
-
-    Breakpoint.MD {
-        Modifier
-            .height(90.vh)
-            .padding(topBottom = 2.vh, leftRight = 3.vw)
     }
 }
 
@@ -122,10 +112,21 @@ val DetailPanel by ComponentStyle {
 fun HomeContent(
     modifier: Modifier = Modifier,
     onLocaleChange: (LanguageTag) -> Unit,
+    onHomeClick: () -> Unit = {},
+    onArticleClick: () -> Unit = {},
+    onResumeClick: () -> Unit = {},
 ) {
-    Column(modifier = HomeContentStyle.toModifier() then modifier) {
-        LanguageChanger(onLocaleChange = onLocaleChange)
-        AppBar()
+    Scaffold(
+        modifier = HomeContentStyle.toModifier() then modifier,
+        topBar = {
+            AppBar(
+                onLocaleChange = onLocaleChange,
+                onHomeClick = onHomeClick,
+                onArticleClick = onArticleClick,
+                onResumeClick = onResumeClick,
+            )
+        }
+    ) { paddingValues ->
         AdaptiveLayout(
             listPanel = {
                 Column(modifier = ListPanel.toModifier()) {
@@ -137,7 +138,9 @@ fun HomeContent(
                     Experiences()
                 }
             },
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(paddingValues),
         )
     }
 }
