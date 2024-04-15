@@ -15,4 +15,14 @@ rootProject.name = "portfolio"
 
 include(":site")
 include(":resources")
+includeBuild("kotlin-wrapper-highlightjs") {
+    dependencyResolutionManagement {
+        dependencySubstitution {
+            substitute(module("dev.tonholo.kotlin.wrapper.highlightjs:highlightjs-core"))
+                .using(project(":highlightjs-core"))
+            substitute(module("dev.tonholo.kotlin.wrapper.highlightjs:highlightjs-compose-html"))
+                .using(project(":highlightjs-compose-html"))
+        }
+    }
+}
 

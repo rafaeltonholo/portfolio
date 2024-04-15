@@ -7,7 +7,6 @@ plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.jetbrains.compose)
     alias(libs.plugins.kobweb.application)
-    alias(libs.plugins.kobwebx.markdown)
 }
 
 group = "dev.tonholo.portfolio"
@@ -58,7 +57,12 @@ kotlin {
             implementation(libs.kobweb.core)
             implementation(libs.kobweb.silk)
             implementation(libs.silk.icons.fa)
-            implementation(libs.kobwebx.markdown)
+            implementation(libs.dev.tonholo.kotlin.wrapper.highlightjs.core)
+            implementation(libs.dev.tonholo.kotlin.wrapper.highlightjs.compose.html)
         }
     }
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.targets.js.ir.KotlinJsIrLink> {
+    compilerOptions.moduleKind.set(org.jetbrains.kotlin.gradle.dsl.JsModuleKind.MODULE_COMMONJS)
 }
