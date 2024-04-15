@@ -36,7 +36,6 @@ val ScaffoldStyle by ComponentStyle {
 
     Breakpoint.MD {
         Modifier
-            .height(90.vh)
             .padding(vertical = 2.vh, horizontal = 3.vw)
     }
 }

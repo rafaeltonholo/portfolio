@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.staticCompositionLocalOf
 import cafe.adriel.lyricist.Lyricist
 import cafe.adriel.lyricist.ProvideStrings
@@ -27,15 +28,15 @@ import com.varabyte.kobweb.silk.init.InitSilk
 import com.varabyte.kobweb.silk.init.InitSilkContext
 import com.varabyte.kobweb.silk.init.registerStyleBase
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
-import dev.tonholo.portfolio.locale.Locale
-import dev.tonholo.portfolio.locale.localStorageKey
-import dev.tonholo.portfolio.resources.Strings
 import dev.tonholo.portfolio.core.ui.theme.color.ColorScheme
 import dev.tonholo.portfolio.core.ui.theme.color.LocalColorScheme
 import dev.tonholo.portfolio.core.ui.theme.color.from
 import dev.tonholo.portfolio.core.ui.theme.typography.LocalTypography
 import dev.tonholo.portfolio.core.ui.theme.typography.Typography
 import dev.tonholo.portfolio.core.ui.theme.typography.toModifier
+import dev.tonholo.portfolio.locale.Locale
+import dev.tonholo.portfolio.locale.localStorageKey
+import dev.tonholo.portfolio.resources.Strings
 import kotlinx.browser.localStorage
 import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.css.vh
@@ -47,9 +48,9 @@ private val DarkColorScheme = ColorScheme(
     onPrimary = Primary,
     secondary = AccentDark,
     onSecondary = TextPrimary,
-    background = Primary,
+    background = Secondary,
     onBackground = TextPrimary,
-    surface = Secondary,
+    surface = Primary,
     onSurface = TextSecondary,
     outline = AccentBorder,
     outlineVariant = AccentGray,
@@ -104,16 +105,16 @@ val ComponentModifier.typography
     get() = Typography
 
 @InitSilk
-fun initTheme(context: InitSilkContext) = with(context) {
-    config.initialColorMode = localStorage
+fun initColorMode(context: InitSilkContext) {
+    context.config.initialColorMode = localStorage
         .getItem(COLOR_MODE_KEY)
         ?.let(ColorMode::valueOf)
         ?: ColorMode.DARK
+}
 
-    theme.palettes.light.from(LightColorScheme)
-    theme.palettes.dark.from(DarkColorScheme)
-
-    stylesheet.apply {
+@InitSilk
+fun initSiteStyles(context: InitSilkContext) {
+    context.stylesheet.apply {
         registerStyleBase("*") {
             Modifier
                 .margin(0.px)
@@ -130,31 +131,36 @@ fun initTheme(context: InitSilkContext) = with(context) {
     }
 }
 
+@InitSilk
+fun initTheme(context: InitSilkContext) = with(context) {
+    theme.palettes.light.from(LightColorScheme)
+    theme.palettes.dark.from(DarkColorScheme)
+}
+
 @Composable
 fun Theme(
     content: @Composable () -> Unit,
 ) {
-    val colorMode = ColorMode.current
-    LaunchedEffect(colorMode) {
-        localStorage.setItem(COLOR_MODE_KEY, colorMode.name)
-    }
+    SilkApp {
+        val colorMode by ColorMode.currentState
+        LaunchedEffect(colorMode) {
+            localStorage.setItem(COLOR_MODE_KEY, colorMode.name)
+        }
 
-    val colorScheme = if (colorMode == ColorMode.DARK) {
-        DarkColorScheme
-    } else {
-        LightColorScheme
-    }
+        val colorScheme = if (colorMode == ColorMode.DARK) {
+            DarkColorScheme
+        } else {
+            LightColorScheme
+        }
 
-    val lyricist = rememberStrings(
-        currentLanguageTag = localStorage.getItem(Locale.localStorageKey) ?: Locale.DEFAULT,
-    )
-
-    CompositionLocalProvider(
-        LocalColorScheme provides colorScheme,
-        LocalLyricist provides lyricist,
-        LocalTypography provides Typography,
-    ) {
-        SilkApp {
+        val lyricist = rememberStrings(
+            currentLanguageTag = localStorage.getItem(Locale.localStorageKey) ?: Locale.DEFAULT,
+        )
+        CompositionLocalProvider(
+            LocalColorScheme provides colorScheme,
+            LocalLyricist provides lyricist,
+            LocalTypography provides Typography,
+        ) {
             ProvideStrings(lyricist) {
                 Surface(
                     SmoothColorStyle.toModifier()
