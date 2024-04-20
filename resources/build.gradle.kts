@@ -20,5 +20,5 @@ kotlin {
 }
 
 dependencies {
-    ksp(libs.lyricist.processor)
+    add("kspJs", libs.lyricist.processor)
 }
