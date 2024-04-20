@@ -8,11 +8,18 @@ pluginManagement {
         google()
         maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
         maven("https://us-central1-maven.pkg.dev/varabyte-repos/public")
+        maven {
+            name = "marktdownLocalMaven"
+            url = uri("marktdown/build/localMaven")
+        }
     }
 }
 
 rootProject.name = "portfolio"
 
-include(":site")
-include(":resources")
+include(
+    ":site",
+    ":resources",
+)
 includeBuild("kotlin-wrapper-highlightjs")
+includeBuild("marktdown")
