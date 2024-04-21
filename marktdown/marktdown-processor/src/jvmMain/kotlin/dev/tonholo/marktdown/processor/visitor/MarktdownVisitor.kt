@@ -105,7 +105,7 @@ class MarktdownVisitor(
     private val listMemberName = MemberName(packageName = "kotlin.collections", simpleName = "listOf")
 
     private fun attachToParent(current: CodeBlock.Builder) {
-        currentBuilder?.add("%L,", current.build())
+        currentBuilder?.add(current.build())
             ?: childrenSpec.add(current)
     }
 
@@ -114,14 +114,16 @@ class MarktdownVisitor(
         parentBuilder: CodeBlock.Builder,
         memberName: MemberName,
     ) {
-        add(
+        addStatement(
             "%N = %M(",
             memberName,
             listMemberName,
         )
         currentBuilder = parentBuilder
-        visitChildren(parent)
-        add(")")
+        withIndent {
+            visitChildren(parent)
+        }
+        addStatement("),")
     }
 
     override fun visit(blockQuote: BlockQuote) {
@@ -129,7 +131,7 @@ class MarktdownVisitor(
         val parent = currentBuilder
         val codeBlock = CodeBlock
             .builder()
-            .add("%T(", TextElement.Blockquote::class)
+            .addStatement("%T(", TextElement.Blockquote::class)
             .withIndent {
                 visitChildren(
                     parent = blockQuote,
@@ -137,7 +139,7 @@ class MarktdownVisitor(
                     memberName = TextElement.Blockquote::class.member(TextElement.Blockquote::children.name),
                 )
             }
-            .add(")")
+            .addStatement("),")
         currentBuilder = parent
         attachToParent(codeBlock)
     }
@@ -147,7 +149,7 @@ class MarktdownVisitor(
         val parent = currentBuilder
         val codeBlock = CodeBlock
             .builder()
-            .add("%T(", ListElement.Bullet::class)
+            .addStatement("%T(", ListElement.Bullet::class)
             .withIndent {
                 visitChildren(
                     parent = bulletList,
@@ -155,7 +157,7 @@ class MarktdownVisitor(
                     memberName = ListElement.Bullet::class.member(ListElement.Bullet::options.name),
                 )
             }
-            .add(")")
+            .addStatement("),")
         currentBuilder = parent
         attachToParent(codeBlock)
     }
@@ -165,8 +167,8 @@ class MarktdownVisitor(
         val kClass = TextElement.InlineCode::class
         val codeBlock = CodeBlock
             .builder()
-            .add(
-                "%T(%N = %S)",
+            .addStatement(
+                "%T(%N = %S),",
                 kClass,
                 kClass.member(TextElement.InlineCode::code.name),
                 code.literal,
@@ -184,7 +186,7 @@ class MarktdownVisitor(
         println("emphasis=${emphasis}")
         val codeBlock = CodeBlock
             .builder()
-            .add("%T(", TextElement.ItalicText::class)
+            .addStatement("%T(", TextElement.ItalicText::class)
             .withIndent {
                 visitChildren(
                     parent = emphasis,
@@ -192,7 +194,7 @@ class MarktdownVisitor(
                     memberName = TextElement.ItalicText::class.member(TextElement.ItalicText::children.name),
                 )
             }
-            .add(")")
+            .addStatement("),")
         currentBuilder = parent
         attachToParent(codeBlock)
     }
@@ -202,20 +204,20 @@ class MarktdownVisitor(
         val kClass = CodeFance::class
         val codeBlock = CodeBlock
             .builder()
-            .add("%T(", kClass)
+            .addStatement("%T(", kClass)
             .withIndent {
-                add(
+                addStatement(
                     "%N = %S,",
                     kClass.member(CodeFance::language.name),
                     fencedCodeBlock.info,
                 )
-                add(
+                addStatement(
                     "%N = %S,",
                     kClass.member(CodeFance::code.name),
                     fencedCodeBlock.literal,
                 )
             }
-            .add(")")
+            .addStatement("),")
         attachToParent(codeBlock)
 //        super.visit(fencedCodeBlock)
     }
@@ -224,7 +226,7 @@ class MarktdownVisitor(
         println("hardLineBreak=${hardLineBreak}")
         val codeBlock = CodeBlock
             .builder()
-            .add("%T", LineBreak::class)
+            .addStatement("%T,", LineBreak::class)
             .indent()
 
         attachToParent(codeBlock)
@@ -237,9 +239,9 @@ class MarktdownVisitor(
         val kClass = TextElement.Title::class
         val codeBlock = CodeBlock
             .builder()
-            .add("%T(", kClass)
+            .addStatement("%T(", kClass)
             .withIndent {
-                add(
+                addStatement(
                     "%N = %T.H%L,",
                     kClass.member(TextElement.Title::style.name),
                     TextElement.Title.Style::class,
@@ -251,7 +253,7 @@ class MarktdownVisitor(
                     memberName = kClass.member(TextElement.Title::children.name),
                 )
             }
-            .add(")")
+            .addStatement("),")
         currentBuilder = parent
         attachToParent(codeBlock)
     }
@@ -260,7 +262,7 @@ class MarktdownVisitor(
         println("thematicBreak=${thematicBreak.literal}")
         val codeBlock = CodeBlock
             .builder()
-            .add("%T", HorizontalRule::class)
+            .addStatement("%T,", HorizontalRule::class)
         attachToParent(codeBlock)
 //        super.visit(thematicBreak)
     }
@@ -282,7 +284,7 @@ class MarktdownVisitor(
         println("image=${image}")
         val codeBlock = CodeBlock
             .builder()
-            .add("%T(", kClass)
+            .addStatement("%T(", kClass)
             .withIndent {
                 add(
                     "%N = %T(%S),",
@@ -296,7 +298,7 @@ class MarktdownVisitor(
                     image.title,
                 )
             }
-            .add(")")
+            .addStatement("),")
         attachToParent(codeBlock)
 //        super.visit(image)
     }
@@ -306,19 +308,19 @@ class MarktdownVisitor(
         println("indentedCodeBlock=${indentedCodeBlock.literal}")
         val codeBlock = CodeBlock
             .builder()
-            .add("%T(", kClass)
+            .addStatement("%T(", kClass)
             .withIndent {
-                add(
+                addStatement(
                     "%N = \"\",",
                     kClass.member(CodeFance::language.name),
                 )
-                add(
+                addStatement(
                     "%N = %S,",
                     kClass.member(CodeFance::code.name),
                     indentedCodeBlock.literal,
                 )
             }
-            .add(")")
+            .addStatement("),")
         attachToParent(codeBlock)
 //        super.visit(indentedCodeBlock)
     }
@@ -329,9 +331,9 @@ class MarktdownVisitor(
         println("link=${link}")
         val codeBlock = CodeBlock
             .builder()
-            .add("%T(", kClass)
+            .addStatement("%T(", kClass)
             .withIndent {
-                add(
+                addStatement(
                     "%N = %T(%S),",
                     kClass.member(LinkElement::link.name),
                     MarktdownLink::class,
@@ -343,7 +345,7 @@ class MarktdownVisitor(
                     memberName = kClass.member(LinkElement::children.name),
                 )
             }
-            .add(")")
+            .addStatement("),")
         currentBuilder = parent
         attachToParent(codeBlock)
 //        super.visit(link)
@@ -355,7 +357,7 @@ class MarktdownVisitor(
         println("listItem=${listItem}")
         val codeBlock = CodeBlock
             .builder()
-            .add("%T(", ListElement.Bullet::class)
+            .addStatement("%T(", ListElement.Bullet::class)
             .withIndent {
                 visitChildren(
                     parent = listItem,
@@ -363,7 +365,7 @@ class MarktdownVisitor(
                     memberName = ListElement.Bullet::class.member(ListElement.Bullet::options.name),
                 )
             }
-            .add(")")
+            .addStatement("),")
         currentBuilder = parent
         attachToParent(codeBlock)
 //        super.visit(listItem)
@@ -374,7 +376,7 @@ class MarktdownVisitor(
         val parent = currentBuilder
         val codeBlock = CodeBlock
             .builder()
-            .add("%T(", ListElement.Numbered::class)
+            .addStatement("%T(", ListElement.Numbered::class)
             .withIndent {
                 visitChildren(
                     parent = orderedList,
@@ -382,7 +384,7 @@ class MarktdownVisitor(
                     memberName = ListElement.Numbered::class.member(ListElement.Numbered::options.name),
                 )
             }
-            .add(")")
+            .addStatement("),")
         currentBuilder = parent
         attachToParent(codeBlock)
 //        super.visit(orderedList)
@@ -393,7 +395,7 @@ class MarktdownVisitor(
         val parent = currentBuilder
         val codeBlock = CodeBlock
             .builder()
-            .add("%T(", TextElement.Paragraph::class)
+            .addStatement("%T(", TextElement.Paragraph::class)
             .withIndent {
                 visitChildren(
                     parent = paragraph,
@@ -401,7 +403,7 @@ class MarktdownVisitor(
                     memberName = TextElement.Paragraph::class.member(TextElement.Paragraph::children.name),
                 )
             }
-            .add(")")
+            .addStatement("),")
         currentBuilder = parent
         attachToParent(codeBlock)
 //        super.visit(paragraph)
@@ -411,7 +413,7 @@ class MarktdownVisitor(
         println("softLineBreak=${softLineBreak}")
         val codeBlock = CodeBlock
             .builder()
-            .add("%T(\" \")", TextElement.PlainText::class)
+            .addStatement("%T(\" \"),", TextElement.PlainText::class)
         attachToParent(codeBlock)
 //        super.visit(softLineBreak)
     }
@@ -421,7 +423,7 @@ class MarktdownVisitor(
         val parent = currentBuilder
         val codeBlock = CodeBlock
             .builder()
-            .add("%T(", TextElement.BoldText::class)
+            .addStatement("%T(", TextElement.BoldText::class)
             .withIndent {
                 visitChildren(
                     parent = strongEmphasis,
@@ -429,7 +431,7 @@ class MarktdownVisitor(
                     memberName = TextElement.BoldText::class.member(TextElement.BoldText::children.name),
                 )
             }
-            .add(")")
+            .addStatement("),")
         currentBuilder = parent
         attachToParent(codeBlock)
 //        super.visit(strongEmphasis)
@@ -439,7 +441,7 @@ class MarktdownVisitor(
         println("text=${text.literal}")
         val codeBlock = CodeBlock
             .builder()
-            .add("%T(%S)", TextElement.PlainText::class, text.literal)
+            .addStatement("%T(%S),", TextElement.PlainText::class, text.literal)
         attachToParent(codeBlock)
 //        super.visit(text)
     }
@@ -449,22 +451,22 @@ class MarktdownVisitor(
         println("linkReferenceDefinition=${linkReferenceDefinition}")
         val codeBlock = CodeBlock
             .builder()
-            .add("%T(", kClass)
+            .addStatement("%T(", kClass)
             .withIndent {
                 // TODO: change to parent.
-                add(
+                addStatement(
                     "%N = %T(%S),",
                     kClass.member(FootnoteElement::text.name),
                     TextElement.PlainText::class,
                     linkReferenceDefinition.title
                 )
-                add(
+                addStatement(
                     "%N = %S,",
                     kClass.member(FootnoteElement::anchor.name),
                     linkReferenceDefinition.destination,
                 )
             }
-            .add(")")
+            .addStatement("),")
         attachToParent(codeBlock)
 //        super.visit(linkReferenceDefinition)
     }
@@ -549,7 +551,7 @@ private fun MarktdownMetadata.build(memberName: MemberName): CodeBlock {
                 publishedDateTime.toCodeBlock()
             )
         }
-        addStatement(")")
+        addStatement("),")
     }
 }
 
@@ -592,7 +594,7 @@ private inline fun <reified T> List<T>.toCodeBlock(memberName: MemberName, trans
                 add(transform(it))
             }
         }
-        addStatement(")")
+        addStatement("),")
     }
 }
 
