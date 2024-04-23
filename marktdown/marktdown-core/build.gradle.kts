@@ -14,7 +14,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(compose.runtime)
-            implementation(libs.org.jetbrains.kotlinx.datetime)
+            api(libs.org.jetbrains.kotlinx.datetime)
         }
     }
 }

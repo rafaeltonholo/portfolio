@@ -15,8 +15,20 @@ kotlin {
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(libs.org.jetbrains.kotlinx.datetime)
-            implementation(libs.org.jetbrains.markdown)
+            api(libs.org.jetbrains.markdown)
             implementation(projects.marktdownCore)
+        }
+
+        jvmMain.dependencies {
+            implementation(libs.bundles.org.commonmark)
+            implementation(libs.com.squareup.kotlinpoet)
+            implementation(libs.org.yaml.snakeyaml)
+        }
+    }
+
+    targets.all {
+        compilations.all {
+            compilerOptions.options.freeCompilerArgs.add("-Xcontext-receivers")
         }
     }
 }

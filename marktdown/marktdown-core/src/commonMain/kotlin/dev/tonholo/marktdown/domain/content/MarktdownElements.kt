@@ -17,10 +17,10 @@ sealed interface TextElement : MarktdownElement {
     data class PlainText(val text: String) : TextElement
     data class InlineCode(val code: String) : TextElement
     data class Paragraph(
-        override val children: List<TextElement>,
+        override val children: List<MarktdownElement>,
     ) : TextElement, MarktdownParent<MarktdownElement> {
         companion object {
-            operator fun invoke(vararg children: TextElement): Paragraph =
+            operator fun invoke(vararg children: MarktdownElement): Paragraph =
                 Paragraph(children.toList())
 
             operator fun invoke(text: String): Paragraph =
@@ -28,25 +28,25 @@ sealed interface TextElement : MarktdownElement {
         }
     }
 
-    data class BoldText(
+    data class StrongText(
         override val children: List<TextElement>,
     ) : TextElement, MarktdownParent<TextElement> {
         companion object {
-            operator fun invoke(vararg children: TextElement): BoldText =
-                BoldText(children.toList())
+            operator fun invoke(vararg children: TextElement): StrongText =
+                StrongText(children.toList())
 
-            operator fun invoke(text: String): BoldText =
-                BoldText(PlainText(text))
+            operator fun invoke(text: String): StrongText =
+                StrongText(PlainText(text))
         }
     }
 
-    data class ItalicText(override val children: List<TextElement>) : TextElement, MarktdownParent<TextElement> {
+    data class EmphasisText(override val children: List<TextElement>) : TextElement, MarktdownParent<TextElement> {
         companion object {
-            operator fun invoke(vararg children: TextElement): ItalicText =
-                ItalicText(children.toList())
+            operator fun invoke(vararg children: TextElement): EmphasisText =
+                EmphasisText(children.toList())
 
-            operator fun invoke(text: String): ItalicText =
-                ItalicText(PlainText(text))
+            operator fun invoke(text: String): EmphasisText =
+                EmphasisText(PlainText(text))
         }
     }
 
@@ -89,8 +89,8 @@ sealed interface TextElement : MarktdownElement {
     data class Emoji(val shortcode: String) : TextElement
 
     data class Title(
-        override val children: List<TextElement>,
         val style: Style,
+        override val children: List<TextElement>,
         val id: TitleId? = null,
     ) : TextElement, MarktdownParent<TextElement> {
         @JvmInline
@@ -115,8 +115,8 @@ sealed interface TextElement : MarktdownElement {
     }
 
     data class Blockquote(
-        override val children: List<TextElement>,
-    ) : TextElement, MarktdownParent<TextElement>
+        override val children: List<MarktdownElement>,
+    ) : TextElement, MarktdownParent<MarktdownElement>
 
     data class Strikethrough(
         override val children: List<TextElement>,
@@ -131,8 +131,8 @@ sealed interface TextElement : MarktdownElement {
     }
 }
 
-data class CodeBlock(
-    val language: String,
+data class CodeFence(
+    val language: String?,
     val code: String,
 ) : MarktdownElement
 
@@ -144,23 +144,59 @@ data class ImageElement(
 sealed interface Link : TextElement {
     data class Element(
         val link: MarktdownLink,
-        val title: TextElement? = null,
-    ) : Link {
+        override val children: List<TextElement>,
+    ) : Link, MarktdownParent<TextElement> {
         companion object {
             operator fun invoke(
                 link: MarktdownLink,
                 title: String,
             ): Element = Element(
                 link = link,
-                title = TextElement.PlainText(title),
+                children = listOf(TextElement.PlainText(title)),
+            )
+
+            operator fun invoke(
+                link: MarktdownLink,
+                vararg children: TextElement,
+            ): Element = Element(
+                link = link,
+                children = children.toList(),
             )
         }
     }
 
-    data class ReferenceElement(
-        val text: TextElement,
-        val anchor: String,
+    data class AutoLink(
+        val link: MarktdownLink,
+        val label: String,
     ) : Link
+
+    data class ReferenceElement(
+        val destination: MarktdownLink,
+        val title: String,
+        override val children: List<MarktdownElement>,
+    ) : Link, MarktdownParent<MarktdownElement> {
+        companion object {
+            operator fun invoke(
+                destination: MarktdownLink,
+                title: String,
+                label: String,
+            ): ReferenceElement = ReferenceElement(
+                destination = destination,
+                title = title,
+                TextElement.PlainText(label),
+            )
+
+            operator fun invoke(
+                destination: MarktdownLink,
+                title: String,
+                vararg children: MarktdownElement,
+            ): ReferenceElement = ReferenceElement(
+                destination = destination,
+                title = title,
+                children = children.toList(),
+            )
+        }
+    }
 
     data class FootnoteElement(
         val text: TextElement,
@@ -168,18 +204,19 @@ sealed interface Link : TextElement {
     ) : Link
 }
 
-data class ReferenceElement(
-    val anchor: String,
-    val link: MarktdownLink,
-    val linkTitle: String = link.value,
+data class LinkDefinition(
+    val destination: MarktdownLink,
+    val label: String,
+    val title: String? = null,
 ) : MarktdownElement
 
+data object EndOfLine : MarktdownElement
 data object HorizontalRule : MarktdownElement
+data object LineBreak : MarktdownElement
 
 data class TableElement(
-    val header: TableContent.Header,
-    val content: TableContent.Row,
-) : MarktdownElement
+    override val children: List<TableContent>,
+) : MarktdownParent<TableContent>
 
 sealed interface TableContent : MarktdownElement {
     data class Header(
@@ -192,15 +229,44 @@ sealed interface TableContent : MarktdownElement {
 }
 
 sealed interface ListElement : MarktdownElement {
-    data class Ordered(
-        val options: List<TextElement>,
-    ) : ListElement
+    data class Unordered(
+        val options: List<ListItem>,
+    ) : ListElement {
+        companion object {
+            operator fun invoke(
+                vararg options: ListItem,
+            ): Unordered = Unordered(
+                options = options.toList(),
+            )
+        }
+    }
 
-    data class Numbered(
-        val options: List<TextElement>,
-    ) : ListElement
+    data class Ordered(
+        val options: List<ListItem>,
+        val startWith: Int? = null,
+    ) : ListElement {
+        companion object {
+            operator fun invoke(
+                startWith: Int? = null,
+                vararg options: ListItem,
+            ): Ordered = Ordered(
+                options = options.toList(),
+                startWith = startWith,
+            )
+
+            operator fun invoke(
+                vararg options: ListItem,
+            ): Ordered = Ordered(
+                options = options.toList(),
+            )
+        }
+    }
 
     data class Task(
-        val options: List<Pair<Boolean, TextElement>>,
+        val options: List<Pair<Boolean, ListItem>>,
     ) : ListElement
+
+    data class ListItem(
+        override val children: List<MarktdownElement>
+    ) : ListElement, MarktdownParent<MarktdownElement>
 }

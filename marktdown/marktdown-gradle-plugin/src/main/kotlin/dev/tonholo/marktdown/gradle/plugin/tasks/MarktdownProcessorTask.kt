@@ -42,20 +42,18 @@ abstract class MarktdownProcessorTask : DefaultTask() {
         println("Creating output directory for generated files")
         println("output = ${outputDirectory.absolutePath}")
         outputDirectory.mkdirs()
+        val mdExtension = "md"
 
         val processor = MarktdownProcessor()
         resources.asFile.listFiles()
-            ?.filter { it.extension == "md" }
+            ?.filter { it.extension == mdExtension }
             ?.forEach {
-                processor.process(it)
+                val path = it.toPath()
+                processor.process(
+                    packageName = packageName,
+                    input = it.toPath(),
+                    output = rootOutputDirectory.toPath(),
+                )
             }
-
-        File("$outputDirectory/MyPluginTest.kt").writeText(
-            """
-                |package $packageName
-                |
-                |data class MyPluginTest(val abc: String = "Test")
-            """.trimMargin()
-        )
     }
 }

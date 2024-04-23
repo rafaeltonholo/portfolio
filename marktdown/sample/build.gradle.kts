@@ -21,10 +21,13 @@ kotlin {
     }
 
     sourceSets {
-        commonMain.dependencies {  }
+        commonMain.dependencies {
+            implementation("dev.tonholo.marktdown:marktdown-core:1.0.0")
+        }
         jsMain.dependencies {  }
         jvmMain.dependencies {
             implementation("dev.tonholo.marktdown:marktdown-processor:1.0.0")
+            implementation(libs.org.yaml.snakeyaml)
         }
     }
 }
