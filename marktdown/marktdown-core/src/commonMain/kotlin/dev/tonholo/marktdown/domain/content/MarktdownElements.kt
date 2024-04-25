@@ -197,11 +197,6 @@ sealed interface Link : TextElement {
             )
         }
     }
-
-    data class FootnoteElement(
-        val text: TextElement,
-        val anchor: String,
-    ) : Link
 }
 
 data class LinkDefinition(
@@ -215,17 +210,35 @@ data object HorizontalRule : MarktdownElement
 data object LineBreak : MarktdownElement
 
 data class TableElement(
-    override val children: List<TableContent>,
-) : MarktdownParent<TableContent>
+    val header: TableContent.Header,
+    val rows: List<TableContent.Row>,
+) : MarktdownElement
 
 sealed interface TableContent : MarktdownElement {
     data class Header(
-        val columns: List<MarktdownElement>,
+        val row: Row,
     ) : TableContent
 
     data class Row(
-        val content: List<MarktdownElement>,
+        val cells: List<Cell>,
     ) : TableContent
+
+    data class Cell(
+        val content: List<MarktdownElement>,
+        val alignment: Alignment = Alignment.START,
+    ) : TableContent {
+        companion object {
+            operator fun invoke(
+                vararg content: MarktdownElement,
+                alignment: Alignment = Alignment.START,
+            ): Cell = Cell(
+                content.toList(),
+                alignment = alignment,
+            )
+        }
+    }
+
+    enum class Alignment { START, CENTER, END }
 }
 
 sealed interface ListElement : MarktdownElement {

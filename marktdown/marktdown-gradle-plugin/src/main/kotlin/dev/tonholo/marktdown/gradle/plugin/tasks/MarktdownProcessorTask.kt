@@ -48,7 +48,6 @@ abstract class MarktdownProcessorTask : DefaultTask() {
         resources.asFile.listFiles()
             ?.filter { it.extension == mdExtension }
             ?.forEach {
-                val path = it.toPath()
                 processor.process(
                     packageName = packageName,
                     input = it.toPath(),

@@ -17,7 +17,7 @@ import dev.tonholo.marktdown.domain.content.CodeFence
 import dev.tonholo.marktdown.domain.content.HorizontalRule
 import dev.tonholo.marktdown.domain.content.ImageElement
 import dev.tonholo.marktdown.domain.content.LineBreak
-import dev.tonholo.marktdown.domain.content.Link.FootnoteElement
+import dev.tonholo.marktdown.domain.content.LinkDefinition
 import dev.tonholo.marktdown.domain.content.ListElement
 import dev.tonholo.marktdown.domain.content.MarktdownDocument
 import dev.tonholo.marktdown.domain.content.TextElement
@@ -480,7 +480,7 @@ class MarktdownRenderer(
         }
 
         override fun visit(linkReferenceDefinition: LinkReferenceDefinition) {
-            val kClass = FootnoteElement::class
+            val kClass = LinkDefinition::class
             val codeBlock = CodeBlock
                 .builder()
                 .addStatement("%T(", kClass)
@@ -488,13 +488,13 @@ class MarktdownRenderer(
                     // TODO: change to parent.
                     addStatement(
                         "%N = %T(%S),",
-                        kClass.member(FootnoteElement::text.name),
+                        kClass.member(LinkDefinition::destination.name),
                         TextElement.PlainText::class,
                         linkReferenceDefinition.title
                     )
                     addStatement(
                         "%N = %S,",
-                        kClass.member(FootnoteElement::anchor.name),
+                        kClass.member(LinkDefinition::destination.name),
                         linkReferenceDefinition.destination,
                     )
                 }

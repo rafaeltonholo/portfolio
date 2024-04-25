@@ -2,7 +2,7 @@ import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 
 plugins {
     alias(libs.plugins.org.jetbrains.kotlin.multiplatform)
-    id("dev.tonholo.marktdown") version "+"
+//    id("dev.tonholo.marktdown") version "+"
 }
 
 kotlin {
@@ -32,10 +32,10 @@ kotlin {
     }
 }
 
-marktdown {
-    packageName = "dev.tonholo.marktdown.sample"
-    resources = layout.projectDirectory.dir("resources")
-}
+//marktdown {
+//    packageName = "dev.tonholo.marktdown.sample"
+//    resources = layout.projectDirectory.dir("resources")
+//}
 
 dependencies {
 }

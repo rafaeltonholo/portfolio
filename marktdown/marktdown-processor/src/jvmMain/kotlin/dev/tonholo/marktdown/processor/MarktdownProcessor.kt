@@ -32,6 +32,9 @@ class MarktdownProcessor {
         content: String,
         output: Path,
     ) {
+        println(
+            "process() called with: packageName = $packageName, fileName = $fileName, content = $content, output = $output"
+        )
         val regex = Regex("^-{3,}([\\n\\w: -/]+)-{3,}")
         val matchResult = regex
             .findAll(content, startIndex = 0)
@@ -43,7 +46,7 @@ class MarktdownProcessor {
             println("front matter: $frontMatter")
             val yaml = Yaml()
             val map = yaml.load<Map<String, Any>>(frontMatter)
-            println(map)
+            println("frontMatter map: $map")
             map
         } else {
             println("no front matter.")

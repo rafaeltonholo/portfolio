@@ -23,6 +23,8 @@ import dev.tonholo.marktdown.domain.content.Link.ReferenceElement
 import dev.tonholo.marktdown.domain.content.LinkDefinition
 import dev.tonholo.marktdown.domain.content.ListElement
 import dev.tonholo.marktdown.domain.content.MarktdownDocument
+import dev.tonholo.marktdown.domain.content.TableContent
+import dev.tonholo.marktdown.domain.content.TableElement
 import dev.tonholo.marktdown.domain.content.TextElement
 import dev.tonholo.marktdown.processor.extensions.pascalCase
 import java.nio.file.Path
@@ -58,10 +60,21 @@ class MarktdownRenderer(
     private val content: String,
     private val useSafeLinks: Boolean = true,
     private val absolutizeAnchorLinks: Boolean = false,
-    private val frontMatterMetadata: Map<String, Any>?,
+    frontMatterMetadata: Map<String, Any>?,
 ) {
     private val visitor = MarktdownVisitor()
-    private lateinit var metadataSpec: MarktdownMetadata
+    private val metadataSpec: MarktdownMetadata? = frontMatterMetadata
+        ?.mapValues { (_, value) ->
+            when (value) {
+                is Date -> Instant
+                    .fromEpochMilliseconds(value.time)
+                    .toLocalDateTime(FixedOffsetTimeZone(UtcOffset.ZERO))
+
+                else -> value
+            }
+        }
+        ?.let(::MarktdownMetadataMap)
+
     private val childrenSpec: MutableList<CodeBlock.Builder> = mutableListOf()
     private val linkDefinitionSpec: MutableList<CodeBlock.Builder> = mutableListOf()
     private lateinit var referenceLinksGeneratingProvider: ReferenceLinksGeneratingProvider
@@ -77,7 +90,7 @@ class MarktdownRenderer(
                         val className = MarktdownDocument::class.asClassName()
                         addStatement("%T(", MarktdownDocument::class)
                         withIndent {
-                            if (::metadataSpec.isInitialized) {
+                            if (metadataSpec != null) {
                                 add(
                                     metadataSpec
                                         .build(className.member(MarktdownDocument::metadata.name))
@@ -128,20 +141,6 @@ class MarktdownRenderer(
             "The output parameter should not be null"
         }
         node.accept(visitor)
-        frontMatterMetadata
-            ?.mapValues { (_, value) ->
-                when (value) {
-                    is Date -> Instant
-                        .fromEpochMilliseconds(value.time)
-                        .toLocalDateTime(FixedOffsetTimeZone(UtcOffset.ZERO))
-
-                    else -> value
-                }
-            }
-            ?.let { map ->
-                val metadata = MarktdownMetadataMap(map)
-                metadataSpec = metadata
-            }
         fileSpec.writeTo(output)
     }
 
@@ -154,7 +153,7 @@ class MarktdownRenderer(
 
     fun render(node: ASTNode, output: Path) {
         node.accept(visitor)
-        println("render output = $output")
+//        println("render output = $output")
         fileSpec.writeTo(output)
     }
 
@@ -226,17 +225,16 @@ class MarktdownRenderer(
         }
 
         override fun visitNode(node: ASTNode) {
-            println("--- start Visit node ---")
-            println("node: ${node.type}")
-            println("node.type: ${node.type}")
-            println("node.startOffset: ${node.startOffset}")
-            println("node.endOffset: ${node.endOffset}")
-            println("node.parent: ${node.parent?.type}")
-            println("node.children: ${node.children.map { it.type }}")
-            println("node.litreal: ${node.literal}")
-            println("--- end Visit node ---")
+//            println("--- start Visit node ---")
+//            println("node: ${node.type}")
+//            println("node.type: ${node.type}")
+//            println("node.startOffset: ${node.startOffset}")
+//            println("node.endOffset: ${node.endOffset}")
+//            println("node.parent: ${node.parent?.type}")
+//            println("node.children: ${node.children.map { it.type }}")
+//            println("node.litreal: ${node.literal}")
+//            println("--- end Visit node ---")
 
-//            super.visitNode(node)
             when (node.type) {
                 // Elements
                 MarkdownElementTypes.MARKDOWN_FILE -> {
@@ -280,6 +278,7 @@ class MarktdownRenderer(
                 MarkdownElementTypes.ATX_6 -> visitHeading(node)
 
                 GFMElementTypes.STRIKETHROUGH -> visitStrikeThrough(node)
+                GFMElementTypes.TABLE -> visitTable(node)
 
                 // Tokens
                 MarkdownTokenTypes.TEXT -> visitText(node)
@@ -323,6 +322,8 @@ class MarktdownRenderer(
                 MarkdownTokenTypes.WHITE_SPACE -> {
                     attachToParent(" ".toCodeBlockBuilder())
                 }
+
+                GFMTokenTypes.CELL -> visitCell(node)
             }
         }
 
@@ -347,7 +348,7 @@ class MarktdownRenderer(
                     if (child != null && child.type == MarkdownTokenTypes.TEXT) {
                         addStatement("text = %S,", child.literal)
                     } else {
-                        println("Visiting children ${childrenToConsider.map { it.type }}")
+//                        println("Visiting children ${childrenToConsider.map { it.type }}")
                         visitChildren(
                             children = childrenToConsider,
                             parentBuilder = this,
@@ -672,7 +673,7 @@ class MarktdownRenderer(
                 ?.literal
 
             createCodeFence(
-                language = language.toString(),
+                language = language?.toString(),
                 content = codeFence.children.codeBlockContent
             )
         }
@@ -848,6 +849,85 @@ class MarktdownRenderer(
             attachToParent(codeBlock)
         }
 
+        private fun visitTable(table: ASTNode) {
+            val header = table.findChildOfType(GFMElementTypes.HEADER) ?: return
+            val rows = table.children.filter { it.type == GFMElementTypes.ROW }
+
+//            println("table.children = ${table.children.map { it.type }}")
+//            println("header.children = ${header.children.map { it.type }}")
+//            println("rows = ${rows.map { it.type }}")
+            val kClass = TableElement::class
+            val parent = currentBuilder
+            val codeBlock = CodeBlock.builder()
+                .addStatement("%T(", kClass)
+                .withIndent {
+                    add(createHeaderCodeBlock(header.children.filter { it.type == GFMTokenTypes.CELL }))
+                    currentBuilder = parent
+                    addStatement("%N = %M(", kClass.member(TableElement::rows.name), listMemberName)
+                    withIndent {
+                        rows.forEach { row ->
+                            add(createRowCodeBlock(row.children.filter { it.type == GFMTokenTypes.CELL }))
+                        }
+                    }
+                    addStatement("),")
+                }
+                .addStatement("),")
+            currentBuilder = parent
+            attachToParent(codeBlock)
+        }
+
+        private fun createHeaderCodeBlock(children: List<ASTNode>): CodeBlock {
+            val kClass = TableContent.Header::class
+            return buildCodeBlock {
+                addStatement("%T(", kClass)
+                withIndent {
+                    add(createRowCodeBlock(children))
+                }
+                addStatement("),")
+            }
+        }
+
+        private fun createRowCodeBlock(children: List<ASTNode>): CodeBlock {
+            val parent = currentBuilder
+            val kClass = TableContent.Row::class
+            return buildCodeBlock {
+                addStatement("%T(", kClass)
+                withIndent {
+                    currentBuilder = this
+                    visitChildren(
+                        children = children,
+                        parentBuilder = this,
+                        memberName = kClass.member(TableContent.Row::cells.name),
+                    )
+                    currentBuilder = parent
+                }
+                addStatement("),")
+            }
+        }
+
+        private fun visitCell(cell: ASTNode) {
+            val kClass = TableContent.Cell::class
+            val parent = currentBuilder
+            val codeBlock = CodeBlock.builder()
+                .addStatement("%T(", kClass)
+                .withIndent {
+                    visitChildren(
+                        children = cell.childrenToRender,
+                        parentBuilder = this,
+                        memberName = kClass.member(TableContent.Cell::content.name),
+                    )
+                    addStatement(
+                        "%N = %T.%M,",
+                        kClass.member(TableContent.Cell::alignment.name),
+                        TableContent.Alignment::class,
+                        TableContent.Alignment::class.member(TableContent.Alignment.START.name),
+                    )
+                }
+                .addStatement("),")
+            currentBuilder = parent
+            attachToParent(codeBlock)
+        }
+
         private fun visitChildren(parent: ASTNode) {
             if (parent is CompositeASTNode) {
                 for (child in parent.childrenToRender) {
@@ -889,7 +969,7 @@ class MarktdownRenderer(
                 )
                 withIndent {
                     for (child in children) {
-                        println("Visiting child.type = ${child.type}")
+//                        println("Visiting child.type = ${child.type}")
                         visitNode(child)
                     }
                 }
@@ -928,7 +1008,7 @@ private val linkBoundaries = setOf(
 private val ASTNode.childrenToRender: List<ASTNode>
     get() {
         return if (children.size > 1 && children.any { it.type == MarkdownTokenTypes.TEXT }) {
-            println("folding text elements")
+//            println("folding text elements")
             val newChildren = mutableListOf<ASTNode>()
             val iterator = children.iterator()
             var startTextOffset: Int? = null
@@ -979,9 +1059,9 @@ private val ASTNode.childrenToRender: List<ASTNode>
                     endOffset = endTextOffset,
                 )
             }
-            println("Folded children = ${newChildren.map { it.type }}")
-            println("children.size = ${children.size}")
-            println("newChildren.size = ${newChildren.size}")
+//            println("Folded children = ${newChildren.map { it.type }}")
+//            println("children.size = ${children.size}")
+//            println("newChildren.size = ${newChildren.size}")
             newChildren
         } else {
             children
