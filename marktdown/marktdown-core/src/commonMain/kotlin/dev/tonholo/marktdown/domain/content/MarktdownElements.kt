@@ -3,11 +3,7 @@ package dev.tonholo.marktdown.domain.content
 import dev.tonholo.marktdown.domain.MarktdownLink
 import kotlin.jvm.JvmInline
 
-sealed interface MarktdownRenderer {
-    fun render() {}
-}
-
-sealed interface MarktdownElement : MarktdownRenderer
+sealed interface MarktdownElement
 
 sealed interface MarktdownParent<out T : MarktdownElement> : MarktdownElement {
     val children: List<T>

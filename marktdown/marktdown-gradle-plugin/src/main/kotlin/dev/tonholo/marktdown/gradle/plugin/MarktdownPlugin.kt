@@ -1,9 +1,12 @@
 package dev.tonholo.marktdown.gradle.plugin
 
 import dev.tonholo.marktdown.gradle.plugin.tasks.MarktdownProcessorTask
+import dev.tonholo.marktdown.gradle.plugin.tasks.MarktdownRendererTask
+import dev.tonholo.marktdown.gradle.plugin.tasks.registerMarktdownRendererTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.register
+import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType
 
@@ -28,10 +31,13 @@ class MarktdownPlugin : Plugin<Project> {
                 .first { it.platformType == KotlinPlatformType.common}
                 .defaultSourceSet
 
+            tasks.registerMarktdownRendererTask(extension)
+
             val task = tasks.register<MarktdownProcessorTask>(
                 "processMarkdownFiles",
             ) {
                 apply(extension)
+                finalizedBy(tasks.withType<MarktdownRendererTask>())
             }
 
             val outputDir = task.map { it.rootOutputDirectory }

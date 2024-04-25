@@ -20,6 +20,7 @@ kotlin {
         }
 
         jvmMain.dependencies {
+            implementation(kotlin("reflect"))
             implementation(libs.bundles.org.commonmark)
             implementation(libs.com.squareup.kotlinpoet)
             implementation(libs.org.yaml.snakeyaml)

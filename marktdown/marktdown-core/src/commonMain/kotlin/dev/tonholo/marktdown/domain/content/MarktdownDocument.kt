@@ -6,4 +6,4 @@ data class MarktdownDocument(
     val metadata: MarktdownMetadata?,
     val children: List<MarktdownElement>,
     val linkDefinitions: List<LinkDefinition> = emptyList(),
-) : MarktdownRenderer
+)

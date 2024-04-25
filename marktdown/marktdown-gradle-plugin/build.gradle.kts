@@ -18,10 +18,15 @@ gradlePlugin {
     }
 }
 
+kotlin {
+    compilerOptions.freeCompilerArgs.add("-Xcontext-receivers")
+}
+
 dependencies {
     // Get access to Kotlin multiplatform source sets
     implementation(kotlin("gradle-plugin"))
     compileOnly(gradleApi())
     implementation(libs.org.jetbrains.kotlin.gradle.plugin)
+    implementation(projects.marktdownCore)
     implementation(projects.marktdownProcessor)
 }
