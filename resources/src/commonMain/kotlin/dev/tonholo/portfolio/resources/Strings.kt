@@ -1,6 +1,9 @@
 package dev.tonholo.portfolio.resources
 
 import cafe.adriel.lyricist.LyricistStrings
+import dev.tonholo.marktdown.domain.content.MarktdownDocument
+import dev.tonholo.portfolio.MyArticleEn
+import dev.tonholo.portfolio.MyArticlePtBr
 import dev.tonholo.portfolio.locale.Locales
 import dev.tonholo.portfolio.resources.workExperience.Axxiom
 import dev.tonholo.portfolio.resources.workExperience.BairesDev
@@ -17,7 +20,10 @@ data class NavBar(
     val resume: String,
 )
 
-data class Screen(val home: HomePage)
+data class Screen(
+    val home: HomePage,
+    val articles: List<MarktdownDocument>,
+)
 
 sealed interface Page
 data class HomePage(
@@ -172,6 +178,9 @@ val EnStrings = Strings(
                 ),
             ),
         ),
+        articles = listOf(
+            MyArticleEn,
+        ),
     ),
     navBar = NavBar(
         home = "Home",
@@ -294,6 +303,9 @@ val PtStrings = Strings(
                     ),
                 ),
             ),
+        ),
+        articles = listOf(
+            MyArticlePtBr,
         ),
     ),
     navBar = NavBar(

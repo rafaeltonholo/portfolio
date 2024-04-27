@@ -32,3 +32,4 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "marktdown-sample"
+includeBuild("../")

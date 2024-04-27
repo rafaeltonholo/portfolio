@@ -4,12 +4,12 @@ plugins {
     alias(libs.plugins.org.jetbrains.kotlin.multiplatform)
     alias(libs.plugins.org.jetbrains.compose)
     id("dev.tonholo.marktdown") version "+"
+    alias(libs.plugins.com.google.devtools.ksp)
 }
 
 kotlin {
     js {
-        browser()
-        nodejs {
+        browser {
             binaries.executable()
         }
     }
@@ -38,8 +38,11 @@ kotlin {
 
 marktdown {
     packageName = "dev.tonholo.marktdown.sample"
-    resources = layout.projectDirectory.dir("resources")
+    models {
+        srcDir(layout.projectDirectory.dir("resources"))
+    }
 }
 
 dependencies {
+    add("kspJs", "dev.tonholo.marktdown:marktdown-processor:1.0.0")
 }

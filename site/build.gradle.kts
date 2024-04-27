@@ -7,6 +7,8 @@ plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.jetbrains.compose)
     alias(libs.plugins.kobweb.application)
+    alias(libs.plugins.dev.tonholo.marktdown)
+    alias(libs.plugins.com.google.devtools.ksp)
 }
 
 group = "dev.tonholo.portfolio"
@@ -59,8 +61,24 @@ kotlin {
             implementation(libs.silk.icons.fa)
             implementation(libs.dev.tonholo.kotlin.wrapper.highlightjs.core)
             implementation(libs.dev.tonholo.kotlin.wrapper.highlightjs.compose.html)
+            implementation(libs.dev.tonholo.marktdown.core)
         }
     }
+}
+
+marktdown {
+    packageName = group.toString()
+    models {
+        disableGeneration()
+        srcDir(layout.projectDirectory.dir("../resources/build/generated/marktdown/kotlin/commonMain"))
+    }
+    renderers {
+        modelsContainerProject = projects.resources.dependencyProject
+    }
+}
+
+dependencies {
+    add("kspJs", libs.dev.tonholo.marktdown.processor)
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.targets.js.ir.KotlinJsIrLink> {

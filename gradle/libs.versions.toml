@@ -6,6 +6,7 @@ lyricist = "1.7.0"
 ksp = "1.9.23-1.0.20"
 kotlinx-datetime = "0.6.0-RC.2"
 kotlin-wrapper-highlightjs = "1.0.0-11.9.0"
+marktdown = "1.0.0"
 
 [libraries]
 kobweb-api = { module = "com.varabyte.kobweb:kobweb-api", version.ref = "kobweb" }
@@ -21,6 +22,8 @@ lyricist-processor = { module = "cafe.adriel.lyricist:lyricist-processor", versi
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
 dev-tonholo-kotlin-wrapper-highlightjs-core = { module = "dev.tonholo.kotlin.wrapper.highlightjs:highlightjs-core", version.ref = "kotlin-wrapper-highlightjs" }
 dev-tonholo-kotlin-wrapper-highlightjs-compose-html = { module = "dev.tonholo.kotlin.wrapper.highlightjs:highlightjs-compose-html", version.ref = "kotlin-wrapper-highlightjs" }
+dev-tonholo-marktdown-core = { module = "dev.tonholo.marktdown:marktdown-core", version.ref = "marktdown" }
+dev-tonholo-marktdown-processor = { module = "dev.tonholo.marktdown:marktdown-processor", version.ref = "marktdown" }
 
 [plugins]
 jetbrains-compose = { id = "org.jetbrains.compose", version.ref = "jetbrains-compose" }
@@ -30,3 +33,4 @@ kobweb-worker = { id = "com.varabyte.kobweb.worker", version.ref = "kobweb" }
 kobwebx-markdown = { id = "com.varabyte.kobwebx.markdown", version.ref = "kobweb" }
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 com-google-devtools-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+dev-tonholo-marktdown = { id = "dev.tonholo.marktdown", version.ref = "marktdown" }

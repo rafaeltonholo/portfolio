@@ -1,47 +1,66 @@
 package dev.tonholo.marktdown.gradle.plugin
 
-import dev.tonholo.marktdown.gradle.plugin.tasks.MarktdownProcessorTask
-import dev.tonholo.marktdown.gradle.plugin.tasks.MarktdownRendererTask
+import com.google.devtools.ksp.gradle.KspExtension
+import dev.tonholo.marktdown.gradle.plugin.dsl.MarktdownExtension
+import dev.tonholo.marktdown.gradle.plugin.tasks.registerMarktdownProcessorTask
 import dev.tonholo.marktdown.gradle.plugin.tasks.registerMarktdownRendererTask
+import dev.tonholo.marktdown.processor.ksp.MarktdownSymbolProcessorProvider
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.kotlin.dsl.register
-import org.gradle.kotlin.dsl.withType
-import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
-import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType
+import kotlin.io.path.absolutePathString
 
+/**
+ * Gradle plugin for the MarKTdown library.
+ */
 class MarktdownPlugin : Plugin<Project> {
+    /**
+     * Applies the plugin to the given project.
+     *
+     * @param project The project to apply the plugin to.
+     */
     override fun apply(project: Project) {
         val extension = project.extensions.create(
             "marktdown",
             MarktdownExtension::class.java,
-            project,
         )
 
         project.configure(extension)
     }
 
+    /**
+     * Configures the project with the given extension.
+     *
+     * @receiver The project to configure.
+     * @param extension The extension to use for configuration.
+     */
     private fun Project.configure(extension: MarktdownExtension) {
-        val kmpExtension = extensions.getByType(KotlinMultiplatformExtension::class.java)
         afterEvaluate {
-            val commonTarget = kmpExtension.targets
-                .first { it.platformType == KotlinPlatformType.common }
+            val rendererOutputDirectory = tasks.registerMarktdownRendererTask(extension)
+                ?.map { it.rootOutputDirectory }
+                ?.get()
 
-            val commonMainSourceSet = commonTarget.compilations
-                .first { it.platformType == KotlinPlatformType.common}
-                .defaultSourceSet
+            val hasProcessor = configurations
+                .findByName("kspJs")
+                ?.allDependencies
+                // TODO: Use Build logic to get group and name
+                ?.any { it.group == "dev.tonholo.marktdown" && it.name == "marktdown-processor" } ?: false
 
-            tasks.registerMarktdownRendererTask(extension)
-
-            val task = tasks.register<MarktdownProcessorTask>(
-                "processMarkdownFiles",
+            val kspExtension = project.extensions.getByType(KspExtension::class.java)
+            if (
+                rendererOutputDirectory != null &&
+                hasProcessor &&
+                !kspExtension.arguments.containsKey(MarktdownSymbolProcessorProvider.ARG_PACKAGE_NAME)
             ) {
-                apply(extension)
-                finalizedBy(tasks.withType<MarktdownRendererTask>())
+                extension.packageName?.let { packageName ->
+                    kspExtension.arg(MarktdownSymbolProcessorProvider.ARG_PACKAGE_NAME, packageName)
+                    kspExtension.arg(
+                        MarktdownSymbolProcessorProvider.ARG_DEFAULT_RENDERER_PATH,
+                        rendererOutputDirectory.absolutePathString(),
+                    )
+                }
             }
 
-            val outputDir = task.map { it.rootOutputDirectory }
-            commonMainSourceSet.kotlin.srcDirs(outputDir)
+            tasks.registerMarktdownProcessorTask(extension)
         }
     }
 }

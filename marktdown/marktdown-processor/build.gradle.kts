@@ -24,6 +24,9 @@ kotlin {
             implementation(libs.bundles.org.commonmark)
             implementation(libs.com.squareup.kotlinpoet)
             implementation(libs.org.yaml.snakeyaml)
+            // Get access to Kotlin multiplatform source sets
+            implementation(kotlin("gradle-plugin"))
+            implementation(libs.com.google.devtools.ksp.symbol.processing.api)
         }
     }
 
