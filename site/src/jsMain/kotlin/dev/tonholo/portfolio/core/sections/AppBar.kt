@@ -6,72 +6,95 @@ import androidx.compose.runtime.setValue
 import cafe.adriel.lyricist.LanguageTag
 import cafe.adriel.lyricist.LocalStrings
 import com.varabyte.kobweb.browser.dom.ElementTarget
-import com.varabyte.kobweb.compose.foundation.layout.Box
-import com.varabyte.kobweb.compose.foundation.layout.Column
+import com.varabyte.kobweb.compose.css.CSSLengthNumericValue
+import com.varabyte.kobweb.compose.css.FontWeight
+import com.varabyte.kobweb.compose.foundation.layout.Arrangement
 import com.varabyte.kobweb.compose.foundation.layout.Row
+import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier
+import com.varabyte.kobweb.compose.ui.graphics.Color
 import com.varabyte.kobweb.compose.ui.modifiers.alignSelf
 import com.varabyte.kobweb.compose.ui.modifiers.background
 import com.varabyte.kobweb.compose.ui.modifiers.borderRadius
 import com.varabyte.kobweb.compose.ui.modifiers.color
-import com.varabyte.kobweb.compose.ui.modifiers.display
 import com.varabyte.kobweb.compose.ui.modifiers.fillMaxWidth
-import com.varabyte.kobweb.compose.ui.modifiers.flex
-import com.varabyte.kobweb.compose.ui.modifiers.flexDirection
 import com.varabyte.kobweb.compose.ui.modifiers.gap
-import com.varabyte.kobweb.compose.ui.modifiers.margin
 import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.compose.ui.modifiers.setVariable
 import com.varabyte.kobweb.compose.ui.thenIf
 import com.varabyte.kobweb.silk.components.forms.Button
 import com.varabyte.kobweb.silk.components.forms.ButtonVars
-import com.varabyte.kobweb.silk.components.icons.MoonIcon
-import com.varabyte.kobweb.silk.components.icons.SunIcon
+import com.varabyte.kobweb.silk.components.icons.mdi.MdiDarkMode
+import com.varabyte.kobweb.silk.components.icons.mdi.MdiLightMode
 import com.varabyte.kobweb.silk.components.overlay.PopupPlacement
 import com.varabyte.kobweb.silk.components.overlay.Tooltip
 import com.varabyte.kobweb.silk.components.style.ComponentStyle
-import com.varabyte.kobweb.silk.components.style.base
+import com.varabyte.kobweb.silk.components.style.hover
 import com.varabyte.kobweb.silk.components.style.toModifier
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import dev.tonholo.portfolio.core.components.text.Text
 import dev.tonholo.portfolio.core.extensions.padding
+import dev.tonholo.portfolio.core.foundation.elevation
 import dev.tonholo.portfolio.core.ui.theme.Theme
+import dev.tonholo.portfolio.core.ui.theme.color.Unspecified
 import dev.tonholo.portfolio.core.ui.theme.colorScheme
+import dev.tonholo.portfolio.core.ui.theme.copy
+import dev.tonholo.portfolio.core.ui.theme.elevations
+import dev.tonholo.portfolio.core.ui.theme.typography
+import dev.tonholo.portfolio.core.ui.theme.typography.toModifier
+import dev.tonholo.portfolio.core.ui.unit.dp
 import dev.tonholo.portfolio.features.home.components.LanguageChanger
 import kotlinx.browser.window
 import org.jetbrains.compose.web.css.AlignSelf
-import org.jetbrains.compose.web.css.DisplayStyle
-import org.jetbrains.compose.web.css.FlexDirection
 import org.jetbrains.compose.web.css.em
+import org.jetbrains.compose.web.css.keywords.auto
 import org.jetbrains.compose.web.css.percent
-import org.jetbrains.compose.web.css.px
 
 val AppBarStyles by ComponentStyle {
     base {
-        Modifier.fillMaxWidth()
-    }
-}
-
-val AppBarNavRowStyles by ComponentStyle {
-    base {
         Modifier
-            .margin { top(0.2.em) }
             .fillMaxWidth()
             .background(colorScheme.surface)
-            .padding(vertical = 0.7.em, horizontal = 1.em)
-            .borderRadius {
-                topLeft(8.px)
-                topRight(8.px)
-            }
-            .gap(1.em)
+            .borderRadius(8.dp)
+            .padding(16.dp)
+            .elevation(elevations.level1)
     }
 }
 
-val AppBarButtonStyles by ComponentStyle.base {
-    Modifier
-        .padding(0.5.em)
-        .background(colorScheme.background)
+val AppBarButtonStyles by ComponentStyle {
+    base {
+        typography.labelLarge.toModifier() then Modifier
+            .padding(horizontal = 10.dp, vertical = 12.dp)
+            .background(Color.Unspecified)
+            .borderRadius(100.dp)
+    }
+
+    hover {
+        Modifier
+            .setVariable(
+                variable = ButtonVars.BackgroundHoverColor,
+                value = colorScheme.primary.copy(alpha = 0.1f),
+            )
+    }
 }
+
+val IconButtonStyles by ComponentStyle {
+    base {
+        Modifier
+            .padding(0.25.em)
+            .background(Color.Unspecified)
+            .borderRadius(100.percent)
+    }
+
+    hover {
+        Modifier
+            .setVariable(
+                variable = ButtonVars.BackgroundHoverColor,
+                value = colorScheme.primary.copy(alpha = 0.1f),
+            )
+    }
+}
+
 
 @Composable
 fun AppBar(
@@ -82,10 +105,19 @@ fun AppBar(
     onResumeClick: () -> Unit = {},
 ) {
     val strings = LocalStrings.current
-    Column(modifier = AppBarStyles.toModifier() then modifier) {
-        LanguageChanger(onLocaleChange = onLocaleChange)
+    Row(
+        modifier = AppBarStyles.toModifier() then modifier,
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            text = "Rafael Tonholo",
+            style = Theme.typography.labelLarge
+                .copy(fontWeight = FontWeight.SemiBold),
+            modifier = Modifier.padding(left = 8.dp),
+        )
         Row(
-            modifier = AppBarNavRowStyles.toModifier(),
+            modifier = Modifier.gap(24.dp)
         ) {
             AppBarButton(
                 text = strings.navBar.home,
@@ -102,16 +134,14 @@ fun AppBar(
                 onClick = onResumeClick,
                 isSelected = window.location.pathname == "/resume",
             )
-            Box(
-                modifier = Modifier
-                    .flex(1)
-                    .display(DisplayStyle.Flex)
-                    .flexDirection(FlexDirection.Column),
-            ) {
-                ColorModeButton(
-                    modifier = Modifier.alignSelf(AlignSelf.FlexEnd),
-                )
-            }
+        }
+        Row(
+            modifier = Modifier.gap(0.625.em)
+        ) {
+            ColorModeButton(
+                modifier = Modifier.alignSelf(AlignSelf.FlexEnd),
+            )
+            LanguageChanger(onLocaleChange = onLocaleChange)
         }
     }
 }
@@ -123,15 +153,20 @@ private fun AppBarButton(
     modifier: Modifier = Modifier,
     isSelected: Boolean = false,
 ) {
+
     Button(
         onClick = { onClick() },
         modifier = AppBarButtonStyles.toModifier() then modifier
+            .setVariable(
+                variable = ButtonVars.Height,
+                value = auto.unsafeCast<CSSLengthNumericValue>(),
+            )
             .thenIf(isSelected) {
                 Modifier.color(Theme.colorScheme.primary)
             },
     ) {
-        Text(
-            text = text,
+        org.jetbrains.compose.web.dom.Text(
+            value = text,
         )
     }
 }
@@ -145,7 +180,7 @@ private fun ColorModeButton(
         onClick = { colorMode = colorMode.opposite },
         modifier = modifier,
     ) {
-        if (colorMode.isLight) MoonIcon() else SunIcon()
+        if (colorMode.isLight) MdiDarkMode() else MdiLightMode()
     }
     Tooltip(ElementTarget.PreviousSibling, "Toggle color mode", placement = PopupPlacement.BottomRight)
 }
@@ -158,9 +193,7 @@ private fun IconButton(
 ) {
     Button(
         onClick = { onClick() },
-        modifier
-            .padding(0.px)
-            .borderRadius(50.percent)
+        IconButtonStyles.toModifier() then modifier
             .setVariable(ButtonVars.FontSize, 1.em), // Make button icon size relative to parent container font size
     ) {
         content()

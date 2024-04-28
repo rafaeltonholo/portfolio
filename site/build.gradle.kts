@@ -58,7 +58,7 @@ kotlin {
             implementation(compose.html.core)
             implementation(libs.kobweb.core)
             implementation(libs.kobweb.silk)
-            implementation(libs.silk.icons.fa)
+            implementation(libs.silk.icons.mdi)
             implementation(libs.dev.tonholo.kotlin.wrapper.highlightjs.core)
             implementation(libs.dev.tonholo.kotlin.wrapper.highlightjs.compose.html)
             implementation(libs.dev.tonholo.marktdown.core)

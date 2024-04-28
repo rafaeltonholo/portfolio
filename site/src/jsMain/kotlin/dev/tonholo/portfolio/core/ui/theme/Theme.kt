@@ -11,14 +11,16 @@ import cafe.adriel.lyricist.Lyricist
 import cafe.adriel.lyricist.ProvideStrings
 import cafe.adriel.lyricist.rememberStrings
 import com.varabyte.kobweb.compose.css.BoxSizing
+import com.varabyte.kobweb.compose.css.CSSLengthOrPercentageNumericValue
 import com.varabyte.kobweb.compose.css.ScrollBehavior
 import com.varabyte.kobweb.compose.ui.Modifier
-import com.varabyte.kobweb.compose.ui.graphics.Color
+import com.varabyte.kobweb.compose.ui.graphics.Colors
 import com.varabyte.kobweb.compose.ui.modifiers.backgroundColor
 import com.varabyte.kobweb.compose.ui.modifiers.boxSizing
 import com.varabyte.kobweb.compose.ui.modifiers.fillMaxSize
 import com.varabyte.kobweb.compose.ui.modifiers.fontSize
 import com.varabyte.kobweb.compose.ui.modifiers.margin
+import com.varabyte.kobweb.compose.ui.modifiers.maxWidth
 import com.varabyte.kobweb.compose.ui.modifiers.minHeight
 import com.varabyte.kobweb.compose.ui.modifiers.outline
 import com.varabyte.kobweb.compose.ui.modifiers.padding
@@ -35,17 +37,20 @@ import com.varabyte.kobweb.silk.init.registerStyleBase
 import com.varabyte.kobweb.silk.init.setSilkWidgetVariables
 import com.varabyte.kobweb.silk.prepareSilkFoundation
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
+import dev.tonholo.portfolio.core.foundation.shadow
 import dev.tonholo.portfolio.core.ui.theme.color.ColorScheme
 import dev.tonholo.portfolio.core.ui.theme.color.LocalColorScheme
 import dev.tonholo.portfolio.core.ui.theme.color.from
 import dev.tonholo.portfolio.core.ui.theme.typography.LocalTypography
 import dev.tonholo.portfolio.core.ui.theme.typography.Typography
 import dev.tonholo.portfolio.core.ui.theme.typography.toModifier
+import dev.tonholo.portfolio.core.ui.unit.DefaultFontSize
 import dev.tonholo.portfolio.locale.Locale
 import dev.tonholo.portfolio.locale.localStorageKey
 import dev.tonholo.portfolio.resources.Strings
 import kotlinx.browser.document
 import kotlinx.browser.localStorage
+import org.jetbrains.compose.web.css.keywords.auto
 import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.css.vh
 
@@ -71,6 +76,44 @@ private val LightColorScheme = ColorScheme(
     onSurfaceVariant = Neutral30,
 )
 
+private val ElevationsLight = Elevations(
+    level1 = Elevation(
+        shadow {
+            offsetX = 0.px
+            offsetY = 1.px
+            blurRadius = 3.px
+            spreadRadius = 1.px
+            color = Colors.Black.copy(alpha = 0.15f)
+        },
+        shadow {
+            offsetX = 0.px
+            offsetY = 1.px
+            blurRadius = 2.px
+            spreadRadius = 0.px
+            color = Colors.Black.copy(alpha = 0.3f)
+        }
+    ),
+)
+
+private val ElevationsDark = Elevations(
+    level1 = Elevation(
+        shadow {
+            offsetX = 0.px
+            offsetY = 4.px
+            blurRadius = 4.px
+            spreadRadius = 0.px
+            color = Colors.Black.copy(alpha = 0.30f)
+        },
+        shadow {
+            offsetX = 0.px
+            offsetY = 8.px
+            blurRadius = 12.px
+            spreadRadius = 6.px
+            color = Colors.Black.copy(alpha = 0.15f)
+        }
+    ),
+)
+
 object Theme {
     val colorScheme: ColorScheme
         @Composable
@@ -81,6 +124,11 @@ object Theme {
         @Composable
         @ReadOnlyComposable
         get() = LocalTypography.current
+
+    val elevations: Elevations
+        @Composable
+        @ReadOnlyComposable
+        get() = LocalElevations.current
 }
 
 /**
@@ -92,6 +140,13 @@ val ComponentModifier.colorScheme
         DarkColorScheme
     } else {
         LightColorScheme
+    }
+
+val ComponentModifier.elevations
+    get() = if (colorMode == ColorMode.DARK) {
+        ElevationsDark
+    } else {
+        ElevationsLight
     }
 
 /**
@@ -113,7 +168,7 @@ fun initColorMode(context: InitSilkContext) {
 fun initSiteStyles(context: InitSilkContext) {
     context.stylesheet.apply {
         registerStyleBase(":root") {
-            Modifier.fontSize(16.px)
+            Modifier.fontSize(DefaultFontSize.px)
         }
         registerStyleBase("*") {
             Modifier
@@ -128,6 +183,13 @@ fun initSiteStyles(context: InitSilkContext) {
                 .toModifier()
                 .fillMaxSize()
                 .backgroundColor(BackgroundColorVar.value())
+        }
+        registerStyleBase("#root") {
+            Modifier.maxWidth(1440.px)
+                .margin(
+                    topBottom = 0.unsafeCast<CSSLengthOrPercentageNumericValue>(),
+                    leftRight = auto.unsafeCast<CSSLengthOrPercentageNumericValue>(),
+                )
         }
     }
 }
@@ -149,11 +211,11 @@ fun Theme(
                 localStorage.setItem(COLOR_MODE_KEY, colorMode.name)
             }
 
-            val colorScheme = if (colorMode == ColorMode.DARK) {
-                DarkColorScheme
-            } else {
-                LightColorScheme
+            val (colorScheme, elevations) = when (colorMode) {
+                ColorMode.LIGHT -> LightColorScheme to ElevationsLight
+                ColorMode.DARK -> DarkColorScheme to ElevationsDark
             }
+
             InitSilkWidgetVariables()
 
             val lyricist = rememberStrings(
@@ -163,6 +225,7 @@ fun Theme(
                 LocalColorScheme provides colorScheme,
                 LocalLyricist provides lyricist,
                 LocalTypography provides Typography,
+                LocalElevations provides elevations,
             ) {
                 ProvideStrings(lyricist) {
                     Surface(

@@ -52,14 +52,14 @@ private fun TextStyle.fontFamilyModifier(): Modifier = if (fontFamily != null) {
     val fontStyle = fontStyle ?: FontStyle.Normal
     val fontWeight = fontWeight ?: FontWeight.Normal
     val font = fontFamily.fonts.firstOrNull {
-        it.weight.isEqualTo(fontWeight) && it.style.isEqualTo(fontStyle)
+        it.weight.isEqualTo(fontWeight, default = FontWeight.Normal) && it.style.isEqualTo(fontStyle)
     }
 
     if (font != null) {
         Modifier.font {
             family(values = font.names)
-            weight(font.weight)
-            style(font.style)
+            weight(fontWeight)
+            style(fontStyle)
         }
     } else {
         Modifier

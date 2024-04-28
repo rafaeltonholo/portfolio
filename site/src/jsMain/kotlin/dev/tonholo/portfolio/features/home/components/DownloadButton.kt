@@ -14,7 +14,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.compose.ui.modifiers.textDecorationLine
 import com.varabyte.kobweb.compose.ui.modifiers.textTransform
 import com.varabyte.kobweb.silk.components.forms.Button
-import com.varabyte.kobweb.silk.components.icons.fa.FaDownload
+import com.varabyte.kobweb.silk.components.icons.mdi.MdiDownload
 import com.varabyte.kobweb.silk.components.style.ComponentStyle
 import com.varabyte.kobweb.silk.components.style.toModifier
 import dev.tonholo.portfolio.core.components.text.Text
@@ -58,6 +58,6 @@ fun DownloadButton(
             text = "Download CV",
             modifier = Modifier.padding(right = 0.5.em),
         )
-        FaDownload()
+        MdiDownload()
     }
 }

@@ -32,8 +32,8 @@ fun Font(
 @Stable
 fun FontFamily(vararg fonts: Font): FontFamily = FontFamily(fonts = fonts)
 
-fun FontWeight.isEqualTo(other: FontWeight): Boolean =
-    toString() == other.toString()
+fun FontWeight.isEqualTo(other: FontWeight, default: FontWeight? = null): Boolean =
+    toString() == other.toString() || toString() == default?.toString()
 
 fun FontStyle.isEqualTo(other: FontStyle): Boolean =
     toString() == other.toString()
