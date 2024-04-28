@@ -37,3 +37,6 @@ fun FontWeight.isEqualTo(other: FontWeight): Boolean =
 
 fun FontStyle.isEqualTo(other: FontStyle): Boolean =
     toString() == other.toString()
+
+val FontWeight.Companion.Regular
+    get() = Normal

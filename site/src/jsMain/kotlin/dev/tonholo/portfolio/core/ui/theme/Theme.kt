@@ -17,6 +17,7 @@ import com.varabyte.kobweb.compose.ui.graphics.Color
 import com.varabyte.kobweb.compose.ui.modifiers.backgroundColor
 import com.varabyte.kobweb.compose.ui.modifiers.boxSizing
 import com.varabyte.kobweb.compose.ui.modifiers.fillMaxSize
+import com.varabyte.kobweb.compose.ui.modifiers.fontSize
 import com.varabyte.kobweb.compose.ui.modifiers.margin
 import com.varabyte.kobweb.compose.ui.modifiers.minHeight
 import com.varabyte.kobweb.compose.ui.modifiers.outline
@@ -51,34 +52,23 @@ import org.jetbrains.compose.web.css.vh
 private const val COLOR_MODE_KEY = "portfolio:colorMode"
 
 private val DarkColorScheme = ColorScheme(
-    primary = AccentPrimary,
-    onPrimary = Primary,
-    secondary = AccentDark,
-    onSecondary = TextPrimary,
-    background = Secondary,
-    onBackground = TextPrimary,
-    surface = Primary,
-    onSurface = TextSecondary,
-    outline = AccentBorder,
-    outlineVariant = AccentGray,
-    error = AccentOrange,
-    onError = Primary,
+    primary = LimeGreen90,
+    onPrimary = LimeGreen0,
+    background = Neutral0,
+    onBackground = Neutral100,
+    surface = Neutral10,
+    onSurface = Neutral90,
+    onSurfaceVariant = Neutral80,
 )
 
-// TODO: setup light mode color scheme
 private val LightColorScheme = ColorScheme(
-    primary = AccentPrimary,
-    onPrimary = Primary,
-    secondary = AccentDark,
-    onSecondary = TextPrimary,
-    background = Color.argb(0xFFFFFFFF),
-    onBackground = TextPrimary,
-    surface = Primary,
-    onSurface = TextSecondary,
-    outline = AccentBorder,
-    outlineVariant = AccentGray,
-    error = AccentOrange,
-    onError = Primary,
+    primary = LimeGreen50,
+    onPrimary = White,
+    background = Neutral100,
+    onBackground = Neutral10,
+    surface = LimeGreen100,
+    onSurface = Neutral10,
+    onSurfaceVariant = Neutral30,
 )
 
 object Theme {
@@ -122,6 +112,9 @@ fun initColorMode(context: InitSilkContext) {
 @InitSilk
 fun initSiteStyles(context: InitSilkContext) {
     context.stylesheet.apply {
+        registerStyleBase(":root") {
+            Modifier.fontSize(16.px)
+        }
         registerStyleBase("*") {
             Modifier
                 .margin(0.px)
