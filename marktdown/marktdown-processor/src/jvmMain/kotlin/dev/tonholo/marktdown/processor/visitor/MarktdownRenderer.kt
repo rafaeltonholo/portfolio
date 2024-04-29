@@ -26,6 +26,8 @@ import dev.tonholo.marktdown.domain.content.MarktdownDocument
 import dev.tonholo.marktdown.domain.content.TableContent
 import dev.tonholo.marktdown.domain.content.TableElement
 import dev.tonholo.marktdown.domain.content.TextElement
+import dev.tonholo.marktdown.processor.extensions.childrenToRender
+import dev.tonholo.marktdown.processor.extensions.literal
 import dev.tonholo.marktdown.processor.extensions.pascalCase
 import java.nio.file.Path
 import java.util.*
@@ -34,14 +36,13 @@ import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.UtcOffset
 import kotlinx.datetime.toLocalDateTime
+import org.intellij.markdown.MarkdownElementType
 import org.intellij.markdown.MarkdownElementTypes
 import org.intellij.markdown.MarkdownTokenTypes
 import org.intellij.markdown.ast.ASTNode
 import org.intellij.markdown.ast.CompositeASTNode
-import org.intellij.markdown.ast.LeafASTNode
 import org.intellij.markdown.ast.accept
 import org.intellij.markdown.ast.findChildOfType
-import org.intellij.markdown.ast.getTextInNode
 import org.intellij.markdown.ast.impl.ListCompositeNode
 import org.intellij.markdown.ast.visitors.RecursiveVisitor
 import org.intellij.markdown.flavours.gfm.GFMElementTypes
@@ -57,7 +58,7 @@ import dev.tonholo.marktdown.domain.content.Link.Element as LinkElement
 class MarktdownRenderer(
     private val packageName: String,
     private val fileName: String,
-    private val content: String,
+    internal val content: String,
     private val useSafeLinks: Boolean = true,
     private val absolutizeAnchorLinks: Boolean = false,
     frontMatterMetadata: Map<String, Any>?,
@@ -160,7 +161,6 @@ class MarktdownRenderer(
     inner class MarktdownVisitor : RecursiveVisitor() {
         private var currentBuilder: CodeBlock.Builder? = null
         private val listMemberName = MemberName(packageName = "kotlin.collections", simpleName = "listOf")
-        private val ASTNode.literal get() = getTextInNode(content)
 
         private var isStrikeThroughOpen = false
         private val strikeThroughChildren = mutableListOf<CodeBlock.Builder>()
@@ -225,15 +225,15 @@ class MarktdownRenderer(
         }
 
         override fun visitNode(node: ASTNode) {
-//            println("--- start Visit node ---")
-//            println("node: ${node.type}")
-//            println("node.type: ${node.type}")
-//            println("node.startOffset: ${node.startOffset}")
-//            println("node.endOffset: ${node.endOffset}")
-//            println("node.parent: ${node.parent?.type}")
-//            println("node.children: ${node.children.map { it.type }}")
-//            println("node.litreal: ${node.literal}")
-//            println("--- end Visit node ---")
+            println("--- start Visit node ---")
+            println("node: ${node.type}")
+            println("node.type: ${node.type}")
+            println("node.startOffset: ${node.startOffset}")
+            println("node.endOffset: ${node.endOffset}")
+            println("node.parent: ${node.parent?.type}")
+            println("node.children: ${node.children.map { it.type }}")
+            println("node.litreal: ${node.literal}")
+            println("--- end Visit node ---")
 
             when (node.type) {
                 // Elements
@@ -280,6 +280,8 @@ class MarktdownRenderer(
                 GFMElementTypes.STRIKETHROUGH -> visitStrikeThrough(node)
                 GFMElementTypes.TABLE -> visitTable(node)
 
+                MarktdownElementTypes.INLINE_HTML -> visitInlineHtml(node)
+
                 // Tokens
                 MarkdownTokenTypes.TEXT -> visitText(node)
                 MarkdownTokenTypes.CODE_LINE -> Unit
@@ -317,7 +319,7 @@ class MarktdownRenderer(
                 MarkdownTokenTypes.LINK_TITLE -> Unit
                 MarkdownTokenTypes.AUTOLINK -> Unit
                 MarkdownTokenTypes.EMAIL_AUTOLINK -> Unit
-                MarkdownTokenTypes.HTML_TAG -> Unit
+                MarkdownTokenTypes.HTML_TAG -> visitHtmlTag(node)
                 MarkdownTokenTypes.BAD_CHARACTER -> Unit
                 MarkdownTokenTypes.WHITE_SPACE -> {
                     attachToParent(" ".toCodeBlockBuilder())
@@ -928,6 +930,56 @@ class MarktdownRenderer(
             attachToParent(codeBlock)
         }
 
+        private fun visitHtmlTag(node: ASTNode) {
+            println("Visit HTML tab from node = ${node.type}, parent = ${node.parent?.type}")
+        }
+
+        private fun visitInlineHtml(node: ASTNode) {
+            val parent = currentBuilder
+            val kClass = TextElement.InlineHtml::class
+            val children = node.childrenToRender
+            val htmlTag = children.first()
+            val childrenToConsider = children
+                .dropWhile { it.type == MarkdownTokenTypes.HTML_TAG } // Remove HTML tag opening.
+                .dropLastWhile { it.type == MarkdownTokenTypes.HTML_TAG } // Remove HTMl tag closing.
+            val codeBlock = CodeBlock
+                .builder()
+                .apply {
+                    val child = childrenToConsider.singleOrNull()
+                    when {
+                        child != null && child.type == MarkdownTokenTypes.TEXT -> {
+                            addStatement(
+                                "%T(%N = %S, %S),",
+                                kClass,
+                                kClass.member(TextElement.InlineHtml::tagName.name),
+                                htmlTag.literal,
+                                child.literal,
+                            )
+                        }
+
+                        else -> {
+                            addStatement("%T(", kClass)
+                            withIndent {
+                                addStatement(
+                                    "%N = %S",
+                                    kClass.member(TextElement.InlineHtml::tagName.name),
+                                    htmlTag.literal,
+                                )
+                                visitChildren(
+                                    children = childrenToConsider,
+                                    parentBuilder = this,
+                                    memberName = kClass.member(TextElement.InlineHtml::children.name),
+                                )
+                            }
+                            addStatement("),")
+                        }
+                    }
+                }
+
+            currentBuilder = parent
+            attachToParent(codeBlock)
+        }
+
         private fun visitChildren(parent: ASTNode) {
             if (parent is CompositeASTNode) {
                 for (child in parent.childrenToRender) {
@@ -985,88 +1037,10 @@ class MarktdownRenderer(
     }
 }
 
-private val textTokens = setOf(
-    MarkdownTokenTypes.TEXT,
-    MarkdownTokenTypes.WHITE_SPACE,
-    MarkdownTokenTypes.SINGLE_QUOTE,
-    MarkdownTokenTypes.DOUBLE_QUOTE,
-    MarkdownTokenTypes.LPAREN,
-    MarkdownTokenTypes.RPAREN,
-    MarkdownTokenTypes.LBRACKET,
-    MarkdownTokenTypes.RBRACKET,
-    MarkdownTokenTypes.LT,
-    MarkdownTokenTypes.GT,
-    MarkdownTokenTypes.COLON,
-    MarkdownTokenTypes.EXCLAMATION_MARK,
-)
-
 private val linkBoundaries = setOf(
     MarkdownTokenTypes.LBRACKET.name,
     MarkdownTokenTypes.RBRACKET.name,
 )
-
-private val ASTNode.childrenToRender: List<ASTNode>
-    get() {
-        return if (children.size > 1 && children.any { it.type == MarkdownTokenTypes.TEXT }) {
-//            println("folding text elements")
-            val newChildren = mutableListOf<ASTNode>()
-            val iterator = children.iterator()
-            var startTextOffset: Int? = null
-            var endTextOffset: Int? = null
-            while (iterator.hasNext()) {
-                val current = iterator.next()
-                when {
-                    current.type in textTokens && startTextOffset == null -> {
-                        startTextOffset = current.startOffset
-                        endTextOffset = current.endOffset
-                    }
-
-                    current.type in textTokens && startTextOffset != null -> {
-                        endTextOffset = current.endOffset
-                    }
-
-                    else -> {
-                        if (startTextOffset != null && endTextOffset != null) {
-                            newChildren += LeafASTNode(
-                                type = MarkdownTokenTypes.TEXT,
-                                startOffset = startTextOffset,
-                                endOffset = endTextOffset,
-                            ).apply {
-                                // Well... This is quite hacky, maybe a crime.
-                                // I wouldn't want to do that, but I need to attach the new
-                                // Text node to the parent, and without it, I would need to
-                                // recreate the parent just to attach that node.
-                                // This is error prone. If the API changes, that might be
-                                // problematic, however, for now, it works.
-                                // Please, don't be mad.
-                                @Suppress(
-                                    "INVISIBLE_SETTER",
-                                )
-                                parent = this@childrenToRender
-                            }
-                            startTextOffset = null
-                            endTextOffset = null
-                        }
-                        newChildren += current
-                    }
-                }
-            }
-
-            if (startTextOffset != null && endTextOffset != null) {
-                newChildren += LeafASTNode(
-                    type = MarkdownTokenTypes.TEXT,
-                    startOffset = startTextOffset,
-                    endOffset = endTextOffset,
-                )
-            }
-//            println("Folded children = ${newChildren.map { it.type }}")
-//            println("children.size = ${children.size}")
-//            println("newChildren.size = ${newChildren.size}")
-            newChildren
-        } else {
-            children
-        }
-    }
 
 private fun MarktdownMetadata.build(memberName: MemberName): CodeBlock {
     val className = MarktdownMetadataImpl::class.asClassName()
@@ -1150,4 +1124,9 @@ private fun LocalDateTime.toCodeBlock(): CodeBlock {
         localDateTimeCompanionClassName.member("parse"),
         this,
     )
+}
+
+object MarktdownElementTypes {
+    @JvmField
+    val INLINE_HTML = MarkdownElementType("INLINE_HTML")
 }

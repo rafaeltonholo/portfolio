@@ -9,7 +9,7 @@ public object MarktdownConfig {
     public const val VERSION: String = "1.0.0"
     public const val DISPLAY_NAME: String = "MarKTdown"
     public const val DESCRIPTION: String = "TODO"
-    public val javaTarget: JavaVersion = JavaVersion.VERSION_17
+    public val javaTarget: JavaVersion = JavaVersion.VERSION_1_8
 }
 
 public val Project.mavenLocalRepositoryUri: URI

@@ -7,3 +7,5 @@ private fun String.replaceDividers(): String {
 
 fun String.pascalCase(): String = replaceDividers()
     .replaceFirstChar { it.uppercaseChar() }
+
+fun CharSequence.indented(indentSize: Int = 2): String = " ".repeat(indentSize) + this

@@ -39,7 +39,7 @@ kotlin {
 marktdown {
     packageName = "dev.tonholo.marktdown.sample"
     models {
-        srcDir(layout.projectDirectory.dir("resources"))
+        srcDir(layout.projectDirectory.dir("src/jvmMain/resources"))
     }
 }
 

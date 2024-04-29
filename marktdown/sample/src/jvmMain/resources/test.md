@@ -23,7 +23,9 @@ publishedDateTime: 2024-04-20T20:41:45
 
 [*That* **is** <sub>a</sub> `complex`, ~custom~, ^link^](https://www.google.com.br)
 
-~~*That* **is** <sub>a</sub> `complex`, ~custom~, ^paragraph^~~
+~~*That* **is** <sup>a</sup> `complex`, ~custom~, ^paragraph^~~[^abc]
+
+H<sub>2</sub>0
 
 <https://www.google.com>
 
@@ -77,6 +79,35 @@ interface ThatIsADifferentCodeFence {
     val what: String = "The hell?"
 }
 ~~~
+
+<table>
+  <tr>
+    <td>
+           hi
+    </td>
+  </tr>
+</table>
+
+okay.
+
+ <div>
+  *hello*
+         <foo><a>
+
+<DIV CLASS="foo">
+
+*Markdown*
+
+</DIV>
+
+<div></div>
+``` c
+int x = 33;
+```
+
+<!-- Foo
+bar
+   baz -->
 
 ## Integration
 
@@ -391,4 +422,4 @@ With this procedure, we could understand how to plug in and integrate Kotlin cod
 No strange performance change has been detected yet, but it is too soon to understand if any impact will happen, but it is good to know that nothing changed.
 
 [1]: <https://google.com> "Reference link"
-[abc]: <https://rafael.tonholo.dev>
+[^abc]: That is a foot note

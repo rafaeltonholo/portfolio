@@ -115,6 +115,8 @@ internal fun MarktdownRendererTask.apply(extension: MarktdownExtension) {
         error("The modelsContainerProject must be provided when the Markdown models generation is disabled")
     }
 
-    modelsOriginPath = extension.models.origin?.asFile?.toPath()
+    modelsOriginPath = extension.models.origin.takeIf {
+        extension.models.disabledGeneration
+    }?.asFile?.toPath()
     modelsContainerProject = extension.renderers.modelsContainerProject ?: project
 }

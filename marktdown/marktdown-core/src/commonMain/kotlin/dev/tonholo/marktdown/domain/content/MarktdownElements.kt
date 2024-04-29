@@ -125,6 +125,19 @@ sealed interface TextElement : MarktdownElement {
                 Strikethrough(PlainText(text))
         }
     }
+
+    data class InlineHtml(
+        val tagName: String,
+        override val children: List<TextElement>,
+    ) : TextElement, MarktdownParent<TextElement> {
+        companion object {
+            operator fun invoke(tagName: String, vararg children: TextElement): InlineHtml =
+                InlineHtml(tagName, children.toList())
+
+            operator fun invoke(tagName: String, text: String): InlineHtml =
+                InlineHtml(tagName, PlainText(text))
+        }
+    }
 }
 
 data class CodeFence(

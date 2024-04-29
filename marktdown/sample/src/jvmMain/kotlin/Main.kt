@@ -50,12 +50,12 @@ fun main() {
     val node = MarkdownParser(flavour)
         .buildMarkdownTreeFromString(noFrontMatterContent)
 
-//    val html = HtmlGenerator(noFrontMatterContent, node, flavour).generateHtml()
-//    println()
-//    println("---- html ----")
-//    println(html)
-//    println("---- end html ----")
-//    println()
+    val html = HtmlGenerator(noFrontMatterContent, node, flavour).generateHtml()
+    println()
+    println("---- html ----")
+    println(html)
+    println("---- end html ----")
+    println()
 
     val parsed = MarktdownRenderer(
         content = noFrontMatterContent,
