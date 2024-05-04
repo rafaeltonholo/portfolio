@@ -1,7 +1,6 @@
 package dev.tonholo.marktdown.processor.renderer
 
 import com.squareup.kotlinpoet.FileSpec
-import com.squareup.kotlinpoet.asClassName
 import dev.tonholo.marktdown.domain.content.CodeFence
 import dev.tonholo.marktdown.domain.content.HorizontalRule
 import dev.tonholo.marktdown.domain.content.ImageElement
@@ -42,43 +41,44 @@ abstract class RendererGenerator(
         "$packageName$RENDERER_PACKAGE_SUFFIX"
     }
 
-    protected val KClass<out Any>.fnName: String
-        get() = asClassName().simpleNames.joinToString("")
+    fun generateElementMap(): Map<KClass<out MarktdownElement>, FileSpec> = buildMap {
+        putAll(
+            elementsToRender.mapNotNull {
+                when (it) {
+                    CodeFence::class -> it to CodeFence::class.createCodeFenceDefaultRenderer()
+                    HorizontalRule::class -> it to HorizontalRule::class.createHorizontalRuleDefaultRenderer()
+                    ImageElement::class -> it to ImageElement::class.createImageElementDefaultRenderer()
+                    LineBreak::class -> it to LineBreak::class.createLineBreakDefaultRenderer()
+                    LinkDefinition::class -> it to LinkDefinition::class.createLinkDefinitionDefaultRenderer()
+                    TableElement::class -> it to TableElement::class.createTableElementDefaultRenderer()
+                    ListItem::class -> it to ListItem::class.createListItemDefaultRenderer()
+                    Ordered::class -> it to Ordered::class.createOrderedDefaultRenderer()
+                    Task::class -> it to Task::class.createTaskDefaultRenderer()
+                    Unordered::class -> it to Unordered::class.createUnorderedDefaultRenderer()
+                    Blockquote::class -> it to Blockquote::class.createBlockquoteDefaultRenderer()
+                    Element::class -> it to Element::class.createElementDefaultRenderer()
+                    EmphasisText::class -> it to EmphasisText::class.createEmphasisTextDefaultRenderer()
+                    Highlight::class -> it to Highlight::class.createHighlightDefaultRenderer()
+                    Paragraph::class -> it to Paragraph::class.createParagraphDefaultRenderer()
+                    ReferenceElement::class -> it to ReferenceElement::class.createReferenceElementDefaultRenderer()
+                    Strikethrough::class -> it to Strikethrough::class.createStrikethroughDefaultRenderer()
+                    StrongText::class -> it to StrongText::class.createStrongTextDefaultRenderer()
+                    Subscript::class -> it to Subscript::class.createSubscriptDefaultRenderer()
+                    Superscript::class -> it to Superscript::class.createSuperscriptDefaultRenderer()
+                    Title::class -> it to Title::class.createTitleDefaultRenderer()
+                    Emoji::class -> it to Emoji::class.createEmojiDefaultRenderer()
+                    InlineCode::class -> it to InlineCode::class.createInlineCodeDefaultRenderer()
+                    AutoLink::class -> it to AutoLink::class.createAutoLinkDefaultRenderer()
+                    PlainText::class -> it to PlainText::class.createPlainTextDefaultRenderer()
+                    else -> null
+                }
+            },
+        )
+    }
 
     fun generate(): List<FileSpec> {
         return buildList {
-            addAll(
-                elementsToRender.mapNotNull {
-                    when (it) {
-                        CodeFence::class -> CodeFence::class.createCodeFenceDefaultRenderer()
-                        HorizontalRule::class -> HorizontalRule::class.createHorizontalRuleDefaultRenderer()
-                        ImageElement::class -> ImageElement::class.createImageElementDefaultRenderer()
-                        LineBreak::class -> LineBreak::class.createLineBreakDefaultRenderer()
-                        LinkDefinition::class -> LinkDefinition::class.createLinkDefinitionDefaultRenderer()
-                        TableElement::class -> TableElement::class.createTableElementDefaultRenderer()
-                        ListItem::class -> ListItem::class.createListItemDefaultRenderer()
-                        Ordered::class -> Ordered::class.createOrderedDefaultRenderer()
-                        Task::class -> Task::class.createTaskDefaultRenderer()
-                        Unordered::class -> Unordered::class.createUnorderedDefaultRenderer()
-                        Blockquote::class -> Blockquote::class.createBlockquoteDefaultRenderer()
-                        Element::class -> Element::class.createElementDefaultRenderer()
-                        EmphasisText::class -> EmphasisText::class.createEmphasisTextDefaultRenderer()
-                        Highlight::class -> Highlight::class.createHighlightDefaultRenderer()
-                        Paragraph::class -> Paragraph::class.createParagraphDefaultRenderer()
-                        ReferenceElement::class -> ReferenceElement::class.createReferenceElementDefaultRenderer()
-                        Strikethrough::class -> Strikethrough::class.createStrikethroughDefaultRenderer()
-                        StrongText::class -> StrongText::class.createStrongTextDefaultRenderer()
-                        Subscript::class -> Subscript::class.createSubscriptDefaultRenderer()
-                        Superscript::class -> Superscript::class.createSuperscriptDefaultRenderer()
-                        Title::class -> Title::class.createTitleDefaultRenderer()
-                        Emoji::class -> Emoji::class.createEmojiDefaultRenderer()
-                        InlineCode::class -> InlineCode::class.createInlineCodeDefaultRenderer()
-                        AutoLink::class -> AutoLink::class.createAutoLinkDefaultRenderer()
-                        PlainText::class -> PlainText::class.createPlainTextDefaultRenderer()
-                        else -> null
-                    }
-                }
-            )
+            addAll(generateElementMap().values)
 
             add(createMarktdownElementRenderer())
             add(createMarktdownDocumentRenderer())

@@ -7,8 +7,11 @@ import org.intellij.markdown.parser.MarkdownParser
 import org.yaml.snakeyaml.Yaml
 import kotlin.io.path.nameWithoutExtension
 import kotlin.io.path.useLines
+import kotlin.math.log
 
-class MarktdownProcessor {
+class MarktdownProcessor(
+    private val logger: Logger,
+) {
     fun process(packageName: String, input: Path, output: Path) {
         input.useLines { lines ->
             val content = buildString {
@@ -32,8 +35,12 @@ class MarktdownProcessor {
         content: String,
         output: Path,
     ) {
-        println(
-            "process() called with: packageName = $packageName, fileName = $fileName, content = $content, output = $output"
+        logger.debug(
+            "process() called with: packageName = {}, fileName = {}, content = {}, output = {}",
+            packageName,
+            fileName,
+            content,
+            output,
         )
         val regex = Regex("^-{3,}([\\n\\w: -/]+)-{3,}")
         val matchResult = regex
@@ -43,13 +50,13 @@ class MarktdownProcessor {
 
         val frontMatterMetadata = if (matchResult.isNotEmpty()) {
             val frontMatter = matchResult.first()
-            println("front matter: $frontMatter")
+            logger.debug("front matter: {}", frontMatter)
             val yaml = Yaml()
             val map = yaml.load<Map<String, Any>>(frontMatter)
-            println("frontMatter map: $map")
+            logger.debug("frontMatter map: {}", frontMatter)
             map
         } else {
-            println("no front matter.")
+            logger.debug("no front matter.")
             null
         }
 
@@ -59,6 +66,7 @@ class MarktdownProcessor {
             .buildMarkdownTreeFromString(noFrontMatterContent)
 
         val renderer = MarktdownRenderer(
+            logger = logger,
             packageName = packageName,
             fileName = fileName,
             content = noFrontMatterContent,

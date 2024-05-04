@@ -83,7 +83,7 @@ abstract class MarktdownExtension(
  *
  * @param extension The Markdown extension.
  */
-internal fun MarktdownProcessorTask.apply(extension: MarktdownExtension) {
+internal fun MarktdownProcessorTask.with(extension: MarktdownExtension) {
     check(!extension.packageName.isNullOrBlank()) {
         "The packageName must be provided"
     }
@@ -93,6 +93,7 @@ internal fun MarktdownProcessorTask.apply(extension: MarktdownExtension) {
     }
 
     models = extension.models
+    modelsDir.set(extension.models.origin)
 }
 
 /**
@@ -100,7 +101,7 @@ internal fun MarktdownProcessorTask.apply(extension: MarktdownExtension) {
  *
  * @param extension The Markdown extension.
  */
-internal fun MarktdownRendererTask.apply(extension: MarktdownExtension) {
+internal fun MarktdownRendererTask.with(extension: MarktdownExtension) {
     // TODO: improve error messages by showing what is the expected way to configure the plugin.
     check(!extension.packageName.isNullOrBlank()) {
         "The packageName must be provided"

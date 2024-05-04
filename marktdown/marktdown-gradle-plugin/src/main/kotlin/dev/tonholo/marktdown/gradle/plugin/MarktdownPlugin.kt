@@ -35,7 +35,8 @@ class MarktdownPlugin : Plugin<Project> {
      */
     private fun Project.configure(extension: MarktdownExtension) {
         afterEvaluate {
-            val rendererOutputDirectory = tasks.registerMarktdownRendererTask(extension)
+            val rendererTask = tasks.registerMarktdownRendererTask(extension)
+            val rendererOutputDirectory = rendererTask
                 ?.map { it.rootOutputDirectory }
                 ?.get()
 

@@ -327,7 +327,7 @@ That needs to be added per app, sadly. 4. Since the Shubi app has a custom build
 In our case, I have chosen the following values for our configuration:
 
 | Project build configuration | `KOTLIN_FRAMEWORK_BUILD_TYPE` value |
-| :---------------------------: | ----------------------------------- |
+| :---------------------------: | -----------------------------------: |
 | `Debug`                     | `Debug`                             |
 | `Release`                   | `Release`                           |
 | `Release - Internal`        | `Release`                           |

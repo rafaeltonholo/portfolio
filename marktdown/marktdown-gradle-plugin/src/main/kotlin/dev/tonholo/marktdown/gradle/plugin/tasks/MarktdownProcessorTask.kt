@@ -1,13 +1,16 @@
 package dev.tonholo.marktdown.gradle.plugin.tasks
 
+import dev.tonholo.marktdown.gradle.plugin.domain.asLogger
 import dev.tonholo.marktdown.gradle.plugin.dsl.MarktdownExtension
-import dev.tonholo.marktdown.gradle.plugin.dsl.apply
+import dev.tonholo.marktdown.gradle.plugin.dsl.with
 import dev.tonholo.marktdown.gradle.plugin.internal.source.ModelsSourceConfiguration
 import dev.tonholo.marktdown.processor.MarktdownProcessor
 import java.io.File
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
+import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.InputDirectory
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.Nested
 import org.gradle.api.tasks.OutputDirectory
@@ -16,6 +19,8 @@ import org.gradle.api.tasks.TaskContainer
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.withType
+import org.gradle.work.Incremental
+import org.gradle.work.InputChanges
 import org.jetbrains.kotlin.gradle.dsl.KotlinCommonCompile
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType
@@ -62,6 +67,10 @@ abstract class MarktdownProcessorTask : DefaultTask() {
     @get:Nested
     lateinit var models: ModelsSourceConfiguration
 
+    @get:Incremental
+    @get:InputDirectory
+    val modelsDir: DirectoryProperty = project.objects.directoryProperty()
+
     init {
         group = "MarKTdown"
         description = "Process markdown files"
@@ -71,15 +80,19 @@ abstract class MarktdownProcessorTask : DefaultTask() {
      * Processes the Markdown files.
      */
     @TaskAction
-    fun processMarkdownFiles() {
-        println("Cleaning up generated files")
+    fun processMarkdownFiles(inputChanges: InputChanges) {
+        println(
+            if (inputChanges.isIncremental) "Executing incrementally"
+            else "Executing non-incrementally"
+        )
+        logger.debug("Cleaning up generated files")
         rootOutputDirectory.parentFile.deleteRecursively()
-        println("Creating output directory for generated files")
-        println("output = ${outputDirectory.absolutePath}")
+        logger.debug("Creating output directory for generated files")
+        logger.debug("output = {}", outputDirectory.absolutePath)
         outputDirectory.mkdirs()
         val mdExtension = "md"
 
-        val processor = MarktdownProcessor()
+        val processor = MarktdownProcessor(logger.asLogger())
         models.origin?.asFile?.listFiles()
             ?.filter { it.extension == mdExtension }
             ?.forEach {
@@ -112,13 +125,12 @@ fun TaskContainer.registerMarktdownProcessorTask(
             .first { it.platformType == KotlinPlatformType.common }
             .defaultSourceSet
 
-        println("models.origin = ${extension.models.origin}")
+        logger.debug("models.origin = {}", extension.models.origin)
 
         val task = tasks.register<MarktdownProcessorTask>(
             MarktdownProcessorTask.TASK_NAME,
         ) {
-            apply(extension)
-
+            with(extension)
             finalizedBy(tasks.withType<MarktdownRendererTask>())
         }
 

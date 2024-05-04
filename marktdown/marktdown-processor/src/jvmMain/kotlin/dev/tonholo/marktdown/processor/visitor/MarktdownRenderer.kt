@@ -16,6 +16,7 @@ import dev.tonholo.marktdown.domain.MarktdownMetadataMap
 import dev.tonholo.marktdown.domain.content.CodeFence
 import dev.tonholo.marktdown.domain.content.EndOfLine
 import dev.tonholo.marktdown.domain.content.HorizontalRule
+import dev.tonholo.marktdown.domain.content.HtmlBlock
 import dev.tonholo.marktdown.domain.content.ImageElement
 import dev.tonholo.marktdown.domain.content.LineBreak
 import dev.tonholo.marktdown.domain.content.Link.AutoLink
@@ -26,6 +27,7 @@ import dev.tonholo.marktdown.domain.content.MarktdownDocument
 import dev.tonholo.marktdown.domain.content.TableContent
 import dev.tonholo.marktdown.domain.content.TableElement
 import dev.tonholo.marktdown.domain.content.TextElement
+import dev.tonholo.marktdown.processor.Logger
 import dev.tonholo.marktdown.processor.extensions.childrenToRender
 import dev.tonholo.marktdown.processor.extensions.literal
 import dev.tonholo.marktdown.processor.extensions.pascalCase
@@ -56,6 +58,7 @@ import kotlin.reflect.KClass
 import dev.tonholo.marktdown.domain.content.Link.Element as LinkElement
 
 class MarktdownRenderer(
+    private val logger: Logger,
     private val packageName: String,
     private val fileName: String,
     internal val content: String,
@@ -154,7 +157,7 @@ class MarktdownRenderer(
 
     fun render(node: ASTNode, output: Path) {
         node.accept(visitor)
-//        println("render output = $output")
+//        logger.trace("render output = $output")
         fileSpec.writeTo(output)
     }
 
@@ -207,7 +210,7 @@ class MarktdownRenderer(
         private val CharSequence.escaped: CharSequence
             get() =
                 EntityConverter.replaceEntities(
-                    subSequence(1, lastIndex),
+                    subSequence(0, lastIndex),
                     processEntities = true,
                     processEscapes = false
                 )
@@ -225,15 +228,16 @@ class MarktdownRenderer(
         }
 
         override fun visitNode(node: ASTNode) {
-            println("--- start Visit node ---")
-            println("node: ${node.type}")
-            println("node.type: ${node.type}")
-            println("node.startOffset: ${node.startOffset}")
-            println("node.endOffset: ${node.endOffset}")
-            println("node.parent: ${node.parent?.type}")
-            println("node.children: ${node.children.map { it.type }}")
-            println("node.litreal: ${node.literal}")
-            println("--- end Visit node ---")
+            logger.trace("--- start Visit node ---")
+            logger.trace("node: ${node.type}")
+            logger.trace("node.type: ${node.type}")
+            logger.trace("node.startOffset: ${node.startOffset}")
+            logger.trace("node.endOffset: ${node.endOffset}")
+            logger.trace("node.parent: ${node.parent?.type}")
+            logger.trace("node.children: ${node.children.map { it.type }}")
+            logger.trace("node.childrenToRender: ${node.childrenToRender.map { it.type }}")
+            logger.trace("node.litreal: ${node.literal}")
+            logger.trace("--- end Visit node ---")
 
             when (node.type) {
                 // Elements
@@ -253,7 +257,7 @@ class MarktdownRenderer(
                 MarkdownElementTypes.CODE_FENCE -> visitCodeFence(node)
                 MarkdownElementTypes.CODE_BLOCK -> visitCodeBlock(node)
                 MarkdownElementTypes.CODE_SPAN -> visitCodeSpan(code = node)
-                MarkdownElementTypes.HTML_BLOCK -> Unit
+                MarkdownElementTypes.HTML_BLOCK -> visitHtmlBlock(node)
                 MarkdownElementTypes.PARAGRAPH -> visitParagraph(node)
                 MarkdownElementTypes.EMPH -> visitEmphasis(node)
                 MarkdownElementTypes.STRONG -> visitStrong(node)
@@ -324,8 +328,6 @@ class MarktdownRenderer(
                 MarkdownTokenTypes.WHITE_SPACE -> {
                     attachToParent(" ".toCodeBlockBuilder())
                 }
-
-                GFMTokenTypes.CELL -> visitCell(node)
             }
         }
 
@@ -350,7 +352,7 @@ class MarktdownRenderer(
                     if (child != null && child.type == MarkdownTokenTypes.TEXT) {
                         addStatement("text = %S,", child.literal)
                     } else {
-//                        println("Visiting children ${childrenToConsider.map { it.type }}")
+//                        logger.trace("Visiting children ${childrenToConsider.map { it.type }}")
                         visitChildren(
                             children = childrenToConsider,
                             parentBuilder = this,
@@ -498,7 +500,7 @@ class MarktdownRenderer(
                         MarktdownLink::class,
                         linkText.linkDestination,
                     )
-                    addStatement("%N = %S,", kClass.member(AutoLink::label.name), linkText.escaped)
+                    addStatement("%N = %S,", kClass.member(AutoLink::label.name), linkText.drop(1).escaped)
                 }
                 .addStatement("),")
             attachToParent(codeBlock)
@@ -529,7 +531,7 @@ class MarktdownRenderer(
                         destination?.literal?.toString().orEmpty(),
                     )
                     if (child != null && child.type == MarkdownTokenTypes.TEXT) {
-                        addStatement("%S,", child.literal.escaped)
+                        addStatement("%S,", child.literal.drop(1).escaped)
                     } else {
                         visitChildren(
                             children = childrenToConsider,
@@ -564,7 +566,7 @@ class MarktdownRenderer(
                         )
                         addStatement("%N = %S,", kClass.member(ReferenceElement::title.name), info.title)
                         if (child != null && child.type == MarkdownTokenTypes.TEXT) {
-                            addStatement("%S,", child.literal.escaped)
+                            addStatement("%S,", child.literal.drop(1).escaped)
                         } else {
                             visitChildren(
                                 children = childrenToConsider,
@@ -576,7 +578,7 @@ class MarktdownRenderer(
                     .addStatement("),")
                 currentBuilder = parent
                 attachToParent(codeBlock)
-            } ?: println("info is null") // TODO.
+            } ?: logger.trace("info is null") // TODO.
         }
 
         private fun visitLinkDefinition(linkDefinition: ASTNode) {
@@ -606,13 +608,13 @@ class MarktdownRenderer(
                     addStatement(
                         "%N = %S,",
                         kClass.member(LinkDefinition::label.name),
-                        label.escaped,
+                        label.drop(1).escaped,
                     )
                     title?.let {
                         addStatement(
                             "%N = %S,",
                             kClass.member(LinkDefinition::title.name),
-                            it.escaped,
+                            it.drop(1).escaped,
                         )
                     }
                 }
@@ -718,7 +720,7 @@ class MarktdownRenderer(
             visitList(
                 list = orderedList,
                 kClass = kClass,
-                memberName = kClass.member(ListElement.Ordered::options.name),
+                memberName = kClass.member(ListElement.Ordered::children.name),
             ) {
                 orderedList.findChildOfType(MarkdownElementTypes.LIST_ITEM)
                     ?.findChildOfType(MarkdownTokenTypes.LIST_NUMBER)
@@ -745,7 +747,7 @@ class MarktdownRenderer(
             visitList(
                 list = unorderedList,
                 kClass = ListElement.Unordered::class,
-                memberName = ListElement.Unordered::class.member(ListElement.Unordered::options.name),
+                memberName = ListElement.Unordered::class.member(ListElement.Unordered::children.name),
             )
         }
 
@@ -844,7 +846,7 @@ class MarktdownRenderer(
                     addStatement(
                         "%N = %S,",
                         kClass.member(ImageElement::alt.name),
-                        alt.escaped,
+                        alt.drop(1).escaped,
                     )
                 }
                 .addStatement("),")
@@ -854,21 +856,47 @@ class MarktdownRenderer(
         private fun visitTable(table: ASTNode) {
             val header = table.findChildOfType(GFMElementTypes.HEADER) ?: return
             val rows = table.children.filter { it.type == GFMElementTypes.ROW }
+            val colunmAlignmentInfo = requireNotNull(table.findChildOfType(GFMTokenTypes.TABLE_SEPARATOR))
+                .literal
+                .split(Regex("\\|"))
+                .mapNotNull { cell -> cell.takeIf { it.isNotBlank() } }
+                .map { cell ->
+                    val trimmed = cell.trim()
+                    val starts = trimmed.startsWith(':')
+                    val ends = trimmed.endsWith(':')
+                    when {
+                        starts && ends -> TableContent.Alignment.CENTER
+                        starts -> TableContent.Alignment.START
+                        ends -> TableContent.Alignment.END
+                        else -> null
+                    }
+                }
 
-//            println("table.children = ${table.children.map { it.type }}")
-//            println("header.children = ${header.children.map { it.type }}")
-//            println("rows = ${rows.map { it.type }}")
+            logger.trace("colunmAlignmentInfo=$colunmAlignmentInfo")
+//            logger.trace("table.children = ${table.children.map { it.type }}")
+//            logger.trace("header.children = ${header.children.map { it.type }}")
+//            logger.trace("rows = ${rows.map { it.type }}")
             val kClass = TableElement::class
             val parent = currentBuilder
             val codeBlock = CodeBlock.builder()
                 .addStatement("%T(", kClass)
                 .withIndent {
-                    add(createHeaderCodeBlock(header.children.filter { it.type == GFMTokenTypes.CELL }))
+                    add(
+                        createHeaderCodeBlock(
+                            children = header.children.filter { it.type == GFMTokenTypes.CELL },
+                            colunmAlignmentInfo = colunmAlignmentInfo,
+                        ),
+                    )
                     currentBuilder = parent
                     addStatement("%N = %M(", kClass.member(TableElement::rows.name), listMemberName)
                     withIndent {
                         rows.forEach { row ->
-                            add(createRowCodeBlock(row.children.filter { it.type == GFMTokenTypes.CELL }))
+                            add(
+                                createRowCodeBlock(
+                                    children = row.children.filter { it.type == GFMTokenTypes.CELL },
+                                    colunmAlignmentInfo = colunmAlignmentInfo,
+                                ),
+                            )
                         }
                     }
                     addStatement("),")
@@ -878,63 +906,81 @@ class MarktdownRenderer(
             attachToParent(codeBlock)
         }
 
-        private fun createHeaderCodeBlock(children: List<ASTNode>): CodeBlock {
+        private fun createHeaderCodeBlock(
+            children: List<ASTNode>,
+            colunmAlignmentInfo: List<TableContent.Alignment?>,
+        ): CodeBlock {
             val kClass = TableContent.Header::class
             return buildCodeBlock {
                 addStatement("%T(", kClass)
                 withIndent {
-                    add(createRowCodeBlock(children))
+                    add(createRowCodeBlock(children, colunmAlignmentInfo))
                 }
                 addStatement("),")
             }
         }
 
-        private fun createRowCodeBlock(children: List<ASTNode>): CodeBlock {
-            val parent = currentBuilder
+        private fun createRowCodeBlock(
+            children: List<ASTNode>,
+            colunmAlignmentInfo: List<TableContent.Alignment?>,
+        ): CodeBlock {
             val kClass = TableContent.Row::class
             return buildCodeBlock {
                 addStatement("%T(", kClass)
                 withIndent {
-                    currentBuilder = this
-                    visitChildren(
-                        children = children,
-                        parentBuilder = this,
-                        memberName = kClass.member(TableContent.Row::cells.name),
+                    addStatement(
+                        "%N = %M(",
+                        kClass.member(TableContent.Row::cells.name),
+                        listMemberName,
                     )
-                    currentBuilder = parent
+                    withIndent {
+                        if (children.size > 1) {
+                            for ((index, child) in children.withIndex()) {
+                                add(createCell(cell = child, alignment = colunmAlignmentInfo[index]))
+                            }
+                        } else {
+                            add(createCell(cell = children.single(), alignment = colunmAlignmentInfo.single()))
+                        }
+                    }
+                    addStatement("),")
                 }
                 addStatement("),")
             }
         }
 
-        private fun visitCell(cell: ASTNode) {
+        private fun createCell(cell: ASTNode, alignment: TableContent.Alignment?): CodeBlock = buildCodeBlock {
             val kClass = TableContent.Cell::class
-            val parent = currentBuilder
-            val codeBlock = CodeBlock.builder()
-                .addStatement("%T(", kClass)
-                .withIndent {
-                    visitChildren(
-                        children = cell.childrenToRender,
-                        parentBuilder = this,
-                        memberName = kClass.member(TableContent.Cell::content.name),
-                    )
+            addStatement("%T(", kClass)
+            withIndent {
+                val parent = currentBuilder
+                currentBuilder = this
+                visitChildren(
+                    children = cell.childrenToRender,
+                    parentBuilder = this,
+                    memberName = kClass.member(TableContent.Cell::content.name),
+                )
+                currentBuilder = parent
+                if (alignment != null) {
                     addStatement(
                         "%N = %T.%M,",
                         kClass.member(TableContent.Cell::alignment.name),
                         TableContent.Alignment::class,
-                        TableContent.Alignment::class.member(TableContent.Alignment.START.name),
+                        TableContent.Alignment::class.member(alignment.name),
                     )
                 }
-                .addStatement("),")
-            currentBuilder = parent
-            attachToParent(codeBlock)
+            }
+            addStatement("),")
         }
 
         private fun visitHtmlTag(node: ASTNode) {
-            println("Visit HTML tab from node = ${node.type}, parent = ${node.parent?.type}")
+            logger.trace("Visit HTML tab from node = ${node.type}, parent = ${node.parent?.type}")
         }
 
         private fun visitInlineHtml(node: ASTNode) {
+            if (node.parent?.type in listOf(MarkdownTokenTypes.HTML_BLOCK_CONTENT, MarkdownElementTypes.HTML_BLOCK)) {
+                // Skip inline generation if parent is HTML block.
+                return
+            }
             val parent = currentBuilder
             val kClass = TextElement.InlineHtml::class
             val children = node.childrenToRender
@@ -974,6 +1020,27 @@ class MarktdownRenderer(
                             addStatement("),")
                         }
                     }
+                }
+
+            currentBuilder = parent
+            attachToParent(codeBlock)
+        }
+
+        private fun visitHtmlBlock(node: ASTNode) {
+            val parent = currentBuilder
+            val kClass = HtmlBlock::class
+            val codeBlock = CodeBlock
+                .builder()
+                .apply {
+                    addStatement("%T(", kClass)
+                    withIndent {
+                        addStatement(
+                            "%N = %S",
+                            kClass.member(HtmlBlock::content.name),
+                            node.literal.escaped,
+                        )
+                    }
+                    addStatement("),")
                 }
 
             currentBuilder = parent
@@ -1021,7 +1088,7 @@ class MarktdownRenderer(
                 )
                 withIndent {
                     for (child in children) {
-//                        println("Visiting child.type = ${child.type}")
+//                        logger.trace("Visiting child.type = ${child.type}")
                         visitNode(child)
                     }
                 }

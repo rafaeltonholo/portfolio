@@ -27,7 +27,14 @@ import dev.tonholo.marktdown.domain.content.MarktdownParent
 import dev.tonholo.marktdown.domain.content.TableContent
 import dev.tonholo.marktdown.domain.content.TableElement
 import dev.tonholo.marktdown.domain.content.TextElement
+import dev.tonholo.marktdown.domain.renderer.MarktdownElementScope
 import dev.tonholo.marktdown.domain.renderer.MarktdownRenderer
+import dev.tonholo.marktdown.domain.renderer.TableContentScope
+import dev.tonholo.marktdown.domain.renderer.TableElementScope
+import dev.tonholo.marktdown.domain.renderer.TableHeaderScope
+import dev.tonholo.marktdown.domain.renderer.TableRowScope
+import dev.tonholo.marktdown.processor.extensions.annotationSpec
+import dev.tonholo.marktdown.processor.extensions.fnName
 import dev.tonholo.marktdown.processor.renderer.RendererGenerator
 import kotlin.reflect.KClass
 
@@ -61,9 +68,14 @@ class ComposeHtmlRendererGenerator(
                 val composable = MemberName(COMPOSE_WEB_DOM, "Div")
                 addCode(
                     createMarktdownParentCodeBlock(
-                        marktdownElementMemberName,
                         composable,
-                        propertyName = "document",
+                        scopeFn = {
+                            addStatement(
+                                "document.%N.forEach { %M(it) }",
+                                MarktdownParent<*>::children.name,
+                                marktdownElementMemberName,
+                            )
+                        }
                     )
                 )
             }.build(),
@@ -76,7 +88,11 @@ class ComposeHtmlRendererGenerator(
             addFunction(
                 FunSpec.builder(marktdownElementMemberName).apply {
                     addAnnotation(Composable::class)
-                    addAnnotation(MarktdownRenderer.Default::class)
+                    addAnnotation(
+                        annotationSpec<MarktdownRenderer.Default> {
+                            addMember("type = %T::class", MarktdownElement::class)
+                        }
+                    )
                     addModifiers(KModifier.INTERNAL)
                     addParameter(name = "element", typeNameOf<MarktdownElement>())
                     val packageName = "${this@ComposeHtmlRendererGenerator.packageName}.content"
@@ -102,11 +118,12 @@ class ComposeHtmlRendererGenerator(
         }.build()
     }
 
-    override fun KClass<out CodeFence>.createCodeFenceDefaultRenderer(): FileSpec = baseFileSpec {
-        val pre = MemberName(COMPOSE_WEB_DOM, "Pre")
-        val code = MemberName(COMPOSE_WEB_DOM, "Code")
-        addCode(
-            """
+    override fun KClass<out CodeFence>.createCodeFenceDefaultRenderer(): FileSpec = baseFileSpec(
+        leafNodeScopeFn = {
+            val pre = MemberName(COMPOSE_WEB_DOM, "Pre")
+            val code = MemberName(COMPOSE_WEB_DOM, "Code")
+            add(
+                """
                 |%M {
                 |   %M(
                 |       attrs = {
@@ -119,107 +136,146 @@ class ComposeHtmlRendererGenerator(
                 |       }
                 |   }
                 |}
+                |
             """.trimMargin(),
-            pre,
-            code,
-            disposableEffect,
-        )
-    }
+                pre,
+                code,
+                disposableEffect,
+            )
+        })
 
-    override fun KClass<out HorizontalRule>.createHorizontalRuleDefaultRenderer(): FileSpec = baseFileSpec {
-        val hr = MemberName(COMPOSE_WEB_DOM, "Hr")
-        addCode("%M()", hr)
-    }
+    override fun KClass<out HorizontalRule>.createHorizontalRuleDefaultRenderer(): FileSpec = baseFileSpec(
+        leafNodeScopeFn = {
+            val hr = MemberName(COMPOSE_WEB_DOM, "Hr")
+            addStatement("%M()", hr)
+        },
+    )
 
-    override fun KClass<out ImageElement>.createImageElementDefaultRenderer(): FileSpec = baseFileSpec {
-        val image = MemberName(COMPOSE_WEB_DOM, "Img")
-        addCode(
-            """
+    override fun KClass<out ImageElement>.createImageElementDefaultRenderer(): FileSpec = baseFileSpec(
+        leafNodeScopeFn = {
+            val image = MemberName(COMPOSE_WEB_DOM, "Img")
+            add(
+                """
                 |%M(
                 |   src = element.%N.%N,
                 |   alt = element.%N.orEmpty(),
                 |)
+                |
             """.trimMargin(),
-            image,
-            member(ImageElement::link.name),
-            marktdownLinkValueMemberName,
-            member(ImageElement::alt.name),
-        )
-    }
-
-    override fun KClass<out LineBreak>.createLineBreakDefaultRenderer(): FileSpec = baseFileSpec {
-        val br = MemberName(COMPOSE_WEB_DOM, "Br")
-        addCode("%M()", br)
-    }
-
-    override fun KClass<out LinkDefinition>.createLinkDefinitionDefaultRenderer(): FileSpec = baseFileSpec {
-        addCode("// TBD.")
-    }
-
-    override fun KClass<out TableElement>.createTableElementDefaultRenderer(): FileSpec = baseFileSpec {
-        val table = MemberName(COMPOSE_WEB_DOM, "Table")
-        val tHead = MemberName(COMPOSE_WEB_DOM, "Thead")
-        val tBody = MemberName(COMPOSE_WEB_DOM, "Tbody")
-        val tr = MemberName(COMPOSE_WEB_DOM, "Tr")
-        val th = MemberName(COMPOSE_WEB_DOM, "Th")
-        val td = MemberName(COMPOSE_WEB_DOM, "Td")
-        val cellClassName = TableContent.Cell::class.asClassName()
-        val textAlign = MemberName(COMPOSE_WEB_CSS, "textAlign")
-        val attrs = CodeBlock.builder().apply {
-            beginControlFlow("attrs = ")
-            beginControlFlow("style")
-            addStatement(
-                "%M(cell.%N.name.lowercase())",
-                textAlign,
-                cellClassName.member(TableContent.Cell::alignment.name),
+                image,
+                member(ImageElement::link.name),
+                marktdownLinkValueMemberName,
+                member(ImageElement::alt.name),
             )
-            endControlFlow()
-            endControlFlow()
-        }.build()
+        },
+    )
 
-        val cellBlock: (String, MemberName) -> CodeBlock = { member: String, composableMember: MemberName ->
-            CodeBlock.builder().apply {
-                beginControlFlow("for (cell in $member)")
-                addStatement("%M(", composableMember)
-                withIndent {
-                    add(attrs)
-                }
-                beginControlFlow(")")
+    override fun KClass<out LineBreak>.createLineBreakDefaultRenderer(): FileSpec = baseFileSpec(
+        leafNodeScopeFn = {
+            val br = MemberName(COMPOSE_WEB_DOM, "Br")
+            addStatement("%M()", br)
+        },
+    )
+
+    override fun KClass<out LinkDefinition>.createLinkDefinitionDefaultRenderer(): FileSpec = baseFileSpec(
+        leafNodeScopeFn = {
+            addStatement("// TBD.")
+        }
+    )
+
+    override fun KClass<out TableElement>.createTableElementDefaultRenderer(): FileSpec = baseFileSpec(
+        customScopeBuilder = {
+            val scopeKClass = TableElementScope::class
+            val table = MemberName(COMPOSE_WEB_DOM, "Table")
+            val tHead = MemberName(COMPOSE_WEB_DOM, "Thead")
+            val tBody = MemberName(COMPOSE_WEB_DOM, "Tbody")
+            val tr = MemberName(COMPOSE_WEB_DOM, "Tr")
+            val th = MemberName(COMPOSE_WEB_DOM, "Th")
+            val td = MemberName(COMPOSE_WEB_DOM, "Td")
+            val cellClassName = TableContent.Cell::class.asClassName()
+            val textAlign = MemberName(COMPOSE_WEB_CSS, "textAlign")
+            val attrs = CodeBlock.builder().apply {
+                beginControlFlow("attrs = ")
+                beginControlFlow("style")
                 addStatement(
-                    "cell.%N.forEach { %M(it) }",
-                    cellClassName.member(TableContent.Cell::content.name),
-                    marktdownElementMemberName,
+                    "%M(cell.%N.name.lowercase())",
+                    textAlign,
+                    cellClassName.member(TableContent.Cell::alignment.name),
                 )
                 endControlFlow()
                 endControlFlow()
             }.build()
+
+            val cellBlock: (String, MemberName) -> CodeBlock = { member: String, composableMember: MemberName ->
+                CodeBlock.builder().apply {
+                    beginControlFlow("for (cell in $member)")
+                    addStatement("%M(", composableMember)
+                    withIndent {
+                        add(attrs)
+                    }
+                    beginControlFlow(")")
+                    addStatement(
+                        "cell.%N.forEach { %M(it) }",
+                        cellClassName.member(TableContent.Cell::content.name),
+                        marktdownElementMemberName,
+                    )
+                    endControlFlow()
+                    endControlFlow()
+                }.build()
+            }
+
+            addCode(
+                buildCodeBlock {
+                    addStatement("val scope = %T(", scopeKClass)
+                    withIndent {
+                        addStatement("element = element,")
+                        addStatement(
+                            "%N = {",
+                            TableElementScope::drawContent.name,
+                        )
+                        withIndent {
+                            beginControlFlow("%M", table)
+                            beginControlFlow("%M", tHead)
+                            beginControlFlow("%M", tr)
+                            addStatement(
+                                "%N.%N()",
+                                TableContentScope::headerScope.name,
+                                TableHeaderScope::drawContent.name,
+                            )
+                            endControlFlow()
+                            endControlFlow()
+                            beginControlFlow("%M", tBody)
+                            addStatement(
+                                "%N.forEach { it.%N() }",
+                                TableContentScope::rowsScope.name,
+                                TableRowScope::drawContent.name,
+                            )
+                            endControlFlow()
+                            endControlFlow()
+                        }
+                        addStatement("},")
+                        addStatement("drawHeaderContent = { header ->")
+                        withIndent {
+                            add(cellBlock("header.row.cells", th))
+                        }
+                        addStatement("},")
+                        addStatement("drawRowContent = { row ->")
+                        withIndent {
+                            beginControlFlow("%M", tr)
+                            add(cellBlock("row.cells", td))
+                            endControlFlow()
+                        }
+                        addStatement("},")
+                    }
+                    addStatement(")")
+                }
+            )
         }
-        addCode(
-            CodeBlock.builder().apply {
-                beginControlFlow("%M", table)
-                beginControlFlow("%M", tHead)
-                beginControlFlow("%M", tr)
-                add(cellBlock("element.header.row.cells", th))
-                endControlFlow()
-                endControlFlow()
-                beginControlFlow("%M", tBody)
-                beginControlFlow(
-                    "for (row in element.%N)",
-                    member(TableElement::rows.name),
-                )
-                beginControlFlow("%M", tr)
-                add(cellBlock("row.cells", td))
-                endControlFlow()
-                endControlFlow()
-                endControlFlow()
-                endControlFlow()
-            }.build(),
-        )
-    }
+    )
 
     override fun KClass<out ListElement.ListItem>.createListItemDefaultRenderer(): FileSpec = baseFileSpec {
         val li = MemberName(COMPOSE_WEB_DOM, "Li")
-        addCode(createMarktdownParentCodeBlock(marktdownElementMemberName, li))
+        addCode(createMarktdownParentCodeBlock(li, scopeFn = it))
     }
 
     override fun KClass<out ListElement.Ordered>.createOrderedDefaultRenderer(): FileSpec = baseFileSpec {
@@ -242,11 +298,7 @@ class ComposeHtmlRendererGenerator(
                     addStatement("}")
                 }
                 beginControlFlow(")")
-                addStatement(
-                    "element.%N.forEach { %M(it) }",
-                    ListElement.Ordered::options.name,
-                    marktdownElementMemberName,
-                )
+                apply(it)
                 endControlFlow()
             },
         )
@@ -261,11 +313,7 @@ class ComposeHtmlRendererGenerator(
         addCode(
             buildCodeBlock {
                 beginControlFlow("%M", ul)
-                addStatement(
-                    "element.%N.forEach { %M(it) }",
-                    ListElement.Unordered::options.name,
-                    marktdownElementMemberName,
-                )
+                apply(it)
                 endControlFlow()
             },
         )
@@ -298,11 +346,7 @@ class ComposeHtmlRendererGenerator(
                 endControlFlow()
             }
             beginControlFlow(")")
-            addStatement(
-                "element.%N.forEach { %M(it) }",
-                TextElement.Blockquote::children.name,
-                marktdownElementMemberName,
-            )
+            apply(it)
             endControlFlow()
         })
     }
@@ -311,14 +355,15 @@ class ComposeHtmlRendererGenerator(
         val link = MemberName(COMPOSE_WEB_DOM, "A")
         addCode(
             createMarktdownParentCodeBlock(
-                marktdownElementMemberName,
-                link
-            ) {
-                "href = element.%N.%N" to arrayOf(
-                    member(Link.Element::link.name),
-                    marktdownLinkValueMemberName,
-                )
-            }
+                link,
+                paramBuilder = {
+                    "href = element.%N.%N" to arrayOf(
+                        member(Link.Element::link.name),
+                        marktdownLinkValueMemberName,
+                    )
+                },
+                scopeFn = it,
+            )
         )
     }
 
@@ -326,8 +371,8 @@ class ComposeHtmlRendererGenerator(
         val composeElement = MemberName(COMPOSE_WEB_DOM, "Em")
         addCode(
             createMarktdownParentCodeBlock(
-                marktdownElementMemberName,
                 composeElement,
+                scopeFn = it,
             )
         )
     }
@@ -335,8 +380,8 @@ class ComposeHtmlRendererGenerator(
     override fun KClass<out TextElement.Highlight>.createHighlightDefaultRenderer(): FileSpec = baseFileSpec {
         addCode(
             createMarktdownParentCodeBlock(
-                marktdownElementMemberName,
-                tagName = "mark"
+                tagName = "mark",
+                scopeFn = it,
             )
         )
     }
@@ -345,8 +390,8 @@ class ComposeHtmlRendererGenerator(
         val composeElement = MemberName(COMPOSE_WEB_DOM, "P")
         addCode(
             createMarktdownParentCodeBlock(
-                marktdownElementMemberName,
                 composeElement,
+                scopeFn = it,
             )
         )
     }
@@ -355,34 +400,35 @@ class ComposeHtmlRendererGenerator(
         val composeElement = MemberName(COMPOSE_WEB_DOM, "A")
         addCode(
             createMarktdownParentCodeBlock(
-                marktdownElementMemberName,
                 composeElement,
-            ) {
-                "href = element.%N.%N" to arrayOf(
-                    member(Link.ReferenceElement::destination.name),
-                    marktdownLinkValueMemberName,
-                )
-            }
+                paramBuilder = {
+                    "href = element.%N.%N" to arrayOf(
+                        member(Link.ReferenceElement::destination.name),
+                        marktdownLinkValueMemberName,
+                    )
+                },
+                scopeFn = it,
+            ),
         )
     }
 
     override fun KClass<out TextElement.Strikethrough>.createStrikethroughDefaultRenderer(): FileSpec = baseFileSpec {
-        addCode(createMarktdownParentCodeBlock(marktdownElementMemberName, tagName = "mark"))
+        addCode(createMarktdownParentCodeBlock(tagName = "mark", scopeFn = it))
     }
 
     override fun KClass<out TextElement.StrongText>.createStrongTextDefaultRenderer(): FileSpec = baseFileSpec {
         val composeElement = MemberName(COMPOSE_WEB_DOM, "B")
-        addCode(createMarktdownParentCodeBlock(marktdownElementMemberName, composeElement))
+        addCode(createMarktdownParentCodeBlock(composeElement, scopeFn = it))
     }
 
     override fun KClass<out TextElement.Subscript>.createSubscriptDefaultRenderer(): FileSpec = baseFileSpec {
         val composeElement = MemberName(COMPOSE_WEB_DOM, "Sub")
-        addCode(createMarktdownParentCodeBlock(marktdownElementMemberName, composeElement))
+        addCode(createMarktdownParentCodeBlock(composeElement, scopeFn = it))
     }
 
     override fun KClass<out TextElement.Superscript>.createSuperscriptDefaultRenderer(): FileSpec = baseFileSpec {
         val composeElement = MemberName(COMPOSE_WEB_DOM, "Sup")
-        addCode(createMarktdownParentCodeBlock(marktdownElementMemberName, composeElement))
+        addCode(createMarktdownParentCodeBlock(composeElement, scopeFn = it))
     }
 
     override fun KClass<out TextElement.Title>.createTitleDefaultRenderer(): FileSpec = baseFileSpec {
@@ -393,10 +439,10 @@ class ComposeHtmlRendererGenerator(
                 TextElement.Title.Style::class.member(style.name),
                 MemberName(COMPOSE_WEB_DOM, style.name),
             )
-            addStatement(
-                "element.%N.forEach { %M(it) }",
-                member(TextElement.Title::children.name),
-                marktdownElementMemberName,
+            addCode(
+                buildCodeBlock {
+                    it()
+                },
             )
             endControlFlow()
         }
@@ -407,22 +453,29 @@ class ComposeHtmlRendererGenerator(
         addStatement("// TBD.")
     }
 
-    override fun KClass<out TextElement.InlineCode>.createInlineCodeDefaultRenderer(): FileSpec = baseFileSpec {
-        val code = MemberName(COMPOSE_WEB_DOM, "Code")
-        beginControlFlow("%M", code)
-        beginControlFlow("%M(this)", disposableEffect)
-        addStatement(
-            "scopeElement.innerHTML = element.%N",
-            member(TextElement.InlineCode::code.name),
+    override fun KClass<out TextElement.InlineCode>.createInlineCodeDefaultRenderer(): FileSpec =
+        baseFileSpec(
+            leafNodeScopeFn = {
+                val code = MemberName(COMPOSE_WEB_DOM, "Code")
+                beginControlFlow("%M", code)
+                beginControlFlow("%M(this)", disposableEffect)
+                addStatement(
+                    "scopeElement.innerHTML = element.%N",
+                    member(TextElement.InlineCode::code.name),
+                )
+                addStatement("onDispose { }")
+                endControlFlow()
+                endControlFlow()
+            },
         )
-        addStatement("onDispose { }")
-        endControlFlow()
-        endControlFlow()
-    }
 
-    override fun KClass<out Link.AutoLink>.createAutoLinkDefaultRenderer(): FileSpec = baseFileSpec {
+    override fun KClass<out Link.AutoLink>.createAutoLinkDefaultRenderer(): FileSpec = baseFileSpec(
+        leafNodeScopeFn = {
+            val text = MemberName(COMPOSE_WEB_DOM, "Text")
+            addStatement("%M(value = element.%N)", text, member(Link.AutoLink::label.name))
+        }
+    ) { scopeFn ->
         val composeElement = MemberName(COMPOSE_WEB_DOM, "A")
-        val text = MemberName(COMPOSE_WEB_DOM, "Text")
         addCode(
             buildCodeBlock {
                 beginControlFlow(
@@ -431,19 +484,27 @@ class ComposeHtmlRendererGenerator(
                     member(Link.AutoLink::link.name),
                     marktdownLinkValueMemberName,
                 )
-                addStatement("%M(value = element.%N)", text, member(Link.AutoLink::label.name))
+                apply(scopeFn)
                 endControlFlow()
             }
         )
     }
 
-    override fun KClass<out TextElement.PlainText>.createPlainTextDefaultRenderer(): FileSpec = baseFileSpec {
-        val text = MemberName(COMPOSE_WEB_DOM, "Text")
-        addCode("%M(value = element.%N)", text, member(TextElement.PlainText::text.name))
-    }
+    override fun KClass<out TextElement.PlainText>.createPlainTextDefaultRenderer(): FileSpec = baseFileSpec(
+        leafNodeScopeFn = {
+            val text = MemberName(COMPOSE_WEB_DOM, "Text")
+            addStatement("%M(value = element.%N)", text, member(TextElement.PlainText::text.name))
+        }
+    )
 
     private inline fun <reified T : MarktdownElement> KClass<out T>.baseFileSpec(
-        fnContent: FunSpec.Builder.() -> Unit
+        noinline leafNodeScopeFn: CodeBlock.Builder.() -> Unit = {},
+        customScopeBuilder: FunSpec.Builder.() -> Unit = { defaultScopeBuilder(T::class, leafNodeScopeFn) },
+        fnContent: FunSpec.Builder.(scopeFn: CodeBlock.Builder.() -> Unit) -> Unit = { scopeFn ->
+            addCode(
+                buildCodeBlock(scopeFn)
+            )
+        },
     ): FileSpec = FileSpec
         .builder(packageName.plus(".content"), fnName)
         .apply {
@@ -451,22 +512,72 @@ class ComposeHtmlRendererGenerator(
             addFunction(
                 FunSpec.builder(fnName).apply {
                     addAnnotation(Composable::class)
-                    addAnnotation(MarktdownRenderer.Default::class)
+                    addAnnotation(
+                        annotationSpec<MarktdownRenderer.Default> {
+                            addMember("type = %T::class", T::class)
+                        }
+                    )
                     addModifiers(KModifier.INTERNAL)
                     if (objectInstance == null) {
                         addParameter(name = "element", type = asTypeName())
                     }
-                    fnContent()
+                    val scopeKClass = MarktdownElementScope::class
+                    customScopeBuilder()
+                    addStatement("// [DEFAULT_SCOPE_INIT]")
+                    fnContent {
+                        addStatement(
+                            "scope.%N()",
+                            scopeKClass.member(MarktdownElementScope<*>::drawContent.name),
+                        )
+                    }
+                    addStatement("// [DEFAULT_SCOPE_END]")
                 }.build(),
             )
         }
         .build()
 
+    private fun FunSpec.Builder.defaultScopeBuilder(
+        kClass: KClass<*>,
+        leafNodeScopeFn: CodeBlock.Builder.() -> Unit,
+    ) {
+        val scopeKClass = MarktdownElementScope::class
+        addStatement("val scope = %T(", scopeKClass)
+        addCode(buildCodeBlock { indent() })
+        if (kClass.objectInstance == null) {
+            addStatement("element = element,")
+        } else {
+            addStatement("element = %T,", kClass)
+        }
+        addStatement(
+            "%N = {",
+            scopeKClass.member(MarktdownElementScope<*>::drawContent.name),
+        )
+        addCode(buildCodeBlock { indent() })
+
+        if (kClass.java.interfaces.contains(MarktdownParent::class.java)) {
+            addStatement(
+                "element.%N.forEach { %M(it) }",
+                MarktdownParent<*>::children.name,
+                marktdownElementMemberName,
+            )
+        } else {
+            addCode(
+                buildCodeBlock {
+                    apply(leafNodeScopeFn)
+                },
+            )
+        }
+
+        addCode(buildCodeBlock { unindent() })
+        addStatement("},")
+        addCode(buildCodeBlock { unindent() })
+        addStatement(")")
+    }
+
     private fun createMarktdownParentCodeBlock(
-        marktdownElementMemberName: MemberName,
         holderMemberName: MemberName,
-        propertyName: String = "element",
         paramBuilder: (() -> Pair<String, Array<out Any>>)? = null,
+        scopeFn: CodeBlock.Builder.() -> Unit,
     ): CodeBlock = buildCodeBlock {
         if (paramBuilder == null) {
             beginControlFlow("%M", holderMemberName)
@@ -474,18 +585,14 @@ class ComposeHtmlRendererGenerator(
             val (paramsStr, params) = paramBuilder()
             beginControlFlow("%M($paramsStr)", holderMemberName, *params)
         }
-        addStatement(
-            "$propertyName.%N.forEach { %M(it) }",
-            MarktdownParent<*>::children.name,
-            marktdownElementMemberName,
-        )
+        apply(scopeFn)
         endControlFlow()
     }
 
     private fun createMarktdownParentCodeBlock(
-        marktdownElementMemberName: MemberName,
         tagName: String,
         paramBuilder: (() -> Pair<String, Array<out Any>>)? = null,
+        scopeFn: CodeBlock.Builder.() -> Unit,
     ): CodeBlock = buildCodeBlock {
         val composeElement = MemberName(COMPOSE_WEB_DOM, "TagElement")
         if (paramBuilder == null) {
@@ -500,11 +607,7 @@ class ComposeHtmlRendererGenerator(
                 *params
             )
         }
-        addStatement(
-            "element.%N.forEach { %M(it) }",
-            MarktdownParent<*>::children.name,
-            marktdownElementMemberName,
-        )
+        apply(scopeFn)
         endControlFlow()
     }
 }

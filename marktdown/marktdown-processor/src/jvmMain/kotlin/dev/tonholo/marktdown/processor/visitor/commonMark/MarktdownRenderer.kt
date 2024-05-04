@@ -186,7 +186,7 @@ class MarktdownRenderer(
                     visitChildren(
                         parent = bulletList,
                         parentBuilder = this,
-                        memberName = ListElement.Unordered::class.member(ListElement.Unordered::options.name),
+                        memberName = ListElement.Unordered::class.member(ListElement.Unordered::children.name),
                     )
                 }
                 .addStatement("),")
@@ -408,7 +408,7 @@ class MarktdownRenderer(
                     visitChildren(
                         parent = orderedList,
                         parentBuilder = this,
-                        memberName = ListElement.Ordered::class.member(ListElement.Ordered::options.name),
+                        memberName = ListElement.Ordered::class.member(ListElement.Ordered::children.name),
                     )
                 }
                 .addStatement("),")

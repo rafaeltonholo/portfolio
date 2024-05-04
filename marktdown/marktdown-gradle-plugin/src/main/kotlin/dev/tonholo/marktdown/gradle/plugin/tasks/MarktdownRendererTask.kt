@@ -1,14 +1,17 @@
 package dev.tonholo.marktdown.gradle.plugin.tasks
 
+import com.google.devtools.ksp.gradle.KspTaskJS
 import dev.tonholo.marktdown.domain.content.MarktdownElement
 import dev.tonholo.marktdown.gradle.plugin.dsl.MarktdownExtension
-import dev.tonholo.marktdown.gradle.plugin.dsl.apply
+import dev.tonholo.marktdown.gradle.plugin.dsl.with
 import dev.tonholo.marktdown.processor.renderer.MarktdownElementRendererCreator
 import dev.tonholo.marktdown.processor.renderer.compose.html.ComposeHtmlRendererGenerator
 import java.nio.file.Path
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
+import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.InputDirectory
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
@@ -16,6 +19,8 @@ import org.gradle.api.tasks.TaskContainer
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.withType
+import org.gradle.work.Incremental
+import org.gradle.work.InputChanges
 import org.jetbrains.kotlin.gradle.dsl.KotlinJsCompile
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType
@@ -23,6 +28,8 @@ import kotlin.io.path.ExperimentalPathApi
 import kotlin.io.path.Path
 import kotlin.io.path.createDirectories
 import kotlin.io.path.deleteRecursively
+import kotlin.io.path.exists
+import kotlin.io.path.nameWithoutExtension
 import kotlin.io.path.useDirectoryEntries
 import kotlin.io.path.useLines
 import kotlin.reflect.KClass
@@ -31,6 +38,17 @@ import kotlin.reflect.KClass
  * Task for generating MarkdownElement renderer files.
  */
 abstract class MarktdownRendererTask : DefaultTask() {
+    @get:Incremental
+    @get:InputDirectory
+    val modelsDir: DirectoryProperty = project.objects.directoryProperty()
+
+    @get:InputDirectory
+    val renderersDir: DirectoryProperty = project.objects.directoryProperty().apply {
+        set(
+            project.layout.buildDirectory.dir("generated/marktdown/kotlin/jsMain"),
+        )
+    }
+
     /**
      * The root output directory for the generated renderers files.
      *
@@ -41,9 +59,7 @@ abstract class MarktdownRendererTask : DefaultTask() {
      */
     @get:OutputDirectory
     val rootOutputDirectory: Path
-        get() = project.layout.buildDirectory
-            .dir("generated/marktdown/kotlin/jsMain")
-            .get()
+        get() = renderersDir.get()
             .asFile
             .toPath()
 
@@ -82,7 +98,12 @@ abstract class MarktdownRendererTask : DefaultTask() {
      */
     @OptIn(ExperimentalPathApi::class)
     @TaskAction
-    fun generateRenderers() {
+    fun generateRenderers(inputChanges: InputChanges) {
+        println(
+            if (inputChanges.isIncremental) "Executing incrementally"
+            else "Executing non-incrementally"
+        )
+
         val pkg = packageName.replace(".", "/")
         val modelsPath = modelsOriginPath?.let { Path("$it/$pkg") }
             ?: project.layout.buildDirectory
@@ -100,7 +121,7 @@ abstract class MarktdownRendererTask : DefaultTask() {
         val elementsToRender = mutableSetOf<KClass<out MarktdownElement>>()
         modelsPath.useDirectoryEntries("*.kt") { paths ->
             for (path in paths) {
-                println("path = $path")
+                logger.debug("path = {}", path)
                 path.useLines { lines ->
                     lines
                         .filter {
@@ -123,6 +144,7 @@ abstract class MarktdownRendererTask : DefaultTask() {
                 }.let(elementsToRender::addAll)
             }
         }
+        logger.debug("elements to render = {}", elementsToRender)
 
         MarktdownElementRendererCreator(
             rendererGenerator = ComposeHtmlRendererGenerator(
@@ -154,7 +176,15 @@ fun TaskContainer.registerMarktdownRendererTask(
             val task = register<MarktdownRendererTask>(
                 "generateJsMainMarktdownElementsRender",
             ) {
-                apply(extension)
+                with(extension)
+
+                val pkg = packageName.replace(".", "/")
+                modelsDir.set(
+                    extension.models.origin?.dir(pkg)
+                        ?: project.layout.buildDirectory
+                            .dir("generated/marktdown/kotlin/commonMain/$pkg")
+                            .get()
+                )
 
                 val modelsProject = rootProject.allprojects.first {
                     it.name == modelsContainerProject.name
@@ -163,11 +193,14 @@ fun TaskContainer.registerMarktdownRendererTask(
                 processorTask?.let {
                     dependsOn(it)
                 }
-
-                tasks.findByName("kspJs")?.mustRunAfter(this)
             }
             tasks.withType<KotlinJsCompile>().configureEach {
                 dependsOn(task)
+            }
+            tasks.withType(KspTaskJS::class.java).configureEach {
+                logger.trace("Found KSP Task.")
+                dependsOn(task)
+                mustRunAfter(task)
             }
             val outputDir = task.map { it.rootOutputDirectory }
             sourceSet.kotlin.srcDirs(outputDir)

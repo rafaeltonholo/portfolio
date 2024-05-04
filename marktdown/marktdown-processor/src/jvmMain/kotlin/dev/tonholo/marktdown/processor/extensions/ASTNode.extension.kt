@@ -2,6 +2,7 @@ package dev.tonholo.marktdown.processor.extensions
 
 import dev.tonholo.marktdown.processor.visitor.MarktdownElementTypes
 import dev.tonholo.marktdown.processor.visitor.MarktdownRenderer
+import org.intellij.markdown.MarkdownElementTypes
 import org.intellij.markdown.MarkdownTokenTypes
 import org.intellij.markdown.ast.ASTNode
 import org.intellij.markdown.ast.ASTNodeImpl
@@ -24,12 +25,15 @@ private val textTokens = setOf(
     MarkdownTokenTypes.EXCLAMATION_MARK,
 )
 
-context(MarktdownRenderer)
-val ASTNode.literal
-    get() = getTextInNode(content)
+private val startTagRegex = Regex("^<(\\w+[^>]*)>")
+private val endTagRegex = Regex("^</\\w+[^>]*>")
 
 // TODO: improve with a better caching. Maybe an LRU cache?
 private val nodeChildrenToRenderCache = mutableMapOf<ASTNode, List<ASTNode>>()
+
+context(MarktdownRenderer)
+val ASTNode.literal
+    get() = getTextInNode(content)
 
 context(MarktdownRenderer)
 internal val ASTNode.childrenToRender: List<ASTNode>
@@ -49,6 +53,14 @@ internal val ASTNode.childrenToRender: List<ASTNode>
         }
 
         var newChildren = children
+        val hasHtmlBlock = newChildren.any {
+            it.type == MarkdownElementTypes.HTML_BLOCK
+        }
+
+        if (hasHtmlBlock) {
+            newChildren = foldHtmlBlock(newChildren.iterator(), attachToParent)
+        }
+
         val hasInlineHtml = newChildren.any {
             it.type == MarkdownTokenTypes.HTML_TAG && it.parent?.type != MarktdownElementTypes.INLINE_HTML
         }
@@ -126,9 +138,6 @@ private fun foldInlineHtml(
     val inlineHtmlMap = mutableMapOf<ASTNode, MutableList<ASTNode>>()
     val stack = ArrayDeque<ASTNode>()
 
-    val startTagRegex = Regex("^<(\\w+[^>]*)>")
-    val endTagRegex = Regex("^</\\w+[^>]*>")
-
     fun createInlineHtmlNode() {
         val current = stack.removeLast()
         val inlineHtmlChildren = requireNotNull(inlineHtmlMap[current]) {
@@ -196,5 +205,48 @@ private fun foldInlineHtml(
         }
         createInlineHtmlNode()
     }
+    return newChildren
+}
+
+private val htmlBlockTypes = setOf(MarkdownElementTypes.HTML_BLOCK, MarkdownTokenTypes.EOL)
+
+private fun foldHtmlBlock(
+    iterator: Iterator<ASTNode>,
+    attachToParent: ASTNodeImpl.() -> Unit
+): List<ASTNode> {
+    val newChildren = mutableListOf<ASTNode>()
+    var htmlBlockChildren: MutableList<ASTNode>? = null
+    fun createHtmlBlockNodeIfNeeded() {
+        htmlBlockChildren?.let { children ->
+            newChildren += CompositeASTNode(
+                type = MarkdownElementTypes.HTML_BLOCK,
+                children = children,
+            ).apply(attachToParent)
+            htmlBlockChildren = null
+        }
+    }
+
+    while (iterator.hasNext()) {
+        val current = iterator.next()
+        when {
+            current.type == MarkdownElementTypes.HTML_BLOCK && htmlBlockChildren == null -> {
+                htmlBlockChildren = mutableListOf<ASTNode>().apply { addAll(current.children) }
+            }
+
+            current.type in htmlBlockTypes -> {
+                htmlBlockChildren?.let { children ->
+                    children += current.children
+                }
+            }
+
+            else -> {
+                createHtmlBlockNodeIfNeeded()
+                newChildren += current
+            }
+        }
+    }
+
+    createHtmlBlockNodeIfNeeded()
+
     return newChildren
 }

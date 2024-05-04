@@ -6,7 +6,7 @@ import kotlin.reflect.KClass
 object MarktdownRenderer {
     @Target(AnnotationTarget.FUNCTION)
     @Retention(AnnotationRetention.SOURCE)
-    annotation class Default
+    annotation class Default(val type: KClass<out MarktdownElement>)
 
     @Target(AnnotationTarget.FUNCTION)
     @Retention(AnnotationRetention.SOURCE)

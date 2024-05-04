@@ -252,34 +252,34 @@ sealed interface TableContent : MarktdownElement {
 
 sealed interface ListElement : MarktdownElement {
     data class Unordered(
-        val options: List<ListItem>,
-    ) : ListElement {
+        override val children: List<ListItem>,
+    ) : ListElement, MarktdownParent<ListItem> {
         companion object {
             operator fun invoke(
                 vararg options: ListItem,
             ): Unordered = Unordered(
-                options = options.toList(),
+                children = options.toList(),
             )
         }
     }
 
     data class Ordered(
-        val options: List<ListItem>,
+        override val children: List<ListItem>,
         val startWith: Int? = null,
-    ) : ListElement {
+    ) : ListElement, MarktdownParent<ListItem> {
         companion object {
             operator fun invoke(
                 startWith: Int? = null,
                 vararg options: ListItem,
             ): Ordered = Ordered(
-                options = options.toList(),
+                children = options.toList(),
                 startWith = startWith,
             )
 
             operator fun invoke(
                 vararg options: ListItem,
             ): Ordered = Ordered(
-                options = options.toList(),
+                children = options.toList(),
             )
         }
     }
@@ -292,3 +292,7 @@ sealed interface ListElement : MarktdownElement {
         override val children: List<MarktdownElement>
     ) : ListElement, MarktdownParent<MarktdownElement>
 }
+
+data class HtmlBlock(
+    val content: String,
+) : MarktdownElement
