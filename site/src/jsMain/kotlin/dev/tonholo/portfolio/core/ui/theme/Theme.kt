@@ -129,6 +129,11 @@ object Theme {
         @Composable
         @ReadOnlyComposable
         get() = LocalElevations.current
+
+    val icons: IconScheme
+        @Composable
+        @ReadOnlyComposable
+        get() = LocalIconScheme.current
 }
 
 /**
@@ -147,6 +152,13 @@ val ComponentModifier.elevations
         ElevationsDark
     } else {
         ElevationsLight
+    }
+
+val ComponentModifier.icons
+    get() = if (colorMode == ColorMode.DARK) {
+        IconScheme.Dark
+    } else {
+        IconScheme.Light
     }
 
 /**
@@ -211,9 +223,9 @@ fun Theme(
                 localStorage.setItem(COLOR_MODE_KEY, colorMode.name)
             }
 
-            val (colorScheme, elevations) = when (colorMode) {
-                ColorMode.LIGHT -> LightColorScheme to ElevationsLight
-                ColorMode.DARK -> DarkColorScheme to ElevationsDark
+            val (colorScheme, elevations, icons) = when (colorMode) {
+                ColorMode.LIGHT -> Triple(LightColorScheme, ElevationsLight, IconScheme.Light)
+                ColorMode.DARK -> Triple(DarkColorScheme, ElevationsDark, IconScheme.Dark)
             }
 
             InitSilkWidgetVariables()
@@ -226,6 +238,7 @@ fun Theme(
                 LocalLyricist provides lyricist,
                 LocalTypography provides Typography,
                 LocalElevations provides elevations,
+                LocalIconScheme provides icons,
             ) {
                 ProvideStrings(lyricist) {
                     Surface(

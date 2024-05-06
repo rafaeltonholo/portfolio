@@ -20,6 +20,7 @@ import dev.tonholo.portfolio.core.components.AdaptiveLayout
 import dev.tonholo.portfolio.core.components.Scaffold
 import dev.tonholo.portfolio.core.extensions.padding
 import dev.tonholo.portfolio.core.sections.AppBar
+import dev.tonholo.portfolio.core.sections.Footer
 import dev.tonholo.portfolio.core.ui.theme.colorScheme
 import dev.tonholo.portfolio.features.home.sections.Experiences
 import dev.tonholo.portfolio.features.home.sections.Summary
@@ -124,6 +125,11 @@ fun HomeContent(
                 onHomeClick = onHomeClick,
                 onArticleClick = onArticleClick,
                 onResumeClick = onResumeClick,
+            )
+        },
+        bottomBar = {
+            Footer(
+                modifier = Modifier.fillMaxWidth(),
             )
         }
     ) { paddingValues ->

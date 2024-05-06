@@ -104,6 +104,7 @@ data class Description(
 data class Strings(
     val screens: Screen,
     val navBar: NavBar,
+    val footer: Footer,
 )
 
 @LyricistStrings(languageTag = Locales.EN, default = true)
@@ -186,7 +187,10 @@ val EnStrings = Strings(
         home = "Home",
         articles = "Articles",
         resume = "Resume",
-    )
+    ),
+    footer = Footer(
+        copyright = "2024 Rafael Tonholo. All Rights reserved.  Designed by Amanda Bicalho",
+    ),
 )
 
 @LyricistStrings(languageTag = Locales.PT_BR)
@@ -312,5 +316,8 @@ val PtStrings = Strings(
         home = "Início",
         articles = "Artigos",
         resume = "Currículo",
-    )
+    ),
+    footer = Footer(
+        copyright = "2024 Rafael Tonholo. Todos os direitos reservados. Design por Amanda Bicalho",
+    ),
 )

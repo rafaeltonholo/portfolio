@@ -18,6 +18,7 @@ import dev.tonholo.kotlin.wrapper.highlightjs.core.language.toSupportedLanguage
 import dev.tonholo.kotlin.wrapper.highlightjs.core.style.SupportedStyle
 import dev.tonholo.marktdown.domain.content.CodeFence
 import dev.tonholo.marktdown.domain.content.TextElement
+import dev.tonholo.marktdown.domain.renderer.MarktdownElementScope
 import dev.tonholo.marktdown.domain.renderer.MarktdownRenderer
 import dev.tonholo.portfolio.KmpMigratrionPart1En
 import dev.tonholo.portfolio.core.components.Scaffold
@@ -180,9 +181,7 @@ fun CodeBlockScope.BottomBar(
 
 @Composable
 @MarktdownRenderer.Custom(type = CodeFence::class)
-fun CodeFenceCustomRender(
-    element: CodeFence,
-) {
+fun MarktdownElementScope<CodeFence>.CodeFenceCustomRender() {
     val colorMode = ColorMode.current
     CodeBlock(
         code = element.code,
@@ -197,9 +196,7 @@ fun CodeFenceCustomRender(
 
 @Composable
 @MarktdownRenderer.Custom(type = TextElement.EmphasisText::class)
-fun EmphasisTextCustomRender(
-    element: TextElement.EmphasisText,
-) {
+fun MarktdownElementScope<TextElement.EmphasisText>.EmphasisTextCustomRender() {
     I {
         element.children.forEach {
             MarktdownElement(it)

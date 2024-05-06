@@ -7,7 +7,6 @@ import cafe.adriel.lyricist.LanguageTag
 import cafe.adriel.lyricist.LocalStrings
 import com.varabyte.kobweb.browser.dom.ElementTarget
 import com.varabyte.kobweb.compose.css.CSSLengthNumericValue
-import com.varabyte.kobweb.compose.css.FontWeight
 import com.varabyte.kobweb.compose.foundation.layout.Arrangement
 import com.varabyte.kobweb.compose.foundation.layout.Row
 import com.varabyte.kobweb.compose.ui.Alignment
@@ -32,7 +31,7 @@ import com.varabyte.kobweb.silk.components.style.ComponentStyle
 import com.varabyte.kobweb.silk.components.style.hover
 import com.varabyte.kobweb.silk.components.style.toModifier
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
-import dev.tonholo.portfolio.core.components.text.Text
+import dev.tonholo.portfolio.core.components.Logo
 import dev.tonholo.portfolio.core.extensions.padding
 import dev.tonholo.portfolio.core.foundation.elevation
 import dev.tonholo.portfolio.core.ui.theme.Theme
@@ -110,12 +109,7 @@ fun AppBar(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Text(
-            text = "Rafael Tonholo",
-            style = Theme.typography.labelLarge
-                .copy(fontWeight = FontWeight.SemiBold),
-            modifier = Modifier.padding(left = 8.dp),
-        )
+        Logo(modifier = Modifier.padding(left = 8.dp))
         Row(
             modifier = Modifier.gap(24.dp)
         ) {
