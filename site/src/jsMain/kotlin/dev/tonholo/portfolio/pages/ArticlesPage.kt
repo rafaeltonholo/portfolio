@@ -47,6 +47,7 @@ fun ArticlesPage() {
     Scaffold(
         topBar = {
             AppBar(
+                selectedLanguage = lyricist.languageTag,
                 onLocaleChange = { languageTag ->
                     lyricist.languageTag = languageTag
                     localStorage.setItem(Locale.localStorageKey, languageTag)

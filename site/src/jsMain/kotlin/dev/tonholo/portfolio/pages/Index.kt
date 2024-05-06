@@ -19,6 +19,7 @@ import kotlinx.browser.localStorage
 fun HomePage() {
     val lyricist = LocalLyricist.current
     val context = rememberPageContext()
+    val home = lyricist.strings.pages.home
     HomeContent(
         home = home,
         selectedLanguage = lyricist.languageTag,
