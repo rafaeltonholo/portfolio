@@ -111,6 +111,7 @@ val DetailPanel by ComponentStyle {
 
 @Composable
 fun HomeContent(
+    home: Home,
     selectedLanguage: LanguageTag,
     modifier: Modifier = Modifier,
     onLocaleChange: (LanguageTag) -> Unit,
