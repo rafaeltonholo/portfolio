@@ -32,6 +32,6 @@ fun Modifier.padding(
     }
     val bottom = paddingValues.calculateBottomPadding()
     if (bottom != 0.px) {
-        left(bottom)
+        bottom(bottom)
     }
 }
