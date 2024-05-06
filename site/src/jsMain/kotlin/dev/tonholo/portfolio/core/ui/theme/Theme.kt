@@ -56,26 +56,6 @@ import org.jetbrains.compose.web.css.vh
 
 private const val COLOR_MODE_KEY = "portfolio:colorMode"
 
-private val DarkColorScheme = ColorScheme(
-    primary = LimeGreen90,
-    onPrimary = LimeGreen0,
-    background = Neutral0,
-    onBackground = Neutral100,
-    surface = Neutral10,
-    onSurface = Neutral90,
-    onSurfaceVariant = Neutral80,
-)
-
-private val LightColorScheme = ColorScheme(
-    primary = LimeGreen50,
-    onPrimary = White,
-    background = Neutral100,
-    onBackground = Neutral10,
-    surface = LimeGreen100,
-    onSurface = Neutral10,
-    onSurfaceVariant = Neutral30,
-)
-
 private val ElevationsLight = Elevations(
     level1 = Elevation(
         shadow {

@@ -24,6 +24,7 @@ data class ColorScheme(
     val onTertiaryContainer: Color = Color.Unspecified,
     val background: Color = Color.Unspecified,
     val onBackground: Color = Color.Unspecified,
+    val onBackgroundVariant: Color = Color.Unspecified,
     val surface: Color = Color.Unspecified,
     val onSurface: Color = Color.Unspecified,
     val surfaceVariant: Color = Color.Unspecified,
