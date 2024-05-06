@@ -43,6 +43,7 @@ fun HomeContent(
     modifier: Modifier = Modifier,
     onLocaleChange: (LanguageTag) -> Unit,
     onHomeClick: () -> Unit = {},
+    onAboutClick: () -> Unit = {},
     onArticleClick: () -> Unit = {},
     onResumeClick: () -> Unit = {},
 ) {
@@ -53,6 +54,7 @@ fun HomeContent(
                 selectedLanguage = selectedLanguage,
                 onLocaleChange = onLocaleChange,
                 onHomeClick = onHomeClick,
+                onAboutClick = onAboutClick,
                 onArticleClick = onArticleClick,
                 onResumeClick = onResumeClick,
             )

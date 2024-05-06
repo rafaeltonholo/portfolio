@@ -6,6 +6,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.fillMaxSize
 import com.varabyte.kobweb.core.Page
 import com.varabyte.kobweb.core.rememberPageContext
 import com.varabyte.kobweb.navigation.Route
+import dev.tonholo.portfolio.core.router.About
 import dev.tonholo.portfolio.core.router.Articles
 import dev.tonholo.portfolio.core.router.Resume
 import dev.tonholo.portfolio.core.ui.theme.LocalLyricist
@@ -27,6 +28,9 @@ fun HomePage() {
         onLocaleChange = { languageTag ->
             lyricist.languageTag = languageTag
             localStorage.setItem(Locale.localStorageKey, languageTag)
+        },
+        onAboutClick = {
+            context.router.navigateTo(Route.About)
         },
         onArticleClick = {
             context.router.navigateTo(Route.Articles)

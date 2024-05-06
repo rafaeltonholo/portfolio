@@ -21,6 +21,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.gap
 import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.compose.ui.modifiers.setVariable
 import com.varabyte.kobweb.compose.ui.thenIf
+import com.varabyte.kobweb.navigation.Route
 import com.varabyte.kobweb.silk.components.forms.Button
 import com.varabyte.kobweb.silk.components.forms.ButtonVars
 import com.varabyte.kobweb.silk.components.icons.mdi.MdiDarkMode
@@ -34,6 +35,10 @@ import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import dev.tonholo.portfolio.core.components.Logo
 import dev.tonholo.portfolio.core.extensions.padding
 import dev.tonholo.portfolio.core.foundation.elevation
+import dev.tonholo.portfolio.core.router.About
+import dev.tonholo.portfolio.core.router.Articles
+import dev.tonholo.portfolio.core.router.Home
+import dev.tonholo.portfolio.core.router.Resume
 import dev.tonholo.portfolio.core.ui.theme.Theme
 import dev.tonholo.portfolio.core.ui.theme.color.Unspecified
 import dev.tonholo.portfolio.core.ui.theme.colorScheme
@@ -94,13 +99,13 @@ val IconButtonStyles by ComponentStyle {
     }
 }
 
-
 @Composable
 fun AppBar(
     selectedLanguage: LanguageTag,
     modifier: Modifier = Modifier,
     onLocaleChange: (LanguageTag) -> Unit = {},
     onHomeClick: () -> Unit = {},
+    onAboutClick: () -> Unit = {},
     onArticleClick: () -> Unit = {},
     onResumeClick: () -> Unit = {},
 ) {
@@ -117,17 +122,22 @@ fun AppBar(
             AppBarButton(
                 text = strings.navBar.home,
                 onClick = onHomeClick,
-                isSelected = window.location.pathname == "/",
+                isSelected = window.location.pathname == Route.Home,
+            )
+            AppBarButton(
+                text = strings.navBar.about,
+                onClick = onAboutClick,
+                isSelected = window.location.pathname == Route.About,
             )
             AppBarButton(
                 text = strings.navBar.articles,
                 onClick = onArticleClick,
-                isSelected = window.location.pathname == "article",
+                isSelected = window.location.pathname == Route.Articles,
             )
             AppBarButton(
                 text = strings.navBar.resume,
                 onClick = onResumeClick,
-                isSelected = window.location.pathname == "/resume",
+                isSelected = window.location.pathname == Route.Resume,
             )
         }
         Row(

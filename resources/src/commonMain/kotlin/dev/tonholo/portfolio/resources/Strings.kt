@@ -14,12 +14,6 @@ import dev.tonholo.portfolio.resources.workExperience.REDSpace
 import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
 
-data class NavBar(
-    val home: String,
-    val articles: String,
-    val resume: String,
-)
-
 data class Screen(
     val home: HomePage,
     val articles: List<MarktdownDocument>,
@@ -184,11 +178,7 @@ val EnStrings = Strings(
             MyArticleEn,
         ),
     ),
-    navBar = NavBar(
-        home = "Home",
-        articles = "Articles",
-        resume = "Resume",
-    ),
+    navBar = NavBar.En,
     footer = Footer(
         copyright = "2024 Rafael Tonholo. All Rights reserved.  Designed by Amanda Bicalho",
     ),
@@ -317,11 +307,7 @@ val PtStrings = Strings(
             MyArticlePtBr,
         ),
     ),
-    navBar = NavBar(
-        home = "Início",
-        articles = "Artigos",
-        resume = "Currículo",
-    ),
+    navBar = NavBar.PtBr,
     footer = Footer(
         copyright = "2024 Rafael Tonholo. Todos os direitos reservados. Design por Amanda Bicalho",
     ),
