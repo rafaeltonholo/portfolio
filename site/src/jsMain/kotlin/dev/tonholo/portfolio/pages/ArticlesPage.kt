@@ -21,7 +21,7 @@ import dev.tonholo.marktdown.domain.content.TextElement
 import dev.tonholo.marktdown.domain.renderer.MarktdownElementScope
 import dev.tonholo.marktdown.domain.renderer.MarktdownRenderer
 import dev.tonholo.portfolio.KmpMigratrionPart1En
-import dev.tonholo.portfolio.core.components.Scaffold
+import dev.tonholo.portfolio.core.components.layout.Scaffold
 import dev.tonholo.portfolio.core.components.text.Text
 import dev.tonholo.portfolio.core.router.AppRoutes
 import dev.tonholo.portfolio.core.router.Home
