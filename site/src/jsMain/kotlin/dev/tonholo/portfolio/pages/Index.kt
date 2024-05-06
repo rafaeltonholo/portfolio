@@ -20,6 +20,7 @@ fun HomePage() {
     val lyricist = LocalLyricist.current
     val context = rememberPageContext()
     HomeContent(
+        selectedLanguage = lyricist.languageTag,
         modifier = Modifier.fillMaxSize(),
         onLocaleChange = { languageTag ->
             lyricist.languageTag = languageTag

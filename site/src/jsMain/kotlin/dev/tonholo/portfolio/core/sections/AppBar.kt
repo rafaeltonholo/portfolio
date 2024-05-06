@@ -97,6 +97,7 @@ val IconButtonStyles by ComponentStyle {
 
 @Composable
 fun AppBar(
+    selectedLanguage: LanguageTag,
     modifier: Modifier = Modifier,
     onLocaleChange: (LanguageTag) -> Unit = {},
     onHomeClick: () -> Unit = {},
@@ -135,7 +136,10 @@ fun AppBar(
             ColorModeButton(
                 modifier = Modifier.alignSelf(AlignSelf.FlexEnd),
             )
-            LanguageChanger(onLocaleChange = onLocaleChange)
+            LanguageChanger(
+                selected = selectedLanguage,
+                onLocaleChange = onLocaleChange,
+            )
         }
     }
 }

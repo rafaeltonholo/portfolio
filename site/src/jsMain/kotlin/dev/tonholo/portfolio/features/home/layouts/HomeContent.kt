@@ -111,6 +111,7 @@ val DetailPanel by ComponentStyle {
 
 @Composable
 fun HomeContent(
+    selectedLanguage: LanguageTag,
     modifier: Modifier = Modifier,
     onLocaleChange: (LanguageTag) -> Unit,
     onHomeClick: () -> Unit = {},
@@ -121,6 +122,7 @@ fun HomeContent(
         modifier = HomeContentStyle.toModifier() then modifier,
         topBar = {
             AppBar(
+                selectedLanguage = selectedLanguage,
                 onLocaleChange = onLocaleChange,
                 onHomeClick = onHomeClick,
                 onArticleClick = onArticleClick,
