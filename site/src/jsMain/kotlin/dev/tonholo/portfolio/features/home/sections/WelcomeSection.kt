@@ -45,7 +45,7 @@ fun WelcomeSection(
             SocialMediaRow()
         }
         Image(
-            src = "images/welcome-pic.png",
+            src = "https://secure.gravatar.com/avatar/9c32dd678349834ba86b53dcbc4612b7?size=500",
             modifier = Modifier
                 .margin { left(24.dp) }
                 .size(552.dp, 414.dp)
@@ -56,17 +56,3 @@ fun WelcomeSection(
         )
     }
 }
-
-
-///* Image */
-//
-//width: 552px;
-//height: 414px;
-//
-//background: url(.jpg);
-//border-radius: 200px 0px 0px 200px;
-//
-///* Inside auto layout */
-//flex: none;
-//order: 1;
-//flex-grow: 1;
