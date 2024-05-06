@@ -27,14 +27,6 @@ val RecentProjectsSectionStyles by ComponentStyle {
     }
 }
 
-val RecentProjectsCardStyles by ComponentStyle {
-    base {
-        Modifier
-            .flexGrow(0.5f)
-            .flexShrink(1f)
-    }
-}
-
 @Composable
 fun RecentProjectsSection(
     recentProjects: RecentProjectsSection,
@@ -58,7 +50,6 @@ fun RecentProjectsSection(
                     name = project.title,
                     description = project.description,
                     src = project.src,
-                    modifier = RecentProjectsCardStyles.toModifier(),
                 )
             }
         }
