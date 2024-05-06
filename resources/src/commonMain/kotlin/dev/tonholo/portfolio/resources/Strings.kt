@@ -5,6 +5,10 @@ import dev.tonholo.marktdown.domain.content.MarktdownDocument
 import dev.tonholo.portfolio.MyArticleEn
 import dev.tonholo.portfolio.MyArticlePtBr
 import dev.tonholo.portfolio.locale.Locales
+import dev.tonholo.portfolio.resources.pages.AboutPage
+import dev.tonholo.portfolio.resources.pages.Home
+import dev.tonholo.portfolio.resources.pages.Page
+import dev.tonholo.portfolio.resources.pages.Pages
 import dev.tonholo.portfolio.resources.workExperience.Axxiom
 import dev.tonholo.portfolio.resources.workExperience.BairesDev
 import dev.tonholo.portfolio.resources.workExperience.Planear
@@ -184,6 +188,7 @@ val EnStrings = Strings(
     ),
     pages = Pages(
         home = Home.En,
+        about = AboutPage.En,
     ),
     viewProject = "View Project",
 )
@@ -313,6 +318,7 @@ val PtStrings = Strings(
     ),
     pages = Pages(
         home = Home.PtBr,
+        about = AboutPage.PtBr,
     ),
     viewProject = "Ver projeto",
 )

@@ -1,19 +1,21 @@
-package dev.tonholo.portfolio.resources
+package dev.tonholo.portfolio.resources.pages
+
+import dev.tonholo.portfolio.resources.Project
 
 data class Home(
     val welcome: WelcomeSection,
-    val about: AboutSection,
+    val about: HomeAboutSection,
     val recentProjects: RecentProjectsSection,
 ) : Page {
     companion object {
         val En = Home(
             welcome = WelcomeSection.En,
-            about = AboutSection.En,
+            about = HomeAboutSection.En,
             recentProjects = RecentProjectsSection.En,
         )
         val PtBr = Home(
             welcome = WelcomeSection.PtBr,
-            about = AboutSection.PtBr,
+            about = HomeAboutSection.PtBr,
             recentProjects = RecentProjectsSection.PtBr,
         )
     }
@@ -39,18 +41,18 @@ data class WelcomeSection(
     }
 }
 
-data class AboutSection(
+data class HomeAboutSection(
     val title: String,
     val description: String,
 ) : Section {
     companion object {
-        val En = AboutSection(
+        val En = HomeAboutSection(
             title = "What I do",
             description = buildString {
                 append("I code, write and bake, but mostly code using ....")
             },
         )
-        val PtBr = AboutSection(
+        val PtBr = HomeAboutSection(
             title = "O que faço",
             description = buildString {
                 append("Eu programo, escrevo e cozinho, mas principalmente programo usando ....")

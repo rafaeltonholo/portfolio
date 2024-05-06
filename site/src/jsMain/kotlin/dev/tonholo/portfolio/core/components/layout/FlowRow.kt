@@ -14,6 +14,7 @@ import com.varabyte.kobweb.silk.components.style.ComponentStyle
 import com.varabyte.kobweb.silk.components.style.toModifier
 import dev.tonholo.portfolio.core.ui.unit.Dp
 import org.jetbrains.compose.web.css.DisplayStyle
+import org.jetbrains.compose.web.css.fr
 import org.w3c.dom.HTMLElement
 
 object FlowRowVars {
@@ -33,10 +34,9 @@ val FlowRowStyle by ComponentStyle {
             .display(DisplayStyle.Grid)
             .then(
                 FlowRowVars.maxItemsInEachRow.value().let { value ->
-                    println(value)
                     Modifier.gridTemplateColumns {
                         repeat(count = value) {
-                            size(auto)
+                            size(1.fr)
                         }
                     }
                 }

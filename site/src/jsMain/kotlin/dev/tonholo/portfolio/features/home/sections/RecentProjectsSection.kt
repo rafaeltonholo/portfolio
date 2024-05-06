@@ -4,9 +4,6 @@ import androidx.compose.runtime.Composable
 import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier
-import com.varabyte.kobweb.compose.ui.modifiers.flex
-import com.varabyte.kobweb.compose.ui.modifiers.flexGrow
-import com.varabyte.kobweb.compose.ui.modifiers.flexShrink
 import com.varabyte.kobweb.compose.ui.modifiers.gap
 import com.varabyte.kobweb.silk.components.style.ComponentStyle
 import com.varabyte.kobweb.silk.components.style.toModifier
@@ -17,7 +14,7 @@ import dev.tonholo.portfolio.core.extensions.padding
 import dev.tonholo.portfolio.core.ui.theme.Theme
 import dev.tonholo.portfolio.core.ui.unit.dp
 import dev.tonholo.portfolio.features.home.components.ProjectCard
-import dev.tonholo.portfolio.resources.RecentProjectsSection
+import dev.tonholo.portfolio.resources.pages.RecentProjectsSection
 
 val RecentProjectsSectionStyles by ComponentStyle {
     base {

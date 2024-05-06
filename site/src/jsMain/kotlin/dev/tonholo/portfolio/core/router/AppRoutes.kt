@@ -11,17 +11,17 @@ sealed interface AppRoutes {
     }
 
     data object Articles : AppRoutes {
-        const val ROUTE = "articles"
+        const val ROUTE = "/articles"
         override val route: String = ROUTE
     }
 
     data object About : AppRoutes {
-        const val ROUTE = "about"
+        const val ROUTE = "/about"
         override val route: String = ROUTE
     }
 
     data object Resume : AppRoutes {
-        const val ROUTE = "resume"
+        const val ROUTE = "/resume"
         override val route: String = ROUTE
     }
 }

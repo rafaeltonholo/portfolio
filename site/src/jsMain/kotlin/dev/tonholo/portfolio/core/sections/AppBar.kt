@@ -21,6 +21,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.gap
 import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.compose.ui.modifiers.setVariable
 import com.varabyte.kobweb.compose.ui.thenIf
+import com.varabyte.kobweb.core.rememberPageContext
 import com.varabyte.kobweb.navigation.Route
 import com.varabyte.kobweb.silk.components.forms.Button
 import com.varabyte.kobweb.silk.components.forms.ButtonVars
@@ -48,7 +49,6 @@ import dev.tonholo.portfolio.core.ui.theme.typography
 import dev.tonholo.portfolio.core.ui.theme.typography.toModifier
 import dev.tonholo.portfolio.core.ui.unit.dp
 import dev.tonholo.portfolio.features.home.components.LanguageChanger
-import kotlinx.browser.window
 import org.jetbrains.compose.web.css.AlignSelf
 import org.jetbrains.compose.web.css.em
 import org.jetbrains.compose.web.css.keywords.auto
@@ -110,6 +110,8 @@ fun AppBar(
     onResumeClick: () -> Unit = {},
 ) {
     val strings = LocalStrings.current
+    val context = rememberPageContext()
+    val currentRoute = context.route
     Row(
         modifier = AppBarStyles.toModifier() then modifier,
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -122,22 +124,22 @@ fun AppBar(
             AppBarButton(
                 text = strings.navBar.home,
                 onClick = onHomeClick,
-                isSelected = window.location.pathname == Route.Home,
+                isSelected = currentRoute.path == Route.Home,
             )
             AppBarButton(
                 text = strings.navBar.about,
                 onClick = onAboutClick,
-                isSelected = window.location.pathname == Route.About,
+                isSelected = currentRoute.path == Route.About,
             )
             AppBarButton(
                 text = strings.navBar.articles,
                 onClick = onArticleClick,
-                isSelected = window.location.pathname == Route.Articles,
+                isSelected = currentRoute.path == Route.Articles,
             )
             AppBarButton(
                 text = strings.navBar.resume,
                 onClick = onResumeClick,
-                isSelected = window.location.pathname == Route.Resume,
+                isSelected = currentRoute.path == Route.Resume,
             )
         }
         Row(

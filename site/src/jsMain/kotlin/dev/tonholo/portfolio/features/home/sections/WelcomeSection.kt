@@ -15,7 +15,7 @@ import dev.tonholo.portfolio.core.components.text.Paragraph
 import dev.tonholo.portfolio.core.components.text.Text
 import dev.tonholo.portfolio.core.ui.theme.Theme
 import dev.tonholo.portfolio.core.ui.unit.dp
-import dev.tonholo.portfolio.resources.WelcomeSection
+import dev.tonholo.portfolio.resources.pages.WelcomeSection
 
 @Composable
 fun WelcomeSection(

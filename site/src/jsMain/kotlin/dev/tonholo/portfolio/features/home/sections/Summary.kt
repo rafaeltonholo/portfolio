@@ -20,13 +20,13 @@ import com.varabyte.kobweb.silk.components.graphics.Image
 import com.varabyte.kobweb.silk.components.navigation.Link
 import com.varabyte.kobweb.silk.components.style.ComponentStyle
 import com.varabyte.kobweb.silk.components.style.toModifier
-import dev.tonholo.portfolio.core.components.Divider
+import dev.tonholo.portfolio.core.components.layout.HorizontalDivider
 import dev.tonholo.portfolio.core.components.text.Paragraph
 import dev.tonholo.portfolio.core.components.text.Text
-import dev.tonholo.portfolio.features.home.components.DownloadButton
 import dev.tonholo.portfolio.core.ui.theme.Theme
 import dev.tonholo.portfolio.core.ui.theme.typography
 import dev.tonholo.portfolio.core.ui.theme.typography.toModifier
+import dev.tonholo.portfolio.features.home.components.DownloadButton
 import org.jetbrains.compose.web.css.AlignItems
 import org.jetbrains.compose.web.css.DisplayStyle
 import org.jetbrains.compose.web.css.FlexDirection
@@ -75,7 +75,7 @@ fun Summary(
             style = Theme.typography.labelMedium,
             modifier = Modifier.color(Theme.colorScheme.primary),
         )
-        Divider()
+        HorizontalDivider()
         strings.screens.home.info.about.forEachIndexed { index, paragraph ->
             Paragraph(
                 text = paragraph,
@@ -90,7 +90,7 @@ fun Summary(
                     )
             )
         }
-        Divider()
+        HorizontalDivider()
         Link(
             path = "mailto:rafael@tonholo.dev",
             text = "rafael@tonholo.dev",

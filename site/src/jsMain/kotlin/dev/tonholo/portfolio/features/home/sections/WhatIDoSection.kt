@@ -16,7 +16,7 @@ import dev.tonholo.portfolio.core.extensions.padding
 import dev.tonholo.portfolio.core.ui.theme.Theme
 import dev.tonholo.portfolio.core.ui.theme.colorScheme
 import dev.tonholo.portfolio.core.ui.unit.dp
-import dev.tonholo.portfolio.resources.AboutSection
+import dev.tonholo.portfolio.resources.pages.HomeAboutSection
 
 val WhatIDoStyle by ComponentStyle {
     base {
@@ -30,7 +30,7 @@ val WhatIDoStyle by ComponentStyle {
 
 @Composable
 fun WhatIDoSection(
-    about: AboutSection,
+    about: HomeAboutSection,
     modifier: Modifier = Modifier,
 ) {
     Column(
