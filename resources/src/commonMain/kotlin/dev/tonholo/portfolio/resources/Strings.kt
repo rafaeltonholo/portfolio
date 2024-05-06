@@ -25,7 +25,6 @@ data class Screen(
     val articles: List<MarktdownDocument>,
 )
 
-sealed interface Page
 data class HomePage(
     val info: InfoSection,
     val skills: SkillSection,
@@ -105,6 +104,8 @@ data class Strings(
     val screens: Screen,
     val navBar: NavBar,
     val footer: Footer,
+    val pages: Pages,
+    val viewProject: String,
 )
 
 @LyricistStrings(languageTag = Locales.EN, default = true)
@@ -191,6 +192,10 @@ val EnStrings = Strings(
     footer = Footer(
         copyright = "2024 Rafael Tonholo. All Rights reserved.  Designed by Amanda Bicalho",
     ),
+    pages = Pages(
+        home = Home.En,
+    ),
+    viewProject = "View Project",
 )
 
 @LyricistStrings(languageTag = Locales.PT_BR)
@@ -320,4 +325,8 @@ val PtStrings = Strings(
     footer = Footer(
         copyright = "2024 Rafael Tonholo. Todos os direitos reservados. Design por Amanda Bicalho",
     ),
+    pages = Pages(
+        home = Home.PtBr,
+    ),
+    viewProject = "Ver projeto",
 )
