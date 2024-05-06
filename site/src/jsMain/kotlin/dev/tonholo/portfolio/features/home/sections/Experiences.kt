@@ -33,8 +33,8 @@ fun Experiences(
 
     Column(modifier = experiencesModifier) {
         WorkHistoryList(
-            title = strings.screens.home.historySection.work.title,
-            experiences = strings.screens.home.historySection.work.experiences,
+            title = "",
+            experiences = listOf(),
         )
     }
 }

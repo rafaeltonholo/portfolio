@@ -7,6 +7,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.background
 import com.varabyte.kobweb.compose.ui.modifiers.borderRadius
 import com.varabyte.kobweb.compose.ui.modifiers.color
 import com.varabyte.kobweb.compose.ui.modifiers.display
+import com.varabyte.kobweb.compose.ui.modifiers.fillMaxWidth
 import com.varabyte.kobweb.compose.ui.modifiers.gap
 import com.varabyte.kobweb.compose.ui.modifiers.gridTemplateColumns
 import com.varabyte.kobweb.compose.ui.modifiers.padding
@@ -33,7 +34,9 @@ val MoreAboutMeSectionStyle by ComponentStyle {
 
 val MoreAboutMeHighlightSectionStyle by ComponentStyle {
     base {
-        Modifier.display(DisplayStyle.Grid)
+        Modifier
+            .fillMaxWidth()
+            .display(DisplayStyle.Grid)
             .gridTemplateColumns {
                 repeat(count = 2) {
                     size(1.fr)

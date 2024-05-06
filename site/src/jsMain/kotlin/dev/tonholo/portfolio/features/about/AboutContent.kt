@@ -6,6 +6,7 @@ import com.varabyte.kobweb.compose.css.CSSTransition
 import com.varabyte.kobweb.compose.css.TransitionProperty
 import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.ui.Modifier
+import com.varabyte.kobweb.compose.ui.modifiers.fillMaxSize
 import com.varabyte.kobweb.compose.ui.modifiers.fillMaxWidth
 import com.varabyte.kobweb.compose.ui.modifiers.transition
 import com.varabyte.kobweb.silk.components.style.ComponentStyle
@@ -43,7 +44,6 @@ fun AboutContent(
     modifier: Modifier = Modifier,
     onLocaleChange: (LanguageTag) -> Unit,
     onHomeClick: () -> Unit = {},
-    onAboutClick: () -> Unit = {},
     onArticleClick: () -> Unit = {},
     onResumeClick: () -> Unit = {},
 ) {
@@ -54,7 +54,6 @@ fun AboutContent(
                 selectedLanguage = selectedLanguage,
                 onLocaleChange = onLocaleChange,
                 onHomeClick = onHomeClick,
-                onAboutClick = onAboutClick,
                 onArticleClick = onArticleClick,
                 onResumeClick = onResumeClick,
             )
@@ -65,12 +64,19 @@ fun AboutContent(
             )
         }
     ) { paddingValues ->
-        Column(modifier = Modifier.padding(paddingValues)) {
+        Column(
+            modifier = Modifier
+                .padding(paddingValues)
+                .fillMaxSize(),
+        ) {
             MainSection(
                 mainContent = about.main,
             )
             HorizontalDivider(modifier = Modifier.margin(vertical = 80.dp))
-            MoreAboutMeSection(moreAboutMe = about.moreAboutMe)
+            MoreAboutMeSection(
+                moreAboutMe = about.moreAboutMe,
+                modifier = Modifier.fillMaxWidth(),
+            )
         }
     }
 }

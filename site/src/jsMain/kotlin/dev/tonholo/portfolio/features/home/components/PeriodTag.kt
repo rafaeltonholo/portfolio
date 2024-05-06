@@ -41,7 +41,7 @@ fun PeriodTag(
             }
         }
     val strings = LocalStrings.current
-    val endingText = ending?.year ?: strings.screens.home.historySection.work.presentTag
+    val endingText = ending?.year ?: ""
     TextTag(
         text = "${starting.year} - $endingText",
         modifier = periodTagModifier,

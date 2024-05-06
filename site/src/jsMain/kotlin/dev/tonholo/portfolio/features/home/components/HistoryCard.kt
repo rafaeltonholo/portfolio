@@ -89,7 +89,7 @@ fun HistoryCard(
                     .padding { top(0.5.em) },
             ) {
                 Text(
-                    text = strings.screens.home.historySection.work.technologiesUsed,
+                    text = "",
                     style = Theme.typography.labelMedium.copy(fontWeight = FontWeight.Bold),
                     modifier = Modifier.margin {
                         right(0.5.em)

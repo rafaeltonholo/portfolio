@@ -50,6 +50,39 @@ class BoxShadowScope {
     }
 }
 
+fun List<BoxShadow>.toBoxShadowString(): String = joinToString { shadow ->
+    with(shadow) {
+        buildString {
+            if (inset) {
+                append("inset")
+                append(' ')
+            }
+            append(offsetX)
+            append(' ')
+            append(offsetY)
+
+            if (blurRadius != null) {
+                append(' ')
+                append(blurRadius)
+            }
+
+            if (spreadRadius != null) {
+                if (blurRadius == null) {
+                    append(' ')
+                    append('0')
+                }
+                append(' ')
+                append(spreadRadius)
+            }
+
+            if (color != null) {
+                append(' ')
+                append(color)
+            }
+        }
+    }
+}
+
 @BoxShadowDsl
 fun shadow(builder: BoxShadow.() -> Unit): BoxShadow =
     BoxShadowImpl().apply(builder)
@@ -60,39 +93,5 @@ fun Modifier.elevation(elevation: Elevation): Modifier = boxShadow {
 
 fun Modifier.boxShadow(block: BoxShadowScope.() -> Unit): Modifier = styleModifier {
     val scope = BoxShadowScope().apply(block)
-    boxShadow(
-        value =
-        scope.shadows.joinToString { shadow ->
-            with(shadow) {
-                buildString {
-                    if (inset) {
-                        append("inset")
-                        append(' ')
-                    }
-                    append(offsetX)
-                    append(' ')
-                    append(offsetY)
-
-                    if (blurRadius != null) {
-                        append(' ')
-                        append(blurRadius)
-                    }
-
-                    if (spreadRadius != null) {
-                        if (blurRadius == null) {
-                            append(' ')
-                            append('0')
-                        }
-                        append(' ')
-                        append(spreadRadius)
-                    }
-
-                    if (color != null) {
-                        append(' ')
-                        append(color)
-                    }
-                }
-            }
-        },
-    )
+    boxShadow(value = scope.shadows.toBoxShadowString())
 }
