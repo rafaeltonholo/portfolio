@@ -10,6 +10,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.setVariable
 import com.varabyte.kobweb.silk.components.forms.Button
 import com.varabyte.kobweb.silk.components.forms.ButtonVars
 import com.varabyte.kobweb.silk.components.graphics.Image
+import com.varabyte.kobweb.silk.components.navigation.Link
 import com.varabyte.kobweb.silk.components.style.ComponentStyle
 import com.varabyte.kobweb.silk.components.style.toModifier
 import dev.tonholo.portfolio.core.ui.theme.Icon
@@ -19,50 +20,40 @@ import org.jetbrains.compose.web.css.keywords.auto
 
 val SocialMediaRowStyle by ComponentStyle {
     base {
-        Modifier
-            .gap(24.dp)
+        Modifier.gap(24.dp)
     }
 }
 
 @Composable
 fun SocialMediaRow(
     modifier: Modifier = Modifier,
-    onLinkedInClick: () -> Unit = {},
-    onGithubClick: () -> Unit = {},
-    onTwitterClick: () -> Unit = {},
 ) {
     Row(
         modifier = SocialMediaRowStyle.toModifier() then modifier,
     ) {
         SocialMediaButton(
+            path = "https://www.linkedin.com/in/rafaeltonholo/",
             icon = Theme.icons.LinkedIn,
-            onClick = {
-                onLinkedInClick()
-            },
         )
         SocialMediaButton(
+            path = "https://github.com/rafaeltonholo",
             icon = Theme.icons.Github,
-            onClick = {
-                onGithubClick()
-            },
         )
         SocialMediaButton(
+            path = "https://twitter.com/rafaeltonholo",
             icon = Theme.icons.Twitter,
-            onClick = {
-                onTwitterClick()
-            },
         )
     }
 }
 
 @Composable
 private fun SocialMediaButton(
+    path: String,
     icon: Icon.Asset,
     modifier: Modifier = Modifier,
-    onClick: () -> Unit = {},
 ) {
-    Button(
-        onClick = { onClick() },
+    Link(
+        path = path,
         modifier = modifier
             .setVariable(ButtonVars.Height, auto.unsafeCast<CSSLengthNumericValue>())
             .setVariable(ButtonVars.BackgroundDefaultColor, Colors.Transparent)

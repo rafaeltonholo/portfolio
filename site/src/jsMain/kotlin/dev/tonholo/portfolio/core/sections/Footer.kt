@@ -32,9 +32,6 @@ val FooterStyle by ComponentStyle {
 @Composable
 fun Footer(
     modifier: Modifier = Modifier,
-    onLinkedInClick: () -> Unit = {},
-    onGithubClick: () -> Unit = {},
-    onTwitterClick: () -> Unit = {},
 ) {
     val strings = LocalStrings.current
     Column(
@@ -48,11 +45,7 @@ fun Footer(
                 .padding(vertical = 40.dp),
         ) {
             Logo()
-            SocialMediaRow(
-                onLinkedInClick = onLinkedInClick,
-                onGithubClick = onGithubClick,
-                onTwitterClick = onTwitterClick,
-            )
+            SocialMediaRow()
         }
         HorizontalDivider(modifier = Modifier.fillMaxWidth())
         Text(
