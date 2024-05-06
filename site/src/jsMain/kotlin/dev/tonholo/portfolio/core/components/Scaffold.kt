@@ -14,6 +14,7 @@ import com.varabyte.kobweb.silk.components.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.components.style.toModifier
 import dev.tonholo.portfolio.core.extensions.padding
 import dev.tonholo.portfolio.core.foundation.layout.PaddingValues
+import dev.tonholo.portfolio.core.ui.unit.dp
 import org.jetbrains.compose.web.css.AnimationTimingFunction
 import org.jetbrains.compose.web.css.em
 import org.jetbrains.compose.web.css.s
@@ -34,9 +35,9 @@ val ScaffoldStyle by ComponentStyle {
             )
     }
 
-    Breakpoint.MD {
+    Breakpoint.LG {
         Modifier
-            .padding(vertical = 2.vh, horizontal = 3.vw)
+            .padding(vertical = 40.dp, horizontal = 156.dp)
     }
 }
 
@@ -52,8 +53,8 @@ fun Scaffold(
     ) {
         val paddingValues = remember(topBar, bottomBar) {
             PaddingValues(
-                top = if (topBar != null) 1.em else 0.em,
-                bottom = if (bottomBar != null) 1.em else 0.em,
+                top = if (topBar != null) 80.dp else 0.em,
+                bottom = if (bottomBar != null) 80.dp else 0.em,
             )
         }
         topBar?.invoke()
