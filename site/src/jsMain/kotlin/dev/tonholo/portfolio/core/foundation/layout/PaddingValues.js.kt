@@ -4,9 +4,12 @@ package dev.tonholo.portfolio.core.foundation.layout
 
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
-import com.varabyte.kobweb.compose.css.CSSLengthOrPercentageNumericValue
+import com.varabyte.kobweb.compose.css.StyleVariable
+import com.varabyte.kobweb.compose.ui.Modifier
+import com.varabyte.kobweb.compose.ui.modifiers.setVariable
+import dev.tonholo.portfolio.core.ui.unit.Dp
 import dev.tonholo.portfolio.core.ui.unit.LayoutDirection
-import org.jetbrains.compose.web.css.px
+import dev.tonholo.portfolio.core.ui.unit.dp
 
 /**
  * The padding to be applied along the left edge inside a box.
@@ -47,43 +50,49 @@ actual fun <T> PaddingValues.calculateBottomPadding(): T {
 /**
  * The padding to be applied along the left edge inside a box.
  */
-fun PaddingValues.calculateLeftPadding(): CSSLengthOrPercentageNumericValue =
+fun PaddingValues.calculateLeftPadding(): Dp =
     calculateLeftPadding(LayoutDirection.DEFAULT)
 
 /**
  * The padding to be applied along the top edge inside a box.
  */
-fun PaddingValues.calculateTopPadding(): CSSLengthOrPercentageNumericValue =
-    calculateTopPadding<CSSLengthOrPercentageNumericValue>()
+fun PaddingValues.calculateTopPadding(): Dp =
+    calculateTopPadding<Dp>()
 
 /**
  * The padding to be applied along the right edge inside a box.
  */
-fun PaddingValues.calculateRightPadding(): CSSLengthOrPercentageNumericValue =
+fun PaddingValues.calculateRightPadding(): Dp =
     calculateRightPadding(LayoutDirection.DEFAULT)
 
 /**
  * The padding to be applied along the bottom edge inside a box.
  */
-fun PaddingValues.calculateBottomPadding(): CSSLengthOrPercentageNumericValue =
-    calculateBottomPadding<CSSLengthOrPercentageNumericValue>()
+fun PaddingValues.calculateBottomPadding(): Dp =
+    calculateBottomPadding<Dp>()
 
 @Immutable
 private data class PaddingValuesImpl(
     @Stable
-    val start: CSSLengthOrPercentageNumericValue = 0.px,
+    val start: Dp = 0.dp,
     @Stable
-    val top: CSSLengthOrPercentageNumericValue = 0.px,
+    val top: Dp = 0.dp,
     @Stable
-    val end: CSSLengthOrPercentageNumericValue = 0.px,
+    val end: Dp = 0.dp,
     @Stable
-    val bottom: CSSLengthOrPercentageNumericValue = 0.px,
+    val bottom: Dp = 0.dp,
 ) : PaddingValues
 
 @Stable
 fun PaddingValues(
-    start: CSSLengthOrPercentageNumericValue = 0.px,
-    top: CSSLengthOrPercentageNumericValue = 0.px,
-    end: CSSLengthOrPercentageNumericValue = 0.px,
-    bottom: CSSLengthOrPercentageNumericValue = 0.px
+    start: Dp = 0.dp,
+    top: Dp = 0.dp,
+    end: Dp = 0.dp,
+    bottom: Dp = 0.dp
 ): PaddingValues = PaddingValuesImpl(start, top, end, bottom)
+
+@Stable
+fun PaddingValues(
+    vertical: Dp = 0.dp,
+    horizontal: Dp = 0.dp,
+): PaddingValues = PaddingValuesImpl(horizontal, vertical, horizontal, vertical)

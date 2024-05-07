@@ -50,8 +50,8 @@ fun Scaffold(
     ) {
         val paddingValues = remember(topBar, bottomBar) {
             PaddingValues(
-                top = if (topBar != null) 80.dp else 0.em,
-                bottom = if (bottomBar != null) 80.dp else 0.em,
+                top = if (topBar != null) 80.dp else 0.dp,
+                bottom = if (bottomBar != null) 80.dp else 0.dp,
             )
         }
         topBar?.invoke()

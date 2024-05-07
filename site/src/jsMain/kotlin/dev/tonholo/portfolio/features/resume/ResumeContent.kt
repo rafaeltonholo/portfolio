@@ -28,6 +28,7 @@ import dev.tonholo.portfolio.core.ui.theme.Theme
 import dev.tonholo.portfolio.core.ui.unit.dp
 import dev.tonholo.portfolio.features.resume.sections.EducationSection
 import dev.tonholo.portfolio.features.resume.sections.ExperienceSection
+import dev.tonholo.portfolio.features.resume.sections.SkillsSection
 import dev.tonholo.portfolio.resources.pages.ResumePage
 import org.jetbrains.compose.web.css.AnimationTimingFunction
 import org.jetbrains.compose.web.css.s
@@ -124,10 +125,16 @@ fun ResumeContent(
                 },
                 detailPanel = {
                     Column(
-                        modifier = Modifier.flex(1)
+                        modifier = Modifier
+                            .flex(1)
+                            .gap(56.dp),
+
                     ) {
                         EducationSection(
                             section = resume.educationSection,
+                        )
+                        SkillsSection(
+                            section = resume.skillSection,
                         )
                     }
                 },

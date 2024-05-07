@@ -135,7 +135,7 @@ object ButtonDefaults {
 }
 
 @Immutable
-data class ButtonColors(
+data class ButtonColors internal constructor(
     private val containerColor: Color,
     private val contentColor: Color,
     private val disabledContainerColor: Color,
@@ -148,7 +148,7 @@ data class ButtonColors(
         .setVariable(Vars.DisabledContentColor, disabledContentColor)
 }
 
-data class ButtonElevation(
+data class ButtonElevation internal constructor(
     private val defaultElevation: Elevation,
     private val pressedElevation: Elevation,
     private val focusedElevation: Elevation,
