@@ -23,6 +23,7 @@ import dev.tonholo.marktdown.domain.renderer.MarktdownRenderer
 import dev.tonholo.portfolio.KmpMigratrionPart1En
 import dev.tonholo.portfolio.core.components.layout.Scaffold
 import dev.tonholo.portfolio.core.components.text.Text
+import dev.tonholo.portfolio.core.router.About
 import dev.tonholo.portfolio.core.router.AppRoutes
 import dev.tonholo.portfolio.core.router.Home
 import dev.tonholo.portfolio.core.router.Resume
@@ -55,6 +56,9 @@ fun ArticlesPage() {
                 onHomeClick = {
                     context.router.navigateTo(Route.Home)
                 },
+                onAboutClick = {
+                    context.router.navigateTo(Route.About)
+                },
                 onResumeClick = {
                     context.router.navigateTo(Route.Resume)
                 },
@@ -63,96 +67,6 @@ fun ArticlesPage() {
     ) {
         Column {
             Marktdown(document = KmpMigratrionPart1En)
-//            Text("Articles")
-//            CodeBlock(
-//                code = """
-//                    |package com.redspace.shubi
-//                    |
-//                    |import android.os.Bundle
-//                    |// several other imports
-//                    |import com.redspace.shubi.shared.Greeting
-//                    |// other imports
-//                    |
-//                    |@AndroidEntryPoint
-//                    |class MainActivity : AppCompatActivity() {
-//                    |    // some properties
-//                    |    override fun onCreate(savedInstanceState: Bundle?) {
-//                    |        // some configurations
-//                    |        super.onCreate(savedInstanceState)
-//                    |        setContent { Content() }
-//                    |        // other code
-//                    |    }
-//                    |
-//                    |    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
-//                    |    @Composable
-//                    |    private fun Content() {
-//                    |        // some compose stuff
-//                    |        Box(
-//                    |            modifier = Modifier
-//                    |                .fillMaxWidth()
-//                    |                .background(Color.Magenta),
-//                    |        ) { test ->
-//                    |            val longValue = 1234567890
-//                    |            Text(
-//                    |                // Here is the usage of the shared class!
-//                    |                // Plain, simple, kotlin code.
-//                    |                text = Greeting().greet(),
-//                    |                style = MaterialTheme.typography.headlineLarge,
-//                    |            )
-//                    |        }
-//                    |    }
-//                    |}
-//                    """.trimMargin(),
-//                isDarkMode = colorMode.isDark,
-//                supportedLanguage = SupportedLanguages.Kotlin,
-//                style = SupportedStyle.AndroidStudio,
-//                bottomContent = {
-//                    BottomBar(link = "https://rafael.tonholo.dev")
-//                }
-//            )
-//            Box(modifier = Modifier.height(16.px))
-//            CodeBlock(
-//                code = """
-//                    |public final class Greeting {
-//                    |   public final String greet() {
-//                    |       return "Hello, World!";
-//                    |   }
-//                    |}
-//                """.trimMargin(),
-//                isDarkMode = colorMode.isDark,
-//                supportedLanguage = SupportedLanguages.Java,
-//                bottomContent = {
-//                    BottomBar()
-//                }
-//            )
-//            Box(modifier = Modifier.height(16.px))
-//            CodeBlock(
-//                code = """
-//                    |n = int(input('Type a number, and its factorial will be printed: '))
-//                    |
-//                    |if n < 0:
-//                    |    raise ValueError('You must enter a non-negative integer')
-//                    |
-//                    |factorial = 1
-//                    |for i in range(2, n + 1):
-//                    |    factorial *= i
-//                    |
-//                    |print(factorial)
-//                """.trimMargin(),
-//                isDarkMode = colorMode.isDark,
-//                supportedLanguage = SupportedLanguages.Python,
-//                bottomContent = {
-//                    BottomBar()
-//                }
-//            )
-//            val strings = LocalStrings.current
-//
-//            val article = remember(strings) {
-//                strings.screens.articles.first()
-//            }
-//            Marktdown(
-//                marktdownDocument = article,
-//            )
         }
     }
 }

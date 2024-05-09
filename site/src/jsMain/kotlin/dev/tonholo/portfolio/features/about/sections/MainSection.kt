@@ -1,10 +1,13 @@
 package dev.tonholo.portfolio.features.about.sections
 
 import androidx.compose.runtime.Composable
+import com.varabyte.kobweb.compose.css.ObjectFit
+import com.varabyte.kobweb.compose.foundation.layout.Box
 import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.borderRadius
 import com.varabyte.kobweb.compose.ui.modifiers.gap
+import com.varabyte.kobweb.compose.ui.modifiers.objectFit
 import com.varabyte.kobweb.compose.ui.modifiers.size
 import com.varabyte.kobweb.silk.components.graphics.Image
 import com.varabyte.kobweb.silk.components.style.ComponentStyle
@@ -36,15 +39,21 @@ fun MainSection(
     AdaptiveLayout(
         modifier = MainSectionStyles.toModifier() then modifier,
         listPanel = {
-            Image(
-                src = "https://secure.gravatar.com/avatar/9c32dd678349834ba86b53dcbc4612b7?size=456",
-                modifier = Modifier
-                    .size(456.dp)
-                    .borderRadius {
-                        topLeft(200.dp)
-                        topRight(200.dp)
-                    }
-            )
+            Column(
+                modifier = Modifier.size(456.dp),
+            ) {
+                Image(
+                    src = "images/writing.jpg",
+                    width = 456,
+                    height = 456,
+                    modifier = Modifier
+                        .borderRadius {
+                            topLeft(200.dp)
+                            topRight(200.dp)
+                        }
+                        .objectFit(ObjectFit.Cover)
+                )
+            }
         },
         detailPanel = {
             Column(

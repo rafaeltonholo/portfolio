@@ -11,6 +11,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.gap
 import com.varabyte.kobweb.silk.components.graphics.Image
 import com.varabyte.kobweb.silk.components.style.ComponentStyle
 import com.varabyte.kobweb.silk.components.style.toModifier
+import dev.tonholo.portfolio.core.components.text.Paragraph
 import dev.tonholo.portfolio.core.components.text.Text
 import dev.tonholo.portfolio.core.extensions.padding
 import dev.tonholo.portfolio.core.ui.theme.Theme
@@ -25,6 +26,9 @@ val WhatIDoStyle by ComponentStyle {
             .borderRadius(8.dp)
             .padding(vertical = 80.dp)
             .gap(40.dp)
+    }
+    cssRule("p") {
+        Modifier.padding(horizontal = 120.dp)
     }
 }
 
@@ -45,7 +49,7 @@ fun WhatIDoSection(
                 text = about.title,
                 style = Theme.typography.displaySmall,
             )
-            Text(
+            Paragraph(
                 text = about.description,
                 style = Theme.typography.bodyLarge,
             )
@@ -53,15 +57,17 @@ fun WhatIDoSection(
         Row(
             modifier = Modifier.gap(24.dp),
         ) {
-            // TODO: add content description.
             Image(
                 src = Theme.icons.AndroidLogo(),
+                alt = about.androidLogoContentDescription,
             )
             Image(
                 src = Theme.icons.Kotlin(),
+                alt = about.kotlinLogoContentDescription,
             )
             Image(
                 src = Theme.icons.Compose(),
+                alt = about.composeLogoContentDescription,
             )
         }
     }
