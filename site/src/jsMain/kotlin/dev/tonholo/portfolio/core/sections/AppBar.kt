@@ -43,7 +43,7 @@ import dev.tonholo.portfolio.core.router.Resume
 import dev.tonholo.portfolio.core.ui.theme.Theme
 import dev.tonholo.portfolio.core.ui.theme.color.Unspecified
 import dev.tonholo.portfolio.core.ui.theme.colorScheme
-import dev.tonholo.portfolio.core.ui.theme.copy
+import dev.tonholo.portfolio.core.ui.theme.color.copy
 import dev.tonholo.portfolio.core.ui.theme.elevations
 import dev.tonholo.portfolio.core.ui.theme.typography
 import dev.tonholo.portfolio.core.ui.theme.typography.toModifier

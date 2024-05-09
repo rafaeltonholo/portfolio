@@ -19,7 +19,7 @@ import com.varabyte.kobweb.silk.components.style.toModifier
 import dev.tonholo.portfolio.core.components.AdaptiveLayout
 import dev.tonholo.portfolio.core.components.SocialMediaRow
 import dev.tonholo.portfolio.core.components.button.PrimaryButton
-import dev.tonholo.portfolio.core.components.layout.Scaffold
+import dev.tonholo.portfolio.core.foundation.layout.Scaffold
 import dev.tonholo.portfolio.core.components.text.Text
 import dev.tonholo.portfolio.core.extensions.padding
 import dev.tonholo.portfolio.core.sections.AppBar

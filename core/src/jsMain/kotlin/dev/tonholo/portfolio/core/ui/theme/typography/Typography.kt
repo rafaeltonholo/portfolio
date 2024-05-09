@@ -2,8 +2,6 @@ package dev.tonholo.portfolio.core.ui.theme.typography
 
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.staticCompositionLocalOf
-import dev.tonholo.portfolio.core.ui.theme.typography.TextStyle
-import dev.tonholo.portfolio.core.ui.theme.typography.TypographyTokens
 
 @Immutable
 data class Typography(

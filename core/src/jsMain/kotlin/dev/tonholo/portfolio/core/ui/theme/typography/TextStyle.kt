@@ -19,6 +19,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.lineHeight
 import com.varabyte.kobweb.compose.ui.modifiers.textAlign
 import com.varabyte.kobweb.compose.ui.modifiers.textDecorationLine
 import com.varabyte.kobweb.compose.ui.modifiers.textShadow
+import dev.tonholo.portfolio.core.ui.unit.TextUnit
 
 data class TextStyle(
     val color: Color? = null,

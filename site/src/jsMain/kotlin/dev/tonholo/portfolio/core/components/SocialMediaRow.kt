@@ -15,6 +15,7 @@ import com.varabyte.kobweb.silk.components.style.ComponentStyle
 import com.varabyte.kobweb.silk.components.style.toModifier
 import dev.tonholo.portfolio.core.ui.theme.Icon
 import dev.tonholo.portfolio.core.ui.theme.Theme
+import dev.tonholo.portfolio.core.ui.theme.icons
 import dev.tonholo.portfolio.core.ui.unit.dp
 import org.jetbrains.compose.web.css.keywords.auto
 

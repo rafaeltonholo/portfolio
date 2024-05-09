@@ -11,7 +11,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.margin
 import com.varabyte.kobweb.compose.ui.modifiers.transition
 import com.varabyte.kobweb.silk.components.style.ComponentStyle
 import com.varabyte.kobweb.silk.components.style.toModifier
-import dev.tonholo.portfolio.core.components.layout.Scaffold
+import dev.tonholo.portfolio.core.foundation.layout.Scaffold
 import dev.tonholo.portfolio.core.extensions.padding
 import dev.tonholo.portfolio.core.sections.AppBar
 import dev.tonholo.portfolio.core.sections.Footer

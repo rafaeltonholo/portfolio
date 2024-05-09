@@ -1,13 +1,10 @@
 package dev.tonholo.portfolio.core.ui.theme
 
 import com.varabyte.kobweb.compose.css.FontWeight
-import com.varabyte.kobweb.compose.css.LineHeight
 import dev.tonholo.portfolio.core.ui.theme.typography.Regular
 import dev.tonholo.portfolio.core.ui.theme.typography.TextStyle
-import dev.tonholo.portfolio.core.ui.theme.typography.TextUnit
 import dev.tonholo.portfolio.core.ui.theme.typography.Typography
 import dev.tonholo.portfolio.core.ui.unit.sp
-import org.jetbrains.compose.web.css.em
 
 val Typography = Typography(
     displayLarge = TextStyle(

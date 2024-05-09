@@ -13,6 +13,7 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
+            implementation(projects.core)
             api(libs.lyricist)
             implementation(compose.ui)
             implementation(libs.kotlinx.datetime)

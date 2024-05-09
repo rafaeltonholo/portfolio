@@ -7,8 +7,8 @@ import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.gap
 import com.varabyte.kobweb.silk.components.style.ComponentStyle
 import com.varabyte.kobweb.silk.components.style.toModifier
-import dev.tonholo.portfolio.core.components.layout.ExtendedArrangement
-import dev.tonholo.portfolio.core.components.layout.FlowRow
+import dev.tonholo.portfolio.core.foundation.ExtendedArrangement
+import dev.tonholo.portfolio.core.foundation.layout.FlowRow
 import dev.tonholo.portfolio.core.components.text.Text
 import dev.tonholo.portfolio.core.extensions.padding
 import dev.tonholo.portfolio.core.ui.theme.Theme

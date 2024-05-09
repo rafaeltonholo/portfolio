@@ -1,4 +1,4 @@
-package dev.tonholo.portfolio.core.components.layout
+package dev.tonholo.portfolio.core.foundation
 
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable

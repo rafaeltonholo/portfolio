@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import com.varabyte.kobweb.compose.foundation.layout.RowScope
 import com.varabyte.kobweb.compose.ui.Modifier
 import dev.tonholo.portfolio.core.ui.theme.Theme
-import dev.tonholo.portfolio.core.ui.theme.copy
+import dev.tonholo.portfolio.core.ui.theme.color.copy
 
 @Composable
 fun PrimaryButton(

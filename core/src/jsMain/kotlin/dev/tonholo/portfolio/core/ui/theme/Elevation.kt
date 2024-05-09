@@ -19,7 +19,7 @@ class Elevations(
     val level4: Elevation = Elevation(),
     val level5: Elevation = Elevation(),
 ) {
-    companion object
+    infix fun to(other: Elevations) = ThemedValue(light = this, dark = other)
 }
 
 internal val LocalElevations = staticCompositionLocalOf { Elevations() }

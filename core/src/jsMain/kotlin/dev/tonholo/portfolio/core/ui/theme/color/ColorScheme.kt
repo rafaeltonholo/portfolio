@@ -6,6 +6,7 @@ import com.varabyte.kobweb.compose.ui.graphics.Color
 import com.varabyte.kobweb.silk.theme.colors.palette.MutablePalette
 import com.varabyte.kobweb.silk.theme.colors.palette.background
 import com.varabyte.kobweb.silk.theme.colors.palette.color
+import dev.tonholo.portfolio.core.ui.theme.ThemedValue
 
 @Immutable
 data class ColorScheme(
@@ -46,7 +47,9 @@ data class ColorScheme(
     val surfaceContainerHighest: Color = Color.Unspecified,
     val surfaceContainerLow: Color = Color.Unspecified,
     val surfaceContainerLowest: Color = Color.Unspecified,
-)
+) {
+    infix fun to(other: ColorScheme) = ThemedValue(light = this, dark = other)
+}
 
 fun MutablePalette.from(colorScheme: ColorScheme) {
     background = colorScheme.background

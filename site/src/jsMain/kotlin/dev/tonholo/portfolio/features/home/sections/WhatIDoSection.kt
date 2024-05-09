@@ -16,6 +16,7 @@ import dev.tonholo.portfolio.core.components.text.Text
 import dev.tonholo.portfolio.core.extensions.padding
 import dev.tonholo.portfolio.core.ui.theme.Theme
 import dev.tonholo.portfolio.core.ui.theme.colorScheme
+import dev.tonholo.portfolio.core.ui.theme.icons
 import dev.tonholo.portfolio.core.ui.unit.dp
 import dev.tonholo.portfolio.resources.pages.HomeAboutSection
 

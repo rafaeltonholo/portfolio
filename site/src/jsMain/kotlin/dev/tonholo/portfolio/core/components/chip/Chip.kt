@@ -23,7 +23,7 @@ import dev.tonholo.portfolio.core.foundation.BorderStroke
 import dev.tonholo.portfolio.core.foundation.BorderStrokeVars
 import dev.tonholo.portfolio.core.foundation.layout.PaddingValues
 import dev.tonholo.portfolio.core.ui.theme.Theme
-import dev.tonholo.portfolio.core.ui.theme.copy
+import dev.tonholo.portfolio.core.ui.theme.color.copy
 import dev.tonholo.portfolio.core.ui.unit.Dp
 import dev.tonholo.portfolio.core.ui.unit.dp
 import org.jetbrains.compose.web.css.DisplayStyle

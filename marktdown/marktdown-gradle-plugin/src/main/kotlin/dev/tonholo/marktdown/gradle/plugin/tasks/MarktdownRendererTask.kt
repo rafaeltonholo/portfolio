@@ -42,8 +42,9 @@ abstract class MarktdownRendererTask : DefaultTask() {
     @get:InputDirectory
     val modelsDir: DirectoryProperty = project.objects.directoryProperty()
 
-    @get:InputDirectory
-    val renderersDir: DirectoryProperty = project.objects.directoryProperty().apply {
+//    @get:InputDirectory
+    @get:Internal
+    val renderersDir: DirectoryProperty get() = project.objects.directoryProperty().apply {
         set(
             project.layout.buildDirectory.dir("generated/marktdown/kotlin/jsMain"),
         )

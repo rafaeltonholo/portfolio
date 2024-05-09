@@ -1,4 +1,4 @@
-package dev.tonholo.portfolio.core.components.layout
+package dev.tonholo.portfolio.core.foundation.layout
 
 import androidx.compose.runtime.Composable
 import com.varabyte.kobweb.compose.css.StyleVariable
@@ -12,6 +12,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.gridTemplateColumns
 import com.varabyte.kobweb.compose.ui.modifiers.setVariable
 import com.varabyte.kobweb.silk.components.style.ComponentStyle
 import com.varabyte.kobweb.silk.components.style.toModifier
+import dev.tonholo.portfolio.core.foundation.ExtendedArrangement
 import dev.tonholo.portfolio.core.ui.unit.Dp
 import org.jetbrains.compose.web.css.DisplayStyle
 import org.jetbrains.compose.web.css.fr

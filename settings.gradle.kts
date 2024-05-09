@@ -20,6 +20,7 @@ rootProject.name = "portfolio"
 include(
     ":site",
     ":resources",
+    ":core",
 )
 includeBuild("kotlin-wrapper-highlightjs")
 includeBuild("marktdown")

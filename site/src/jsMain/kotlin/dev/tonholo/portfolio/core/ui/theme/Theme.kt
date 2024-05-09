@@ -2,10 +2,7 @@ package dev.tonholo.portfolio.core.ui.theme
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.ReadOnlyComposable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
 import cafe.adriel.lyricist.Lyricist
 import cafe.adriel.lyricist.ProvideStrings
@@ -25,7 +22,6 @@ import com.varabyte.kobweb.compose.ui.modifiers.minHeight
 import com.varabyte.kobweb.compose.ui.modifiers.outline
 import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.compose.ui.modifiers.scrollBehavior
-import com.varabyte.kobweb.core.KobwebApp
 import com.varabyte.kobweb.silk.components.layout.Surface
 import com.varabyte.kobweb.silk.components.style.ComponentModifier
 import com.varabyte.kobweb.silk.components.style.common.SmoothColorStyle
@@ -34,21 +30,15 @@ import com.varabyte.kobweb.silk.components.style.vars.color.BackgroundColorVar
 import com.varabyte.kobweb.silk.init.InitSilk
 import com.varabyte.kobweb.silk.init.InitSilkContext
 import com.varabyte.kobweb.silk.init.registerStyleBase
-import com.varabyte.kobweb.silk.init.setSilkWidgetVariables
-import com.varabyte.kobweb.silk.prepareSilkFoundation
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import dev.tonholo.portfolio.core.foundation.shadow
-import dev.tonholo.portfolio.core.ui.theme.color.ColorScheme
-import dev.tonholo.portfolio.core.ui.theme.color.LocalColorScheme
+import dev.tonholo.portfolio.core.ui.theme.color.copy
 import dev.tonholo.portfolio.core.ui.theme.color.from
-import dev.tonholo.portfolio.core.ui.theme.typography.LocalTypography
-import dev.tonholo.portfolio.core.ui.theme.typography.Typography
 import dev.tonholo.portfolio.core.ui.theme.typography.toModifier
 import dev.tonholo.portfolio.core.ui.unit.DefaultFontSize
 import dev.tonholo.portfolio.locale.Locale
 import dev.tonholo.portfolio.locale.localStorageKey
 import dev.tonholo.portfolio.resources.Strings
-import kotlinx.browser.document
 import kotlinx.browser.localStorage
 import org.jetbrains.compose.web.css.keywords.auto
 import org.jetbrains.compose.web.css.px
@@ -94,27 +84,10 @@ private val ElevationsDark = Elevations(
     ),
 )
 
-object Theme {
-    val colorScheme: ColorScheme
-        @Composable
-        @ReadOnlyComposable
-        get() = LocalColorScheme.current
-
-    val typography: Typography
-        @Composable
-        @ReadOnlyComposable
-        get() = LocalTypography.current
-
-    val elevations: Elevations
-        @Composable
-        @ReadOnlyComposable
-        get() = LocalElevations.current
-
-    val icons: IconScheme
-        @Composable
-        @ReadOnlyComposable
-        get() = LocalIconScheme.current
-}
+val Theme.icons: IconScheme
+    @Composable
+    @ReadOnlyComposable
+    get() = LocalIconScheme.current
 
 /**
  * Workaround to enable [com.varabyte.kobweb.silk.components.style.ComponentStyle]
@@ -196,48 +169,29 @@ fun initTheme(context: InitSilkContext) = with(context) {
 fun Theme(
     content: @Composable () -> Unit,
 ) {
-    KobwebApp {
-        prepareSilkFoundation {
-            val colorMode by ColorMode.currentState
-            LaunchedEffect(colorMode) {
-                localStorage.setItem(COLOR_MODE_KEY, colorMode.name)
-            }
-
-            val (colorScheme, elevations, icons) = when (colorMode) {
-                ColorMode.LIGHT -> Triple(LightColorScheme, ElevationsLight, IconScheme.Light)
-                ColorMode.DARK -> Triple(DarkColorScheme, ElevationsDark, IconScheme.Dark)
-            }
-
-            InitSilkWidgetVariables()
-
-            val lyricist = rememberStrings(
-                currentLanguageTag = localStorage.getItem(Locale.localStorageKey) ?: Locale.DEFAULT,
-            )
-            CompositionLocalProvider(
-                LocalColorScheme provides colorScheme,
-                LocalLyricist provides lyricist,
-                LocalTypography provides Typography,
-                LocalElevations provides elevations,
-                LocalIconScheme provides icons,
-            ) {
-                ProvideStrings(lyricist) {
-                    Surface(
-                        SmoothColorStyle.toModifier()
-                            .minHeight(100.vh)
-                            .scrollBehavior(ScrollBehavior.Smooth)
-                    ) {
-                        content()
-                    }
+    Theme(
+        themedColorScheme = LightColorScheme to DarkColorScheme,
+        typography = Typography,
+        themedElevations = ElevationsLight to ElevationsDark,
+    ) { colorMode ->
+        val lyricist = rememberStrings(
+            currentLanguageTag = localStorage.getItem(Locale.localStorageKey) ?: Locale.DEFAULT,
+        )
+        CompositionLocalProvider(
+            LocalLyricist provides lyricist,
+            LocalIconScheme provides if (colorMode == ColorMode.LIGHT) IconScheme.Light else IconScheme.Dark,
+        ) {
+            ProvideStrings(lyricist) {
+                Surface(
+                    SmoothColorStyle.toModifier()
+                        .minHeight(100.vh)
+                        .scrollBehavior(ScrollBehavior.Smooth)
+                ) {
+                    content()
                 }
             }
         }
     }
-}
-
-@Composable
-private fun InitSilkWidgetVariables() {
-    val root = remember { document.body }
-    root?.setSilkWidgetVariables()
 }
 
 val LocalLyricist = staticCompositionLocalOf<Lyricist<Strings>> { error("Lyricist not provided") }

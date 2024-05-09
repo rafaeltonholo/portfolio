@@ -1,4 +1,4 @@
-package dev.tonholo.portfolio.core.components.layout
+package dev.tonholo.portfolio.core.foundation.layout
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -12,10 +12,8 @@ import com.varabyte.kobweb.silk.components.style.ComponentStyle
 import com.varabyte.kobweb.silk.components.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.components.style.toModifier
 import dev.tonholo.portfolio.core.extensions.padding
-import dev.tonholo.portfolio.core.foundation.layout.PaddingValues
 import dev.tonholo.portfolio.core.ui.unit.dp
 import org.jetbrains.compose.web.css.AnimationTimingFunction
-import org.jetbrains.compose.web.css.em
 import org.jetbrains.compose.web.css.s
 
 val ScaffoldStyle by ComponentStyle {

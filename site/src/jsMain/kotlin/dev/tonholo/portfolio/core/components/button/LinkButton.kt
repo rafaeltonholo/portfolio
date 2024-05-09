@@ -19,7 +19,7 @@ import com.varabyte.kobweb.silk.components.style.addVariant
 import com.varabyte.kobweb.silk.components.style.hover
 import dev.tonholo.portfolio.core.extensions.padding
 import dev.tonholo.portfolio.core.ui.theme.colorScheme
-import dev.tonholo.portfolio.core.ui.theme.copy
+import dev.tonholo.portfolio.core.ui.theme.color.copy
 import dev.tonholo.portfolio.core.ui.unit.dp
 import org.jetbrains.compose.web.css.LineStyle
 

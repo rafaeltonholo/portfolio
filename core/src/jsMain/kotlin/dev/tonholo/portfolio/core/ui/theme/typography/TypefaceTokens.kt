@@ -1,7 +1,10 @@
 package dev.tonholo.portfolio.core.ui.theme.typography
 
 import com.varabyte.kobweb.compose.css.FontWeight
-import dev.tonholo.portfolio.core.ui.theme.Roboto
+
+val Roboto = FontFamily(
+    Font("Roboto", "sans-serif"),
+)
 
 internal object TypefaceTokens {
     val Brand = Roboto
