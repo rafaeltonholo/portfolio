@@ -1,5 +1,8 @@
 package dev.tonholo.portfolio.resources.pages
 
+import dev.tonholo.portfolio.core.ui.text.AnnotatedString
+import dev.tonholo.portfolio.core.ui.text.annotatedString
+import dev.tonholo.portfolio.core.ui.text.bold
 import dev.tonholo.portfolio.resources.Project
 
 data class Home(
@@ -48,6 +51,7 @@ data class WelcomeSection(
 data class HomeAboutSection(
     val title: String,
     val description: String,
+    val annotatedString: AnnotatedString? = null,
     val androidLogoContentDescription: String,
     val kotlinLogoContentDescription: String,
     val composeLogoContentDescription: String,
@@ -61,6 +65,16 @@ data class HomeAboutSection(
                     venture into the kitchen and try to make something good to eat.
                     And lately I've working mostly with:
                 """.trimIndent(),
+            annotatedString = annotatedString {
+                append("I create apps for ")
+                bold("Android")
+                append(" and sometimes iOS using ")
+                bold("KMP")
+                append(" and I love to share what I know and, when I'm not programming, I like to")
+                append("venture into the kitchen")
+                append(" and try to make something good to eat.")
+                append(" And lately I've working mostly with:")
+            },
             androidLogoContentDescription = "Android applications",
             kotlinLogoContentDescription = "Using Kotlin as main language",
             composeLogoContentDescription = "Using Jetpack Compose UI Framework",

@@ -56,8 +56,5 @@ fun MutablePalette.from(colorScheme: ColorScheme) {
     color = colorScheme.onBackground
 }
 
-val Color.Companion.Unspecified: Color
-    get() = "unset".unsafeCast<Color>()
-
 internal val LocalColorScheme = staticCompositionLocalOf<ColorScheme> { error("not provided color scheme.") }
 
