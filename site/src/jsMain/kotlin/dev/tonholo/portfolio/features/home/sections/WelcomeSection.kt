@@ -56,13 +56,6 @@ fun WelcomeSection(
                     text = welcomeSection.title,
                     style = Theme.typography.displayMedium,
                 )
-                Column(
-                    modifier = WelcomeSectionDescriptionStyle.toModifier(),
-                ) {
-                    welcomeSection.description.forEach { paragraph ->
-
-                    }
-                }
                 Paragraph(
                     text = welcomeSection.description,
                     style = Theme.typography.titleLarge,

@@ -2,6 +2,7 @@ import com.varabyte.kobweb.gradle.application.extensions.AppBlock.LegacyRouteRed
 import com.varabyte.kobweb.gradle.application.util.configAsKobwebApplication
 import kotlinx.html.link
 import kotlinx.html.meta
+import org.jetbrains.kotlin.gradle.dsl.KotlinJsCompile
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
@@ -62,8 +63,11 @@ kotlin {
             implementation(libs.kobweb.silk)
             implementation(libs.silk.icons.mdi)
             implementation(libs.dev.tonholo.kotlin.wrapper.highlightjs.core)
+            implementation(libs.dev.tonholo.kotlin.wrapper.shiki.core)
             implementation(libs.dev.tonholo.kotlin.wrapper.highlightjs.compose.html)
             implementation(libs.dev.tonholo.marktdown.core)
+            implementation(npm(name = "shiki", version = "1.5.1"))
+
         }
     }
 }
@@ -83,6 +87,13 @@ dependencies {
     add("kspJs", libs.dev.tonholo.marktdown.processor)
 }
 
-tasks.withType<org.jetbrains.kotlin.gradle.targets.js.ir.KotlinJsIrLink> {
-    compilerOptions.moduleKind.set(org.jetbrains.kotlin.gradle.dsl.JsModuleKind.MODULE_COMMONJS)
+tasks.withType<KotlinJsCompile>().configureEach {
+    kotlinOptions {
+        moduleKind = org.jetbrains.kotlin.gradle.dsl.JsModuleKind.MODULE_ES.kind
+        useEsClasses = true
+    }
 }
+
+//tasks.withType<org.jetbrains.kotlin.gradle.targets.js.ir.KotlinJsIrLink> {
+//    compilerOptions.moduleKind.set(org.jetbrains.kotlin.gradle.dsl.JsModuleKind.MODULE_ES)
+//}

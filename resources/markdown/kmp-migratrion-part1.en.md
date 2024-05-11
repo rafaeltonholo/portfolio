@@ -209,7 +209,7 @@ class MainActivity : AppCompatActivity() {
             Text(
                 // Here is the usage of the shared class!
                 // Plain, simple, kotlin code.
-                text = Greeting().greet(),
+                text = Greeting().greet(), // [!code focus]
                 style = MaterialTheme.typography.headlineLarge,
             )
         }
@@ -320,7 +320,7 @@ let package = Package(
             name: "Details",
             targets: [
                 "Details",
-                "ShubiShared", // <- add the xcframework name
+                "ShubiShared", // [!code highlight]
             ]
         ),
     ],

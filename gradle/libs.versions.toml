@@ -6,6 +6,7 @@ lyricist = "1.7.0"
 ksp = "1.9.23-1.0.20"
 kotlinx-datetime = "0.6.0-RC.2"
 kotlin-wrapper-highlightjs = "1.0.0-11.9.0"
+kotlin-wrapper-shiki = "1.0.0-1.5.1"
 marktdown = "1.0.0"
 
 [libraries]
@@ -22,6 +23,7 @@ lyricist-processor = { module = "cafe.adriel.lyricist:lyricist-processor", versi
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
 dev-tonholo-kotlin-wrapper-highlightjs-core = { module = "dev.tonholo.kotlin.wrapper.highlightjs:highlightjs-core", version.ref = "kotlin-wrapper-highlightjs" }
 dev-tonholo-kotlin-wrapper-highlightjs-compose-html = { module = "dev.tonholo.kotlin.wrapper.highlightjs:highlightjs-compose-html", version.ref = "kotlin-wrapper-highlightjs" }
+dev-tonholo-kotlin-wrapper-shiki-core = { module = "dev.tonholo.kotlin.wrapper.shiki:shiki-core", version.ref = "kotlin-wrapper-shiki" }
 dev-tonholo-marktdown-core = { module = "dev.tonholo.marktdown:marktdown-core", version.ref = "marktdown" }
 dev-tonholo-marktdown-processor = { module = "dev.tonholo.marktdown:marktdown-processor", version.ref = "marktdown" }
 

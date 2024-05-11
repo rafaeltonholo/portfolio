@@ -1,3 +1,6 @@
 [submodule "kotlin-wrapper-highlightjs"]
 	path = kotlin-wrapper-highlightjs
 	url = git@github.com:rafaeltonholo/kotlin-wrapper-highlightjs.git
+[submodule "kotlin-wrapper-shiki"]
+	path = kotlin-wrapper-shiki
+	url = git@github.com:rafaeltonholo/kotlin-wrapper-shiki.git

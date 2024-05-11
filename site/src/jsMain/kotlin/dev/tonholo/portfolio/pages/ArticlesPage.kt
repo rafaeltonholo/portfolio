@@ -1,42 +1,66 @@
 package dev.tonholo.portfolio.pages
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import com.varabyte.kobweb.compose.css.CSSTransition
+import com.varabyte.kobweb.compose.css.Filter
+import com.varabyte.kobweb.compose.css.functions.blur
 import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.foundation.layout.Row
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.alignSelf
+import com.varabyte.kobweb.compose.ui.modifiers.backgroundColor
+import com.varabyte.kobweb.compose.ui.modifiers.display
 import com.varabyte.kobweb.compose.ui.modifiers.fillMaxWidth
+import com.varabyte.kobweb.compose.ui.modifiers.filter
+import com.varabyte.kobweb.compose.ui.modifiers.opacity
+import com.varabyte.kobweb.compose.ui.modifiers.transition
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.core.Page
 import com.varabyte.kobweb.core.rememberPageContext
 import com.varabyte.kobweb.navigation.Route
 import com.varabyte.kobweb.silk.components.navigation.Link
+import com.varabyte.kobweb.silk.components.style.ComponentStyle
+import com.varabyte.kobweb.silk.components.style.toAttrs
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
-import dev.tonholo.kotlin.wrapper.highlightjs.compose.html.component.CodeBlock
 import dev.tonholo.kotlin.wrapper.highlightjs.compose.html.component.CodeBlockScope
-import dev.tonholo.kotlin.wrapper.highlightjs.core.language.toSupportedLanguage
-import dev.tonholo.kotlin.wrapper.highlightjs.core.style.SupportedStyle
+import dev.tonholo.kotlin.wrapper.shiki.core.Shiki
+import dev.tonholo.kotlin.wrapper.shiki.core.transformers.notation.transformerNotationFocus
+import dev.tonholo.kotlin.wrapper.shiki.core.transformers.notation.transformerNotationHighlight
+import dev.tonholo.kotlin.wrapper.shiki.core.types.CodeToHastOptions
+import dev.tonholo.kotlin.wrapper.shiki.core.types.ThemeInput
 import dev.tonholo.marktdown.domain.content.CodeFence
 import dev.tonholo.marktdown.domain.content.TextElement
 import dev.tonholo.marktdown.domain.renderer.MarktdownElementScope
 import dev.tonholo.marktdown.domain.renderer.MarktdownRenderer
 import dev.tonholo.portfolio.KmpMigratrionPart1En
-import dev.tonholo.portfolio.core.foundation.layout.Scaffold
 import dev.tonholo.portfolio.core.components.text.Text
+import dev.tonholo.portfolio.core.foundation.layout.Scaffold
 import dev.tonholo.portfolio.core.router.About
 import dev.tonholo.portfolio.core.router.AppRoutes
 import dev.tonholo.portfolio.core.router.Home
 import dev.tonholo.portfolio.core.router.Resume
 import dev.tonholo.portfolio.core.sections.AppBar
 import dev.tonholo.portfolio.core.ui.theme.LocalLyricist
+import dev.tonholo.portfolio.core.ui.unit.dp
 import dev.tonholo.portfolio.locale.Locale
 import dev.tonholo.portfolio.locale.localStorageKey
 import dev.tonholo.portfolio.renderer.Marktdown
 import dev.tonholo.portfolio.renderer.MarktdownElement
 import kotlinx.browser.localStorage
 import org.jetbrains.compose.web.css.AlignSelf
+import org.jetbrains.compose.web.css.CSSColorValue
+import org.jetbrains.compose.web.css.DisplayStyle
+import org.jetbrains.compose.web.css.s
+import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.I
 import org.jetbrains.compose.web.dom.Span
+import org.w3c.dom.parsing.DOMParser
 
 @Page(AppRoutes.Articles.ROUTE)
 @Composable
@@ -94,19 +118,84 @@ fun CodeBlockScope.BottomBar(
     }
 }
 
+val ShikiStyles by ComponentStyle {
+    base { Modifier }
+
+    cssRule("pre.has-focused code .line:not(.focused)") {
+        Modifier
+            .opacity(0.7f)
+            .filter(blur(2.dp))
+            .transition(
+                CSSTransition(property = "filter", duration = 0.35.s),
+                CSSTransition(property = "opacity", duration = 0.35.s),
+            )
+    }
+    cssRule("pre.has-focused:hover code .line:not(.focused)") {
+        Modifier
+            .opacity(1.0f)
+            .filter(blur(0.dp))
+    }
+
+    cssRule("code .highlighted") {
+        Modifier
+            .display(DisplayStyle.InlineBlock)
+            .fillMaxWidth()
+            .transition(CSSTransition(property = "background-color", duration = 0.5.s))
+            .backgroundColor(
+                "color-mix(in srgb, currentcolor 20%, transparent)".unsafeCast<CSSColorValue>(),
+            )
+    }
+}
+
 @Composable
 @MarktdownRenderer.Custom(type = CodeFence::class)
 fun MarktdownElementScope<CodeFence>.CodeFenceCustomRender() {
     val colorMode = ColorMode.current
-    CodeBlock(
-        code = element.code,
-        isDarkMode = colorMode.isDark,
-        supportedLanguage = element.language?.toSupportedLanguage(),
-        style = SupportedStyle.AndroidStudio,
-        bottomContent = {
-            BottomBar()
+    var code by remember { mutableStateOf("") }
+    LaunchedEffect(colorMode) {
+        Shiki.initialize()
+        val unescapedCode = DOMParser().parseFromString(element.code, "text/html")
+            .documentElement
+            ?.textContent
+            .orEmpty()
+        code = Shiki.instance.codeToHtml(
+            unescapedCode,
+            options = CodeToHastOptions {
+                lang = element.language ?: "text"
+                themes = ThemeInput {
+                    light = "github-light"
+                    dark = "github-dark"
+                }
+                transformers = arrayOf(
+                    transformerNotationFocus(),
+                    transformerNotationHighlight(),
+                )
+                defaultColor = if (colorMode.isDark) "dark" else "light"
+            },
+        )
+    }
+
+    Div(
+        attrs = ShikiStyles.toAttrs {
+            classes(element.language ?: "plain-text")
         }
-    )
+    ) {
+        DisposableEffect(code) {
+            scopeElement.innerHTML = code
+            onDispose { }
+        }
+    }
+
+//    val colorMode = ColorMode.current
+//    CodeBlock(
+//        code = element.code,
+//        isDarkMode = colorMode.isDark,
+//        supportedLanguage = element.language?.toSupportedLanguage(),
+//        style = SupportedStyle.AndroidStudio,
+//        bottomContent = {
+//            BottomBar()
+//        }
+//    )
 }
 
 @Composable
