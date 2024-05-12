@@ -64,6 +64,7 @@ kotlin {
             implementation(libs.silk.icons.mdi)
             implementation(libs.dev.tonholo.kotlin.wrapper.highlightjs.core)
             implementation(libs.dev.tonholo.kotlin.wrapper.shiki.core)
+            implementation(libs.dev.tonholo.kotlin.wrapper.shiki.compose.html)
             implementation(libs.dev.tonholo.kotlin.wrapper.highlightjs.compose.html)
             implementation(libs.dev.tonholo.marktdown.core)
             implementation(npm(name = "shiki", version = "1.5.1"))

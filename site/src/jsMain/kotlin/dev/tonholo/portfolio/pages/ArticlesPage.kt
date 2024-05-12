@@ -1,14 +1,7 @@
 package dev.tonholo.portfolio.pages
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import com.varabyte.kobweb.compose.css.CSSTransition
-import com.varabyte.kobweb.compose.css.Filter
 import com.varabyte.kobweb.compose.css.functions.blur
 import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.foundation.layout.Row
@@ -26,14 +19,14 @@ import com.varabyte.kobweb.core.rememberPageContext
 import com.varabyte.kobweb.navigation.Route
 import com.varabyte.kobweb.silk.components.navigation.Link
 import com.varabyte.kobweb.silk.components.style.ComponentStyle
-import com.varabyte.kobweb.silk.components.style.toAttrs
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import dev.tonholo.kotlin.wrapper.highlightjs.compose.html.component.CodeBlockScope
-import dev.tonholo.kotlin.wrapper.shiki.core.Shiki
+import dev.tonholo.kotlin.wrapper.shiki.compose.html.component.ShikiCodeBlock
+import dev.tonholo.kotlin.wrapper.shiki.core.themes.DefaultTheme
+import dev.tonholo.kotlin.wrapper.shiki.core.themes.ShikiTheme
+import dev.tonholo.kotlin.wrapper.shiki.core.themes.shikiTheme
 import dev.tonholo.kotlin.wrapper.shiki.core.transformers.notation.transformerNotationFocus
 import dev.tonholo.kotlin.wrapper.shiki.core.transformers.notation.transformerNotationHighlight
-import dev.tonholo.kotlin.wrapper.shiki.core.types.CodeToHastOptions
-import dev.tonholo.kotlin.wrapper.shiki.core.types.ThemeInput
 import dev.tonholo.marktdown.domain.content.CodeFence
 import dev.tonholo.marktdown.domain.content.TextElement
 import dev.tonholo.marktdown.domain.renderer.MarktdownElementScope
@@ -57,10 +50,8 @@ import org.jetbrains.compose.web.css.AlignSelf
 import org.jetbrains.compose.web.css.CSSColorValue
 import org.jetbrains.compose.web.css.DisplayStyle
 import org.jetbrains.compose.web.css.s
-import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.I
 import org.jetbrains.compose.web.dom.Span
-import org.w3c.dom.parsing.DOMParser
 
 @Page(AppRoutes.Articles.ROUTE)
 @Composable
@@ -151,40 +142,63 @@ val ShikiStyles by ComponentStyle {
 @MarktdownRenderer.Custom(type = CodeFence::class)
 fun MarktdownElementScope<CodeFence>.CodeFenceCustomRender() {
     val colorMode = ColorMode.current
-    var code by remember { mutableStateOf("") }
-    LaunchedEffect(colorMode) {
-        Shiki.initialize()
-        val unescapedCode = DOMParser().parseFromString(element.code, "text/html")
-            .documentElement
-            ?.textContent
-            .orEmpty()
-        code = Shiki.instance.codeToHtml(
-            unescapedCode,
-            options = CodeToHastOptions {
-                lang = element.language ?: "text"
-                themes = ThemeInput {
-                    light = "github-light"
-                    dark = "github-dark"
-                }
-                transformers = arrayOf(
-                    transformerNotationFocus(),
-                    transformerNotationHighlight(),
-                )
-                defaultColor = if (colorMode.isDark) "dark" else "light"
-            },
-        )
-    }
-
-    Div(
-        attrs = ShikiStyles.toAttrs {
-            classes(element.language ?: "plain-text")
-        }
-    ) {
-        DisposableEffect(code) {
-            scopeElement.innerHTML = code
-            onDispose { }
-        }
-    }
+    ShikiCodeBlock(
+        code = element.code,
+        language = element.language ?: "text",
+        themeOptions = shikiTheme {
+            light = ShikiTheme.OneLight
+            dark = ShikiTheme.OneDarkPro
+            activeTheme(
+                if (colorMode == ColorMode.DARK) DefaultTheme.Dark
+                else DefaultTheme.Light
+            )
+        },
+        transformers = listOf(
+            transformerNotationFocus(),
+            transformerNotationHighlight(),
+        ),
+        paddingStart = 16.dp,
+        paddingEnd = 16.dp,
+        paddingTop = 16.dp,
+        paddingBottom = 16.dp,
+        blur = 2.dp,
+        borderRadius = 8.dp,
+    )
+//    val colorMode = ColorMode.current
+//    var code by remember { mutableStateOf("") }
+//    LaunchedEffect(colorMode) {
+//        Shiki.initialize()
+//        val unescapedCode = DOMParser().parseFromString(element.code, "text/html")
+//            .documentElement
+//            ?.textContent
+//            .orEmpty()
+//        code = Shiki.instance.codeToHtml(
+//            unescapedCode,
+//            options = CodeToHastOptions {
+//                lang = element.language ?: "text"
+//                themes = ThemeInput {
+//                    light = "github-light"
+//                    dark = "github-dark"
+//                }
+//                transformers = arrayOf(
+//                    transformerNotationFocus(),
+//                    transformerNotationHighlight(),
+//                )
+//                defaultColor = if (colorMode.isDark) "dark" else "light"
+//            },
+//        )
+//    }
+//
+//    Div(
+//        attrs = ShikiStyles.toAttrs {
+//            classes(element.language ?: "plain-text")
+//        }
+//    ) {
+//        DisposableEffect(code) {
+//            scopeElement.innerHTML = code
+//            onDispose { }
+//        }
+//    }
 
 //    val colorMode = ColorMode.current
 //    CodeBlock(
