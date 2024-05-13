@@ -65,7 +65,7 @@ class ComposeHtmlRendererGenerator(
                 addAnnotation(Composable::class)
                 addModifiers(KModifier.PUBLIC)
                 addParameter(name = "document", typeNameOf<MarktdownDocument>())
-                val composable = MemberName(COMPOSE_WEB_DOM, "Div")
+                val composable = MemberName(COMPOSE_WEB_DOM, "Article")
                 addCode(
                     createMarktdownParentCodeBlock(
                         composable,
