@@ -153,12 +153,12 @@ abstract class MarktdownRendererTask : DefaultTask() {
 
         val exclusion = if (isKspEnabled) {
             val kspPath = project.layout.buildDirectory.dir(
-                "generated/ksp/js/jsMain/$pkg/renderer/content",
+                "generated/ksp/js/jsMain/kotlin/$pkg/renderer/content",
             ).get().asFile.toPath()
             if (kspPath.exists()) {
                 kspPath.useDirectoryEntries("*.kt") { paths ->
-                    paths.map { it.nameWithoutExtension }
-                }.toSet()
+                    paths.map { it.nameWithoutExtension }.toSet()
+                }
             } else {
                 emptySet()
             }

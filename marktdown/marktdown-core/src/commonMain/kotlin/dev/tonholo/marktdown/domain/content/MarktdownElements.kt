@@ -112,7 +112,16 @@ sealed interface TextElement : MarktdownElement {
 
     data class Blockquote(
         override val children: List<MarktdownElement>,
-    ) : TextElement, MarktdownParent<MarktdownElement>
+        val type: Type? = null,
+    ) : TextElement, MarktdownParent<MarktdownElement> {
+        enum class Type {
+            NOTE,
+            WARNING,
+            CAUTION,
+            IMPORTANT,
+            TIP,
+        }
+    }
 
     data class Strikethrough(
         override val children: List<TextElement>,

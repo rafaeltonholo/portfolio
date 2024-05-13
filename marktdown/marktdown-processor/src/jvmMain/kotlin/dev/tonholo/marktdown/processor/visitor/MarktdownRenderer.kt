@@ -794,17 +794,45 @@ class MarktdownRenderer(
 
         private fun visitBlockQuote(blockQuote: ASTNode) {
             val parent = currentBuilder
+            val alert = Regex("\\[!(NOTE|WARNING|IMPORTANT|CAUTION|TIP)]")
+                .find(blockQuote.literal)
+                ?.value
+
+            val kClass = TextElement.Blockquote::class
             val codeBlock = CodeBlock
                 .builder()
-                .addStatement("%T(", TextElement.Blockquote::class)
-                .withIndent {
-                    visitChildren(
-                        parent = blockQuote,
-                        parentBuilder = this,
-                        memberName = TextElement.Blockquote::class.member(TextElement.Blockquote::children.name),
-                    )
+                .apply {
+                    addStatement("%T(", kClass)
+                    withIndent {
+                        visitChildren(
+                            parent = blockQuote,
+                            parentBuilder = this,
+                            memberName = kClass.member(TextElement.Blockquote::children.name),
+                        )
+                        if (alert != null) {
+                            val typeKClass = TextElement.Blockquote.Type::class
+                            addStatement(
+                                "%N = %T.%N,",
+                                kClass.member(TextElement.Blockquote::type.name),
+                                typeKClass,
+                                when (alert) {
+                                    "[!NOTE]" ->
+                                        typeKClass.member(TextElement.Blockquote.Type.NOTE.name)
+                                    "[!WARNING]" ->
+                                        typeKClass.member(TextElement.Blockquote.Type.WARNING.name)
+                                    "[!IMPORTANT]" ->
+                                        typeKClass.member(TextElement.Blockquote.Type.IMPORTANT.name)
+                                    "[!CAUTION]" ->
+                                        typeKClass.member(TextElement.Blockquote.Type.CAUTION.name)
+                                    "[!TIP]" ->
+                                        typeKClass.member(TextElement.Blockquote.Type.TIP.name)
+                                    else -> return@withIndent
+                                },
+                            )
+                        }
+                    }
+                    addStatement("),")
                 }
-                .addStatement("),")
             currentBuilder = parent
             attachToParent(codeBlock)
         }

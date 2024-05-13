@@ -1,3 +1,4 @@
+import dev.tonholo.marktdown.processor.Logger
 import dev.tonholo.marktdown.processor.visitor.MarktdownRenderer
 import java.io.BufferedReader
 import java.io.InputStreamReader
@@ -58,6 +59,35 @@ fun main() {
     println()
 
     val parsed = MarktdownRenderer(
+        logger = object : Logger {
+            override fun trace(message: String, vararg args: Any?) {
+                println(message)
+            }
+
+            override fun warn(message: String, vararg args: Any?) {
+                println(message)
+            }
+
+            override fun error(message: String, vararg args: Any?) {
+                println(message)
+            }
+
+            override fun debug(message: String?, vararg args: Any?) {
+                println(message)
+            }
+
+            override fun info(message: String?, vararg args: Any?) {
+                println(message)
+            }
+
+            override fun lifecycle(message: String?, vararg args: Any?) {
+                println(message)
+            }
+
+            override fun quiet(message: String?, vararg args: Any?) {
+                println(message)
+            }
+        },
         content = noFrontMatterContent,
         packageName = "dev.tonholo.marktdown.sample",
         fileName = "Test.kt",
