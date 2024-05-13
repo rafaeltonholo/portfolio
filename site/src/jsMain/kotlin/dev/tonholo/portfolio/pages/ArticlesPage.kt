@@ -1,6 +1,7 @@
 package dev.tonholo.portfolio.pages
 
 import androidx.compose.runtime.Composable
+import com.varabyte.kobweb.compose.css.OverflowWrap
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.alignSelf
 import com.varabyte.kobweb.compose.ui.modifiers.backgroundColor
@@ -12,6 +13,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.fillMaxWidth
 import com.varabyte.kobweb.compose.ui.modifiers.flexDirection
 import com.varabyte.kobweb.compose.ui.modifiers.gap
 import com.varabyte.kobweb.compose.ui.modifiers.lineHeight
+import com.varabyte.kobweb.compose.ui.modifiers.overflowWrap
 import com.varabyte.kobweb.core.Page
 import com.varabyte.kobweb.core.rememberPageContext
 import com.varabyte.kobweb.navigation.Route
@@ -55,6 +57,7 @@ val ArticlePageStyles by ComponentStyle {
     cssRule("article") {
         typography.bodyLarge
             .toModifier()
+            .fillMaxWidth()
             .display(DisplayStyle.Flex)
             .flexDirection(FlexDirection.Column)
             .gap(16.dp)
@@ -84,6 +87,7 @@ val ArticlePageStyles by ComponentStyle {
             .borderRadius(4.dp)
             .lineHeight(32.dp)
             .backgroundColor(colorScheme.outline.copy(alpha = 0.9f))
+            .overflowWrap(OverflowWrap.Anywhere)
     }
 }
 
