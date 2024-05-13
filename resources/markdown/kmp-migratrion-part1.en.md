@@ -71,7 +71,7 @@ Is this a code block?
 
 ~~~kotlin
 interface ThatIsADifferentCodeFence {
-    val what: String = "The hell?"
+    val what: String get() = "The hell?"
 }
 ~~~
 

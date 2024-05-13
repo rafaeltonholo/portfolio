@@ -89,6 +89,7 @@ data class Strings(
     val viewProject: String,
     val present: String,
     val monthNames: MonthNames,
+    val scrollToTop: String,
 )
 
 @LyricistStrings(languageTag = Locales.EN, default = true)
@@ -136,6 +137,7 @@ val EnStrings = Strings(
     viewProject = "View Project",
     present = "Present",
     monthNames = MonthNames.ENGLISH_ABBREVIATED,
+    scrollToTop = "Scroll to top ⬆",
 )
 
 @LyricistStrings(languageTag = Locales.PT_BR)
@@ -186,6 +188,7 @@ val PtStrings = Strings(
         names = listOf(
             "Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul",
             "Ago", "Set", "Out", "Nov", "Dez",
-        )
-    )
+        ),
+    ),
+    scrollToTop = "Ir para o início ⬆",
 )

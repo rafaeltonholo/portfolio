@@ -10,6 +10,7 @@ import com.varabyte.kobweb.compose.css.VerticalAlign
 import com.varabyte.kobweb.compose.css.boxShadow
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.graphics.Color
+import com.varabyte.kobweb.compose.ui.graphics.Colors
 import com.varabyte.kobweb.compose.ui.modifiers.backgroundColor
 import com.varabyte.kobweb.compose.ui.modifiers.border
 import com.varabyte.kobweb.compose.ui.modifiers.borderRadius
@@ -31,6 +32,7 @@ import dev.tonholo.portfolio.core.foundation.toBoxShadowString
 import dev.tonholo.portfolio.core.ui.theme.Elevation
 import dev.tonholo.portfolio.core.ui.theme.Theme
 import dev.tonholo.portfolio.core.ui.theme.color.Unspecified
+import dev.tonholo.portfolio.core.ui.theme.color.copy
 import dev.tonholo.portfolio.core.ui.unit.Dp
 import dev.tonholo.portfolio.core.ui.unit.dp
 
@@ -103,6 +105,11 @@ object ButtonDefaults {
         bottom = 8.dp
     )
 
+    val TextButtonContentPadding = PaddingValues(
+        vertical = 10.dp,
+        horizontal = 24.dp,
+    )
+
     val BorderRadius = 100.dp
 
     @Composable
@@ -115,6 +122,18 @@ object ButtonDefaults {
         containerColor = containerColor,
         contentColor = contentColor,
         disabledContainerColor = disabledContainerColor,
+        disabledContentColor = disabledContentColor,
+    )
+
+    @Composable
+    fun textButtonColors(
+        contentColor: Color = Theme.colorScheme.primary,
+        disabledContentColor: Color = Theme.colorScheme.onSurface.copy(alpha = 0.5f),
+        hoveredContainerColor: Color = Theme.colorScheme.primary.copy(alpha = 0.1f),
+    ): ButtonColors = ButtonColors(
+        containerColor = hoveredContainerColor,
+        contentColor = contentColor,
+        disabledContainerColor = Colors.Transparent,
         disabledContentColor = disabledContentColor,
     )
 

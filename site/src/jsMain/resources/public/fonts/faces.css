@@ -130,7 +130,7 @@
     font-style: italic;
 }
 
-pre code.hljs {
+pre code, code {
     font-family: JetBrainsMono;
     -webkit-font-feature-settings: "calt";
     -moz-font-feature-settings: "calt=1";

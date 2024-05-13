@@ -96,3 +96,9 @@ fun PaddingValues(
     vertical: Dp = 0.dp,
     horizontal: Dp = 0.dp,
 ): PaddingValues = PaddingValuesImpl(horizontal, vertical, horizontal, vertical)
+
+
+@Stable
+fun PaddingValues(
+    all: Dp = 0.dp,
+): PaddingValues = PaddingValuesImpl(all, all, all, all)

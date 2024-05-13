@@ -12,6 +12,7 @@ import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.onClick
 import com.varabyte.kobweb.compose.ui.modifiers.setVariable
 import com.varabyte.kobweb.compose.ui.toAttrs
+import com.varabyte.kobweb.silk.components.style.ComponentVariant
 import com.varabyte.kobweb.silk.components.style.toModifier
 import dev.tonholo.portfolio.core.extensions.padding
 import dev.tonholo.portfolio.core.foundation.layout.PaddingValues
@@ -31,11 +32,12 @@ fun Button(
     contentPadding: PaddingValues = ButtonDefaults.ContentPadding,
     borderRadius: Dp = ButtonDefaults.BorderRadius,
     ref: ElementRefScope<HTMLButtonElement>? = null,
+    variant: ComponentVariant? = null,
     content: @Composable RowScope.() -> Unit
 ) {
     ComposeButton(
         attrs = ButtonStyles
-            .toModifier()
+            .toModifier(variant)
             .onClick { event ->
                 onClick()
                 event.stopPropagation()
