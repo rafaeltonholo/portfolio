@@ -28,6 +28,7 @@ val ScaffoldStyle by ComponentStyle {
                     delay = 0.s,
                 )
             )
+            .padding(vertical = 20.dp, horizontal = 20.dp)
     }
 
     Breakpoint.LG {

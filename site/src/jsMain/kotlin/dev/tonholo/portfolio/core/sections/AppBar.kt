@@ -16,6 +16,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.alignSelf
 import com.varabyte.kobweb.compose.ui.modifiers.background
 import com.varabyte.kobweb.compose.ui.modifiers.borderRadius
 import com.varabyte.kobweb.compose.ui.modifiers.color
+import com.varabyte.kobweb.compose.ui.modifiers.display
 import com.varabyte.kobweb.compose.ui.modifiers.fillMaxWidth
 import com.varabyte.kobweb.compose.ui.modifiers.gap
 import com.varabyte.kobweb.compose.ui.modifiers.padding
@@ -30,6 +31,7 @@ import com.varabyte.kobweb.silk.components.icons.mdi.MdiLightMode
 import com.varabyte.kobweb.silk.components.overlay.PopupPlacement
 import com.varabyte.kobweb.silk.components.overlay.Tooltip
 import com.varabyte.kobweb.silk.components.style.ComponentStyle
+import com.varabyte.kobweb.silk.components.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.components.style.hover
 import com.varabyte.kobweb.silk.components.style.toModifier
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
@@ -50,6 +52,7 @@ import dev.tonholo.portfolio.core.ui.theme.typography.toModifier
 import dev.tonholo.portfolio.core.ui.unit.dp
 import dev.tonholo.portfolio.features.home.components.LanguageChanger
 import org.jetbrains.compose.web.css.AlignSelf
+import org.jetbrains.compose.web.css.DisplayStyle
 import org.jetbrains.compose.web.css.em
 import org.jetbrains.compose.web.css.keywords.auto
 import org.jetbrains.compose.web.css.percent
@@ -62,6 +65,18 @@ val AppBarStyles by ComponentStyle {
             .borderRadius(8.dp)
             .padding(16.dp)
             .elevation(elevations.level1)
+    }
+}
+
+val AppBarNavMenuStyles by ComponentStyle {
+    base {
+        Modifier.display(DisplayStyle.None)
+    }
+
+    Breakpoint.MD {
+        Modifier
+            .display(DisplayStyle.Flex)
+            .gap(24.dp)
     }
 }
 
@@ -119,7 +134,7 @@ fun AppBar(
     ) {
         Logo(modifier = Modifier.padding(left = 8.dp))
         Row(
-            modifier = Modifier.gap(24.dp)
+            modifier = AppBarNavMenuStyles.toModifier(),
         ) {
             AppBarButton(
                 text = strings.navBar.home,
