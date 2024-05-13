@@ -348,9 +348,19 @@ class MarktdownRenderer(
                         TextElement.Title.Style::class,
                         level,
                     )
+                    addStatement(
+                        "%N = %T(value = %S),",
+                        kClass.member(TextElement.Title::id.name),
+                        TextElement.Title.TitleId::class,
+                        node.literal.toString()
+                            .filter { it.isLetterOrDigit() || it == ' ' }
+                            .trimStart()
+                            .replace(' ', '-')
+                            .lowercase(),
+                    )
                     val child = childrenToConsider.singleOrNull()
                     if (child != null && child.type == MarkdownTokenTypes.TEXT) {
-                        addStatement("text = %S,", child.literal)
+                        addStatement("text = %S,", child.literal.trimStart())
                     } else {
 //                        logger.trace("Visiting children ${childrenToConsider.map { it.type }}")
                         visitChildren(
