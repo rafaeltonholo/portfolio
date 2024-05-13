@@ -42,13 +42,14 @@ abstract class MarktdownRendererTask : DefaultTask() {
     @get:InputDirectory
     val modelsDir: DirectoryProperty = project.objects.directoryProperty()
 
-//    @get:InputDirectory
+    //    @get:InputDirectory
     @get:Internal
-    val renderersDir: DirectoryProperty get() = project.objects.directoryProperty().apply {
-        set(
-            project.layout.buildDirectory.dir("generated/marktdown/kotlin/jsMain"),
-        )
-    }
+    val renderersDir: DirectoryProperty
+        get() = project.objects.directoryProperty().apply {
+            set(
+                project.layout.buildDirectory.dir("generated/marktdown/kotlin/jsMain"),
+            )
+        }
 
     /**
      * The root output directory for the generated renderers files.
@@ -88,6 +89,9 @@ abstract class MarktdownRendererTask : DefaultTask() {
     // TODO: Figure out a better way to set a dependency to the models project
     @Internal
     lateinit var modelsContainerProject: Project
+
+    @get:Internal
+    var isKspEnabled: Boolean = false
 
     init {
         group = "MarKTdown"
@@ -147,12 +151,27 @@ abstract class MarktdownRendererTask : DefaultTask() {
         }
         logger.debug("elements to render = {}", elementsToRender)
 
+        val exclusion = if (isKspEnabled) {
+            val kspPath = project.layout.buildDirectory.dir(
+                "generated/ksp/js/jsMain/$pkg/renderer/content",
+            ).get().asFile.toPath()
+            if (kspPath.exists()) {
+                kspPath.useDirectoryEntries("*.kt") { paths ->
+                    paths.map { it.nameWithoutExtension }
+                }.toSet()
+            } else {
+                emptySet()
+            }
+        } else {
+            emptySet()
+        }
+
         MarktdownElementRendererCreator(
             rendererGenerator = ComposeHtmlRendererGenerator(
                 packageName = packageName,
                 elementsToRender = elementsToRender.toSet(),
             ),
-        ).create(output = rootOutputDirectory)
+        ).create(output = rootOutputDirectory, exclusion = exclusion)
     }
 }
 
@@ -202,6 +221,7 @@ fun TaskContainer.registerMarktdownRendererTask(
                 logger.trace("Found KSP Task.")
                 dependsOn(task)
                 mustRunAfter(task)
+                task.get().isKspEnabled = true
             }
             val outputDir = task.map { it.rootOutputDirectory }
             sourceSet.kotlin.srcDirs(outputDir)

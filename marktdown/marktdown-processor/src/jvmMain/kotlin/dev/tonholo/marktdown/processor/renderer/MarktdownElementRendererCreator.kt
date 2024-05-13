@@ -49,8 +49,8 @@ class MarktdownElementRendererCreator(
             get() = "${asClassName().simpleNames.joinToString(".")}("
     }
 
-    fun create(output: Path) {
-        for (fileSpec in rendererGenerator.generate()) {
+    fun create(output: Path, exclusion: Set<String> = setOf()) {
+        for (fileSpec in rendererGenerator.generate(exclusion)) {
             fileSpec.writeTo(output)
         }
     }

@@ -27,6 +27,7 @@ import dev.tonholo.marktdown.domain.content.TextElement.StrongText
 import dev.tonholo.marktdown.domain.content.TextElement.Subscript
 import dev.tonholo.marktdown.domain.content.TextElement.Superscript
 import dev.tonholo.marktdown.domain.content.TextElement.Title
+import dev.tonholo.marktdown.processor.extensions.fnName
 import kotlin.reflect.KClass
 
 private const val RENDERER_PACKAGE_SUFFIX = ".renderer"
@@ -76,9 +77,13 @@ abstract class RendererGenerator(
         )
     }
 
-    fun generate(): List<FileSpec> {
+    fun generate(exclusion: Set<String>): List<FileSpec> {
         return buildList {
-            addAll(generateElementMap().values)
+            addAll(
+                generateElementMap()
+                    .filterNot { it.key.fnName in exclusion }
+                    .values
+            )
 
             add(createMarktdownElementRenderer())
             add(createMarktdownDocumentRenderer())
