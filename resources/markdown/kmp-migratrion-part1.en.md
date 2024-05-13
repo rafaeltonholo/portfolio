@@ -20,7 +20,7 @@ publishedDateTime: 2024-04-20T20:41:45
 
 [*That* **is** <sub>a</sub> `complex`, ~custom~, ^link^](https://www.google.com.br)
 
-~~*That* **is** <sub>a</sub> `complex`, ~custom~, ^paragraph^~~
+~~*That* **is** <sub>a</sub> `complex`, ==~custom~==, ^paragraph^~~
 
 <https://www.google.com>
 

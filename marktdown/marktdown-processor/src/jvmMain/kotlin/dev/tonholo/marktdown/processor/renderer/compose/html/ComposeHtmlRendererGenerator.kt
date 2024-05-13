@@ -413,7 +413,7 @@ class ComposeHtmlRendererGenerator(
     }
 
     override fun KClass<out TextElement.Strikethrough>.createStrikethroughDefaultRenderer(): FileSpec = baseFileSpec {
-        addCode(createMarktdownParentCodeBlock(tagName = "mark", scopeFn = it))
+        addCode(createMarktdownParentCodeBlock(tagName = "del", scopeFn = it))
     }
 
     override fun KClass<out TextElement.StrongText>.createStrongTextDefaultRenderer(): FileSpec = baseFileSpec {
@@ -496,6 +496,18 @@ class ComposeHtmlRendererGenerator(
             addStatement("%M(value = element.%N)", text, member(TextElement.PlainText::text.name))
         }
     )
+
+    override fun KClass<out TextElement.InlineHtml>.createInlineHtmlDefaultRenderer(): FileSpec =
+        baseFileSpec { scopeFn ->
+            addCode(
+                buildCodeBlock {
+                    val composeElement = MemberName(COMPOSE_WEB_DOM, "TagElement")
+                    beginControlFlow("%M<%T>(element.tagName, null)", composeElement, htmlElementClassName)
+                    apply(scopeFn)
+                    endControlFlow()
+                }
+            )
+        }
 
     private inline fun <reified T : MarktdownElement> KClass<out T>.baseFileSpec(
         noinline leafNodeScopeFn: CodeBlock.Builder.() -> Unit = {},

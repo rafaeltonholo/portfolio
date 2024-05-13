@@ -1036,7 +1036,10 @@ class MarktdownRenderer(
                                 "%T(%N = %S, %S),",
                                 kClass,
                                 kClass.member(TextElement.InlineHtml::tagName.name),
-                                htmlTag.literal,
+                                htmlTag.literal
+                                    .toString()
+                                    .replace("<", "")
+                                    .replace(">", ""),
                                 child.literal,
                             )
                         }
@@ -1047,7 +1050,9 @@ class MarktdownRenderer(
                                 addStatement(
                                     "%N = %S",
                                     kClass.member(TextElement.InlineHtml::tagName.name),
-                                    htmlTag.literal,
+                                    htmlTag.literal.toString()
+                                        .replace("<", "")
+                                        .replace(">", ""),
                                 )
                                 visitChildren(
                                     children = childrenToConsider,

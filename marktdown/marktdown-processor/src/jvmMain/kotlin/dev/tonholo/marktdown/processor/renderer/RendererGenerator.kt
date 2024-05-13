@@ -15,6 +15,7 @@ import dev.tonholo.marktdown.domain.content.ListElement.Task
 import dev.tonholo.marktdown.domain.content.ListElement.Unordered
 import dev.tonholo.marktdown.domain.content.MarktdownElement
 import dev.tonholo.marktdown.domain.content.TableElement
+import dev.tonholo.marktdown.domain.content.TextElement
 import dev.tonholo.marktdown.domain.content.TextElement.Blockquote
 import dev.tonholo.marktdown.domain.content.TextElement.Emoji
 import dev.tonholo.marktdown.domain.content.TextElement.EmphasisText
@@ -71,6 +72,8 @@ abstract class RendererGenerator(
                     InlineCode::class -> it to InlineCode::class.createInlineCodeDefaultRenderer()
                     AutoLink::class -> it to AutoLink::class.createAutoLinkDefaultRenderer()
                     PlainText::class -> it to PlainText::class.createPlainTextDefaultRenderer()
+                    TextElement.InlineHtml::class ->
+                        it to TextElement.InlineHtml::class.createInlineHtmlDefaultRenderer()
                     else -> null
                 }
             },
@@ -118,4 +121,5 @@ abstract class RendererGenerator(
     protected abstract fun KClass<out InlineCode>.createInlineCodeDefaultRenderer(): FileSpec
     protected abstract fun KClass<out AutoLink>.createAutoLinkDefaultRenderer(): FileSpec
     protected abstract fun KClass<out PlainText>.createPlainTextDefaultRenderer(): FileSpec
+    protected abstract fun KClass<out TextElement.InlineHtml>.createInlineHtmlDefaultRenderer(): FileSpec
 }

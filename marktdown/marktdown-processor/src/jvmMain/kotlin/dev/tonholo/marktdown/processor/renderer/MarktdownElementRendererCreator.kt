@@ -44,6 +44,7 @@ class MarktdownElementRendererCreator(
             TextElement.InlineCode::class.constructor to TextElement.InlineCode::class,
             Link.AutoLink::class.constructor to Link.AutoLink::class,
             TextElement.PlainText::class.constructor to TextElement.PlainText::class,
+            TextElement.InlineHtml::class.constructor to TextElement.InlineHtml::class,
         )
         private val KClass<out MarktdownElement>.constructor
             get() = "${asClassName().simpleNames.joinToString(".")}("
