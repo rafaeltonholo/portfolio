@@ -7,6 +7,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.alignSelf
 import com.varabyte.kobweb.compose.ui.modifiers.backgroundColor
 import com.varabyte.kobweb.compose.ui.modifiers.borderBottom
 import com.varabyte.kobweb.compose.ui.modifiers.borderRadius
+import com.varabyte.kobweb.compose.ui.modifiers.color
 import com.varabyte.kobweb.compose.ui.modifiers.display
 import com.varabyte.kobweb.compose.ui.modifiers.fillMaxSize
 import com.varabyte.kobweb.compose.ui.modifiers.fillMaxWidth
@@ -18,6 +19,7 @@ import com.varabyte.kobweb.core.Page
 import com.varabyte.kobweb.core.rememberPageContext
 import com.varabyte.kobweb.navigation.Route
 import com.varabyte.kobweb.silk.components.style.ComponentStyle
+import com.varabyte.kobweb.silk.components.style.cssRule
 import com.varabyte.kobweb.silk.components.style.toModifier
 import dev.tonholo.portfolio.KmpMigratrionPart1En
 import dev.tonholo.portfolio.core.components.button.TextButton
@@ -88,6 +90,14 @@ val ArticlePageStyles by ComponentStyle {
             .lineHeight(32.dp)
             .backgroundColor(colorScheme.outline.copy(alpha = 0.9f))
             .overflowWrap(OverflowWrap.Anywhere)
+    }
+
+    cssRule("article a") {
+        Modifier.color(colorScheme.primary)
+    }
+
+    cssRule("article a:hover") {
+        Modifier.color(colorScheme.onBackground)
     }
 }
 
