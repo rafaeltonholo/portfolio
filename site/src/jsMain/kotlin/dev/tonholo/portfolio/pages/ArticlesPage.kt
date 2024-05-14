@@ -1,11 +1,14 @@
 package dev.tonholo.portfolio.pages
 
 import androidx.compose.runtime.Composable
+import com.varabyte.kobweb.compose.css.BorderCollapse
 import com.varabyte.kobweb.compose.css.OverflowWrap
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.alignSelf
 import com.varabyte.kobweb.compose.ui.modifiers.backgroundColor
+import com.varabyte.kobweb.compose.ui.modifiers.border
 import com.varabyte.kobweb.compose.ui.modifiers.borderBottom
+import com.varabyte.kobweb.compose.ui.modifiers.borderCollapse
 import com.varabyte.kobweb.compose.ui.modifiers.borderRadius
 import com.varabyte.kobweb.compose.ui.modifiers.color
 import com.varabyte.kobweb.compose.ui.modifiers.display
@@ -98,6 +101,23 @@ val ArticlePageStyles by ComponentStyle {
 
     cssRule("article a:hover") {
         Modifier.color(colorScheme.onBackground)
+    }
+    cssRule("article table") {
+        Modifier.borderCollapse(BorderCollapse.Collapse)
+    }
+    cssRule("article th") {
+        Modifier
+            .border(1.dp, LineStyle.Solid, colorScheme.outline)
+            .padding(4.dp)
+    }
+    cssRule("article td") {
+        Modifier
+            .border(1.dp, LineStyle.Solid, colorScheme.outline)
+            .padding(4.dp)
+    }
+    cssRule("article tr:nth-child(2n)") {
+        Modifier
+            .backgroundColor(colorScheme.surface)
     }
 }
 
