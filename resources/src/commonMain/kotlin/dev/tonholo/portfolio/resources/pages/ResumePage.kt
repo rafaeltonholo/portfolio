@@ -1,5 +1,6 @@
 package dev.tonholo.portfolio.resources.pages
 
+import androidx.compose.runtime.Immutable
 import dev.tonholo.portfolio.locale.Locales
 import dev.tonholo.portfolio.resources.Education
 import dev.tonholo.portfolio.resources.workExperience.Experience
@@ -29,6 +30,7 @@ data class ResumePage(
     }
 }
 
+@Immutable
 data class ExperienceSection(
     val title: String,
     val experiences: List<Experience>,
@@ -45,6 +47,7 @@ data class ExperienceSection(
     }
 }
 
+@Immutable
 data class EducationSection(
     val title: String,
     val educations: List<Education>,
@@ -61,6 +64,7 @@ data class EducationSection(
     }
 }
 
+@Immutable
 data class SkillSection(
     val title: String,
     val skills: List<Skill>,

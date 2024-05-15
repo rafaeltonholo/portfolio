@@ -1,5 +1,6 @@
 package dev.tonholo.portfolio.resources.pages
 
+import androidx.compose.runtime.Immutable
 import kotlin.random.Random
 
 data class AboutPage(
@@ -18,6 +19,7 @@ data class AboutPage(
     }
 }
 
+@Immutable
 data class MainContent(
     val title: String,
     val description: List<String>,
@@ -40,6 +42,7 @@ data class MainContent(
     }
 }
 
+@Immutable
 data class MoreAboutMe(
     val title: String,
     val highlights: List<Highlight>,

@@ -1,5 +1,5 @@
 ---
-documentTitle: Meu documento
+title: Meu documento
 authors:
     - name: Rafael
       links:

@@ -1,5 +1,6 @@
 package dev.tonholo.portfolio.resources.pages
 
+import androidx.compose.runtime.Immutable
 import dev.tonholo.portfolio.core.ui.text.AnnotatedString
 import dev.tonholo.portfolio.core.ui.text.annotatedString
 import dev.tonholo.portfolio.core.ui.text.bold
@@ -48,6 +49,7 @@ data class WelcomeSection(
     }
 }
 
+@Immutable
 data class HomeAboutSection(
     val title: String,
     val description: String,
@@ -95,6 +97,7 @@ data class HomeAboutSection(
     }
 }
 
+@Immutable
 data class RecentProjectsSection(
     val title: String,
     val projects: List<Project>,

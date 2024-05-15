@@ -1,12 +1,12 @@
 ---
-documentTitle: My document
+title: My document
 authors:
   - name: Rafael
     links:
         - https://abc.com
         - https://github.com/rafaeltonholo
         - https://linkedin.com/in/rafaeltonholo
-    avatar: https://dfe.com
+    avatar: http://localhost:8080/images/writing.jpg
   - name: Amanda
     links:
         - https://google.com
@@ -16,6 +16,10 @@ authors:
     avatar: https://google.com
   - name: Pingo
 publishedDateTime: 2024-04-20T20:41:45
+tags:
+    - KMP
+    - Android
+    - iOS
 ---
 
 [*That* **is** <sub>a</sub> `complex`, ~custom~, ^link^](https://www.google.com.br)
