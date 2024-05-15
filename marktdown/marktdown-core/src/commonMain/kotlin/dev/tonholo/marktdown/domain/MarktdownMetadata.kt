@@ -6,10 +6,10 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 
 interface MarktdownMetadata {
-    val documentTitle: String
+    val title: String
     val authors: List<Author>
     val publishedDateTime: LocalDateTime
-    val documentDescription: String? get() = null
+    val description: String? get() = null
     val crossPost: MarktdownLink? get() = null
     val tags: List<MarktdownTag> get() = emptyList()
     val lastUpdateDateTime: LocalDateTime get() = publishedDateTime
@@ -19,7 +19,7 @@ interface MarktdownMetadata {
 class MarktdownMetadataMap(
     map: Map<String, Any>,
 ) : MarktdownMetadata {
-    override val documentTitle: String by map
+    override val title: String by map
     override val authors: List<Author> by lazy {
         requireNotNull(map["authors"] as? List<*>).map { authors ->
             val authorMap = requireNotNull(authors as? Map<*, *>)
@@ -28,22 +28,30 @@ class MarktdownMetadataMap(
         }
     }
     override val publishedDateTime: LocalDateTime by map
-    override val documentDescription: String? by map
+    override val description: String? by lazy {
+        map["description"]?.toString()
+    }
     override val crossPost: MarktdownLink? by lazy {
         map["crossPost"]?.let { MarktdownLink(it.toString()) }
     }
-    override val tags: List<MarktdownTag> by map
+    override val tags: List<MarktdownTag> by lazy {
+        (map["tags"] as? List<*>)?.map {
+            MarktdownTag(it.toString())
+        } ?: emptyList()
+    }
     override val lastUpdateDateTime: LocalDateTime by lazy {
         map["lastUpdateDateTime"] as? LocalDateTime ?: publishedDateTime
     }
-    override val postThumbnail: MarktdownLink? by map
+    override val postThumbnail: MarktdownLink? by lazy {
+        map["postThumbnail"]?.let { MarktdownLink(it.toString()) }
+    }
 }
 
 data class MarktdownMetadataImpl(
-    override val documentTitle: String,
+    override val title: String,
     override val authors: List<Author>,
     override val publishedDateTime: LocalDateTime,
-    override val documentDescription: String? = null,
+    override val description: String? = null,
     override val crossPost: MarktdownLink? = null,
     override val tags: List<MarktdownTag> = emptyList(),
     override val lastUpdateDateTime: LocalDateTime = publishedDateTime,
@@ -51,7 +59,7 @@ data class MarktdownMetadataImpl(
 ) : MarktdownMetadata {
     companion object {
         operator fun invoke(): MarktdownMetadataImpl = MarktdownMetadataImpl(
-            documentTitle = "",
+            title = "",
             authors = emptyList(),
             publishedDateTime = Clock.System.now().toLocalDateTime(TimeZone.UTC)
         )

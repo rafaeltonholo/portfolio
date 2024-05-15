@@ -537,8 +537,8 @@ class MarktdownRenderer(
             when (customNode) {
                 is YamlFrontMatterNode -> {
                     when (customNode.key) {
-                        MarktdownMetadata::documentTitle.name -> metadataSpec.update {
-                            it.copy(documentTitle = customNode.values.first())
+                        MarktdownMetadata::title.name -> metadataSpec.update {
+                            it.copy(title = customNode.values.first())
                         }
 
                         MarktdownMetadata::authors.name -> metadataSpec.update { metadata ->
@@ -556,8 +556,8 @@ class MarktdownRenderer(
                             it.copy(publishedDateTime = LocalDateTime.parse(customNode.values.first()))
                         }
 
-                        MarktdownMetadata::documentDescription.name -> metadataSpec.update {
-                            it.copy(documentDescription = customNode.values.first())
+                        MarktdownMetadata::description.name -> metadataSpec.update {
+                            it.copy(description = customNode.values.first())
                         }
 
                         MarktdownMetadata::crossPost.name -> metadataSpec.update {
@@ -599,8 +599,8 @@ private fun MarktdownMetadata.build(memberName: MemberName): CodeBlock {
         withIndent {
             addStatement(
                 "%N = %S,",
-                className.member(MarktdownMetadata::documentTitle.name),
-                documentTitle
+                className.member(MarktdownMetadata::title.name),
+                title
             )
             add(
                 authors.toCodeBlock(className.member(MarktdownMetadata::authors.name)) {

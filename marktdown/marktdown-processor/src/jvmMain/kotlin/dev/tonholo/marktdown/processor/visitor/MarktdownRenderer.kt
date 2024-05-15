@@ -13,6 +13,7 @@ import dev.tonholo.marktdown.domain.MarktdownLink
 import dev.tonholo.marktdown.domain.MarktdownMetadata
 import dev.tonholo.marktdown.domain.MarktdownMetadataImpl
 import dev.tonholo.marktdown.domain.MarktdownMetadataMap
+import dev.tonholo.marktdown.domain.MarktdownTag
 import dev.tonholo.marktdown.domain.content.CodeFence
 import dev.tonholo.marktdown.domain.content.EndOfLine
 import dev.tonholo.marktdown.domain.content.HorizontalRule
@@ -36,6 +37,7 @@ import java.util.*
 import kotlinx.datetime.FixedOffsetTimeZone
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.TimeZone
 import kotlinx.datetime.UtcOffset
 import kotlinx.datetime.toLocalDateTime
 import org.intellij.markdown.MarkdownElementType
@@ -72,7 +74,7 @@ class MarktdownRenderer(
             when (value) {
                 is Date -> Instant
                     .fromEpochMilliseconds(value.time)
-                    .toLocalDateTime(FixedOffsetTimeZone(UtcOffset.ZERO))
+                    .toLocalDateTime(TimeZone.currentSystemDefault())
 
                 else -> value
             }
@@ -134,6 +136,7 @@ class MarktdownRenderer(
                 packageName = packageName,
                 fileName = fileName.pascalCase(),
             )
+            .indent(" ".repeat(4))
             .addProperty(rootPropertySpec)
             .build()
 
@@ -1159,19 +1162,53 @@ private fun MarktdownMetadata.build(memberName: MemberName): CodeBlock {
         withIndent {
             addStatement(
                 "%N = %S,",
-                className.member(MarktdownMetadata::documentTitle.name),
-                documentTitle
+                className.member(MarktdownMetadata::title.name),
+                title,
             )
             add(
                 authors.toCodeBlock(className.member(MarktdownMetadata::authors.name)) {
                     it.toCodeBlock()
-                }
+                },
             )
             addStatement(
                 "%N = %L,",
                 className.member(MarktdownMetadata::publishedDateTime.name),
-                publishedDateTime.toCodeBlock()
+                publishedDateTime.toCodeBlock(),
             )
+            description?.let { description ->
+                addStatement(
+                    "%N = %S,",
+                    className.member(MarktdownMetadata::description.name),
+                    description,
+                )
+            }
+            crossPost?.let { crossPost ->
+                add(
+                    "%N = %L,",
+                    className.member(MarktdownMetadata::crossPost.name),
+                    crossPost.toCodeBlock(),
+                )
+            }
+            tags.takeIf { it.isNotEmpty() }?.let { tags ->
+                add(
+                    tags.toCodeBlock(
+                        memberName = className.member(MarktdownMetadata::tags.name),
+                        transform = { it.toCodeBlock() },
+                    ),
+                )
+            }
+            addStatement(
+                "%N = %L,",
+                className.member(MarktdownMetadata::lastUpdateDateTime.name),
+                lastUpdateDateTime.toCodeBlock(),
+            )
+            postThumbnail?.let { postThumbnail ->
+                add(
+                    "%N = %L,",
+                    className.member(MarktdownMetadata::postThumbnail.name),
+                    postThumbnail.toCodeBlock(),
+                )
+            }
         }
         addStatement("),")
     }
@@ -1208,6 +1245,14 @@ private fun MarktdownLink.toCodeBlock(): CodeBlock = buildCodeBlock {
     addStatement(
         "%T(%S),",
         MarktdownLink::class,
+        value,
+    )
+}
+
+private fun MarktdownTag.toCodeBlock(): CodeBlock = buildCodeBlock {
+    addStatement(
+        "%T(%S),",
+        MarktdownTag::class,
         value,
     )
 }
