@@ -8,12 +8,16 @@ import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.MemberName.Companion.member
+import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.asClassName
 import com.squareup.kotlinpoet.asTypeName
 import com.squareup.kotlinpoet.buildCodeBlock
 import com.squareup.kotlinpoet.typeNameOf
 import com.squareup.kotlinpoet.withIndent
+import dev.tonholo.marktdown.domain.Author
 import dev.tonholo.marktdown.domain.MarktdownLink
+import dev.tonholo.marktdown.domain.MarktdownMetadata
+import dev.tonholo.marktdown.domain.MarktdownTag
 import dev.tonholo.marktdown.domain.content.CodeFence
 import dev.tonholo.marktdown.domain.content.HorizontalRule
 import dev.tonholo.marktdown.domain.content.ImageElement
@@ -34,12 +38,21 @@ import dev.tonholo.marktdown.domain.renderer.TableElementScope
 import dev.tonholo.marktdown.domain.renderer.TableHeaderScope
 import dev.tonholo.marktdown.domain.renderer.TableRowScope
 import dev.tonholo.marktdown.processor.extensions.annotationSpec
+import dev.tonholo.marktdown.processor.extensions.code
 import dev.tonholo.marktdown.processor.extensions.fnName
+import dev.tonholo.marktdown.processor.extensions.function
+import dev.tonholo.marktdown.processor.extensions.modifiers
+import dev.tonholo.marktdown.processor.extensions.parameters
+import dev.tonholo.marktdown.processor.extensions.withControlFlow
+import dev.tonholo.marktdown.processor.extensions.withNullableLet
 import dev.tonholo.marktdown.processor.renderer.RendererGenerator
 import kotlin.reflect.KClass
 
+private const val KOTLINX_BROWSER = "kotlinx.browser"
+private const val KOTLIN_COLLECTIONS = "kotlin.collections"
 private const val COMPOSE_WEB_DOM = "org.jetbrains.compose.web.dom"
 private const val COMPOSE_WEB_CSS = "org.jetbrains.compose.web.css"
+private const val W3C_DOM = "org.w3c.dom"
 private val emMember = MemberName(COMPOSE_WEB_CSS, "em")
 private val pxMember = MemberName(COMPOSE_WEB_CSS, "px")
 private val marginMember = MemberName(COMPOSE_WEB_CSS, "margin")
@@ -49,6 +62,9 @@ private val lineStyleClassName = ClassName(COMPOSE_WEB_CSS, "LineStyle", "Compan
 private val colorClassName = ClassName(COMPOSE_WEB_CSS, "Color")
 private val cssBorderClassName = ClassName(COMPOSE_WEB_CSS, "CSSBorder")
 private val htmlElementClassName = ClassName("org.w3c.dom", "HTMLElement")
+private val joinToStringMemberName = MemberName(KOTLIN_COLLECTIONS, "joinToString")
+private val browserWindowMemberName = MemberName(KOTLINX_BROWSER, "window")
+private val browserDocumentMemberName = MemberName(KOTLINX_BROWSER, "document")
 private val marktdownLinkValueMemberName = MarktdownLink::class.asClassName().member(MarktdownLink::value.name)
 private val disposableEffect = MemberName("androidx.compose.runtime", "DisposableEffect")
 
@@ -60,11 +76,155 @@ class ComposeHtmlRendererGenerator(
     private val marktdownDocumentMemberName = MemberName(this.packageName, "Marktdown")
     override fun createMarktdownDocumentRenderer(): FileSpec = FileSpec.builder(marktdownDocumentMemberName).apply {
         defaultIndent()
+
+        val createMetaTagFnName = "createMetaTag"
+        val createMetaTagNameParam = "name"
+        val createMetaTagContentParam = "content"
+        val createAuthorMetaTagFnName = "createAuthorMetaTag"
+        val disposeMetaTagsFnName = "disposeMetaTags"
+        val metaTags = mutableSetOf<String>()
+
         addFunction(
             FunSpec.builder(marktdownDocumentMemberName).apply {
                 addAnnotation(Composable::class)
                 addModifiers(KModifier.PUBLIC)
-                addParameter(name = "document", typeNameOf<MarktdownDocument>())
+                val documentParam = "document"
+                parameters(
+                    documentParam to typeNameOf<MarktdownDocument>(),
+                )
+                val injectMetaTagsParam = "injectMetaTags"
+                addParameter(
+                    parameterSpec = ParameterSpec.builder(
+                        name = injectMetaTagsParam, type = typeNameOf<Boolean>(),
+                    ).defaultValue("false").build(),
+                )
+                code {
+                    class CustomMetaTag(
+                        val param: String = "%N",
+                        vararg val values: Any?,
+                    )
+
+                    fun CodeBlock.Builder.createMetaTags(tags: Map<String, Any?>) {
+                        tags.forEach { (name, content) ->
+                            metaTags += name
+                            val param = when (content) {
+                                is CustomMetaTag -> content.param
+                                is String -> "%S"
+                                is MemberName -> "metadata.%N"
+                                else -> "%L"
+                            }
+
+                            val contentValues = if (content is CustomMetaTag) {
+                                content.values
+                            } else {
+                                arrayOf(content)
+                            }
+                            addStatement("%N(", createMetaTagFnName)
+                            withIndent {
+                                addStatement(
+                                    "%N = %S,",
+                                    createMetaTagNameParam,
+                                    name,
+                                )
+                                addStatement(
+                                    "%N = $param,",
+                                    createMetaTagContentParam,
+                                    *contentValues,
+                                )
+                            }
+                            addStatement(")")
+                        }
+                    }
+
+                    withControlFlow(
+                        controlFlow = "%M($injectMetaTagsParam, $documentParam.%N)",
+                        disposableEffect,
+                        MarktdownDocument::metadata.name,
+                    ) {
+                        withControlFlow("if ($injectMetaTagsParam)") {
+                            val itName = "metadata"
+                            withNullableLet(
+                                statement = "$documentParam.%N",
+                                itName = itName,
+                                MarktdownDocument::metadata.name,
+                            ) {
+                                val metadataKClass = MarktdownMetadata::class
+                                createMetaTags(
+                                    mapOf(
+                                        "og:type" to "article",
+                                        "title" to metadataKClass.member(MarktdownMetadata::title.name),
+                                        "og:title" to metadataKClass.member(MarktdownMetadata::title.name),
+                                        "twitter:title" to metadataKClass.member(MarktdownMetadata::title.name),
+                                        "og:url" to CustomMetaTag(
+                                            param = "%M.location.href",
+                                            browserWindowMemberName,
+                                        ),
+                                        "robots" to "index,follow,max-image-preview:large",
+                                        "twitter:card" to "summary_large_image",
+                                        "article:section" to "posts",
+                                        "article:published_time" to CustomMetaTag(
+                                            param = "%N.%N.toString()",
+                                            itName,
+                                            MarktdownMetadata::publishedDateTime.name,
+                                        ),
+                                        "article:modified_time" to CustomMetaTag(
+                                            param = "%N.%N.toString()",
+                                            itName,
+                                            MarktdownMetadata::lastUpdateDateTime.name,
+                                        ),
+                                        "keywords" to CustomMetaTag(
+                                            param = "%N.%N.%N { it.%N }",
+                                            itName,
+                                            MarktdownMetadata::tags.name,
+                                            joinToStringMemberName,
+                                            MarktdownTag::value.name,
+                                        )
+                                    )
+                                )
+                                withNullableLet(
+                                    "%N.%N",
+                                    itName = null,
+                                    itName,
+                                    MarktdownMetadata::postThumbnail.name,
+                                ) {
+                                    val value = CustomMetaTag(param = "it.%N", MarktdownLink::value.name)
+                                    createMetaTags(
+                                        mapOf(
+                                            "og:image" to value,
+                                            "twitter:image" to value,
+                                        )
+                                    )
+                                }
+                                withNullableLet(
+                                    "%N.%N",
+                                    itName = null,
+                                    itName,
+                                    MarktdownMetadata::description.name,
+                                ) {
+                                    val value = CustomMetaTag(param = "%N", "it")
+                                    createMetaTags(
+                                        mapOf(
+                                            "description" to value,
+                                            "og:description" to value,
+                                            "twitter:description" to value,
+                                        )
+                                    )
+                                }
+                                addStatement(
+                                    "%N(%N.%N)",
+                                    createAuthorMetaTagFnName,
+                                    itName,
+                                    MarktdownMetadata::authors.name,
+                                )
+                            }
+                        }
+
+                        withControlFlow("onDispose") {
+                            addStatement("%N()", disposeMetaTagsFnName)
+                        }
+                    }
+                }
+
                 val composable = MemberName(COMPOSE_WEB_DOM, "Article")
                 addCode(
                     createMarktdownParentCodeBlock(
@@ -80,6 +240,120 @@ class ComposeHtmlRendererGenerator(
                 )
             }.build(),
         )
+
+        function(createMetaTagFnName) {
+            modifiers(KModifier.PRIVATE)
+            parameters(
+                createMetaTagNameParam to typeNameOf<String>(),
+                createMetaTagContentParam to typeNameOf<String>(),
+            )
+            code {
+                val metaTagVal = "metaTag"
+                withNullableLet(
+                    statement = "%M.head",
+                    itName = "head",
+                    browserDocumentMemberName,
+                ) {
+                    addStatement(
+                        "val isPresent = head.querySelector(\"meta[name='${'$'}name']\") != null",
+                    )
+                    addStatement("if (isPresent) return")
+                    addStatement(
+                        "val $metaTagVal = %M.createElement(\"meta\") as %T",
+                        browserDocumentMemberName,
+                        ClassName(W3C_DOM, "HTMLMetaElement")
+                    )
+                    addStatement("$metaTagVal.name = name")
+                    addStatement("$metaTagVal.content = content")
+                    addStatement(
+                        "head.appendChild(%N)",
+                        metaTagVal,
+                    )
+                }
+            }
+        }
+        function(createAuthorMetaTagFnName) {
+            modifiers(KModifier.PRIVATE)
+            parameters(
+                "authors" to typeNameOf<List<Author>>(),
+            )
+            code {
+                val mainAuthorVal = "mainAuthor"
+                val coAuthorsVal = "coAuthors"
+                val authorContentVal = "authorContent"
+                addStatement("val %N = authors.first()", mainAuthorVal)
+                addStatement("val %N = authors.drop(1)", coAuthorsVal)
+                beginControlFlow(
+                    controlFlow = "val %N = %M",
+                    authorContentVal,
+                    MemberName(packageName = "kotlin.text", simpleName = "buildString"),
+                )
+                addStatement("append(%N.name)", mainAuthorVal)
+                beginControlFlow("if (coAuthors.isNotEmpty())")
+                addStatement("append(%S)", ", co-authors: ")
+                addStatement(
+                    "append(coAuthors.%M { it.name })",
+                    joinToStringMemberName,
+                )
+                endControlFlow()
+                endControlFlow()
+                addStatement(
+                    "%N(%N = %S, %N = %N.%N)",
+                    createMetaTagFnName,
+                    createMetaTagNameParam,
+                    "article:publisher".also(metaTags::add),
+                    createMetaTagContentParam,
+                    mainAuthorVal,
+                    "name",
+                )
+                addStatement(
+                    "%N(%N = %S, %N = %N)",
+                    createMetaTagFnName,
+                    createMetaTagNameParam,
+                    "author".also(metaTags::add),
+                    createMetaTagContentParam,
+                    authorContentVal,
+                )
+                addStatement(
+                    "%N(%N = %S, %N = %N)",
+                    createMetaTagFnName,
+                    createMetaTagNameParam,
+                    "og:author".also(metaTags::add),
+                    createMetaTagContentParam,
+                    authorContentVal,
+                )
+                addStatement(
+                    "%N(%N = %S, %N = %N)",
+                    createMetaTagFnName,
+                    createMetaTagNameParam,
+                    "twitter:author".also(metaTags::add),
+                    createMetaTagContentParam,
+                    authorContentVal,
+                )
+            }
+        }
+        function(disposeMetaTagsFnName) {
+            modifiers(KModifier.PRIVATE)
+
+            code {
+                addStatement(
+                    "%M(",
+                    MemberName(KOTLIN_COLLECTIONS, "listOf"),
+                )
+                withIndent {
+                    metaTags.forEach { tag ->
+                        addStatement("%S,", tag)
+                    }
+                }
+                withControlFlow(").forEach") {
+                    addStatement(
+                        "%M.%N.querySelector(\"meta[name='${'$'}it']\")?.remove()",
+                        browserWindowMemberName,
+                        browserDocumentMemberName,
+                    )
+                }
+            }
+        }
     }.build()
 
     override fun createMarktdownElementRenderer(): FileSpec {
