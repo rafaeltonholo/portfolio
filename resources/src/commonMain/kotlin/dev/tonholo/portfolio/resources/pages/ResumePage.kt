@@ -1,6 +1,8 @@
 package dev.tonholo.portfolio.resources.pages
 
 import androidx.compose.runtime.Immutable
+import dev.tonholo.portfolio.core.collections.ImmutableList
+import dev.tonholo.portfolio.core.collections.immutableListOf
 import dev.tonholo.portfolio.locale.Locales
 import dev.tonholo.portfolio.resources.Education
 import dev.tonholo.portfolio.resources.workExperience.Experience
@@ -33,7 +35,7 @@ data class ResumePage(
 @Immutable
 data class ExperienceSection(
     val title: String,
-    val experiences: List<Experience>,
+    val experiences: ImmutableList<Experience>,
 ) : Section {
     companion object {
         val En = ExperienceSection(
@@ -50,7 +52,7 @@ data class ExperienceSection(
 @Immutable
 data class EducationSection(
     val title: String,
-    val educations: List<Education>,
+    val educations: ImmutableList<Education>,
 ) : Section {
     companion object {
         val En = EducationSection(
@@ -67,12 +69,12 @@ data class EducationSection(
 @Immutable
 data class SkillSection(
     val title: String,
-    val skills: List<Skill>,
+    val skills: ImmutableList<Skill>,
 ) : Section {
     companion object {
         val En = SkillSection(
             title = "Skills",
-            skills = listOf(
+            skills = immutableListOf(
                 Skill(name = "Android"),
                 Skill(name = "Kotlin"),
                 Skill(name = "KMP"),

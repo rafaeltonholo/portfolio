@@ -1,6 +1,8 @@
 package dev.tonholo.portfolio.resources
 
 import cafe.adriel.lyricist.LanguageTag
+import dev.tonholo.portfolio.core.collections.ImmutableList
+import dev.tonholo.portfolio.core.collections.immutableListOf
 import dev.tonholo.portfolio.locale.Locales
 import kotlinx.datetime.LocalDate
 
@@ -11,13 +13,13 @@ data class Education(
     val description: Description,
 ) {
     companion object {
-        val Educations: Map<LanguageTag, List<Education>> = mapOf(
-            Locales.EN to listOf(
+        val Educations: Map<LanguageTag, ImmutableList<Education>> = mapOf(
+            Locales.EN to immutableListOf(
                 Una,
                 PucMinas,
                 Cotemig,
             ),
-            Locales.PT_BR to listOf(
+            Locales.PT_BR to immutableListOf(
                 Una.copy(
                     school = "Centro universitário UNA",
                     title = "Pós graduação, Desenvolvimento de aplicativos móveis",

@@ -1,6 +1,8 @@
 package dev.tonholo.portfolio.resources.pages
 
 import androidx.compose.runtime.Immutable
+import dev.tonholo.portfolio.core.collections.ImmutableList
+import dev.tonholo.portfolio.core.collections.immutableListOf
 import dev.tonholo.portfolio.core.ui.text.AnnotatedString
 import dev.tonholo.portfolio.core.ui.text.annotatedString
 import dev.tonholo.portfolio.core.ui.text.bold
@@ -100,12 +102,12 @@ data class HomeAboutSection(
 @Immutable
 data class RecentProjectsSection(
     val title: String,
-    val projects: List<Project>,
+    val projects: ImmutableList<Project>,
 ) : Section {
     companion object {
         val En = RecentProjectsSection(
             title = "My recent projects",
-            projects = listOf(
+            projects = immutableListOf(
                 Project(
                     title = "SVG to Compose",
                     description = buildString {
@@ -134,7 +136,7 @@ data class RecentProjectsSection(
 
         val PtBr = RecentProjectsSection(
             title = "Meus projetos recentes",
-            projects = listOf(
+            projects = immutableListOf(
                 Project(
                     title = "SVG to Compose",
                     description = buildString {

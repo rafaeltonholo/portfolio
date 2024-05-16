@@ -1,5 +1,6 @@
 ---
 title: My document
+description: Loren ipsum dolor sit amet consectetur. Egestas massa sapien facilisis purus donec ornare. Platea lorem nisl orci pellentesque eros nisl tellus sed. Vitae gravida tincidunt lacus turpis duis odio proin quam et. Vitae pharetra turpis augue quis ac.
 authors:
   - name: Rafael
     links:

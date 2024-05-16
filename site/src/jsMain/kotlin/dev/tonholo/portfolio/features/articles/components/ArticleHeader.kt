@@ -16,6 +16,7 @@ import com.varabyte.kobweb.silk.components.graphics.Image
 import com.varabyte.kobweb.silk.components.style.ComponentStyle
 import com.varabyte.kobweb.silk.components.style.toModifier
 import dev.tonholo.marktdown.domain.Author
+import dev.tonholo.portfolio.core.collections.ImmutableList
 import dev.tonholo.portfolio.core.components.chip.Chip
 import dev.tonholo.portfolio.core.components.chip.ChipDefaults
 import dev.tonholo.portfolio.core.components.layout.HorizontalDivider
@@ -40,15 +41,27 @@ val ArticleHeaderStyles by ComponentStyle {
             .padding(vertical = 16.dp)
     }
 }
+val ArticleHeaderAuthorCardStyles by ComponentStyle {
+    base {
+        Modifier.padding(vertical = 8.dp)
+    }
+}
+val ArticleHeaderTagsStyles by ComponentStyle {
+    base {
+        Modifier
+            .gap(4.dp)
+            .padding(top = 4.dp, bottom = 12.dp)
+    }
+}
 
 @Composable
 fun ArticleHeader(
     title: String,
-    description: String,
-    authors: List<Author>, // TODO: create immutable list
+    authors: ImmutableList<Author>,
     postedDate: LocalDateTime,
-    tags: List<String>,
+    tags: ImmutableList<String>,
     modifier: Modifier = Modifier,
+    description: String? = null,
     updatedDate: LocalDateTime? = null,
 ) {
     Header(
@@ -58,16 +71,22 @@ fun ArticleHeader(
             text = title,
             style = Theme.typography.headlineLarge,
         )
+        description?.let {
+            Text(
+                text = description,
+                style = Theme.typography.titleLarge.copy(
+                    color = Theme.colorScheme.onBackgroundVariant.copy(alpha = 0.75f),
+                ),
+            )
+        }
         AuthorCard(
             authors = authors,
             postedDate = postedDate,
             updatedDate = updatedDate,
-        )
-        Text(
-            text = description,
+            modifier = ArticleHeaderAuthorCardStyles.toModifier(),
         )
         Row(
-            modifier = Modifier.gap(4.dp),
+            modifier = ArticleHeaderTagsStyles.toModifier(),
         ) {
             tags.forEach { tag ->
                 Chip(
@@ -93,7 +112,7 @@ fun ArticleHeader(
 
 @Composable
 fun AuthorCard(
-    authors: List<Author>,
+    authors: ImmutableList<Author>,
     postedDate: LocalDateTime,
     modifier: Modifier = Modifier,
     updatedDate: LocalDateTime? = null,

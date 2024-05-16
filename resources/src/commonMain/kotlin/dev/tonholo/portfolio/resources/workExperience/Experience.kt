@@ -1,6 +1,8 @@
 package dev.tonholo.portfolio.resources.workExperience
 
 import cafe.adriel.lyricist.LanguageTag
+import dev.tonholo.portfolio.core.collections.ImmutableList
+import dev.tonholo.portfolio.core.collections.immutableListOf
 import dev.tonholo.portfolio.locale.Locales
 import dev.tonholo.portfolio.resources.Description
 import kotlinx.datetime.LocalDate
@@ -14,8 +16,8 @@ data class Experience(
     val technologiesUsed: List<String> = emptyList(),
 ) {
     companion object {
-        val Experiences: Map<LanguageTag, List<Experience>> = mapOf(
-            Locales.EN to listOf(
+        val Experiences: Map<LanguageTag, ImmutableList<Experience>> = mapOf(
+            Locales.EN to immutableListOf(
                 REDSpace,
                 BairesDev,
                 QuestradePrincipal,
@@ -23,7 +25,7 @@ data class Experience(
                 Axxiom,
                 Planear,
             ),
-            Locales.PT_BR to listOf(
+            Locales.PT_BR to immutableListOf(
                 REDSpace.copy(
                     description = Description(
                         "Projetando e desenvolvendo aplicações mobile robustas, fácil manutenção e em conformidade com os padrões de aplicações e bibliotecas para a plataforma Android.",

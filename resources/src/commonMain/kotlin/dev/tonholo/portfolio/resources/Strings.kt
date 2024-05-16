@@ -8,16 +8,11 @@ import dev.tonholo.portfolio.HelloWorld
 import dev.tonholo.portfolio.KmpMigratrionPart1En
 import dev.tonholo.portfolio.MyArticleEn
 import dev.tonholo.portfolio.MyArticlePtBr
+import dev.tonholo.portfolio.core.collections.ImmutableList
+import dev.tonholo.portfolio.core.collections.immutableListOf
 import dev.tonholo.portfolio.locale.Locales
-import dev.tonholo.portfolio.resources.pages.AboutPage
-import dev.tonholo.portfolio.resources.pages.ArticlePage
-import dev.tonholo.portfolio.resources.pages.Home
 import dev.tonholo.portfolio.resources.pages.Pages
-import dev.tonholo.portfolio.resources.pages.ResumePage
-import kotlinx.datetime.Clock
-import kotlinx.datetime.TimeZone
 import kotlinx.datetime.format.MonthNames
-import kotlinx.datetime.todayIn
 
 @Immutable
 data class Strings(
@@ -28,7 +23,8 @@ data class Strings(
     val present: String,
     val monthNames: MonthNames,
     val scrollToTop: String,
-    val articles: List<MarktdownDocument>,
+    val articles: ImmutableList<MarktdownDocument>,
+    val siteName: String,
 )
 
 @Stable
@@ -36,7 +32,7 @@ val MonthNamesEn = MonthNames.ENGLISH_ABBREVIATED
 
 @Stable
 val MonthNamesPtBr = MonthNames(
-    names = listOf(
+    names = immutableListOf(
         "Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul",
         "Ago", "Set", "Out", "Nov", "Dez",
     ),
@@ -46,54 +42,34 @@ val MonthNamesPtBr = MonthNames(
 @LyricistStrings(languageTag = Locales.EN, default = true)
 val EnStrings = Strings(
     navBar = NavBar.En,
-    footer = Footer(
-        copyright = "© ${
-            Clock.System.todayIn(TimeZone.currentSystemDefault()).year
-        } All Rights reserved.",
-        designedBy = "Designed by Amanda Bicalho",
-        builtWith = "Built with Kotlin and Compose 💜",
-    ),
-    pages = Pages(
-        home = Home.En,
-        about = AboutPage.En,
-        resume = ResumePage.En,
-        article = ArticlePage.En,
-    ),
+    footer = Footer.En,
+    pages = Pages.En,
     viewProject = "View Project",
     present = "Present",
     monthNames = MonthNamesEn,
     scrollToTop = "Scroll to top ⬆",
-    articles = listOf(
+    articles = immutableListOf(
         HelloWorld,
         MyArticleEn,
         KmpMigratrionPart1En
     ),
+    siteName = "Rafael Tonholo Blog",
 )
 
 @Stable
 @LyricistStrings(languageTag = Locales.PT_BR)
 val PtStrings = Strings(
     navBar = NavBar.PtBr,
-    footer = Footer(
-        copyright = "© ${
-            Clock.System.todayIn(TimeZone.currentSystemDefault()).year
-        } Todos os direitos reservados.",
-        designedBy = "Design feito por Amanda Bicalho",
-        builtWith = "Feito com Kotlin e Compose 💜",
-    ),
-    pages = Pages(
-        home = Home.PtBr,
-        about = AboutPage.PtBr,
-        resume = ResumePage.PtBr,
-        article = ArticlePage.PtBr,
-    ),
+    footer = Footer.PtBr,
+    pages = Pages.PtBr,
     viewProject = "Ver projeto",
     present = "Presente",
     monthNames = MonthNamesPtBr,
     scrollToTop = "Ir para o início ⬆",
-    articles = listOf(
+    articles = immutableListOf(
         HelloWorld,
         MyArticlePtBr,
         KmpMigratrionPart1En,
     ),
+    siteName = "Rafael Tonholo Blog",
 )

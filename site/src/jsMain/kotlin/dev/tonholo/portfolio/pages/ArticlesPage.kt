@@ -24,6 +24,7 @@ import com.varabyte.kobweb.navigation.Route
 import com.varabyte.kobweb.silk.components.style.ComponentStyle
 import com.varabyte.kobweb.silk.components.style.toModifier
 import dev.tonholo.portfolio.KmpMigratrionPart1En
+import dev.tonholo.portfolio.core.collections.toImmutable
 import dev.tonholo.portfolio.core.components.button.TextButton
 import dev.tonholo.portfolio.core.components.text.Text
 import dev.tonholo.portfolio.core.extensions.margin
@@ -154,18 +155,22 @@ fun ArticlesPage() {
         modifier = ArticlePageStyles.toModifier()
     ) {
         val document = KmpMigratrionPart1En
+
         document.metadata?.let { metadata ->
             ArticleHeader(
                 title = metadata.title,
-                description = metadata.description.orEmpty(),
-                tags = metadata.tags.map { it.value },
-                authors = metadata.authors,
+                description = metadata.description,
+                tags = metadata.tags.map { it.value }.toImmutable(),
+                authors = metadata.authors.toImmutable(),
                 postedDate = metadata.publishedDateTime,
                 updatedDate = metadata.lastUpdateDateTime,
                 modifier = Modifier.fillMaxWidth(),
             )
         }
-        Marktdown(document = document)
+        Marktdown(
+            document = document,
+            injectMetaTags = true,
+        )
         TextButton(
             onClick = {
                 window.scrollTo(
