@@ -10,6 +10,7 @@ import cafe.adriel.lyricist.rememberStrings
 import com.varabyte.kobweb.compose.css.BoxSizing
 import com.varabyte.kobweb.compose.css.CSSLengthOrPercentageNumericValue
 import com.varabyte.kobweb.compose.css.ScrollBehavior
+import com.varabyte.kobweb.compose.css.UserSelect
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.graphics.Colors
 import com.varabyte.kobweb.compose.ui.modifiers.backgroundColor
@@ -22,8 +23,10 @@ import com.varabyte.kobweb.compose.ui.modifiers.minHeight
 import com.varabyte.kobweb.compose.ui.modifiers.outline
 import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.compose.ui.modifiers.scrollBehavior
+import com.varabyte.kobweb.compose.ui.modifiers.userSelect
 import com.varabyte.kobweb.silk.components.layout.Surface
 import com.varabyte.kobweb.silk.components.style.ComponentModifier
+import com.varabyte.kobweb.silk.components.style.ComponentStyle
 import com.varabyte.kobweb.silk.components.style.common.SmoothColorStyle
 import com.varabyte.kobweb.silk.components.style.toModifier
 import com.varabyte.kobweb.silk.components.style.vars.color.BackgroundColorVar
@@ -156,6 +159,9 @@ fun initSiteStyles(context: InitSilkContext) {
                     leftRight = auto.unsafeCast<CSSLengthOrPercentageNumericValue>(),
                 )
         }
+        registerStyleBase("img") {
+            Modifier.userSelect(UserSelect.None)
+        }
     }
 }
 
@@ -163,6 +169,17 @@ fun initSiteStyles(context: InitSilkContext) {
 fun initTheme(context: InitSilkContext) = with(context) {
     theme.palettes.light.from(LightColorScheme)
     theme.palettes.dark.from(DarkColorScheme)
+}
+
+val MainStyle by ComponentStyle(extraModifiers = { SmoothColorStyle.toModifier() }) {
+    base {
+        Modifier
+            .minHeight(100.vh)
+            .scrollBehavior(ScrollBehavior.Smooth)
+    }
+    cssRule("*::selection") {
+        Modifier.backgroundColor(colorScheme.primary.copy(alpha = 0.2f))
+    }
 }
 
 @Composable
@@ -183,9 +200,7 @@ fun Theme(
         ) {
             ProvideStrings(lyricist) {
                 Surface(
-                    SmoothColorStyle.toModifier()
-                        .minHeight(100.vh)
-                        .scrollBehavior(ScrollBehavior.Smooth)
+                    MainStyle.toModifier(),
                 ) {
                     content()
                 }
