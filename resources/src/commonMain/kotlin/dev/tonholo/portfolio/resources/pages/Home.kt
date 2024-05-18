@@ -105,60 +105,86 @@ data class RecentProjectsSection(
     val projects: ImmutableList<Project>,
 ) : Section {
     companion object {
+        private val SvgToCompose = Project(
+            title = "SVG to Compose",
+            description = buildString {
+                append("A command-line tool to convert SVG ")
+                append("or an Android Vector Drawable (AVG) to Jetpack Compose Icons.")
+            },
+            src = "https://github.com/rafaeltonholo/svg-to-compose",
+        )
+        private val ComposeDestinations = Project(
+            title = "Compose Destinations",
+            description = buildString {
+                append("Annotation processing library for type-safe Jetpack Compose")
+                append(" navigation with no boilerplate.")
+            },
+            src = "https://github.com/raamcosta/compose-destinations",
+        )
+        private val Kobweb = Project(
+            title = "Kobweb",
+            description = buildString {
+                append("A modern framework for full stack web apps in Kotlin, built upon Compose HTML")
+            },
+            src = "https://github.com/raamcosta/compose-destinations",
+        )
+        private val MarKTdown = Project(
+            title = "MarKTdown",
+            description = buildString {
+                append("MarKTdown is a KMP gradle plugin to process Markdown files and generate")
+                append(" models and renderers based on it.")
+            },
+            src = "https://github.com/varabyte/kobweb",
+        )
+        private val KotlinWrapperHighlightJs = Project(
+            title = "Kotlin Wrapper highlight.js",
+            description = buildString {
+                append("A Kotlin wrapper for highlight.js enabling its usage on Kotlin/JS applications")
+            },
+            src = "https://github.com/rafaeltonholo/kotlin-wrapper-highlightjs",
+        )
         val En = RecentProjectsSection(
-            title = "My recent projects",
+            title = "Projects I worked on or contributed to",
             projects = immutableListOf(
-                Project(
-                    title = "SVG to Compose",
-                    description = buildString {
-                        append("A command-line tool to convert SVG ")
-                        append("or an Android Vector Drawable (AVG) to Jetpack Compose Icons.")
-                    },
-                    src = "https://github.com/rafaeltonholo/svg-to-compose",
-                ),
-                Project(
-                    title = "MarKTdown",
-                    description = buildString {
-                        append("MarKTdown is a KMP gradle plugin to process Markdown files and generate")
-                        append(" models and renderers based on it.")
-                    },
-                    src = "https://github.com/rafaeltonholo/portfolio/tree/main/marktdown",
-                ),
-                Project(
-                    title = "Kotlin Wrapper highlight.js",
-                    description = buildString {
-                        append("A Kotlin wrapper for highlight.js enabling its usage on Kotlin/JS applications")
-                    },
-                    src = "https://github.com/rafaeltonholo/kotlin-wrapper-highlightjs",
-                ),
+                SvgToCompose,
+                ComposeDestinations,
+                Kobweb,
+                MarKTdown,
+                KotlinWrapperHighlightJs,
             )
         )
 
         val PtBr = RecentProjectsSection(
-            title = "Meus projetos recentes",
+            title = "Projetos que trabalhei ou contribuí",
             projects = immutableListOf(
-                Project(
-                    title = "SVG to Compose",
+                SvgToCompose.copy(
                     description = buildString {
                         append("Uma ferramenta command-line para converter SVG ")
                         append("ou um Android Vector Drawable (AVG) para Jetpack Compose icones.")
                     },
-                    src = "https://github.com/rafaeltonholo/svg-to-compose",
                 ),
-                Project(
-                    title = "MarKTdown",
+                ComposeDestinations.copy(
+                    description = buildString {
+                        append("Biblioteca KSP para navegação Jetpack Compose")
+                        append(" com typesafe e sem boilerplate.")
+                    },
+                ),
+                Kobweb.copy(
+                    description = buildString {
+                        append("Um framework moderno para aplicativos fullstack para Web em Kotlin,")
+                        append(" desenvolvida com base no Compose HTML")
+                    },
+                ),
+                MarKTdown.copy(
                     description = buildString {
                         append("Um KMP gradle plugin que processa arquivos Markdown e gera")
                         append(" modelos and renderizadores, com customização.")
                     },
-                    src = "https://github.com/rafaeltonholo/portfolio/tree/main/marktdown",
                 ),
-                Project(
-                    title = "Kotlin Wrapper highlight.js",
+                KotlinWrapperHighlightJs.copy(
                     description = buildString {
                         append("Um Kotlin wrapper para a lib highlight.js habilitando seu uso em applicações Kotlin/JS")
                     },
-                    src = "https://github.com/rafaeltonholo/kotlin-wrapper-highlightjs",
                 ),
             )
         )
