@@ -11,6 +11,7 @@ data class ArticlePage(
     val posted: (date: LocalDateTime) -> String,
     val updated: (date: LocalDateTime) -> String,
     val coAuthors: (names: List<String>) -> String,
+    val tableOfContents: String,
 ) {
     companion object {
         val En = ArticlePage(
@@ -19,6 +20,7 @@ data class ArticlePage(
             coAuthors = { names ->
                 "co: ${names.fastJoinToString(lastSeparator = ", and ")}"
             },
+            tableOfContents = "Table of Contents",
         )
         val PtBr = ArticlePage(
             posted = { date ->
@@ -30,6 +32,7 @@ data class ArticlePage(
             coAuthors = { names ->
                 "co: ${names.fastJoinToString(lastSeparator = " e ")}"
             },
+            tableOfContents = "Conteúdo",
         )
     }
 }

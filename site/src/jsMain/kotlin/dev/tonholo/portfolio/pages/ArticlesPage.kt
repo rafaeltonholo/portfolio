@@ -1,7 +1,9 @@
 package dev.tonholo.portfolio.pages
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import com.varabyte.kobweb.compose.css.BorderCollapse
+import com.varabyte.kobweb.compose.css.Height
 import com.varabyte.kobweb.compose.css.OverflowWrap
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.alignSelf
@@ -16,12 +18,18 @@ import com.varabyte.kobweb.compose.ui.modifiers.fillMaxSize
 import com.varabyte.kobweb.compose.ui.modifiers.fillMaxWidth
 import com.varabyte.kobweb.compose.ui.modifiers.flexDirection
 import com.varabyte.kobweb.compose.ui.modifiers.gap
+import com.varabyte.kobweb.compose.ui.modifiers.height
 import com.varabyte.kobweb.compose.ui.modifiers.lineHeight
+import com.varabyte.kobweb.compose.ui.modifiers.minWidth
 import com.varabyte.kobweb.compose.ui.modifiers.overflowWrap
+import com.varabyte.kobweb.compose.ui.modifiers.position
+import com.varabyte.kobweb.compose.ui.modifiers.top
 import com.varabyte.kobweb.core.Page
 import com.varabyte.kobweb.core.rememberPageContext
 import com.varabyte.kobweb.navigation.Route
 import com.varabyte.kobweb.silk.components.style.ComponentStyle
+import com.varabyte.kobweb.silk.components.style.breakpoint.Breakpoint
+import com.varabyte.kobweb.silk.components.style.toAttrs
 import com.varabyte.kobweb.silk.components.style.toModifier
 import dev.tonholo.portfolio.KmpMigratrionPart1En
 import dev.tonholo.portfolio.core.collections.toImmutable
@@ -43,6 +51,8 @@ import dev.tonholo.portfolio.core.ui.theme.typography
 import dev.tonholo.portfolio.core.ui.theme.typography.toModifier
 import dev.tonholo.portfolio.core.ui.unit.dp
 import dev.tonholo.portfolio.features.articles.components.ArticleHeader
+import dev.tonholo.portfolio.features.articles.sections.TableOfContents
+import dev.tonholo.portfolio.features.articles.sections.toTableOfContentItem
 import dev.tonholo.portfolio.locale.Locale
 import dev.tonholo.portfolio.locale.localStorageKey
 import dev.tonholo.portfolio.renderer.Marktdown
@@ -52,6 +62,8 @@ import org.jetbrains.compose.web.css.AlignSelf
 import org.jetbrains.compose.web.css.DisplayStyle
 import org.jetbrains.compose.web.css.FlexDirection
 import org.jetbrains.compose.web.css.LineStyle
+import org.jetbrains.compose.web.css.Position
+import org.jetbrains.compose.web.dom.Section
 import org.w3c.dom.SMOOTH
 import org.w3c.dom.ScrollBehavior
 import org.w3c.dom.ScrollToOptions
@@ -60,19 +72,37 @@ val ArticlePageStyles by ComponentStyle {
     base {
         Modifier.fillMaxSize()
     }
-    cssRule("article") {
-        typography.bodyLarge
-            .toModifier()
+}
+
+val ArticlesPageContentStyle by ComponentStyle {
+    base {
+        Modifier
             .fillMaxWidth()
             .display(DisplayStyle.Flex)
             .flexDirection(FlexDirection.Column)
+            .gap(24.dp)
+    }
+
+    Breakpoint.LG {
+        Modifier
+            .flexDirection(FlexDirection.RowReverse)
+    }
+}
+
+val ArticleContentStyle by ComponentStyle {
+    base {
+        typography.bodyLarge
+            .toModifier()
+            .display(DisplayStyle.Flex)
+            .flexDirection(FlexDirection.Column)
             .gap(16.dp)
+            .minWidth(0.dp)
     }
     val olUlModifier = {
         Modifier.padding(start = 32.dp)
     }
-    cssRule("article ul", olUlModifier)
-    cssRule("article ol", olUlModifier)
+    cssRule("ul", olUlModifier)
+    cssRule("ol", olUlModifier)
 
     val h1h2Modifier = {
         Modifier
@@ -84,10 +114,10 @@ val ArticlePageStyles by ComponentStyle {
             .padding(bottom = 16.dp)
     }
 
-    cssRule("article h1", h1h2Modifier)
-    cssRule("article h2", h1h2Modifier)
+    cssRule("h1", h1h2Modifier)
+    cssRule("h2", h1h2Modifier)
 
-    cssRule("article :not(pre) > code") {
+    cssRule(":not(pre) > code") {
         Modifier
             .padding(horizontal = 4.dp, vertical = 2.dp)
             .borderRadius(4.dp)
@@ -96,29 +126,42 @@ val ArticlePageStyles by ComponentStyle {
             .overflowWrap(OverflowWrap.Anywhere)
     }
 
-    cssRule("article a") {
+    cssRule("a") {
         Modifier.color(colorScheme.primary)
     }
 
-    cssRule("article a:hover") {
+    cssRule("a:hover") {
         Modifier.color(colorScheme.onBackground)
     }
-    cssRule("article table") {
+    cssRule("table") {
         Modifier.borderCollapse(BorderCollapse.Collapse)
     }
-    cssRule("article th") {
+    cssRule("th") {
         Modifier
             .border(1.dp, LineStyle.Solid, colorScheme.outline)
             .padding(4.dp)
     }
-    cssRule("article td") {
+    cssRule("td") {
         Modifier
             .border(1.dp, LineStyle.Solid, colorScheme.outline)
             .padding(4.dp)
     }
-    cssRule("article tr:nth-child(2n)") {
+    cssRule("tr:nth-child(2n)") {
         Modifier
             .backgroundColor(colorScheme.surface)
+    }
+}
+
+val ArticlePageTableOfContentStyle by ComponentStyle {
+    base {
+        Modifier
+    }
+    Breakpoint.LG {
+        Modifier
+            .height(Height.FitContent)
+            .position(Position.Sticky)
+            .top(16.dp)
+            .minWidth(300.dp)
     }
 }
 
@@ -127,6 +170,12 @@ val ArticlePageStyles by ComponentStyle {
 fun ArticlesPage() {
     val context = rememberPageContext()
     val lyricist = LocalLyricist.current
+    val document = KmpMigratrionPart1En
+    val tableOfContents = remember(document) {
+        document.tableOfContent.items.map {
+            it.toTableOfContentItem()
+        }.toImmutable()
+    }
 
     Scaffold(
         topBar = {
@@ -154,8 +203,6 @@ fun ArticlesPage() {
         },
         modifier = ArticlePageStyles.toModifier()
     ) {
-        val document = KmpMigratrionPart1En
-
         document.metadata?.let { metadata ->
             ArticleHeader(
                 title = metadata.title,
@@ -167,10 +214,21 @@ fun ArticlesPage() {
                 modifier = Modifier.fillMaxWidth(),
             )
         }
-        Marktdown(
-            document = document,
-            injectMetaTags = true,
-        )
+        Section(
+            attrs = ArticlesPageContentStyle.toAttrs(),
+        ) {
+            TableOfContents(
+                items = tableOfContents,
+                modifier = ArticlePageTableOfContentStyle.toModifier(),
+            )
+
+            Marktdown(
+                document = document,
+                injectMetaTags = true,
+                attrs = ArticleContentStyle.toAttrs(),
+            )
+        }
+
         TextButton(
             onClick = {
                 window.scrollTo(

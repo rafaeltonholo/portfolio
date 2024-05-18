@@ -39,12 +39,12 @@ import dev.tonholo.portfolio.core.ui.theme.color.copy
 import dev.tonholo.portfolio.core.ui.theme.color.from
 import dev.tonholo.portfolio.core.ui.theme.typography.toModifier
 import dev.tonholo.portfolio.core.ui.unit.DefaultFontSize
+import dev.tonholo.portfolio.core.ui.unit.dp
 import dev.tonholo.portfolio.locale.Locale
 import dev.tonholo.portfolio.locale.localStorageKey
 import dev.tonholo.portfolio.resources.Strings
 import kotlinx.browser.localStorage
 import org.jetbrains.compose.web.css.keywords.auto
-import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.css.vh
 
 private const val COLOR_MODE_KEY = "portfolio:colorMode"
@@ -52,17 +52,17 @@ private const val COLOR_MODE_KEY = "portfolio:colorMode"
 private val ElevationsLight = Elevations(
     level1 = Elevation(
         shadow {
-            offsetX = 0.px
-            offsetY = 1.px
-            blurRadius = 3.px
-            spreadRadius = 1.px
+            offsetX = 0.dp
+            offsetY = 1.dp
+            blurRadius = 3.dp
+            spreadRadius = 1.dp
             color = Colors.Black.copy(alpha = 0.15f)
         },
         shadow {
-            offsetX = 0.px
-            offsetY = 1.px
-            blurRadius = 2.px
-            spreadRadius = 0.px
+            offsetX = 0.dp
+            offsetY = 1.dp
+            blurRadius = 2.dp
+            spreadRadius = 0.dp
             color = Colors.Black.copy(alpha = 0.3f)
         }
     ),
@@ -71,17 +71,17 @@ private val ElevationsLight = Elevations(
 private val ElevationsDark = Elevations(
     level1 = Elevation(
         shadow {
-            offsetX = 0.px
-            offsetY = 4.px
-            blurRadius = 4.px
-            spreadRadius = 0.px
+            offsetX = 0.dp
+            offsetY = 4.dp
+            blurRadius = 4.dp
+            spreadRadius = 0.dp
             color = Colors.Black.copy(alpha = 0.30f)
         },
         shadow {
-            offsetX = 0.px
-            offsetY = 8.px
-            blurRadius = 12.px
-            spreadRadius = 6.px
+            offsetX = 0.dp
+            offsetY = 8.dp
+            blurRadius = 12.dp
+            spreadRadius = 6.dp
             color = Colors.Black.copy(alpha = 0.15f)
         }
     ),
@@ -136,13 +136,13 @@ fun initColorMode(context: InitSilkContext) {
 fun initSiteStyles(context: InitSilkContext) {
     context.stylesheet.apply {
         registerStyleBase(":root") {
-            Modifier.fontSize(DefaultFontSize.px)
+            Modifier.fontSize(DefaultFontSize.dp)
         }
         registerStyleBase("*") {
             Modifier
-                .margin(0.px)
-                .padding(0.px)
-                .outline(0.px)
+                .margin(0.dp)
+                .padding(0.dp)
+                .outline(0.dp)
                 .boxSizing(BoxSizing.BorderBox)
         }
         registerStyleBase("body") {
@@ -153,7 +153,7 @@ fun initSiteStyles(context: InitSilkContext) {
                 .backgroundColor(BackgroundColorVar.value())
         }
         registerStyleBase("#root") {
-            Modifier.maxWidth(1440.px)
+            Modifier.maxWidth(1440.dp)
                 .margin(
                     topBottom = 0.unsafeCast<CSSLengthOrPercentageNumericValue>(),
                     leftRight = auto.unsafeCast<CSSLengthOrPercentageNumericValue>(),
