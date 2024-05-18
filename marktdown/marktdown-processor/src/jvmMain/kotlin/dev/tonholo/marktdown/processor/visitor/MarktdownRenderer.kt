@@ -13,6 +13,8 @@ import dev.tonholo.marktdown.domain.MarktdownLink
 import dev.tonholo.marktdown.domain.MarktdownMetadata
 import dev.tonholo.marktdown.domain.MarktdownMetadataImpl
 import dev.tonholo.marktdown.domain.MarktdownMetadataMap
+import dev.tonholo.marktdown.domain.MarktdownTableOfContent
+import dev.tonholo.marktdown.domain.MarktdownTableOfContentItem
 import dev.tonholo.marktdown.domain.MarktdownTag
 import dev.tonholo.marktdown.domain.content.CodeFence
 import dev.tonholo.marktdown.domain.content.EndOfLine
@@ -32,13 +34,13 @@ import dev.tonholo.marktdown.processor.Logger
 import dev.tonholo.marktdown.processor.extensions.childrenToRender
 import dev.tonholo.marktdown.processor.extensions.literal
 import dev.tonholo.marktdown.processor.extensions.pascalCase
+import dev.tonholo.marktdown.processor.extensions.withConstructor
+import dev.tonholo.marktdown.processor.extensions.withSet
 import java.nio.file.Path
 import java.util.*
-import kotlinx.datetime.FixedOffsetTimeZone
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
-import kotlinx.datetime.UtcOffset
 import kotlinx.datetime.toLocalDateTime
 import org.intellij.markdown.MarkdownElementType
 import org.intellij.markdown.MarkdownElementTypes
@@ -83,6 +85,7 @@ class MarktdownRenderer(
 
     private val childrenSpec: MutableList<CodeBlock.Builder> = mutableListOf()
     private val linkDefinitionSpec: MutableList<CodeBlock.Builder> = mutableListOf()
+    private val tableOfContentItems = mutableSetOf<Pair<MarktdownTableOfContentItem, Int>>()
     private lateinit var referenceLinksGeneratingProvider: ReferenceLinksGeneratingProvider
     private val rootPropertySpec: PropertySpec
         get() {
@@ -114,6 +117,11 @@ class MarktdownRenderer(
                                     it.build()
                                 }
                             )
+
+                            if (tableOfContentItems.isNotEmpty()) {
+                                addTableOfContent(tableOfContentItems)
+                            }
+
                             if (linkDefinitionSpec.isNotEmpty()) {
                                 add(
                                     linkDefinitionSpec.toList().toCodeBlock(
@@ -341,6 +349,11 @@ class MarktdownRenderer(
             val childrenToConsider = node.children
                 .filter { it.type == MarkdownTokenTypes.ATX_CONTENT || it.type == MarkdownTokenTypes.SETEXT_CONTENT }
                 .flatMap { it.childrenToRender }
+            val titleId = node.literal.toString()
+                .filter { it.isLetterOrDigit() || it == ' ' }
+                .trimStart()
+                .replace(' ', '-')
+                .lowercase()
             val codeBlock = CodeBlock
                 .builder()
                 .addStatement("%T(", kClass)
@@ -355,11 +368,7 @@ class MarktdownRenderer(
                         "%N = %T(value = %S),",
                         kClass.member(TextElement.Title::id.name),
                         TextElement.Title.TitleId::class,
-                        node.literal.toString()
-                            .filter { it.isLetterOrDigit() || it == ' ' }
-                            .trimStart()
-                            .replace(' ', '-')
-                            .lowercase(),
+                        titleId,
                     )
                     val child = childrenToConsider.singleOrNull()
                     if (child != null && child.type == MarkdownTokenTypes.TEXT) {
@@ -376,6 +385,13 @@ class MarktdownRenderer(
                 .addStatement("),")
             currentBuilder = parent
             attachToParent(codeBlock)
+
+            tableOfContentItems += MarktdownTableOfContentItem(
+                id = titleId,
+                title = childrenToConsider
+                    .joinToString(separator = " ") { it.literal }
+                    .trimStart(),
+            ) to level.toInt() - 1
         }
 
         private fun visitText(node: ASTNode) {
@@ -821,14 +837,19 @@ class MarktdownRenderer(
                                 when (alert) {
                                     "[!NOTE]" ->
                                         typeKClass.member(TextElement.Blockquote.Type.NOTE.name)
+
                                     "[!WARNING]" ->
                                         typeKClass.member(TextElement.Blockquote.Type.WARNING.name)
+
                                     "[!IMPORTANT]" ->
                                         typeKClass.member(TextElement.Blockquote.Type.IMPORTANT.name)
+
                                     "[!CAUTION]" ->
                                         typeKClass.member(TextElement.Blockquote.Type.CAUTION.name)
+
                                     "[!TIP]" ->
                                         typeKClass.member(TextElement.Blockquote.Type.TIP.name)
+
                                     else -> return@withIndent
                                 },
                             )
@@ -1279,6 +1300,198 @@ private fun LocalDateTime.toCodeBlock(): CodeBlock {
         localDateTimeCompanionClassName.member("parse"),
         this,
     )
+}
+
+private fun CodeBlock.Builder.addTableOfContent(
+    tableOfContentItems: MutableSet<Pair<MarktdownTableOfContentItem, Int>>
+) {
+    val iterator = tableOfContentItems.iterator()
+//    val item = iterator.next()
+//    var depth = item.second
+//    val parents = ArrayDeque<MarktdownTableOfContentItem>().apply {
+//        add(item.first)
+//    }
+//    val children = mutableSetOf<MarktdownTableOfContentItem>()
+    val contents = mutableSetOf<MarktdownTableOfContentItem>()
+
+    /*.
+                         1
+                           \
+                            2
+                           /  \
+                          3    3
+                        /  \    \
+                       4    4    4
+
+     */
+
+    data class MutableItem(
+        val id: String,
+        val title: String,
+        val children: MutableSet<MutableItem> = mutableSetOf(),
+    ) {
+        fun toImmutable(): MarktdownTableOfContentItem = MarktdownTableOfContentItem(
+            id = id,
+            title = title,
+            children = children.map { it.toImmutable() }.toSet(),
+        )
+    }
+
+    fun MarktdownTableOfContentItem.toMutable(): MutableItem = MutableItem(
+        id = id,
+        title = title,
+        children = children.map { it.toMutable() }.toMutableSet(),
+    )
+
+    var (first, depth) = iterator.next()
+    val parents = ArrayDeque<MutableItem>().apply {
+        add(first.toMutable())
+    }
+    while (iterator.hasNext()) {
+        val (next, nextDepth) = iterator.next()
+
+        when {
+            nextDepth == 0 -> {
+                contents += parents.removeLast().toImmutable()
+                parents.addLast(next.toMutable())
+            }
+
+            nextDepth > depth -> {
+//                parents.last.children += next.toMutable()
+                parents.addLast(next.toMutable())
+            }
+
+            nextDepth == depth -> {
+                while (parents.size > depth) {
+                    parents.removeLast().also {
+                        parents.last.children += it
+                    }
+                }
+                parents.last.children += next.toMutable()
+            }
+
+            else -> {
+                while (parents.size > nextDepth) {
+                    val last = parents.removeLast()
+                    parents.last.children += last
+                }
+                val mutableNext = next.toMutable()
+//                parents.last.children += mutableNext
+                parents.addLast(mutableNext)
+            }
+        }
+
+        depth = nextDepth
+    }
+
+    var last = parents.removeLast()
+    while (parents.isNotEmpty()) {
+        parents.last.children += last
+        last = parents.removeLast()
+    }
+    contents += last.toImmutable()
+
+//    val map = mutableMapOf<Int, MutableSet<MarktdownTableOfContentItem>>()
+//    val trees = mutableSetOf<MutableSet<MarktdownTableOfContentItem>>()
+//    val linkedHashMap = linkedMapOf<Int, MutableSet<MarktdownTableOfContentItem>>()
+//    var currentRoot
+//    var lastDepth = Int.MAX_VALUE
+//    for ((item, depth) in tableOfContentItems) {
+//        linkedHashMap.getOrPut(depth) {
+//            mutableSetOf()
+//        }.apply {
+//            add(item)
+//        }
+//
+//        if (depth < lastDepth) {
+//            println(linkedHashMap)
+//            linkedHashMap.clear()
+//        }
+//
+//        lastDepth = depth
+//    }
+
+//    while (iterator.hasNext()) {
+//        val (next, nextDepth) = iterator.next()
+//
+//        when {
+//            depth < nextDepth -> {
+//                parents.addLast(next)
+//            }
+//
+//            depth == nextDepth && depth != 0 -> {
+//                children += next
+//            }
+//
+//            else -> {
+//                val current = parents.removeLast().copy(children = children.toSet())
+//                children.clear()
+//                if (parents.isNotEmpty()) {
+//                    while (parents.size > nextDepth) {
+//                        parents.removeLast().apply {
+//                            val siblings = this.children.toMutableSet()
+//                            siblings += current
+//                        }
+//                    }
+//                    parents.addLast(current)
+//                } else {
+//                    contents += current
+//                }
+//
+//            }
+//        }
+//        depth = nextDepth
+//
+//        if (depth == 0 && parents.isEmpty()) {
+//            parents += next
+//        }
+//    }
+//
+//    if (parents.isNotEmpty()) {
+//        var current = parents.removeLast()
+//        while (parents.isNotEmpty()) {
+//            val parent = parents.removeLast()
+//            current = parent.copy(children = parent.children.toMutableSet().apply { add(current) })
+//        }
+//        contents += current
+//    }
+
+    withConstructor<MarktdownTableOfContent>(
+        argName = MarktdownDocument::tableOfContent.name,
+        trailingComma = true,
+    ) {
+        withSet(
+            argName = MarktdownTableOfContent::items.name,
+            trailingComma = true,
+        ) {
+            fun CodeBlock.Builder.createItem(item: MarktdownTableOfContentItem) {
+                withConstructor<MarktdownTableOfContentItem>(
+                    trailingComma = true,
+                ) {
+                    addStatement(
+                        "%N = %S,",
+                        item::id.name,
+                        item.id,
+                    )
+                    addStatement(
+                        "%N = %S,",
+                        item::title.name,
+                        item.title,
+                    )
+                    if (item.children.isNotEmpty()) {
+                        withSet(
+                            argName = item::children.name,
+                            trailingComma = true,
+                        ) {
+                            item.children.forEach(::createItem)
+                        }
+                    }
+                }
+            }
+
+            contents.forEach(::createItem)
+        }
+    }
 }
 
 object MarktdownElementTypes {

@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 plugins {
     alias(libs.plugins.org.jetbrains.kotlin.multiplatform)
     alias(libs.plugins.org.jetbrains.compose)
-    id("dev.tonholo.marktdown") version "+"
+//    id("dev.tonholo.marktdown") version "+"
     alias(libs.plugins.com.google.devtools.ksp)
 }
 
@@ -35,13 +35,13 @@ kotlin {
         }
     }
 }
-
-marktdown {
-    packageName = "dev.tonholo.marktdown.sample"
-    models {
-        srcDir(layout.projectDirectory.dir("src/jvmMain/resources"))
-    }
-}
+//
+//marktdown {
+//    packageName = "dev.tonholo.marktdown.sample"
+//    models {
+//        srcDir(layout.projectDirectory.dir("src/jvmMain/resources"))
+//    }
+//}
 
 dependencies {
     add("kspJs", "dev.tonholo.marktdown:marktdown-processor:1.0.0")

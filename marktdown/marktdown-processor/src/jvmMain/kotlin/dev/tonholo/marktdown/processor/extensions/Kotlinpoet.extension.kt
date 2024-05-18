@@ -7,6 +7,7 @@ import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.Import
 import com.squareup.kotlinpoet.KModifier
+import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.asClassName
@@ -100,3 +101,47 @@ fun CodeBlock.Builder.withNullableLet(
     }
     addStatement("}")
 }
+
+inline fun <reified T> CodeBlock.Builder.withConstructor(
+    argName: String? = null,
+    trailingComma: Boolean = false,
+    builder: CodeBlock.Builder.() -> Unit,
+) {
+    if (argName == null) {
+        addStatement("%T(", T::class)
+    } else {
+        addStatement("%N = %T(", argName, T::class)
+    }
+    withIndent {
+        builder()
+    }
+    addStatement(")${",".takeIf { trailingComma }.orEmpty()}")
+}
+
+fun CodeBlock.Builder.withSet(
+    argName: String? = null,
+    trailingComma: Boolean = false,
+    builder: CodeBlock.Builder.() -> Unit,
+) {
+    val setOfMemberName = MemberName("kotlin.collections", "setOf")
+    if (argName == null) {
+        addStatement("%M(", setOfMemberName)
+    } else {
+        addStatement("%N = %M(", argName, setOfMemberName)
+    }
+    withIndent {
+        builder()
+    }
+    addStatement(")${",".takeIf { trailingComma }.orEmpty()}")
+}
+
+@DslMarker
+annotation class ParameterSpecDsl
+
+fun parameter(
+    name: String,
+    type: TypeName,
+    vararg modifiers: KModifier,
+    builder: ParameterSpec.Builder.() -> Unit,
+): ParameterSpec = ParameterSpec.builder(name, type, *modifiers).apply(builder).build()
+

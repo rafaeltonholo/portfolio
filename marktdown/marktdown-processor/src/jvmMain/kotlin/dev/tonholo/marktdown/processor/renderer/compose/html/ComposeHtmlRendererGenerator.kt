@@ -8,7 +8,7 @@ import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.MemberName.Companion.member
-import com.squareup.kotlinpoet.ParameterSpec
+import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.asClassName
 import com.squareup.kotlinpoet.asTypeName
 import com.squareup.kotlinpoet.buildCodeBlock
@@ -42,6 +42,7 @@ import dev.tonholo.marktdown.processor.extensions.code
 import dev.tonholo.marktdown.processor.extensions.fnName
 import dev.tonholo.marktdown.processor.extensions.function
 import dev.tonholo.marktdown.processor.extensions.modifiers
+import dev.tonholo.marktdown.processor.extensions.parameter
 import dev.tonholo.marktdown.processor.extensions.parameters
 import dev.tonholo.marktdown.processor.extensions.withControlFlow
 import dev.tonholo.marktdown.processor.extensions.withNullableLet
@@ -93,10 +94,24 @@ class ComposeHtmlRendererGenerator(
                     documentParam to typeNameOf<MarktdownDocument>(),
                 )
                 val injectMetaTagsParam = "injectMetaTags"
-                addParameter(
-                    parameterSpec = ParameterSpec.builder(
-                        name = injectMetaTagsParam, type = typeNameOf<Boolean>(),
-                    ).defaultValue("false").build(),
+                parameters(
+                    parameter(
+                        name = injectMetaTagsParam,
+                        type = typeNameOf<Boolean>(),
+                    ) {
+                        defaultValue("false")
+                    },
+                    parameter(
+                        name = "attrs",
+                        type = ClassName(
+                            COMPOSE_WEB_DOM,
+                            "AttrBuilderContext",
+                        ).parameterizedBy(
+                            ClassName(W3C_DOM, "HTMLElement"),
+                        ).copy(nullable = true),
+                    ) {
+                        defaultValue("null")
+                    },
                 )
                 code {
                     class CustomMetaTag(
@@ -229,6 +244,9 @@ class ComposeHtmlRendererGenerator(
                 addCode(
                     createMarktdownParentCodeBlock(
                         composable,
+                        paramBuilder = {
+                            "attrs = attrs" to arrayOf()
+                        },
                         scopeFn = {
                             addStatement(
                                 "document.%N.forEach { %M(it) }",
