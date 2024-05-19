@@ -1203,6 +1203,13 @@ private fun MarktdownMetadata.build(memberName: MemberName): CodeBlock {
                     description,
                 )
             }
+            summary?.let { summary ->
+                addStatement(
+                    "%N = %S,",
+                    className.member(MarktdownMetadata::summary.name),
+                    summary,
+                )
+            }
             crossPost?.let { crossPost ->
                 add(
                     "%N = %L,",
@@ -1225,7 +1232,7 @@ private fun MarktdownMetadata.build(memberName: MemberName): CodeBlock {
             )
             postThumbnail?.let { postThumbnail ->
                 add(
-                    "%N = %L,",
+                    "%N = %L",
                     className.member(MarktdownMetadata::postThumbnail.name),
                     postThumbnail.toCodeBlock(),
                 )

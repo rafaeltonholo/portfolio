@@ -7,7 +7,6 @@ import org.intellij.markdown.parser.MarkdownParser
 import org.yaml.snakeyaml.Yaml
 import kotlin.io.path.nameWithoutExtension
 import kotlin.io.path.useLines
-import kotlin.math.log
 
 class MarktdownProcessor(
     private val logger: Logger,
@@ -42,7 +41,7 @@ class MarktdownProcessor(
             content,
             output,
         )
-        val regex = Regex("^-{3,}([\\n\\w: -/]+)-{3,}")
+        val regex = Regex("^-{3,}([\\n\\p{L}: ->|.,/]+)-{3,}")
         val matchResult = regex
             .findAll(content, startIndex = 0)
             .map { it.groupValues[1].trim() }

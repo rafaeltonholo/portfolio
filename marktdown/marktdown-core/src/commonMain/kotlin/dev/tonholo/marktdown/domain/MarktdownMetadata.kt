@@ -10,6 +10,7 @@ interface MarktdownMetadata {
     val authors: List<Author>
     val publishedDateTime: LocalDateTime
     val description: String? get() = null
+    val summary: String? get() = null
     val crossPost: MarktdownLink? get() = null
     val tags: List<MarktdownTag> get() = emptyList()
     val lastUpdateDateTime: LocalDateTime get() = publishedDateTime
@@ -30,6 +31,9 @@ class MarktdownMetadataMap(
     override val publishedDateTime: LocalDateTime by map
     override val description: String? by lazy {
         map["description"]?.toString()
+    }
+    override val summary: String? by lazy {
+        map["summary"]?.toString()
     }
     override val crossPost: MarktdownLink? by lazy {
         map["crossPost"]?.let { MarktdownLink(it.toString()) }
@@ -52,6 +56,7 @@ data class MarktdownMetadataImpl(
     override val authors: List<Author>,
     override val publishedDateTime: LocalDateTime,
     override val description: String? = null,
+    override val summary: String? = null,
     override val crossPost: MarktdownLink? = null,
     override val tags: List<MarktdownTag> = emptyList(),
     override val lastUpdateDateTime: LocalDateTime = publishedDateTime,
