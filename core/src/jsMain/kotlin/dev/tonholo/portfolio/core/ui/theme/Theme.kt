@@ -22,6 +22,7 @@ import dev.tonholo.portfolio.core.ui.theme.typography.LocalTypography
 import dev.tonholo.portfolio.core.ui.theme.typography.Typography
 import kotlinx.browser.document
 import kotlinx.browser.localStorage
+import kotlinx.browser.window
 import org.jetbrains.compose.web.css.CSSSizeValue
 import org.jetbrains.compose.web.css.CSSUnit
 
@@ -48,6 +49,18 @@ fun initCssColorScheme(context: InitSilkContext) {
             }
         }
     }
+}
+
+@InitSilk
+fun initColorMode(context: InitSilkContext) {
+    context.config.initialColorMode = localStorage
+        .getItem(COLOR_MODE_KEY)
+        ?.let(ColorMode::valueOf)
+        ?: if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+            ColorMode.DARK
+        } else {
+            ColorMode.LIGHT
+        }
 }
 
 @Composable

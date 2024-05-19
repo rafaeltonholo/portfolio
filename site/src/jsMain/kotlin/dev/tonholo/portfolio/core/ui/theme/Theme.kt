@@ -128,14 +128,6 @@ val ComponentModifier.typography
     get() = Typography
 
 @InitSilk
-fun initColorMode(context: InitSilkContext) {
-    context.config.initialColorMode = localStorage
-        .getItem(COLOR_MODE_KEY)
-        ?.let(ColorMode::valueOf)
-        ?: ColorMode.DARK
-}
-
-@InitSilk
 fun initSiteStyles(context: InitSilkContext) {
     context.stylesheet.apply {
         registerStyleBase(":root") {
