@@ -19,9 +19,9 @@ import com.varabyte.kobweb.silk.components.style.toModifier
 import dev.tonholo.portfolio.core.components.AdaptiveLayout
 import dev.tonholo.portfolio.core.components.SocialMediaRow
 import dev.tonholo.portfolio.core.components.button.PrimaryButton
-import dev.tonholo.portfolio.core.foundation.layout.Scaffold
 import dev.tonholo.portfolio.core.components.text.Text
 import dev.tonholo.portfolio.core.extensions.padding
+import dev.tonholo.portfolio.core.foundation.layout.Scaffold
 import dev.tonholo.portfolio.core.sections.AppBar
 import dev.tonholo.portfolio.core.sections.Footer
 import dev.tonholo.portfolio.core.ui.theme.Theme
@@ -120,21 +120,26 @@ fun ResumeContent(
                 listPanel = {
                     ExperienceSection(
                         section = resume.experience,
-                        modifier = Modifier.flex(1),
+                        modifier = Modifier
+                            .flex(1)
+                            .fillMaxWidth(),
                     )
                 },
                 detailPanel = {
                     Column(
                         modifier = Modifier
                             .flex(1)
-                            .gap(56.dp),
+                            .gap(56.dp)
+                            .fillMaxSize(),
 
                     ) {
                         EducationSection(
                             section = resume.educationSection,
+                            modifier = Modifier.fillMaxWidth(),
                         )
                         SkillsSection(
                             section = resume.skillSection,
+                            modifier = Modifier.fillMaxWidth(),
                         )
                     }
                 },

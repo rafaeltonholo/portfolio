@@ -60,7 +60,7 @@ fun Scaffold(
     Column(
         modifier = ScaffoldStyle.toModifier() then modifier,
     ) {
-        val padding by responsiveStateOf(ResponsiveValues(base = 20, lg = 80))
+        val padding by responsiveStateOf(ResponsiveValues(base = 40, lg = 80))
 
         val paddingValues = remember(topBar, bottomBar, padding) {
             PaddingValues(
