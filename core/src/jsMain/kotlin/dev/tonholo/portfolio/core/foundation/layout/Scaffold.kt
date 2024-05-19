@@ -1,6 +1,7 @@
 package dev.tonholo.portfolio.core.foundation.layout
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import com.varabyte.kobweb.compose.css.CSSTransition
 import com.varabyte.kobweb.compose.css.TransitionProperty
@@ -11,7 +12,9 @@ import com.varabyte.kobweb.compose.ui.modifiers.transition
 import com.varabyte.kobweb.silk.components.style.ComponentStyle
 import com.varabyte.kobweb.silk.components.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.components.style.toModifier
+import dev.tonholo.portfolio.core.extensions.ResponsiveValues
 import dev.tonholo.portfolio.core.extensions.padding
+import dev.tonholo.portfolio.core.extensions.responsiveStateOf
 import dev.tonholo.portfolio.core.ui.unit.dp
 import org.jetbrains.compose.web.css.AnimationTimingFunction
 import org.jetbrains.compose.web.css.s
@@ -35,6 +38,16 @@ val ScaffoldStyle by ComponentStyle {
         Modifier
             .padding(vertical = 40.dp, horizontal = 156.dp)
     }
+    cssRule("> *") {
+        Modifier.transition(
+            CSSTransition(
+                property = "padding",
+                duration = 0.4.s,
+                timingFunction = AnimationTimingFunction.Ease,
+                delay = 0.s,
+            ),
+        )
+    }
 }
 
 @Composable
@@ -47,10 +60,12 @@ fun Scaffold(
     Column(
         modifier = ScaffoldStyle.toModifier() then modifier,
     ) {
-        val paddingValues = remember(topBar, bottomBar) {
+        val padding by responsiveStateOf(ResponsiveValues(base = 20, lg = 80))
+
+        val paddingValues = remember(topBar, bottomBar, padding) {
             PaddingValues(
-                top = if (topBar != null) 80.dp else 0.dp,
-                bottom = if (bottomBar != null) 80.dp else 0.dp,
+                top = if (topBar != null) padding.dp else 0.dp,
+                bottom = if (bottomBar != null) padding.dp else 0.dp,
             )
         }
         topBar?.invoke()

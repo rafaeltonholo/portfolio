@@ -6,9 +6,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.staticCompositionLocalOf
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.styleModifier
 import com.varabyte.kobweb.core.KobwebApp
+import com.varabyte.kobweb.silk.components.style.breakpoint.BreakpointValues
 import com.varabyte.kobweb.silk.init.InitSilk
 import com.varabyte.kobweb.silk.init.InitSilkContext
 import com.varabyte.kobweb.silk.init.setSilkWidgetVariables
@@ -20,7 +22,8 @@ import dev.tonholo.portfolio.core.ui.theme.typography.LocalTypography
 import dev.tonholo.portfolio.core.ui.theme.typography.Typography
 import kotlinx.browser.document
 import kotlinx.browser.localStorage
-import kotlinx.browser.window
+import org.jetbrains.compose.web.css.CSSSizeValue
+import org.jetbrains.compose.web.css.CSSUnit
 
 private const val COLOR_MODE_KEY = "portfolio:colorMode"
 
@@ -52,6 +55,7 @@ fun Theme(
     themedColorScheme: ThemedValue<ColorScheme>,
     typography: Typography,
     themedElevations: ThemedValue<Elevations>,
+    breakpoints: BreakpointValues<CSSSizeValue<CSSUnit.rem>>,
     content: @Composable (colorMode: ColorMode) -> Unit,
 ) {
     KobwebApp {
@@ -75,6 +79,7 @@ fun Theme(
                 LocalColorScheme provides colorScheme,
                 LocalTypography provides typography,
                 LocalElevations provides elevations,
+                LocalBreakpointValues provides breakpoints,
             ) {
                 content(colorMode)
             }
@@ -103,4 +108,13 @@ object Theme {
         @Composable
         @ReadOnlyComposable
         get() = LocalElevations.current
+
+    val breakpoints: BreakpointValues<CSSSizeValue<CSSUnit.rem>>
+        @Composable
+        @ReadOnlyComposable
+        get() = LocalBreakpointValues.current
+}
+
+internal val LocalBreakpointValues = staticCompositionLocalOf<BreakpointValues<CSSSizeValue<CSSUnit.rem>>> {
+    error("No breakpoint values provided")
 }

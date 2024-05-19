@@ -27,6 +27,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.userSelect
 import com.varabyte.kobweb.silk.components.layout.Surface
 import com.varabyte.kobweb.silk.components.style.ComponentModifier
 import com.varabyte.kobweb.silk.components.style.ComponentStyle
+import com.varabyte.kobweb.silk.components.style.breakpoint.BreakpointValues
 import com.varabyte.kobweb.silk.components.style.common.SmoothColorStyle
 import com.varabyte.kobweb.silk.components.style.toModifier
 import com.varabyte.kobweb.silk.components.style.vars.color.BackgroundColorVar
@@ -44,6 +45,8 @@ import dev.tonholo.portfolio.locale.Locale
 import dev.tonholo.portfolio.locale.localStorageKey
 import dev.tonholo.portfolio.resources.Strings
 import kotlinx.browser.localStorage
+import org.jetbrains.compose.web.css.CSSSizeValue
+import org.jetbrains.compose.web.css.CSSUnit
 import org.jetbrains.compose.web.css.keywords.auto
 import org.jetbrains.compose.web.css.vh
 
@@ -184,12 +187,14 @@ val MainStyle by ComponentStyle(extraModifiers = { SmoothColorStyle.toModifier()
 
 @Composable
 fun Theme(
+    breakpoints: BreakpointValues<CSSSizeValue<CSSUnit.rem>>,
     content: @Composable () -> Unit,
 ) {
     Theme(
         themedColorScheme = LightColorScheme to DarkColorScheme,
         typography = Typography,
         themedElevations = ElevationsLight to ElevationsDark,
+        breakpoints = breakpoints,
     ) { colorMode ->
         val lyricist = rememberStrings(
             currentLanguageTag = localStorage.getItem(Locale.localStorageKey) ?: Locale.DEFAULT,

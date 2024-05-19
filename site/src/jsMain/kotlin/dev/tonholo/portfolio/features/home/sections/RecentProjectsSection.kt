@@ -1,16 +1,19 @@
 package dev.tonholo.portfolio.features.home.sections
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.gap
 import com.varabyte.kobweb.silk.components.style.ComponentStyle
 import com.varabyte.kobweb.silk.components.style.toModifier
+import dev.tonholo.portfolio.core.components.text.Text
+import dev.tonholo.portfolio.core.extensions.ResponsiveValues
+import dev.tonholo.portfolio.core.extensions.padding
+import dev.tonholo.portfolio.core.extensions.responsiveStateOf
 import dev.tonholo.portfolio.core.foundation.ExtendedArrangement
 import dev.tonholo.portfolio.core.foundation.layout.FlowRow
-import dev.tonholo.portfolio.core.components.text.Text
-import dev.tonholo.portfolio.core.extensions.padding
 import dev.tonholo.portfolio.core.ui.theme.Theme
 import dev.tonholo.portfolio.core.ui.unit.dp
 import dev.tonholo.portfolio.features.home.components.ProjectCard
@@ -37,10 +40,11 @@ fun RecentProjectsSection(
             style = Theme.typography.displaySmall,
         )
 
+        val maxItemsInEachRow by responsiveStateOf(ResponsiveValues(base = 1, lg = 2))
         FlowRow(
             horizontalArrangement = ExtendedArrangement.spacedBy(24.dp, alignment = Alignment.Start),
             verticalArrangement = ExtendedArrangement.spacedBy(40.dp, alignment = Alignment.Top),
-            maxItemsInEachRow = 2,
+            maxItemsInEachRow = maxItemsInEachRow,
         ) {
             recentProjects.projects.forEach { project ->
                 ProjectCard(

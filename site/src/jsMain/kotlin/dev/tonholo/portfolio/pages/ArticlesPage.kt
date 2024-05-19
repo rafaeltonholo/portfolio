@@ -5,6 +5,7 @@ import androidx.compose.runtime.remember
 import com.varabyte.kobweb.compose.css.BorderCollapse
 import com.varabyte.kobweb.compose.css.Height
 import com.varabyte.kobweb.compose.css.OverflowWrap
+import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.alignSelf
 import com.varabyte.kobweb.compose.ui.modifiers.backgroundColor
@@ -201,48 +202,48 @@ fun ArticlesPage() {
                 modifier = Modifier.fillMaxWidth(),
             )
         },
-        modifier = ArticlePageStyles.toModifier()
-    ) {
-        document.metadata?.let { metadata ->
-            ArticleHeader(
-                title = metadata.title,
-                description = metadata.description,
-                tags = metadata.tags.map { it.value }.toImmutable(),
-                authors = metadata.authors.toImmutable(),
-                postedDate = metadata.publishedDateTime,
-                updatedDate = metadata.lastUpdateDateTime,
-                modifier = Modifier.fillMaxWidth(),
-            )
-        }
-        Section(
-            attrs = ArticlesPageContentStyle.toAttrs(),
-        ) {
-            TableOfContents(
-                items = tableOfContents,
-                modifier = ArticlePageTableOfContentStyle.toModifier(),
-            )
-
-            Marktdown(
-                document = document,
-                injectMetaTags = true,
-                attrs = ArticleContentStyle.toAttrs(),
-            )
-        }
-
-        TextButton(
-            onClick = {
-                window.scrollTo(
-                    options = ScrollToOptions(
-                        top = 0.0,
-                        behavior = ScrollBehavior.SMOOTH,
-                    ),
+    ) { paddingValues ->
+        Column(modifier = ArticlePageStyles.toModifier().padding(paddingValues)) {
+            document.metadata?.let { metadata ->
+                ArticleHeader(
+                    title = metadata.title,
+                    description = metadata.description,
+                    tags = metadata.tags.map { it.value }.toImmutable(),
+                    authors = metadata.authors.toImmutable(),
+                    postedDate = metadata.publishedDateTime,
+                    updatedDate = metadata.lastUpdateDateTime,
+                    modifier = Modifier.fillMaxWidth(),
                 )
-            },
-            modifier = Modifier
-                .alignSelf(AlignSelf.Center)
-                .margin(vertical = 16.dp)
-        ) {
-            Text(text = lyricist.strings.scrollToTop)
+            }
+            Section(
+                attrs = ArticlesPageContentStyle.toAttrs(),
+            ) {
+                TableOfContents(
+                    items = tableOfContents,
+                    modifier = ArticlePageTableOfContentStyle.toModifier(),
+                )
+
+                Marktdown(
+                    document = document,
+                    injectMetaTags = true,
+                    attrs = ArticleContentStyle.toAttrs(),
+                )
+            }
+            TextButton(
+                onClick = {
+                    window.scrollTo(
+                        options = ScrollToOptions(
+                            top = 0.0,
+                            behavior = ScrollBehavior.SMOOTH,
+                        ),
+                    )
+                },
+                modifier = Modifier
+                    .alignSelf(AlignSelf.Center)
+                    .margin(vertical = 16.dp)
+            ) {
+                Text(text = lyricist.strings.scrollToTop)
+            }
         }
     }
 }
