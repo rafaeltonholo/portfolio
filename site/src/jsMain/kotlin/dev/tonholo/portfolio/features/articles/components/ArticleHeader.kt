@@ -156,8 +156,10 @@ fun AuthorCard(
                         append(strings.pages.article.posted(postedDate))
 
                         updatedDate?.let {
-                            append(", ")
-                            append(strings.pages.article.updated(it))
+                            if (it != postedDate) {
+                                append(", ")
+                                append(strings.pages.article.updated(it))
+                            }
                         }
                     },
                     style = Theme.typography.labelLarge

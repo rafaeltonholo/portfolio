@@ -197,7 +197,7 @@ fun AppBar(
                 AppBarButton(
                     text = strings.navBar.articles,
                     onClick = onArticleClick,
-                    isSelected = currentRoute.path == Route.Articles,
+                    isSelected = currentRoute.path.startsWith(Route.Articles),
                 )
                 AppBarButton(
                     text = strings.navBar.resume,

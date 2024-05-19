@@ -12,6 +12,8 @@ data class ArticlePage(
     val updated: (date: LocalDateTime) -> String,
     val coAuthors: (names: List<String>) -> String,
     val tableOfContents: String,
+    val title: String,
+    val readMore: String,
 ) {
     companion object {
         val En = ArticlePage(
@@ -21,6 +23,8 @@ data class ArticlePage(
                 "co: ${names.fastJoinToString(lastSeparator = ", and ")}"
             },
             tableOfContents = "Table of Contents",
+            title = "Articles",
+            readMore = "Read More",
         )
         val PtBr = ArticlePage(
             posted = { date ->
@@ -33,6 +37,8 @@ data class ArticlePage(
                 "co: ${names.fastJoinToString(lastSeparator = " e ")}"
             },
             tableOfContents = "Conteúdo",
+            title = "Artigos",
+            readMore = "Leia Mais",
         )
     }
 }
@@ -41,6 +47,9 @@ private fun LocalDateTime.toFormattedString(monthNames: MonthNames) =
     format(
         LocalDateTime.Format {
             monthName(monthNames)
+            char(',')
+            char(' ')
+            dayOfMonth()
             char(' ')
             year()
         },

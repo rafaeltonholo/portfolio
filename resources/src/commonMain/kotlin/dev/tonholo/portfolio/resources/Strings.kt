@@ -4,11 +4,9 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
 import cafe.adriel.lyricist.LyricistStrings
 import dev.tonholo.marktdown.domain.content.MarktdownDocument
-import dev.tonholo.portfolio.HelloWorld
+import dev.tonholo.portfolio.HelloWorldEn
+import dev.tonholo.portfolio.HelloWorldPtBr
 import dev.tonholo.portfolio.KmpMigratrionPart1En
-import dev.tonholo.portfolio.MyArticleEn
-import dev.tonholo.portfolio.MyArticlePtBr
-import dev.tonholo.portfolio.core.collections.ImmutableList
 import dev.tonholo.portfolio.core.collections.immutableListOf
 import dev.tonholo.portfolio.locale.Locales
 import dev.tonholo.portfolio.resources.pages.Pages
@@ -23,7 +21,7 @@ data class Strings(
     val present: String,
     val monthNames: MonthNames,
     val scrollToTop: String,
-    val articles: ImmutableList<MarktdownDocument>,
+    val articles: Map<String,MarktdownDocument>,
     val siteName: String,
 )
 
@@ -48,10 +46,9 @@ val EnStrings = Strings(
     present = "Present",
     monthNames = MonthNamesEn,
     scrollToTop = "Scroll to top ⬆",
-    articles = immutableListOf(
-        HelloWorld,
-        MyArticleEn,
-        KmpMigratrionPart1En
+    articles = mapOf(
+        "hello-world" to HelloWorldEn,
+        "kmp-part-1" to KmpMigratrionPart1En
     ),
     siteName = "Rafael Tonholo Blog",
 )
@@ -66,10 +63,9 @@ val PtStrings = Strings(
     present = "Presente",
     monthNames = MonthNamesPtBr,
     scrollToTop = "Ir para o início ⬆",
-    articles = immutableListOf(
-        HelloWorld,
-        MyArticlePtBr,
-        KmpMigratrionPart1En,
+    articles = mapOf(
+        "hello-world" to HelloWorldPtBr,
+        "kmp-part-1" to KmpMigratrionPart1En,
     ),
     siteName = "Rafael Tonholo Blog",
 )

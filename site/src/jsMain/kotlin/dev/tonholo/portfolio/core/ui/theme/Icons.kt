@@ -24,42 +24,42 @@ sealed interface IconScheme {
     @Immutable
     data object Dark : IconScheme {
         override val AndroidLogo: Icon.Asset = Icon.Asset(
-            src = "icons/android-logo-dark.svg",
+            src = "/icons/android-logo-dark.svg",
         )
         override val Compose: Icon.Asset = Default.Compose
         override val Github: Icon.Asset = Icon.Asset(
-            src = "icons/github-dark.svg",
+            src = "/icons/github-dark.svg",
         )
         override val LinkedIn: Icon.Asset = Icon.Asset(
-            src = "icons/linkedin-dark.svg",
+            src = "/icons/linkedin-dark.svg",
         )
         override val Kotlin: Icon.Asset = Icon.Asset(
-            src = "icons/kotlin-dark.svg",
+            src = "/icons/kotlin-dark.svg",
         )
         override val Twitter: Icon.Asset = Icon.Asset(
-            src = "icons/twitter-dark.svg",
+            src = "/icons/twitter-dark.svg",
         )
     }
 
     @Immutable
     data object Light : IconScheme {
         override val AndroidLogo: Icon.Asset = Icon.Asset(
-            src = "icons/android-logo-light.svg",
+            src = "/icons/android-logo-light.svg",
         )
         override val Compose: Icon.Asset = Icon.Asset(
-            src = "icons/compose.svg",
+            src = "/icons/compose.svg",
         )
         override val Github: Icon.Asset = Icon.Asset(
-            src = "icons/github-light.svg",
+            src = "/icons/github-light.svg",
         )
         override val LinkedIn: Icon.Asset = Icon.Asset(
-            src = "icons/linkedin-light.svg",
+            src = "/icons/linkedin-light.svg",
         )
         override val Kotlin: Icon.Asset = Icon.Asset(
-            src = "icons/kotlin-light.svg",
+            src = "/icons/kotlin-light.svg",
         )
         override val Twitter: Icon.Asset = Icon.Asset(
-            src = "icons/twitter-light.svg",
+            src = "/icons/twitter-light.svg",
         )
     }
 }

@@ -25,7 +25,7 @@ kobweb {
                 }
                 link {
                     rel = "stylesheet"
-                    href = "fonts/faces.css"
+                    href = "/fonts/faces.css"
                 }
             }
             description.set("Powered by Kobweb")
