@@ -118,7 +118,7 @@ val ArticleContentStyle by ComponentStyle {
     cssRule("h1", h1h2Modifier)
     cssRule("h2", h1h2Modifier)
 
-    cssRule(":not(pre) > code") {
+    cssRule(" :not(pre) > code") {
         Modifier
             .padding(horizontal = 4.dp, vertical = 2.dp)
             .borderRadius(4.dp)
