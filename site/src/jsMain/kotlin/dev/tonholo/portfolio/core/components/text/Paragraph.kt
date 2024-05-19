@@ -6,6 +6,7 @@ import com.varabyte.kobweb.compose.ui.thenIf
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.silk.components.style.ComponentStyle
 import com.varabyte.kobweb.silk.components.style.toModifier
+import dev.tonholo.portfolio.core.ui.theme.Theme
 import dev.tonholo.portfolio.core.ui.theme.typography
 import dev.tonholo.portfolio.core.ui.theme.typography.TextStyle
 import dev.tonholo.portfolio.core.ui.theme.typography.toModifier
@@ -25,7 +26,7 @@ fun Paragraph(
     modifier: Modifier = Modifier,
 ) {
     val paragraphModifier = ParagraphStyle.toModifier().thenIf(style != null) {
-        style?.toModifier() ?: Modifier
+        style?.toModifier(Theme.typography.bodyLarge) ?: Modifier
     }
     P(attrs = (paragraphModifier then modifier).toAttrs()) {
         Text(value = text)

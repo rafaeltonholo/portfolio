@@ -17,7 +17,6 @@ import com.varabyte.kobweb.silk.components.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.components.style.toModifier
 import dev.tonholo.portfolio.core.components.AdaptiveLayout
 import dev.tonholo.portfolio.core.components.button.LinkButton
-import dev.tonholo.portfolio.core.components.text.Paragraph
 import dev.tonholo.portfolio.core.components.text.Text
 import dev.tonholo.portfolio.core.extensions.ResponsiveValues
 import dev.tonholo.portfolio.core.extensions.responsiveStateOf
@@ -77,7 +76,7 @@ fun MainSection(
                     style = Theme.typography.displaySmall,
                 )
                 mainContent.description.forEach { description ->
-                    Paragraph(
+                    Text(
                         text = description,
                         style = Theme.typography.titleMedium
                             .copy(color = Theme.colorScheme.onBackgroundVariant),
