@@ -1,6 +1,7 @@
 package dev.tonholo.portfolio.features.articles
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import cafe.adriel.lyricist.LocalStrings
 import com.varabyte.kobweb.compose.css.BorderCollapse
@@ -45,6 +46,7 @@ import dev.tonholo.portfolio.core.extensions.padding
 import dev.tonholo.portfolio.core.foundation.layout.Scaffold
 import dev.tonholo.portfolio.core.router.About
 import dev.tonholo.portfolio.core.router.AppRoutes
+import dev.tonholo.portfolio.core.router.Article
 import dev.tonholo.portfolio.core.router.Articles
 import dev.tonholo.portfolio.core.router.Home
 import dev.tonholo.portfolio.core.router.Resume
@@ -62,6 +64,7 @@ import dev.tonholo.portfolio.features.articles.sections.toTableOfContentItem
 import dev.tonholo.portfolio.locale.Locale
 import dev.tonholo.portfolio.locale.localStorageKey
 import dev.tonholo.portfolio.renderer.Marktdown
+import kotlinx.browser.document
 import kotlinx.browser.localStorage
 import kotlinx.browser.window
 import org.jetbrains.compose.web.css.AlignSelf
@@ -179,6 +182,14 @@ fun ArticleContentPage() {
     val lyricist = LocalLyricist.current
     val strings = LocalStrings.current
     val article = strings.articles[articleKey]
+    val lang = context.route.params.getValue(AppRoutes.ArticleContent.LANG_PARAM)
+
+    LaunchedEffect(lang) {
+        if (lyricist.languageTag != lang) {
+            lyricist.languageTag = lang
+            localStorage.setItem(Locale.localStorageKey, lang)
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -187,6 +198,11 @@ fun ArticleContentPage() {
                 onLocaleChange = { languageTag ->
                     lyricist.languageTag = languageTag
                     localStorage.setItem(Locale.localStorageKey, languageTag)
+                    window.history.replaceState(
+                        null,
+                        document.title,
+                        Route.Article(languageTag = languageTag, key = articleKey),
+                    )
                 },
                 onHomeClick = {
                     context.router.navigateTo(Route.Home)

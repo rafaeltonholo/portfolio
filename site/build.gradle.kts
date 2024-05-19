@@ -34,6 +34,11 @@ kobweb {
         // Only legacy sites need this set. Sites built after 0.16.0 should default to DISALLOW.
         // See https://github.com/varabyte/kobweb#legacy-routes for more information.
         legacyRouteRedirectStrategy.set(LegacyRouteRedirectStrategy.DISALLOW)
+
+        export {
+            addExtraRoute("/en/articles/hello-world", "/en/articles/hello-world.html")
+            addExtraRoute("/pt-BR/articles/hello-world", "/pt-BR/articles/hello-world.html")
+        }
     }
 }
 

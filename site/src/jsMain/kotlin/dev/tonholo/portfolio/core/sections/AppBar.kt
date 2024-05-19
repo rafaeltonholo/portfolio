@@ -69,6 +69,7 @@ import dev.tonholo.portfolio.core.ui.unit.TextUnit
 import dev.tonholo.portfolio.core.ui.unit.dp
 import dev.tonholo.portfolio.core.ui.unit.sp
 import dev.tonholo.portfolio.features.home.components.LanguageChanger
+import dev.tonholo.portfolio.locale.Locales
 import org.jetbrains.compose.web.css.AlignSelf
 import org.jetbrains.compose.web.css.DisplayStyle
 import org.jetbrains.compose.web.css.FlexDirection
@@ -197,7 +198,9 @@ fun AppBar(
                 AppBarButton(
                     text = strings.navBar.articles,
                     onClick = onArticleClick,
-                    isSelected = currentRoute.path.startsWith(Route.Articles),
+                    isSelected = currentRoute.path.startsWith("/${Locales.EN.lowercase()}${Route.Articles}") ||
+                        currentRoute.path.startsWith("/${Locales.PT_BR.lowercase()}${Route.Articles}") ||
+                        currentRoute.path.startsWith(Route.Articles),
                 )
                 AppBarButton(
                     text = strings.navBar.resume,

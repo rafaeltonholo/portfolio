@@ -79,7 +79,7 @@ fun ArticlesPage() {
                     title = metadata.title,
                     shortDescription = metadata.description.orEmpty(),
                     onClick = {
-                        context.router.navigateTo(Route.Article(key))
+                        context.router.navigateTo(Route.Article(lyricist.languageTag, key))
                     },
                     thumbnail = metadata.postThumbnail?.value,
                 )
