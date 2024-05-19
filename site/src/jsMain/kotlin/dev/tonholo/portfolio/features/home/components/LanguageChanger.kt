@@ -23,6 +23,7 @@ import com.varabyte.kobweb.compose.ui.thenIf
 import com.varabyte.kobweb.silk.components.layout.DividerVars
 import com.varabyte.kobweb.silk.components.layout.VerticalDivider
 import com.varabyte.kobweb.silk.components.style.ComponentStyle
+import com.varabyte.kobweb.silk.components.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.components.style.hover
 import com.varabyte.kobweb.silk.components.style.toModifier
 import dev.tonholo.portfolio.core.components.text.Text
@@ -40,13 +41,17 @@ object LanguageChangerVars {
 
 val LanguageChangerStyle by ComponentStyle {
     base {
-        typography.labelLarge.toModifier() then Modifier
+        typography.titleMedium.toModifier()
             .border(style = LineStyle.None)
             .background(color = Colors.Transparent)
             .color(LanguageChangerVars.Color.value(colorScheme.onSurface))
             .padding(10.dp)
             .cursor(Cursor.Pointer)
             .textTransform(TextTransform.Uppercase)
+    }
+
+    Breakpoint.MD {
+        typography.labelLarge.toModifier()
     }
 
     hover {
