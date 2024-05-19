@@ -19,9 +19,9 @@ import com.varabyte.kobweb.navigation.OpenLinkStrategy
 import com.varabyte.kobweb.silk.components.navigation.Link
 import com.varabyte.kobweb.silk.components.style.ComponentStyle
 import com.varabyte.kobweb.silk.components.style.breakpoint.Breakpoint
+import com.varabyte.kobweb.silk.components.style.cssRule
 import com.varabyte.kobweb.silk.components.style.toAttrs
 import com.varabyte.kobweb.silk.components.style.toModifier
-import com.varabyte.kobweb.silk.theme.breakpoint.toMinWidthQuery
 import dev.tonholo.marktdown.domain.MarktdownTableOfContentItem
 import dev.tonholo.portfolio.core.collections.ImmutableList
 import dev.tonholo.portfolio.core.collections.emptyImmutableList
@@ -83,7 +83,7 @@ val TableOfContentsStyle by ComponentStyle {
         Modifier.margin(bottom = 24.dp)
     }
 
-    cssRule(Breakpoint.LG.toMinWidthQuery(), ":not([open])") {
+    cssRule(Breakpoint.LG, ":not([open])") {
         Modifier.minWidth(243.dp)
     }
 }
