@@ -12,12 +12,13 @@ import com.varabyte.kobweb.compose.ui.modifiers.transition
 import com.varabyte.kobweb.silk.components.style.ComponentStyle
 import com.varabyte.kobweb.silk.components.style.toModifier
 import dev.tonholo.portfolio.core.components.layout.HorizontalDivider
-import dev.tonholo.portfolio.core.foundation.layout.Scaffold
 import dev.tonholo.portfolio.core.extensions.margin
 import dev.tonholo.portfolio.core.extensions.padding
+import dev.tonholo.portfolio.core.foundation.layout.Scaffold
 import dev.tonholo.portfolio.core.sections.AppBar
 import dev.tonholo.portfolio.core.sections.Footer
 import dev.tonholo.portfolio.core.ui.unit.dp
+import dev.tonholo.portfolio.feature.FeatureFlag
 import dev.tonholo.portfolio.features.about.sections.MainSection
 import dev.tonholo.portfolio.features.about.sections.MoreAboutMeSection
 import dev.tonholo.portfolio.resources.pages.AboutPage
@@ -73,10 +74,12 @@ fun AboutContent(
                 mainContent = about.main,
             )
             HorizontalDivider(modifier = Modifier.margin(vertical = 80.dp))
-            MoreAboutMeSection(
-                moreAboutMe = about.moreAboutMe,
-                modifier = Modifier.fillMaxWidth(),
-            )
+            if (FeatureFlag.MoreAboutMe.enabled) {
+                MoreAboutMeSection(
+                    moreAboutMe = about.moreAboutMe,
+                    modifier = Modifier.fillMaxWidth(),
+                )
+            }
         }
     }
 }
