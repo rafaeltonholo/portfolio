@@ -8,6 +8,7 @@ kotlinx-datetime = "0.6.0-RC.2"
 kotlin-wrapper-highlightjs = "1.0.0-11.9.0"
 kotlin-wrapper-shiki = "1.0.0-1.5.1"
 marktdown = "1.0.0"
+build-konfig = "0.15.1"
 
 [libraries]
 kobweb-api = { module = "com.varabyte.kobweb:kobweb-api", version.ref = "kobweb" }
@@ -27,6 +28,7 @@ dev-tonholo-kotlin-wrapper-shiki-core = { module = "dev.tonholo.kotlin.wrapper.s
 dev-tonholo-kotlin-wrapper-shiki-compose-html = { module = "dev.tonholo.kotlin.wrapper.shiki:shiki-compose-html", version.ref = "kotlin-wrapper-shiki" }
 dev-tonholo-marktdown-core = { module = "dev.tonholo.marktdown:marktdown-core", version.ref = "marktdown" }
 dev-tonholo-marktdown-processor = { module = "dev.tonholo.marktdown:marktdown-processor", version.ref = "marktdown" }
+com-codingfeline-buildkonfig-gradle-plugin = { module = "com.codingfeline.buildkonfig:buildkonfig-gradle-plugin", version.ref = "build-konfig" }
 
 [plugins]
 jetbrains-compose = { id = "org.jetbrains.compose", version.ref = "jetbrains-compose" }
@@ -37,3 +39,4 @@ kobwebx-markdown = { id = "com.varabyte.kobwebx.markdown", version.ref = "kobweb
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 com-google-devtools-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 dev-tonholo-marktdown = { id = "dev.tonholo.marktdown", version.ref = "marktdown" }
+com-codingfeline-buildkonfig = { id = "com.codingfeline.buildkonfig", version.ref = "build-konfig" }

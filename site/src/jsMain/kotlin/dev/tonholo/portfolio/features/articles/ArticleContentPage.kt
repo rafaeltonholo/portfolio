@@ -40,6 +40,8 @@ import com.varabyte.kobweb.silk.components.style.ComponentStyle
 import com.varabyte.kobweb.silk.components.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.components.style.toAttrs
 import com.varabyte.kobweb.silk.components.style.toModifier
+import dev.tonholo.portfolio.core.analytics.LocalAnalyticsManager
+import dev.tonholo.portfolio.core.analytics.events.AnalyticEvent
 import dev.tonholo.portfolio.core.collections.toImmutable
 import dev.tonholo.portfolio.core.components.button.TextButton
 import dev.tonholo.portfolio.core.components.text.Text
@@ -183,6 +185,10 @@ val ArticlePageTableOfContentStyle by ComponentStyle {
 @Composable
 @Page(AppRoutes.ArticleContent.ROUTE)
 fun ArticleContentPage() {
+    val analytics = LocalAnalyticsManager.current
+    LaunchedEffect(Unit) {
+        analytics.track(AnalyticEvent.PageView)
+    }
     val context = rememberPageContext()
     val articleKey = context.route.params.getValue(AppRoutes.ArticleContent.ARTICLE_KEY_PARAM)
     val lyricist = LocalLyricist.current

@@ -16,6 +16,8 @@ import com.varabyte.kobweb.silk.init.InitSilkContext
 import com.varabyte.kobweb.silk.init.setSilkWidgetVariables
 import com.varabyte.kobweb.silk.prepareSilkFoundation
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
+import dev.tonholo.portfolio.core.analytics.AnalyticsManager
+import dev.tonholo.portfolio.core.analytics.LocalAnalyticsManager
 import dev.tonholo.portfolio.core.ui.theme.color.ColorScheme
 import dev.tonholo.portfolio.core.ui.theme.color.LocalColorScheme
 import dev.tonholo.portfolio.core.ui.theme.typography.LocalTypography
@@ -93,6 +95,7 @@ fun Theme(
                 LocalTypography provides typography,
                 LocalElevations provides elevations,
                 LocalBreakpointValues provides breakpoints,
+                LocalAnalyticsManager provides AnalyticsManager(),
             ) {
                 content(colorMode)
             }

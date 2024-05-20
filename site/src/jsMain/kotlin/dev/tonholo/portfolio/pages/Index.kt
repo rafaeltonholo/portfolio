@@ -1,11 +1,14 @@
 package dev.tonholo.portfolio.pages
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.fillMaxSize
 import com.varabyte.kobweb.core.Page
 import com.varabyte.kobweb.core.rememberPageContext
 import com.varabyte.kobweb.navigation.Route
+import dev.tonholo.portfolio.core.analytics.LocalAnalyticsManager
+import dev.tonholo.portfolio.core.analytics.events.AnalyticEvent
 import dev.tonholo.portfolio.core.router.About
 import dev.tonholo.portfolio.core.router.Articles
 import dev.tonholo.portfolio.core.router.Resume
@@ -18,6 +21,10 @@ import kotlinx.browser.localStorage
 @Page
 @Composable
 fun HomePage() {
+    val analytics = LocalAnalyticsManager.current
+    LaunchedEffect(Unit) {
+        analytics.track(AnalyticEvent.PageView)
+    }
     val lyricist = LocalLyricist.current
     val context = rememberPageContext()
     val home = lyricist.strings.pages.home

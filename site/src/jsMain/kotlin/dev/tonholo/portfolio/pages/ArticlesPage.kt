@@ -1,6 +1,7 @@
 package dev.tonholo.portfolio.pages
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.fillMaxSize
@@ -11,6 +12,8 @@ import com.varabyte.kobweb.core.rememberPageContext
 import com.varabyte.kobweb.navigation.Route
 import com.varabyte.kobweb.silk.components.style.ComponentStyle
 import com.varabyte.kobweb.silk.components.style.toModifier
+import dev.tonholo.portfolio.core.analytics.LocalAnalyticsManager
+import dev.tonholo.portfolio.core.analytics.events.AnalyticEvent
 import dev.tonholo.portfolio.core.components.text.Text
 import dev.tonholo.portfolio.core.extensions.padding
 import dev.tonholo.portfolio.core.foundation.layout.Scaffold
@@ -40,6 +43,10 @@ val ArticlePageStyles by ComponentStyle {
 @Page(AppRoutes.Articles.ROUTE)
 @Composable
 fun ArticlesPage() {
+    val analytics = LocalAnalyticsManager.current
+    LaunchedEffect(Unit) {
+        analytics.track(AnalyticEvent.PageView)
+    }
     val context = rememberPageContext()
     val lyricist = LocalLyricist.current
     Scaffold(

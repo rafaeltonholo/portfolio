@@ -56,7 +56,6 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(projects.core)
-//            implementation(compose.ui)
             implementation(compose.runtime)
             implementation(projects.resources)
             implementation(libs.kotlinx.datetime)
@@ -99,7 +98,3 @@ tasks.withType<KotlinJsCompile>().configureEach {
         useEsClasses = true
     }
 }
-
-//tasks.withType<org.jetbrains.kotlin.gradle.targets.js.ir.KotlinJsIrLink> {
-//    compilerOptions.moduleKind.set(org.jetbrains.kotlin.gradle.dsl.JsModuleKind.MODULE_ES)
-//}
