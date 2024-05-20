@@ -52,4 +52,16 @@ sealed interface AnalyticEvent {
             "lang" to language,
         )
     }
+
+    data class LanguageChange(
+        val previousLanguage: String,
+        val language: String,
+    ) : AnalyticEvent {
+        override val name = "language_change"
+
+        override fun toParams(): EventParams = eventsOf(
+            "previous_lang" to previousLanguage,
+            "lang" to language,
+        )
+    }
 }

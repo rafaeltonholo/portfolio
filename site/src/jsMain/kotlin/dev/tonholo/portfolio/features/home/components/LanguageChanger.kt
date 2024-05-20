@@ -26,6 +26,8 @@ import com.varabyte.kobweb.silk.components.style.ComponentStyle
 import com.varabyte.kobweb.silk.components.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.components.style.hover
 import com.varabyte.kobweb.silk.components.style.toModifier
+import dev.tonholo.portfolio.core.analytics.LocalAnalyticsManager
+import dev.tonholo.portfolio.core.analytics.events.AnalyticEvent
 import dev.tonholo.portfolio.core.components.text.Text
 import dev.tonholo.portfolio.core.ui.theme.Theme
 import dev.tonholo.portfolio.core.ui.theme.colorScheme
@@ -70,6 +72,7 @@ fun LanguageChanger(
         variable = LanguageChangerVars.Color,
         value = Theme.colorScheme.primary,
     )
+    val analytics = LocalAnalyticsManager.current
     Row(
         modifier = modifier.gap(10.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -78,7 +81,15 @@ fun LanguageChanger(
             text = Locales.PT_BR,
             modifier = LanguageChangerStyle
                 .toModifier()
-                .onClick { onLocaleChange(Locales.PT_BR) }
+                .onClick {
+                    analytics.track(
+                        event = AnalyticEvent.LanguageChange(
+                            previousLanguage = selected,
+                            language = Locales.PT_BR,
+                        )
+                    )
+                    onLocaleChange(Locales.PT_BR)
+                }
                 .thenIf(selected == Locales.PT_BR, selectedModifier),
         )
         VerticalDivider(
@@ -90,7 +101,15 @@ fun LanguageChanger(
             text = Locales.EN,
             modifier = LanguageChangerStyle
                 .toModifier()
-                .onClick { onLocaleChange(Locales.EN) }
+                .onClick {
+                    analytics.track(
+                        event = AnalyticEvent.LanguageChange(
+                            previousLanguage = selected,
+                            language = Locales.EN,
+                        )
+                    )
+                    onLocaleChange(Locales.EN)
+                }
                 .thenIf(selected == Locales.EN, selectedModifier),
         )
     }
