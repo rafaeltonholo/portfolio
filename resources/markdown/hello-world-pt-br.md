@@ -9,12 +9,18 @@ description: >
 summary: Uma nova aventura começa
 authors:
     - name: Rafael Tonholo
-      avatar: /images/writing.jpg
+      avatar: https://rafael.tonholo.dev/images/writing.jpg
 publishedDateTime: 2024-05-19T17:16:34-03:00
-postThumbnail: /images/articles/hello-world/thumbnail.png
+postThumbnail: https://rafael.tonholo.dev/images/articles/hello-world/thumbnail.png
 ---
 
 # Hello World!
+
+Fala aí meu parceiro, bão demais?! Me chamo Rafael Tonholo e é um prazer te conhecer!
+
+Sou um Desenvolvedor de Software há um bom tempo e sou apaixonado pelo desenvolvimento mobile, 
+de Minas Gerais, mas estou atualmente morando no Canadá. 
+Se você se interessar, pode olhar mais sobre mim [aqui](/about). 
 
 Não faço a menor ideia se ainda é assim, mas quando comecei a programar isso era tipo uma tradição. 
 Tinha até um ditado que dizia que se você não começar a programar fazendo um Hello World, você não 

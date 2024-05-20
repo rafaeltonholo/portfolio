@@ -9,9 +9,9 @@ description: >
 summary: A new journey begins
 authors:
     - name: Rafael Tonholo
-      avatar: /images/writing.jpg
+      avatar: https://rafael.tonholo.dev/images/writing.jpg
 publishedDateTime: 2024-05-19T17:16:34-03:00
-postThumbnail: /images/articles/hello-world/thumbnail.png
+postThumbnail: https://rafael.tonholo.dev/images/articles/hello-world/thumbnail.png
 ---
 # Hello World!
 
