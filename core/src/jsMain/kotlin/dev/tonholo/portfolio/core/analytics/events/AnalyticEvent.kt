@@ -76,4 +76,16 @@ sealed interface AnalyticEvent {
             "project_url" to projectUrl,
         )
     }
+
+    data class ReadArticle(
+        val articleTitle: String,
+        val articleUrl: String,
+    ) : AnalyticEvent {
+        override val name = "read_article"
+
+        override fun toParams(): EventParams = eventsOf(
+            "article_title" to articleTitle,
+            "article_url" to articleUrl,
+        )
+    }
 }

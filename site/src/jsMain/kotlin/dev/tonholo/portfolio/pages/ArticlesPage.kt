@@ -31,6 +31,7 @@ import dev.tonholo.portfolio.features.articles.components.ArticleCard
 import dev.tonholo.portfolio.locale.Locale
 import dev.tonholo.portfolio.locale.localStorageKey
 import kotlinx.browser.localStorage
+import kotlinx.browser.window
 
 val ArticlePageStyles by ComponentStyle {
     base {
@@ -86,7 +87,14 @@ fun ArticlesPage() {
                     title = metadata.title,
                     shortDescription = metadata.description.orEmpty(),
                     onClick = {
-                        context.router.navigateTo(Route.Article(lyricist.languageTag, key))
+                        val url = Route.Article(lyricist.languageTag, key)
+                        analytics.track(
+                            AnalyticEvent.ReadArticle(
+                                articleTitle = metadata.title,
+                                articleUrl = "${window.location.origin}${url}",
+                            )
+                        )
+                        context.router.navigateTo(url)
                     },
                     thumbnail = metadata.postThumbnail?.value,
                 )
