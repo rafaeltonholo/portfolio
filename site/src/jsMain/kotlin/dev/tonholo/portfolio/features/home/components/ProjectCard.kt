@@ -15,11 +15,14 @@ import com.varabyte.kobweb.compose.ui.modifiers.maxHeight
 import com.varabyte.kobweb.compose.ui.modifiers.maxWidth
 import com.varabyte.kobweb.compose.ui.modifiers.minHeight
 import com.varabyte.kobweb.compose.ui.modifiers.minWidth
+import com.varabyte.kobweb.compose.ui.modifiers.onClick
 import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.compose.ui.modifiers.setVariable
 import com.varabyte.kobweb.compose.ui.thenIf
 import com.varabyte.kobweb.silk.components.style.ComponentStyle
 import com.varabyte.kobweb.silk.components.style.toModifier
+import dev.tonholo.portfolio.core.analytics.LocalAnalyticsManager
+import dev.tonholo.portfolio.core.analytics.events.AnalyticEvent
 import dev.tonholo.portfolio.core.components.button.LinkButton
 import dev.tonholo.portfolio.core.components.text.Paragraph
 import dev.tonholo.portfolio.core.components.text.Text
@@ -67,6 +70,7 @@ fun ProjectCard(
     maxHeight: Dp = Dp.Unspecified,
     minHeight: Dp = Dp.Unspecified,
 ) {
+    val analytics = LocalAnalyticsManager.current
     val strings = LocalStrings.current
     Column(
         modifier = ProjectCardStyle.toModifier() then modifier
@@ -94,7 +98,16 @@ fun ProjectCard(
         LinkButton(
             path = src,
             color = Theme.colorScheme.primary,
-            modifier = Modifier.alignSelf(AlignSelf.End),
+            modifier = Modifier
+                .alignSelf(AlignSelf.End)
+                .onClick {
+                    analytics.track(
+                        AnalyticEvent.ViewProject(
+                            projectName = name,
+                            projectUrl = src,
+                        )
+                    )
+                },
         ) {
             Text(
                 text = strings.viewProject,

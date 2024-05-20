@@ -64,4 +64,16 @@ sealed interface AnalyticEvent {
             "lang" to language,
         )
     }
+
+    data class ViewProject(
+        val projectName: String,
+        val projectUrl: String,
+    ) : AnalyticEvent {
+        override val name = "view_project"
+
+        override fun toParams(): EventParams = eventsOf(
+            "project_name" to projectName,
+            "project_url" to projectUrl,
+        )
+    }
 }
