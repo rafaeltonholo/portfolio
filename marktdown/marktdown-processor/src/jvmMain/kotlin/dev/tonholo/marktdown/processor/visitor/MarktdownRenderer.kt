@@ -1231,10 +1231,29 @@ private fun MarktdownMetadata.build(memberName: MemberName): CodeBlock {
                 lastUpdateDateTime.toCodeBlock(),
             )
             postThumbnail?.let { postThumbnail ->
+                val rawLink = postThumbnail.value
+                val isRelativeUrl = rawLink.startsWith("/")
+                val template = if (isRelativeUrl) {
+                    "%P"
+                } else {
+                    "%S"
+                }
+                val link = if (isRelativeUrl) {
+                    "\${%M.location.origin}$rawLink"
+                } else {
+                    rawLink
+                }
                 add(
-                    "%N = %L",
+                    "%N = %T($template),",
                     className.member(MarktdownMetadata::postThumbnail.name),
-                    postThumbnail.toCodeBlock(),
+                    MarktdownLink::class,
+                    buildCodeBlock {
+                        if (isRelativeUrl) {
+                            add(link, MemberName("kotlinx.browser", "window"))
+                        } else {
+                            add(link)
+                        }
+                    },
                 )
             }
         }
