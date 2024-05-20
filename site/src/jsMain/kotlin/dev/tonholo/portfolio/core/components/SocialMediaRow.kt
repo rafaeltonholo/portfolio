@@ -6,18 +6,21 @@ import com.varabyte.kobweb.compose.foundation.layout.Row
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.graphics.Colors
 import com.varabyte.kobweb.compose.ui.modifiers.gap
+import com.varabyte.kobweb.compose.ui.modifiers.onClick
 import com.varabyte.kobweb.compose.ui.modifiers.setVariable
-import com.varabyte.kobweb.silk.components.forms.Button
 import com.varabyte.kobweb.silk.components.forms.ButtonVars
 import com.varabyte.kobweb.silk.components.graphics.Image
 import com.varabyte.kobweb.silk.components.navigation.Link
 import com.varabyte.kobweb.silk.components.style.ComponentStyle
 import com.varabyte.kobweb.silk.components.style.toModifier
+import dev.tonholo.portfolio.core.analytics.LocalAnalyticsManager
+import dev.tonholo.portfolio.core.analytics.events.AnalyticEvent
 import dev.tonholo.portfolio.core.ui.theme.Icon
 import dev.tonholo.portfolio.core.ui.theme.Theme
 import dev.tonholo.portfolio.core.ui.theme.icons
 import dev.tonholo.portfolio.core.ui.unit.dp
 import org.jetbrains.compose.web.css.keywords.auto
+import org.w3c.dom.url.URL
 
 val SocialMediaRowStyle by ComponentStyle {
     base {
@@ -53,6 +56,7 @@ private fun SocialMediaButton(
     icon: Icon.Asset,
     modifier: Modifier = Modifier,
 ) {
+    val analytics = LocalAnalyticsManager.current
     Link(
         path = path,
         modifier = modifier
@@ -60,7 +64,10 @@ private fun SocialMediaButton(
             .setVariable(ButtonVars.BackgroundDefaultColor, Colors.Transparent)
             .setVariable(ButtonVars.BackgroundHoverColor, Colors.Transparent)
             .setVariable(ButtonVars.FontSize, "unset".unsafeCast<CSSLengthNumericValue>())
-            .setVariable(ButtonVars.PaddingHorizontal, "unset".unsafeCast<CSSLengthNumericValue>()),
+            .setVariable(ButtonVars.PaddingHorizontal, "unset".unsafeCast<CSSLengthNumericValue>())
+            .onClick {
+                analytics.track(AnalyticEvent.SocialMediaView(URL(path).hostname))
+            },
     ) {
         Image(src = icon())
     }

@@ -29,4 +29,14 @@ sealed interface AnalyticEvent {
             "screen_class" to screenClass,
         )
     }
+
+    data class SocialMediaView(
+        val socialMedia: String,
+    ): AnalyticEvent {
+        override val name = "social_media_view"
+
+        override fun toParams(): EventParams = eventsOf(
+            "social_media" to socialMedia,
+        )
+    }
 }
