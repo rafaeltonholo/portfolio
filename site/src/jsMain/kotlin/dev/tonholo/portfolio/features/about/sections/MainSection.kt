@@ -11,6 +11,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.fillMaxWidth
 import com.varabyte.kobweb.compose.ui.modifiers.gap
 import com.varabyte.kobweb.compose.ui.modifiers.objectFit
 import com.varabyte.kobweb.compose.ui.modifiers.size
+import com.varabyte.kobweb.navigation.Route
 import com.varabyte.kobweb.silk.components.graphics.Image
 import com.varabyte.kobweb.silk.components.style.ComponentStyle
 import com.varabyte.kobweb.silk.components.style.breakpoint.Breakpoint
@@ -20,6 +21,7 @@ import dev.tonholo.portfolio.core.components.button.LinkButton
 import dev.tonholo.portfolio.core.components.text.Text
 import dev.tonholo.portfolio.core.extensions.ResponsiveValues
 import dev.tonholo.portfolio.core.extensions.responsiveStateOf
+import dev.tonholo.portfolio.core.router.Resume
 import dev.tonholo.portfolio.core.ui.theme.Theme
 import dev.tonholo.portfolio.core.ui.unit.dp
 import dev.tonholo.portfolio.resources.pages.MainContent
@@ -83,7 +85,7 @@ fun MainSection(
                     )
                 }
                 LinkButton(
-                    path = "",
+                    path = Route.Resume,
                     color = Theme.colorScheme.primary,
                 ) {
                     Text(
