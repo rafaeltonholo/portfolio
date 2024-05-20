@@ -1,6 +1,5 @@
 site:
   title: "Portfolio"
-  routePrefix: portfolio
 
 server:
   files:
