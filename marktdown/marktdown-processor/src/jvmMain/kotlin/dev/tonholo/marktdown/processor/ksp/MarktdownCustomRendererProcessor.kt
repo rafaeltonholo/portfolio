@@ -58,9 +58,10 @@ class MarktdownCustomRendererProcessor(
     private var generatedInPreviousRounds = false
 
     override fun process(resolver: Resolver): List<KSAnnotated> {
-        logger.warn("called process with declarations = $declarations, previousRoundDeclarations = $previousRoundDeclarations, generatedInPreviousRounds = $generatedInPreviousRounds")
+        logger.logging(
+            "called process with declarations = $declarations, previousRoundDeclarations = $previousRoundDeclarations, generatedInPreviousRounds = $generatedInPreviousRounds")
         if (generatedInPreviousRounds) {
-            logger.warn("Skipping code generation if is a new round and did already generated previously")
+            logger.info("Skipping code generation as it was already generated previously")
             return emptyList()
         }
 
@@ -162,10 +163,10 @@ class MarktdownCustomRendererProcessor(
     )
 
     private fun generateFile(function: KSFunctionDeclaration) {
-        logger.warn("generateFile() called with: function = $function")
+        logger.logging("generateFile() called with: function = $function")
 
         if (generatedInPreviousRounds) {
-            logger.warn("Skipping since generated in another round.")
+            logger.info("Skipping since generated in another round.")
             return
         }
 
