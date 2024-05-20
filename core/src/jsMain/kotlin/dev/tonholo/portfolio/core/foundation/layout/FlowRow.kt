@@ -10,8 +10,8 @@ import com.varabyte.kobweb.compose.ui.modifiers.display
 import com.varabyte.kobweb.compose.ui.modifiers.gap
 import com.varabyte.kobweb.compose.ui.modifiers.gridTemplateColumns
 import com.varabyte.kobweb.compose.ui.modifiers.setVariable
-import com.varabyte.kobweb.silk.components.style.ComponentStyle
-import com.varabyte.kobweb.silk.components.style.toModifier
+import com.varabyte.kobweb.silk.style.CssStyle
+import com.varabyte.kobweb.silk.style.toModifier
 import dev.tonholo.portfolio.core.foundation.ExtendedArrangement
 import dev.tonholo.portfolio.core.ui.unit.Dp
 import org.jetbrains.compose.web.css.DisplayStyle
@@ -29,7 +29,7 @@ object FlowRowDefaults {
     val VerticalAlignment: ExtendedArrangement.Vertical = ExtendedArrangement.Top
 }
 
-val FlowRowStyle by ComponentStyle {
+val FlowRowStyle = CssStyle {
     base {
         Modifier
             .display(DisplayStyle.Grid)

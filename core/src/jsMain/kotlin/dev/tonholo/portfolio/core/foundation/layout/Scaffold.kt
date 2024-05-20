@@ -9,9 +9,9 @@ import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.fillMaxSize
 import com.varabyte.kobweb.compose.ui.modifiers.transition
-import com.varabyte.kobweb.silk.components.style.ComponentStyle
-import com.varabyte.kobweb.silk.components.style.breakpoint.Breakpoint
-import com.varabyte.kobweb.silk.components.style.toModifier
+import com.varabyte.kobweb.silk.style.CssStyle
+import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
+import com.varabyte.kobweb.silk.style.toModifier
 import dev.tonholo.portfolio.core.extensions.ResponsiveValues
 import dev.tonholo.portfolio.core.extensions.padding
 import dev.tonholo.portfolio.core.extensions.responsiveStateOf
@@ -19,7 +19,7 @@ import dev.tonholo.portfolio.core.ui.unit.dp
 import org.jetbrains.compose.web.css.AnimationTimingFunction
 import org.jetbrains.compose.web.css.s
 
-val ScaffoldStyle by ComponentStyle {
+val ScaffoldStyle = CssStyle {
     base {
         Modifier
             .fillMaxSize()

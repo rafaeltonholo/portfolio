@@ -4,8 +4,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
-import com.varabyte.kobweb.silk.components.style.breakpoint.BreakpointValues
-import com.varabyte.kobweb.silk.components.style.breakpoint.ResponsiveValues
+import com.varabyte.kobweb.silk.style.breakpoint.BreakpointValues
+import com.varabyte.kobweb.silk.style.breakpoint.ResponsiveValues
 import dev.tonholo.portfolio.core.ui.theme.Theme
 import kotlinx.browser.window
 import org.jetbrains.compose.web.css.CSSSizeValue

@@ -10,11 +10,11 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.styleModifier
 import com.varabyte.kobweb.core.KobwebApp
-import com.varabyte.kobweb.silk.components.style.breakpoint.BreakpointValues
 import com.varabyte.kobweb.silk.init.InitSilk
 import com.varabyte.kobweb.silk.init.InitSilkContext
 import com.varabyte.kobweb.silk.init.setSilkWidgetVariables
 import com.varabyte.kobweb.silk.prepareSilkFoundation
+import com.varabyte.kobweb.silk.style.breakpoint.BreakpointValues
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import dev.tonholo.portfolio.core.analytics.AnalyticsManager
 import dev.tonholo.portfolio.core.analytics.LocalAnalyticsManager

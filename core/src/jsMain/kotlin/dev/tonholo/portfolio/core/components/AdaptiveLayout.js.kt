@@ -9,15 +9,15 @@ import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.alignItems
 import com.varabyte.kobweb.compose.ui.modifiers.display
 import com.varabyte.kobweb.compose.ui.modifiers.flexDirection
-import com.varabyte.kobweb.silk.components.style.ComponentStyle
-import com.varabyte.kobweb.silk.components.style.breakpoint.Breakpoint
-import com.varabyte.kobweb.silk.components.style.toModifier
+import com.varabyte.kobweb.silk.style.CssStyle
+import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
+import com.varabyte.kobweb.silk.style.toModifier
 import dev.tonholo.portfolio.core.extensions.ResponsiveValues
 import dev.tonholo.portfolio.core.extensions.responsiveStateOf
 import org.jetbrains.compose.web.css.DisplayStyle
 import org.jetbrains.compose.web.css.FlexDirection
 
-val AdaptiveLayoutStyles by ComponentStyle {
+val AdaptiveLayoutStyles = CssStyle {
     base {
         Modifier
             .display(DisplayStyle.Flex)
