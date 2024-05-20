@@ -21,11 +21,11 @@ import kotlinx.browser.localStorage
 @Page
 @Composable
 fun HomePage() {
+    val lyricist = LocalLyricist.current
     val analytics = LocalAnalyticsManager.current
     LaunchedEffect(Unit) {
-        analytics.track(AnalyticEvent.PageView)
+        analytics.track(AnalyticEvent.PageView(language = lyricist.languageTag))
     }
-    val lyricist = LocalLyricist.current
     val context = rememberPageContext()
     val home = lyricist.strings.pages.home
     HomeContent(

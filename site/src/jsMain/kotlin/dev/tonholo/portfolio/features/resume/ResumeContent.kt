@@ -16,6 +16,8 @@ import com.varabyte.kobweb.compose.ui.modifiers.gap
 import com.varabyte.kobweb.compose.ui.modifiers.transition
 import com.varabyte.kobweb.silk.components.style.ComponentStyle
 import com.varabyte.kobweb.silk.components.style.toModifier
+import dev.tonholo.portfolio.core.analytics.LocalAnalyticsManager
+import dev.tonholo.portfolio.core.analytics.events.AnalyticEvent
 import dev.tonholo.portfolio.core.components.AdaptiveLayout
 import dev.tonholo.portfolio.core.components.SocialMediaRow
 import dev.tonholo.portfolio.core.components.button.PrimaryButton
@@ -24,12 +26,14 @@ import dev.tonholo.portfolio.core.extensions.padding
 import dev.tonholo.portfolio.core.foundation.layout.Scaffold
 import dev.tonholo.portfolio.core.sections.AppBar
 import dev.tonholo.portfolio.core.sections.Footer
+import dev.tonholo.portfolio.core.ui.theme.LocalLyricist
 import dev.tonholo.portfolio.core.ui.theme.Theme
 import dev.tonholo.portfolio.core.ui.unit.dp
 import dev.tonholo.portfolio.features.resume.sections.EducationSection
 import dev.tonholo.portfolio.features.resume.sections.ExperienceSection
 import dev.tonholo.portfolio.features.resume.sections.SkillsSection
 import dev.tonholo.portfolio.resources.pages.ResumePage
+import kotlinx.browser.window
 import org.jetbrains.compose.web.css.AnimationTimingFunction
 import org.jetbrains.compose.web.css.s
 
@@ -73,6 +77,8 @@ fun ResumeContent(
     onAboutClick: () -> Unit = {},
     onArticleClick: () -> Unit = {},
 ) {
+    val analytics = LocalAnalyticsManager.current
+    val lyricist = LocalLyricist.current
     Scaffold(
         modifier = ResumeContentStyles.toModifier() then modifier,
         topBar = {
@@ -105,7 +111,15 @@ fun ResumeContent(
                 )
                 PrimaryButton(
                     onClick = {
-                        println("testing")
+                        analytics.track(
+                            event = AnalyticEvent.ViewResumePdf(
+                                language = lyricist.languageTag,
+                            ),
+                        )
+                        window.open(
+                            url = "https://drive.google.com/file/d/1u4G0lVEI45S-6wCSSI65N200UFqKCXnM/view?usp=sharing",
+                            target = "_blank",
+                        )
                     },
                     enabled = true,
                 ) {
@@ -132,7 +146,7 @@ fun ResumeContent(
                             .gap(56.dp)
                             .fillMaxSize(),
 
-                    ) {
+                        ) {
                         EducationSection(
                             section = resume.educationSection,
                             modifier = Modifier.fillMaxWidth(),

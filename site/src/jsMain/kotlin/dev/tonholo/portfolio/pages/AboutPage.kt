@@ -22,11 +22,11 @@ import kotlinx.browser.localStorage
 @Page(AppRoutes.About.ROUTE)
 @Composable
 fun AboutPage() {
+    val lyricist = LocalLyricist.current
     val analytics = LocalAnalyticsManager.current
     LaunchedEffect(Unit) {
-        analytics.track(AnalyticEvent.PageView)
+        analytics.track(AnalyticEvent.PageView(language = lyricist.languageTag))
     }
-    val lyricist = LocalLyricist.current
     val context = rememberPageContext()
     val about = lyricist.strings.pages.about
     AboutContent(

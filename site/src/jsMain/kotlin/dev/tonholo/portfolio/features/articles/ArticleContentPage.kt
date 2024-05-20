@@ -185,13 +185,13 @@ val ArticlePageTableOfContentStyle by ComponentStyle {
 @Composable
 @Page(AppRoutes.ArticleContent.ROUTE)
 fun ArticleContentPage() {
+    val lyricist = LocalLyricist.current
     val analytics = LocalAnalyticsManager.current
     LaunchedEffect(Unit) {
-        analytics.track(AnalyticEvent.PageView)
+        analytics.track(AnalyticEvent.PageView(language = lyricist.languageTag))
     }
     val context = rememberPageContext()
     val articleKey = context.route.params.getValue(AppRoutes.ArticleContent.ARTICLE_KEY_PARAM)
-    val lyricist = LocalLyricist.current
     val strings = LocalStrings.current
     val article = strings.articles[articleKey]
     val lang = context.route.params.getValue(AppRoutes.ArticleContent.LANG_PARAM)

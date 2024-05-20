@@ -43,12 +43,12 @@ val ArticlePageStyles by ComponentStyle {
 @Page(AppRoutes.Articles.ROUTE)
 @Composable
 fun ArticlesPage() {
+    val lyricist = LocalLyricist.current
     val analytics = LocalAnalyticsManager.current
     LaunchedEffect(Unit) {
-        analytics.track(AnalyticEvent.PageView)
+        analytics.track(AnalyticEvent.PageView(language = lyricist.languageTag))
     }
     val context = rememberPageContext()
-    val lyricist = LocalLyricist.current
     Scaffold(
         topBar = {
             AppBar(

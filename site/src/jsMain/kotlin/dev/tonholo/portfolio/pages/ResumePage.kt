@@ -23,10 +23,10 @@ import kotlinx.browser.localStorage
 @Composable
 fun ResumePage() {
     val analytics = LocalAnalyticsManager.current
-    LaunchedEffect(Unit) {
-        analytics.track(AnalyticEvent.PageView)
-    }
     val lyricist = LocalLyricist.current
+    LaunchedEffect(Unit) {
+        analytics.track(AnalyticEvent.PageView(language = lyricist.languageTag))
+    }
     val context = rememberPageContext()
     val resume = lyricist.strings.pages.resume
     ResumeContent(
