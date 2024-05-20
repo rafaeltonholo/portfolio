@@ -40,8 +40,6 @@ class AnalyticsManager private constructor() {
     }
 
     fun track(event: AnalyticEvent) {
-        console.log("event: ", event)
-        console.log("event.params: ", event.toParams())
         logEvent(
             analytics = analytics,
             eventName = event.name,

@@ -42,7 +42,7 @@ fun Route.Companion.Article(languageTag: LanguageTag, key: String) =
     AppRoutes.ArticleContent.route
         .replace(
             "{${AppRoutes.ArticleContent.LANG_PARAM}}",
-            languageTag,
+            languageTag.replace("-US", ""),
         )
         .replace(
             "{${AppRoutes.ArticleContent.ARTICLE_KEY_PARAM}}",
