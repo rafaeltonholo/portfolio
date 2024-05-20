@@ -1,5 +1,6 @@
 site:
   title: "Portfolio"
+  routePrefix: portfolio
 
 server:
   files:
@@ -9,6 +10,6 @@ server:
       api: "build/libs/portfolio.jar"
     prod:
       script: "build/dist/js/productionExecutable/portfolio.js"
-      siteRoot: ".kobweb/site"
+      siteRoot: "../docs"
 
   port: 8080
