@@ -8,7 +8,7 @@ import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.background
 import com.varabyte.kobweb.compose.ui.modifiers.borderRadius
-import com.varabyte.kobweb.compose.ui.modifiers.flexWrap
+import com.varabyte.kobweb.compose.ui.modifiers.flexDirection
 import com.varabyte.kobweb.compose.ui.modifiers.gap
 import com.varabyte.kobweb.silk.components.graphics.Image
 import com.varabyte.kobweb.silk.components.style.ComponentStyle
@@ -23,7 +23,7 @@ import dev.tonholo.portfolio.core.ui.theme.colorScheme
 import dev.tonholo.portfolio.core.ui.theme.icons
 import dev.tonholo.portfolio.core.ui.unit.dp
 import dev.tonholo.portfolio.resources.pages.HomeAboutSection
-import org.jetbrains.compose.web.css.FlexWrap
+import org.jetbrains.compose.web.css.FlexDirection
 
 val WhatIDoStyle by ComponentStyle {
     base {
@@ -42,11 +42,12 @@ val WhatIDoStyle by ComponentStyle {
 val WhatIDoLogosContentStyle by ComponentStyle {
     base {
         Modifier
+            .flexDirection(FlexDirection.Column)
             .gap(12.dp)
-            .flexWrap(FlexWrap.Wrap)
     }
     Breakpoint.LG {
         Modifier
+            .flexDirection(FlexDirection.Row)
             .gap(24.dp)
     }
 }
@@ -76,6 +77,7 @@ fun WhatIDoSection(
         Row(
             modifier = WhatIDoLogosContentStyle.toModifier(),
             horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             Image(
                 src = Theme.icons.AndroidLogo(),

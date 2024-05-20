@@ -121,13 +121,13 @@ data class RecentProjectsSection(
             },
             src = "https://github.com/raamcosta/compose-destinations",
         )
-        private val Kobweb = Project(
-            title = "Kobweb",
-            description = buildString {
-                append("A modern framework for full stack web apps in Kotlin, built upon Compose HTML")
-            },
-            src = "https://github.com/raamcosta/compose-destinations",
-        )
+//        private val Kobweb = Project(
+//            title = "Kobweb",
+//            description = buildString {
+//                append("A modern framework for full stack web apps in Kotlin, built upon Compose HTML")
+//            },
+//            src = "https://github.com/raamcosta/compose-destinations",
+//        )
         private val MarKTdown = Project(
             title = "MarKTdown",
             description = buildString {
@@ -148,7 +148,7 @@ data class RecentProjectsSection(
             projects = immutableListOf(
                 SvgToCompose,
                 ComposeDestinations,
-                Kobweb,
+//                Kobweb,
                 MarKTdown,
                 KotlinWrapperHighlightJs,
             )
@@ -169,12 +169,12 @@ data class RecentProjectsSection(
                         append(" com typesafe e sem boilerplate.")
                     },
                 ),
-                Kobweb.copy(
-                    description = buildString {
-                        append("Um framework moderno para aplicativos fullstack para Web em Kotlin,")
-                        append(" desenvolvida com base no Compose HTML")
-                    },
-                ),
+//                Kobweb.copy(
+//                    description = buildString {
+//                        append("Um framework moderno para aplicativos fullstack para Web em Kotlin,")
+//                        append(" desenvolvida com base no Compose HTML")
+//                    },
+//                ),
                 MarKTdown.copy(
                     description = buildString {
                         append("Um KMP gradle plugin que processa arquivos Markdown e gera")
