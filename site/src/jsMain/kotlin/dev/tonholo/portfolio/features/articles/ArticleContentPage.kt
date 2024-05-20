@@ -1,6 +1,7 @@
 package dev.tonholo.portfolio.features.articles
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import cafe.adriel.lyricist.LocalStrings
@@ -30,6 +31,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.objectFit
 import com.varabyte.kobweb.compose.ui.modifiers.overflowWrap
 import com.varabyte.kobweb.compose.ui.modifiers.position
 import com.varabyte.kobweb.compose.ui.modifiers.top
+import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.core.Page
 import com.varabyte.kobweb.core.rememberPageContext
 import com.varabyte.kobweb.navigation.Route
@@ -58,6 +60,7 @@ import dev.tonholo.portfolio.core.ui.theme.colorScheme
 import dev.tonholo.portfolio.core.ui.theme.typography
 import dev.tonholo.portfolio.core.ui.theme.typography.toModifier
 import dev.tonholo.portfolio.core.ui.unit.dp
+import dev.tonholo.portfolio.feature.FeatureFlag
 import dev.tonholo.portfolio.features.articles.components.ArticleHeader
 import dev.tonholo.portfolio.features.articles.sections.TableOfContents
 import dev.tonholo.portfolio.features.articles.sections.toTableOfContentItem
@@ -72,10 +75,13 @@ import org.jetbrains.compose.web.css.DisplayStyle
 import org.jetbrains.compose.web.css.FlexDirection
 import org.jetbrains.compose.web.css.LineStyle
 import org.jetbrains.compose.web.css.Position
+import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Section
+import org.w3c.dom.HTMLScriptElement
 import org.w3c.dom.SMOOTH
 import org.w3c.dom.ScrollBehavior
 import org.w3c.dom.ScrollToOptions
+import kotlin.js.Date
 
 val ArticleContentPageStyles by ComponentStyle {
     base {
@@ -289,6 +295,107 @@ fun ArticleContentPage() {
             ) {
                 Text(text = lyricist.strings.scrollToTop)
             }
+
+            if (FeatureFlag.Comments.enabled) {
+                CommentSection(
+                    articleKey = articleKey,
+                    modifier = Modifier.fillMaxWidth(),
+                )
+            }
         }
     }
+}
+
+val CommentSectionStyles by ComponentStyle {
+    base {
+        Modifier
+            .margin { top(32.dp) }
+            .backgroundColor(colorScheme.surface)
+    }
+    cssRule("#graphcomment > iframe .gc-body") {
+        Modifier.backgroundColor(colorScheme.background)
+    }
+}
+
+@Composable
+fun CommentSection(
+    articleKey: String,
+    modifier: Modifier = Modifier,
+) {
+//    val scriptId = "graphcomment-script"
+//    DisposableEffect(Unit) {
+//        val isGcScriptPending = document.getElementById(scriptId) == null
+//        console.log("isGcScriptPending", isGcScriptPending)
+//
+//        val gcScript = if (isGcScriptPending) {
+//            (document.createElement("script") as HTMLScriptElement).apply {
+//                id = scriptId
+//                type = "text/javascript"
+//                async = true
+//                src = "https://integration.graphcomment.com/gc_graphlogin.js?${Date.now()}"
+//
+//                onload = {
+//                    val semioParams = json(
+//                        "graphcommentId" to "rtonholo-portfolio",
+//                        "behaviour" to json(
+//                            "uid" to articleKey,
+//                        ),
+//                    ).also { console.log("params: ", it) }
+//                    graphLogin(
+//                        semioParams,
+//                    )
+//                }
+//
+//                document.body?.appendChild(this)
+//            }
+//        } else null
+//
+//        onDispose {
+//            gcScript?.let { document.removeChild(it) }
+//        }
+//    }
+//
+//    Div(
+//        attrs = CommentSectionStyles.toModifier().then(modifier).toAttrs {
+//            id("graphcomment")
+//        },
+//    ) { }
+
+    val scriptId = "disqus-script"
+    DisposableEffect(Unit) {
+        val isDisqusScriptPending = document.getElementById(scriptId) == null
+        console.log("isGcScriptPending", isDisqusScriptPending)
+
+        val gcScript = if (isDisqusScriptPending) {
+            (document.createElement("script") as HTMLScriptElement).apply {
+                id = scriptId
+                type = "text/javascript"
+                src = "https://rtonholo-portfolio.disqus.com/embed.js"
+                setAttribute("data-timestamp", Date.now().toString())
+
+                window.asDynamic().disqus_config = fun() {
+                    val thiz = js("this")
+                    thiz.page.url = window.location.href
+                    thiz.page.identifier = articleKey
+                }
+
+                document.body?.appendChild(this)
+            }
+        } else null
+
+        onDispose {
+            gcScript?.let { document.removeChild(it) }
+        }
+    }
+
+    Div(
+        attrs = CommentSectionStyles.toModifier().then(modifier).toAttrs {
+            id("disqus_thread")
+        },
+    ) { }
+}
+
+@JsName("__semio__gc_graphlogin")
+external fun graphLogin(params: dynamic) {
+    definedExternally
 }
