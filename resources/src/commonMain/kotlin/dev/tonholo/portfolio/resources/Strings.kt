@@ -6,7 +6,6 @@ import cafe.adriel.lyricist.LyricistStrings
 import dev.tonholo.marktdown.domain.content.MarktdownDocument
 import dev.tonholo.portfolio.HelloWorldEn
 import dev.tonholo.portfolio.HelloWorldPtBr
-import dev.tonholo.portfolio.KmpMigratrionPart1En
 import dev.tonholo.portfolio.core.collections.immutableListOf
 import dev.tonholo.portfolio.locale.Locales
 import dev.tonholo.portfolio.resources.pages.Pages
@@ -48,7 +47,6 @@ val EnStrings = Strings(
     scrollToTop = "Scroll to top ⬆",
     articles = mapOf(
         "hello-world" to HelloWorldEn,
-        "kmp-part-1" to KmpMigratrionPart1En
     ),
     siteName = "Rafael Tonholo Blog",
 )
@@ -65,7 +63,6 @@ val PtStrings = Strings(
     scrollToTop = "Ir para o início ⬆",
     articles = mapOf(
         "hello-world" to HelloWorldPtBr,
-        "kmp-part-1" to KmpMigratrionPart1En,
     ),
     siteName = "Rafael Tonholo Blog",
 )
