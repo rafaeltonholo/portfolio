@@ -17,14 +17,14 @@ postThumbnail: https://rafael.tonholo.dev/images/articles/hello-world/thumbnail.
 
 Hello there! My name is Rafael Tonholo, and it is amazing to meet you!
 
-I'm a software developer passionate about mobile development for a long
-time, I come from Brazil but currently living in Canada. You can hear
+I'm a software developer passionate about mobile development for a long 
+time, I come from Brazil but currently living in Canada. You can hear 
 more from me [here](/about) if you are interested.
 
-I'm not sure if this is still a thing, but when I started programming there
-was kind of a tradition. There was even a saying that you have never started
-programming if your first program wasn't a Hello World!
-As I'm trying to start a new journey, I thought would be nice starting with
+I'm not sure if this is still a thing, but when I started programming there 
+was kind of a tradition. There was even a saying that you have never started 
+programming if your first program wasn't a Hello World! 
+As I'm trying to start a new journey, I thought would be nice starting with 
 Hello World, keep tradition and have a bit of good luck!
 
 I always had this thought that knowledge should be shared freely, but never 
@@ -64,4 +64,4 @@ If you got yourself interested in what I'm going to write here, hold your coffee
 tea, whisky or anything you enjoy, sit yourself and let's navigate together through 
 this new journey.
 
-I hope you enjoy it! See you later!
+I hope you enjoy it! See you later! :)
