@@ -161,7 +161,7 @@ fun Text(
                 .then(style.toModifier(Theme.typography.titleMedium))
                 .then(modifier)
                 .toAttrs(),
-        ){
+        ) {
             Text(value = text)
         }
 

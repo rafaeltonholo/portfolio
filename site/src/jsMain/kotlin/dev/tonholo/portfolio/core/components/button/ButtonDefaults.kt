@@ -39,6 +39,7 @@ import dev.tonholo.portfolio.core.ui.unit.Dp
 import dev.tonholo.portfolio.core.ui.unit.dp
 
 typealias ButtonVariant = CssStyleVariant<ButtonKind>
+
 sealed interface ButtonKind : ComponentKind
 
 val ButtonStyle = CssStyle<ButtonKind> {
