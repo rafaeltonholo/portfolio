@@ -15,8 +15,8 @@ import com.varabyte.kobweb.compose.ui.modifiers.transform
 import com.varabyte.kobweb.compose.ui.thenIf
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.silk.components.graphics.Image
-import com.varabyte.kobweb.silk.components.style.ComponentStyle
-import com.varabyte.kobweb.silk.components.style.toModifier
+import com.varabyte.kobweb.silk.style.CssStyle
+import com.varabyte.kobweb.silk.style.toModifier
 import dev.tonholo.portfolio.core.components.text.Text
 import dev.tonholo.portfolio.core.ui.theme.Theme
 import dev.tonholo.portfolio.core.ui.theme.colorScheme
@@ -26,13 +26,13 @@ import org.jetbrains.compose.web.css.DisplayStyle
 import org.jetbrains.compose.web.css.fr
 import org.jetbrains.compose.web.dom.Section
 
-val MoreAboutMeSectionStyle by ComponentStyle {
+val MoreAboutMeSectionStyle = CssStyle {
     base {
         Modifier.gap(40.dp)
     }
 }
 
-val MoreAboutMeHighlightSectionStyle by ComponentStyle {
+val MoreAboutMeHighlightSectionStyle = CssStyle {
     base {
         Modifier
             .fillMaxWidth()
@@ -47,7 +47,7 @@ val MoreAboutMeHighlightSectionStyle by ComponentStyle {
 }
 
 
-val MoreAboutMeHighlightCardStyle by ComponentStyle {
+val MoreAboutMeHighlightCardStyle = CssStyle {
     base {
         Modifier
             .borderRadius(8.dp)

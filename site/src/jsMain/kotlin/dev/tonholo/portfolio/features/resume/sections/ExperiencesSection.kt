@@ -13,8 +13,8 @@ import com.varabyte.kobweb.compose.ui.modifiers.fillMaxWidth
 import com.varabyte.kobweb.compose.ui.modifiers.flex
 import com.varabyte.kobweb.compose.ui.modifiers.gap
 import com.varabyte.kobweb.compose.ui.modifiers.padding
-import com.varabyte.kobweb.silk.components.style.ComponentStyle
-import com.varabyte.kobweb.silk.components.style.toModifier
+import com.varabyte.kobweb.silk.style.CssStyle
+import com.varabyte.kobweb.silk.style.toModifier
 import dev.tonholo.portfolio.core.components.text.Text
 import dev.tonholo.portfolio.core.ui.theme.Theme
 import dev.tonholo.portfolio.core.ui.theme.colorScheme
@@ -26,7 +26,7 @@ import kotlinx.datetime.format
 import kotlinx.datetime.format.MonthNames
 import kotlinx.datetime.format.char
 
-val ExperienceSectionStyles by ComponentStyle {
+val ExperienceSectionStyle = CssStyle {
     base {
         Modifier
             .backgroundColor(colorScheme.surfaceVariant)
@@ -37,7 +37,7 @@ val ExperienceSectionStyles by ComponentStyle {
     }
 }
 
-val ExperienceItemTitleStyles by ComponentStyle {
+val ExperienceItemTitleStyle = CssStyle {
     base {
         Modifier
             .fillMaxWidth()
@@ -55,7 +55,7 @@ fun ExperienceSection(
     modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = ExperienceSectionStyles.toModifier() then modifier,
+        modifier = ExperienceSectionStyle.toModifier() then modifier,
     ) {
         Text(
             text = section.title,
@@ -86,7 +86,7 @@ private fun ExperienceItem(
     }
     Column(modifier = modifier) {
         Row(
-            modifier = ExperienceItemTitleStyles.toModifier(),
+            modifier = ExperienceItemTitleStyle.toModifier(),
         ) {
             Text(
                 text = experience.position,

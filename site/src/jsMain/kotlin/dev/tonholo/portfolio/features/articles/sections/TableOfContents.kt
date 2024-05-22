@@ -17,11 +17,11 @@ import com.varabyte.kobweb.compose.ui.modifiers.transition
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.navigation.OpenLinkStrategy
 import com.varabyte.kobweb.silk.components.navigation.Link
-import com.varabyte.kobweb.silk.components.style.ComponentStyle
-import com.varabyte.kobweb.silk.components.style.breakpoint.Breakpoint
-import com.varabyte.kobweb.silk.components.style.cssRule
-import com.varabyte.kobweb.silk.components.style.toAttrs
-import com.varabyte.kobweb.silk.components.style.toModifier
+import com.varabyte.kobweb.silk.style.CssStyle
+import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
+import com.varabyte.kobweb.silk.style.cssRule
+import com.varabyte.kobweb.silk.style.toAttrs
+import com.varabyte.kobweb.silk.style.toModifier
 import dev.tonholo.marktdown.domain.MarktdownTableOfContentItem
 import dev.tonholo.portfolio.core.collections.ImmutableList
 import dev.tonholo.portfolio.core.collections.emptyImmutableList
@@ -56,7 +56,7 @@ fun MarktdownTableOfContentItem.toTableOfContentItem(): TableOfContentItem {
     )
 }
 
-val TableOfContentsStyle by ComponentStyle {
+val TableOfContentsStyle = CssStyle {
     base {
         Modifier
             .display(DisplayStyle.Flex)
@@ -88,7 +88,7 @@ val TableOfContentsStyle by ComponentStyle {
     }
 }
 
-val TableOfContentsNavStyle by ComponentStyle {
+val TableOfContentsNavStyle = CssStyle {
     cssRule("ul") {
         Modifier.listStyle(type = ListStyleType.None)
     }

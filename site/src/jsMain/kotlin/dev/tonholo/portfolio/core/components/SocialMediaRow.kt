@@ -11,8 +11,8 @@ import com.varabyte.kobweb.compose.ui.modifiers.setVariable
 import com.varabyte.kobweb.silk.components.forms.ButtonVars
 import com.varabyte.kobweb.silk.components.graphics.Image
 import com.varabyte.kobweb.silk.components.navigation.Link
-import com.varabyte.kobweb.silk.components.style.ComponentStyle
-import com.varabyte.kobweb.silk.components.style.toModifier
+import com.varabyte.kobweb.silk.style.CssStyle
+import com.varabyte.kobweb.silk.style.toModifier
 import dev.tonholo.portfolio.core.analytics.LocalAnalyticsManager
 import dev.tonholo.portfolio.core.analytics.events.AnalyticEvent
 import dev.tonholo.portfolio.core.ui.theme.Icon
@@ -22,7 +22,7 @@ import dev.tonholo.portfolio.core.ui.unit.dp
 import org.jetbrains.compose.web.css.keywords.auto
 import org.w3c.dom.url.URL
 
-val SocialMediaRowStyle by ComponentStyle {
+val SocialMediaRowStyle = CssStyle {
     base {
         Modifier.gap(24.dp)
     }

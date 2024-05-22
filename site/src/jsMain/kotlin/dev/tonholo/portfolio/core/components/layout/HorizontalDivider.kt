@@ -9,8 +9,8 @@ import com.varabyte.kobweb.compose.ui.modifiers.borderTop
 import com.varabyte.kobweb.compose.ui.modifiers.fillMaxWidth
 import com.varabyte.kobweb.compose.ui.modifiers.setVariable
 import com.varabyte.kobweb.silk.components.layout.HorizontalDivider
-import com.varabyte.kobweb.silk.components.style.ComponentStyle
-import com.varabyte.kobweb.silk.components.style.toModifier
+import com.varabyte.kobweb.silk.style.CssStyle
+import com.varabyte.kobweb.silk.style.toModifier
 import dev.tonholo.portfolio.core.ui.theme.Theme
 import dev.tonholo.portfolio.core.ui.unit.Dp
 import dev.tonholo.portfolio.core.ui.unit.dp
@@ -23,7 +23,7 @@ object HorizontalDividerVars {
     val Radius by StyleVariable(0.dp)
 }
 
-val HorizontalDividerStyles by ComponentStyle {
+val HorizontalDividerStyle = CssStyle {
     base {
         Modifier
             .fillMaxWidth()
@@ -45,7 +45,7 @@ fun HorizontalDivider(
     style: LineStyle = DividerDefaults.Style,
 ) {
     HorizontalDivider(
-        modifier = HorizontalDividerStyles.toModifier()
+        modifier = HorizontalDividerStyle.toModifier()
             .then(modifier)
             .setVariable(HorizontalDividerVars.Thickness, thickness)
             .setVariable(HorizontalDividerVars.Color, color)

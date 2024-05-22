@@ -9,10 +9,10 @@ import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.fillMaxWidth
 import com.varabyte.kobweb.compose.ui.modifiers.margin
 import com.varabyte.kobweb.compose.ui.modifiers.transition
-import com.varabyte.kobweb.silk.components.style.ComponentStyle
-import com.varabyte.kobweb.silk.components.style.toModifier
-import dev.tonholo.portfolio.core.foundation.layout.Scaffold
+import com.varabyte.kobweb.silk.style.CssStyle
+import com.varabyte.kobweb.silk.style.toModifier
 import dev.tonholo.portfolio.core.extensions.padding
+import dev.tonholo.portfolio.core.foundation.layout.Scaffold
 import dev.tonholo.portfolio.core.sections.AppBar
 import dev.tonholo.portfolio.core.sections.Footer
 import dev.tonholo.portfolio.core.ui.unit.dp
@@ -23,7 +23,7 @@ import dev.tonholo.portfolio.resources.pages.Home
 import org.jetbrains.compose.web.css.AnimationTimingFunction
 import org.jetbrains.compose.web.css.s
 
-val HomeContentStyle by ComponentStyle {
+val HomeContentStyle = CssStyle {
     base {
         Modifier.transition(
             CSSTransition(

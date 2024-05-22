@@ -22,10 +22,10 @@ import com.varabyte.kobweb.compose.ui.modifiers.textTransform
 import com.varabyte.kobweb.compose.ui.thenIf
 import com.varabyte.kobweb.silk.components.layout.DividerVars
 import com.varabyte.kobweb.silk.components.layout.VerticalDivider
-import com.varabyte.kobweb.silk.components.style.ComponentStyle
-import com.varabyte.kobweb.silk.components.style.breakpoint.Breakpoint
-import com.varabyte.kobweb.silk.components.style.hover
-import com.varabyte.kobweb.silk.components.style.toModifier
+import com.varabyte.kobweb.silk.style.CssStyle
+import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
+import com.varabyte.kobweb.silk.style.selectors.hover
+import com.varabyte.kobweb.silk.style.toModifier
 import dev.tonholo.portfolio.core.analytics.LocalAnalyticsManager
 import dev.tonholo.portfolio.core.analytics.events.AnalyticEvent
 import dev.tonholo.portfolio.core.components.text.Text
@@ -41,7 +41,7 @@ object LanguageChangerVars {
     val Color by StyleVariable<Color>()
 }
 
-val LanguageChangerStyle by ComponentStyle {
+val LanguageChangerStyle = CssStyle {
     base {
         typography.titleMedium.toModifier()
             .border(style = LineStyle.None)

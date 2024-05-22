@@ -22,10 +22,12 @@ import com.varabyte.kobweb.compose.ui.modifiers.userSelect
 import com.varabyte.kobweb.compose.ui.modifiers.verticalAlign
 import com.varabyte.kobweb.compose.ui.styleModifier
 import com.varabyte.kobweb.silk.components.forms.ButtonVars
-import com.varabyte.kobweb.silk.components.style.ComponentStyle
-import com.varabyte.kobweb.silk.components.style.active
-import com.varabyte.kobweb.silk.components.style.focus
-import com.varabyte.kobweb.silk.components.style.hover
+import com.varabyte.kobweb.silk.style.ComponentKind
+import com.varabyte.kobweb.silk.style.CssStyle
+import com.varabyte.kobweb.silk.style.CssStyleVariant
+import com.varabyte.kobweb.silk.style.selectors.active
+import com.varabyte.kobweb.silk.style.selectors.focus
+import com.varabyte.kobweb.silk.style.selectors.hover
 import dev.tonholo.portfolio.core.components.button.ButtonDefaults.Vars
 import dev.tonholo.portfolio.core.foundation.layout.PaddingValues
 import dev.tonholo.portfolio.core.foundation.toBoxShadowString
@@ -36,7 +38,10 @@ import dev.tonholo.portfolio.core.ui.theme.color.copy
 import dev.tonholo.portfolio.core.ui.unit.Dp
 import dev.tonholo.portfolio.core.ui.unit.dp
 
-val ButtonStyles by ComponentStyle {
+typealias ButtonVariant = CssStyleVariant<ButtonKind>
+sealed interface ButtonKind : ComponentKind
+
+val ButtonStyle = CssStyle<ButtonKind> {
     base {
         Modifier
             .backgroundColor(Vars.ContainerColor.value())

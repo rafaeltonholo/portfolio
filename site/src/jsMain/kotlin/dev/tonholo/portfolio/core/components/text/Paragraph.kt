@@ -4,8 +4,8 @@ import androidx.compose.runtime.Composable
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.thenIf
 import com.varabyte.kobweb.compose.ui.toAttrs
-import com.varabyte.kobweb.silk.components.style.ComponentStyle
-import com.varabyte.kobweb.silk.components.style.toModifier
+import com.varabyte.kobweb.silk.style.CssStyle
+import com.varabyte.kobweb.silk.style.toModifier
 import dev.tonholo.portfolio.core.ui.theme.Theme
 import dev.tonholo.portfolio.core.ui.theme.typography
 import dev.tonholo.portfolio.core.ui.theme.typography.TextStyle
@@ -13,7 +13,7 @@ import dev.tonholo.portfolio.core.ui.theme.typography.toModifier
 import org.jetbrains.compose.web.dom.P
 import org.jetbrains.compose.web.dom.Text
 
-val ParagraphStyle by ComponentStyle {
+val ParagraphStyle = CssStyle {
     base {
         typography.bodyLarge.toModifier()
     }

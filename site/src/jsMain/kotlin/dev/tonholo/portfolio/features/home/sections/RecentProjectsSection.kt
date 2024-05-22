@@ -6,8 +6,8 @@ import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.gap
-import com.varabyte.kobweb.silk.components.style.ComponentStyle
-import com.varabyte.kobweb.silk.components.style.toModifier
+import com.varabyte.kobweb.silk.style.CssStyle
+import com.varabyte.kobweb.silk.style.toModifier
 import dev.tonholo.portfolio.core.components.text.Text
 import dev.tonholo.portfolio.core.extensions.ResponsiveValues
 import dev.tonholo.portfolio.core.extensions.padding
@@ -19,7 +19,7 @@ import dev.tonholo.portfolio.core.ui.unit.dp
 import dev.tonholo.portfolio.features.home.components.ProjectCard
 import dev.tonholo.portfolio.resources.pages.RecentProjectsSection
 
-val RecentProjectsSectionStyles by ComponentStyle {
+val RecentProjectsSectionStyle = CssStyle {
     base {
         Modifier
             .gap(40.dp)
@@ -33,7 +33,7 @@ fun RecentProjectsSection(
     modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = RecentProjectsSectionStyles.toModifier() then modifier,
+        modifier = RecentProjectsSectionStyle.toModifier() then modifier,
     ) {
         Text(
             text = recentProjects.title,

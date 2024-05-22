@@ -10,9 +10,9 @@ import cafe.adriel.lyricist.LanguageTag
 import cafe.adriel.lyricist.LocalStrings
 import com.varabyte.kobweb.compose.css.AlignItems
 import com.varabyte.kobweb.compose.css.CSSLengthNumericValue
+import com.varabyte.kobweb.compose.css.Cursor
 import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.foundation.layout.ColumnScope
-import com.varabyte.kobweb.compose.foundation.layout.Row
 import com.varabyte.kobweb.compose.foundation.layout.Spacer
 import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier
@@ -23,6 +23,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.background
 import com.varabyte.kobweb.compose.ui.modifiers.backgroundColor
 import com.varabyte.kobweb.compose.ui.modifiers.borderRadius
 import com.varabyte.kobweb.compose.ui.modifiers.color
+import com.varabyte.kobweb.compose.ui.modifiers.cursor
 import com.varabyte.kobweb.compose.ui.modifiers.display
 import com.varabyte.kobweb.compose.ui.modifiers.fillMaxSize
 import com.varabyte.kobweb.compose.ui.modifiers.fillMaxWidth
@@ -32,8 +33,10 @@ import com.varabyte.kobweb.compose.ui.modifiers.gap
 import com.varabyte.kobweb.compose.ui.modifiers.height
 import com.varabyte.kobweb.compose.ui.modifiers.justifyContent
 import com.varabyte.kobweb.compose.ui.modifiers.margin
+import com.varabyte.kobweb.compose.ui.modifiers.onClick
 import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.compose.ui.modifiers.setVariable
+import com.varabyte.kobweb.compose.ui.styleModifier
 import com.varabyte.kobweb.compose.ui.thenIf
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.core.rememberPageContext
@@ -45,11 +48,12 @@ import com.varabyte.kobweb.silk.components.icons.mdi.MdiDarkMode
 import com.varabyte.kobweb.silk.components.icons.mdi.MdiLightMode
 import com.varabyte.kobweb.silk.components.icons.mdi.MdiMenu
 import com.varabyte.kobweb.silk.components.overlay.Overlay
-import com.varabyte.kobweb.silk.components.style.ComponentStyle
-import com.varabyte.kobweb.silk.components.style.base
-import com.varabyte.kobweb.silk.components.style.breakpoint.Breakpoint
-import com.varabyte.kobweb.silk.components.style.hover
-import com.varabyte.kobweb.silk.components.style.toModifier
+import com.varabyte.kobweb.silk.style.CssStyle
+import com.varabyte.kobweb.silk.style.base
+import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
+import com.varabyte.kobweb.silk.style.selectors.hover
+import com.varabyte.kobweb.silk.style.toAttrs
+import com.varabyte.kobweb.silk.style.toModifier
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import dev.tonholo.portfolio.core.components.Logo
 import dev.tonholo.portfolio.core.extensions.padding
@@ -77,9 +81,10 @@ import org.jetbrains.compose.web.css.JustifyContent
 import org.jetbrains.compose.web.css.em
 import org.jetbrains.compose.web.css.keywords.auto
 import org.jetbrains.compose.web.css.percent
+import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Nav
 
-val AppBarStyles by ComponentStyle {
+val AppBarStyle = CssStyle {
     base {
         Modifier
             .fillMaxWidth()
@@ -94,7 +99,7 @@ val AppBarStyles by ComponentStyle {
     }
 }
 
-val AppBarNavMenuStyles by ComponentStyle {
+val AppBarNavMenuStyle = CssStyle {
     base {
         Modifier.display(DisplayStyle.None)
     }
@@ -106,12 +111,17 @@ val AppBarNavMenuStyles by ComponentStyle {
     }
 }
 
-val AppBarButtonStyles by ComponentStyle {
+val AppBarButtonStyle = CssStyle {
     base {
         typography.headlineLarge.toModifier()
             .padding(horizontal = 24.dp, vertical = 12.dp)
             .background(Color.Unspecified)
             .borderRadius(100.dp)
+            .styleModifier {
+                property("border", "none")
+            }
+            .height(auto)
+            .cursor(Cursor.Pointer)
     }
 
     Breakpoint.MD {
@@ -125,10 +135,11 @@ val AppBarButtonStyles by ComponentStyle {
                 variable = ButtonVars.BackgroundHoverColor,
                 value = colorScheme.primary.copy(alpha = 0.1f),
             )
+            .background(ButtonVars.BackgroundHoverColor.value())
     }
 }
 
-val IconButtonStyles by ComponentStyle {
+val IconButtonStyle = CssStyle {
     base {
         Modifier
             .padding(0.25.em)
@@ -142,10 +153,11 @@ val IconButtonStyles by ComponentStyle {
                 variable = ButtonVars.BackgroundHoverColor,
                 value = colorScheme.primary.copy(alpha = 0.1f),
             )
+            .background(ButtonVars.BackgroundHoverColor.value())
     }
 }
 
-val AppBarActionButtonsStyle by ComponentStyle {
+val AppBarActionButtonsStyle = CssStyle {
     base {
         Modifier.display(DisplayStyle.None)
     }
@@ -156,7 +168,7 @@ val AppBarActionButtonsStyle by ComponentStyle {
     }
 }
 
-val AppBarMenuButtonStyle by ComponentStyle {
+val AppBarMenuButtonStyle = CssStyle {
     base {
         Modifier.display(DisplayStyle.Inline)
     }
@@ -180,7 +192,7 @@ fun AppBar(
     val currentRoute = context.route
     var isMenuOpen by remember { mutableStateOf(false) }
     Nav(
-        attrs = AppBarStyles.toModifier().then(modifier).toAttrs(),
+        attrs = AppBarStyle.toModifier().then(modifier).toAttrs(),
     ) {
         Logo(modifier = Modifier.padding(left = 8.dp))
         val navMenuContent = remember(strings) {
@@ -210,13 +222,13 @@ fun AppBar(
             }
         }
 
-        Row(
-            modifier = AppBarNavMenuStyles.toModifier(),
+        Div(
+            attrs = AppBarNavMenuStyle.toAttrs(),
         ) {
             navMenuContent()
         }
-        Row(
-            modifier = AppBarActionButtonsStyle.toModifier(),
+        Div(
+            attrs = AppBarActionButtonsStyle.toAttrs(),
         ) {
             ColorModeButton(
                 modifier = Modifier.alignSelf(AlignSelf.FlexEnd),
@@ -248,7 +260,7 @@ fun AppBar(
     }
 }
 
-val AppNavigationDialogStyle by ComponentStyle.base {
+val AppNavigationDialogStyle = CssStyle.base {
     Modifier
         .fillMaxSize()
         .backgroundColor(colorScheme.surface)
@@ -299,17 +311,19 @@ private fun AppBarButton(
     modifier: Modifier = Modifier,
     isSelected: Boolean = false,
 ) {
-
-    Button(
-        onClick = { onClick() },
-        modifier = AppBarButtonStyles.toModifier() then modifier
+    // TODO: migrate to dev.tonholo.portfolio.core.components.Button
+    org.jetbrains.compose.web.dom.Button(
+        attrs = AppBarButtonStyle.toModifier()
+            .then(modifier)
             .setVariable(
                 variable = ButtonVars.Height,
                 value = auto.unsafeCast<CSSLengthNumericValue>(),
             )
             .thenIf(isSelected) {
                 Modifier.color(Theme.colorScheme.primary)
-            },
+            }
+            .onClick { onClick() }
+            .toAttrs(),
     ) {
         org.jetbrains.compose.web.dom.Text(
             value = text,
@@ -344,7 +358,7 @@ private fun IconButton(
 ) {
     Button(
         onClick = { onClick() },
-        IconButtonStyles.toModifier() then modifier
+        IconButtonStyle.toModifier() then modifier
             .setVariable(ButtonVars.FontSize, 1.em), // Make button icon size relative to parent container font size
     ) {
         content()

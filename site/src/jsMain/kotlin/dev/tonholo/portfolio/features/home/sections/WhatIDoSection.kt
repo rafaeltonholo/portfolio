@@ -1,20 +1,22 @@
 package dev.tonholo.portfolio.features.home.sections
 
 import androidx.compose.runtime.Composable
-import com.varabyte.kobweb.compose.foundation.layout.Arrangement
 import com.varabyte.kobweb.compose.foundation.layout.Column
-import com.varabyte.kobweb.compose.foundation.layout.Row
 import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier
+import com.varabyte.kobweb.compose.ui.modifiers.alignItems
 import com.varabyte.kobweb.compose.ui.modifiers.background
 import com.varabyte.kobweb.compose.ui.modifiers.borderRadius
+import com.varabyte.kobweb.compose.ui.modifiers.display
 import com.varabyte.kobweb.compose.ui.modifiers.flexDirection
 import com.varabyte.kobweb.compose.ui.modifiers.gap
+import com.varabyte.kobweb.compose.ui.modifiers.justifyContent
 import com.varabyte.kobweb.silk.components.graphics.Image
-import com.varabyte.kobweb.silk.components.style.ComponentStyle
-import com.varabyte.kobweb.silk.components.style.breakpoint.Breakpoint
-import com.varabyte.kobweb.silk.components.style.cssRule
-import com.varabyte.kobweb.silk.components.style.toModifier
+import com.varabyte.kobweb.silk.style.CssStyle
+import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
+import com.varabyte.kobweb.silk.style.cssRule
+import com.varabyte.kobweb.silk.style.toAttrs
+import com.varabyte.kobweb.silk.style.toModifier
 import dev.tonholo.portfolio.core.components.text.Paragraph
 import dev.tonholo.portfolio.core.components.text.Text
 import dev.tonholo.portfolio.core.extensions.padding
@@ -23,9 +25,13 @@ import dev.tonholo.portfolio.core.ui.theme.colorScheme
 import dev.tonholo.portfolio.core.ui.theme.icons
 import dev.tonholo.portfolio.core.ui.unit.dp
 import dev.tonholo.portfolio.resources.pages.HomeAboutSection
+import org.jetbrains.compose.web.css.AlignItems
+import org.jetbrains.compose.web.css.DisplayStyle
 import org.jetbrains.compose.web.css.FlexDirection
+import org.jetbrains.compose.web.css.JustifyContent
+import org.jetbrains.compose.web.dom.Div
 
-val WhatIDoStyle by ComponentStyle {
+val WhatIDoStyle = CssStyle {
     base {
         Modifier
             .background(colorScheme.surface)
@@ -39,10 +45,13 @@ val WhatIDoStyle by ComponentStyle {
     }
 }
 
-val WhatIDoLogosContentStyle by ComponentStyle {
+val WhatIDoLogosContentStyle = CssStyle {
     base {
         Modifier
+            .display(DisplayStyle.Flex)
             .flexDirection(FlexDirection.Column)
+            .alignItems(AlignItems.Center)
+            .justifyContent(JustifyContent.Center)
             .gap(12.dp)
     }
     Breakpoint.LG {
@@ -74,10 +83,8 @@ fun WhatIDoSection(
                 style = Theme.typography.bodyLarge,
             )
         }
-        Row(
-            modifier = WhatIDoLogosContentStyle.toModifier(),
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically,
+        Div(
+            attrs = WhatIDoLogosContentStyle.toAttrs(),
         ) {
             Image(
                 src = Theme.icons.AndroidLogo(),

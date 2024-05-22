@@ -4,9 +4,9 @@ import androidx.compose.runtime.Composable
 import com.varabyte.kobweb.compose.css.ObjectFit
 import com.varabyte.kobweb.compose.foundation.layout.Arrangement
 import com.varabyte.kobweb.compose.foundation.layout.Column
-import com.varabyte.kobweb.compose.foundation.layout.Row
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.borderRadius
+import com.varabyte.kobweb.compose.ui.modifiers.display
 import com.varabyte.kobweb.compose.ui.modifiers.fillMaxSize
 import com.varabyte.kobweb.compose.ui.modifiers.fillMaxWidth
 import com.varabyte.kobweb.compose.ui.modifiers.flexDirection
@@ -14,17 +14,19 @@ import com.varabyte.kobweb.compose.ui.modifiers.gap
 import com.varabyte.kobweb.compose.ui.modifiers.objectFit
 import com.varabyte.kobweb.compose.ui.modifiers.width
 import com.varabyte.kobweb.compose.ui.styleModifier
+import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.silk.components.graphics.Image
-import com.varabyte.kobweb.silk.components.style.ComponentStyle
-import com.varabyte.kobweb.silk.components.style.breakpoint.Breakpoint
-import com.varabyte.kobweb.silk.components.style.toAttrs
-import com.varabyte.kobweb.silk.components.style.toModifier
+import com.varabyte.kobweb.silk.style.CssStyle
+import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
+import com.varabyte.kobweb.silk.style.toAttrs
+import com.varabyte.kobweb.silk.style.toModifier
 import dev.tonholo.portfolio.core.components.SocialMediaRow
 import dev.tonholo.portfolio.core.components.text.Paragraph
 import dev.tonholo.portfolio.core.components.text.Text
 import dev.tonholo.portfolio.core.ui.theme.Theme
 import dev.tonholo.portfolio.core.ui.unit.dp
 import dev.tonholo.portfolio.resources.pages.WelcomeSection
+import org.jetbrains.compose.web.css.DisplayStyle
 import org.jetbrains.compose.web.css.FlexDirection
 import org.jetbrains.compose.web.css.height
 import org.jetbrains.compose.web.css.keywords.auto
@@ -32,9 +34,10 @@ import org.jetbrains.compose.web.css.percent
 import org.jetbrains.compose.web.css.width
 import org.jetbrains.compose.web.dom.Div
 
-val WelcomeSectionStyle by ComponentStyle {
+val WelcomeSectionStyle = CssStyle {
     base {
         Modifier
+            .display(DisplayStyle.Flex)
             .flexDirection(FlexDirection.ColumnReverse)
             .gap(16.dp)
     }
@@ -44,19 +47,19 @@ val WelcomeSectionStyle by ComponentStyle {
             .gap(24.dp)
     }
 }
-val WelcomeSectionContainerStyle by ComponentStyle {
+val WelcomeSectionContainerStyle = CssStyle {
     base {
         Modifier
             .fillMaxSize()
             .gap(16.dp)
     }
 }
-val WelcomeSectionDescriptionStyle by ComponentStyle {
+val WelcomeSectionDescriptionStyle = CssStyle {
     base {
         Modifier.gap(16.dp)
     }
 }
-val WelcomeImageContainerStyle by ComponentStyle {
+val WelcomeImageContainerStyle = CssStyle {
     base {
         Modifier.fillMaxWidth()
     }
@@ -69,7 +72,7 @@ val WelcomeImageContainerStyle by ComponentStyle {
     }
 }
 
-val WelcomeImageStyle by ComponentStyle {
+val WelcomeImageStyle = CssStyle {
     base {
         Modifier
             .objectFit(ObjectFit.Cover)
@@ -93,8 +96,8 @@ fun WelcomeSection(
     welcomeSection: WelcomeSection,
     modifier: Modifier = Modifier,
 ) {
-    Row(
-        modifier = WelcomeSectionStyle.toModifier() then modifier,
+    Div(
+        attrs = WelcomeSectionStyle.toModifier().then(modifier).toAttrs(),
     ) {
         Column(
             modifier = WelcomeSectionContainerStyle.toModifier(),

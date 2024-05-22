@@ -14,8 +14,8 @@ import com.varabyte.kobweb.compose.ui.modifiers.gap
 import com.varabyte.kobweb.compose.ui.modifiers.objectFit
 import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.silk.components.graphics.Image
-import com.varabyte.kobweb.silk.components.style.ComponentStyle
-import com.varabyte.kobweb.silk.components.style.toModifier
+import com.varabyte.kobweb.silk.style.CssStyle
+import com.varabyte.kobweb.silk.style.toModifier
 import dev.tonholo.portfolio.core.components.button.PrimaryButton
 import dev.tonholo.portfolio.core.components.text.Paragraph
 import dev.tonholo.portfolio.core.components.text.Text
@@ -24,7 +24,7 @@ import dev.tonholo.portfolio.core.ui.theme.colorScheme
 import dev.tonholo.portfolio.core.ui.unit.dp
 import org.jetbrains.compose.web.css.LineStyle
 
-val ArticleCardStyles by ComponentStyle {
+val ArticleCardStyle = CssStyle {
     base {
         Modifier
             .fillMaxWidth()
@@ -39,7 +39,7 @@ val ArticleCardStyles by ComponentStyle {
     }
 }
 
-val ArticleCardContentStyles by ComponentStyle {
+val ArticleCardContentStyle = CssStyle {
     base {
         Modifier
             .padding(24.dp)
@@ -57,7 +57,7 @@ fun ArticleCard(
 ) {
     val strings = LocalStrings.current
     Column(
-        modifier = ArticleCardStyles.toModifier() then modifier,
+        modifier = ArticleCardStyle.toModifier() then modifier,
     ) {
         thumbnail?.let {
             Image(
@@ -71,7 +71,7 @@ fun ArticleCard(
                     },
             )
         }
-        Column(modifier = ArticleCardContentStyles.toModifier()) {
+        Column(modifier = ArticleCardContentStyle.toModifier()) {
             Text(
                 text = title,
                 style = Theme.typography.headlineSmall,

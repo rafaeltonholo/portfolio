@@ -36,10 +36,10 @@ import com.varabyte.kobweb.core.Page
 import com.varabyte.kobweb.core.rememberPageContext
 import com.varabyte.kobweb.navigation.Route
 import com.varabyte.kobweb.silk.components.graphics.Image
-import com.varabyte.kobweb.silk.components.style.ComponentStyle
-import com.varabyte.kobweb.silk.components.style.breakpoint.Breakpoint
-import com.varabyte.kobweb.silk.components.style.toAttrs
-import com.varabyte.kobweb.silk.components.style.toModifier
+import com.varabyte.kobweb.silk.style.CssStyle
+import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
+import com.varabyte.kobweb.silk.style.toAttrs
+import com.varabyte.kobweb.silk.style.toModifier
 import dev.tonholo.portfolio.core.analytics.LocalAnalyticsManager
 import dev.tonholo.portfolio.core.analytics.events.AnalyticEvent
 import dev.tonholo.portfolio.core.collections.toImmutable
@@ -85,13 +85,13 @@ import org.w3c.dom.ScrollBehavior
 import org.w3c.dom.ScrollToOptions
 import kotlin.js.Date
 
-val ArticleContentPageStyles by ComponentStyle {
+val ArticleContentPageStyle = CssStyle {
     base {
         Modifier.fillMaxSize()
     }
 }
 
-val ArticleContentPageContentStyle by ComponentStyle {
+val ArticleContentPageContentStyle = CssStyle {
     base {
         Modifier
             .fillMaxWidth()
@@ -106,7 +106,7 @@ val ArticleContentPageContentStyle by ComponentStyle {
     }
 }
 
-val ArticleContentStyle by ComponentStyle {
+val ArticleContentStyle = CssStyle {
     base {
         typography.bodyLarge
             .toModifier()
@@ -169,7 +169,7 @@ val ArticleContentStyle by ComponentStyle {
     }
 }
 
-val ArticlePageTableOfContentStyle by ComponentStyle {
+val ArticlePageTableOfContentStyle = CssStyle {
     base {
         Modifier
     }
@@ -236,7 +236,7 @@ fun ArticleContentPage() {
             )
         },
     ) { paddingValues ->
-        Column(modifier = ArticleContentPageStyles.toModifier().padding(paddingValues)) {
+        Column(modifier = ArticleContentPageStyle.toModifier().padding(paddingValues)) {
             if (article == null) {
                 return@Column
             }
@@ -312,7 +312,7 @@ fun ArticleContentPage() {
     }
 }
 
-val CommentSectionStyles by ComponentStyle {
+val CommentSectionStyle = CssStyle {
     base {
         Modifier
             .margin { top(32.dp) }
@@ -395,7 +395,7 @@ fun CommentSection(
     }
 
     Div(
-        attrs = CommentSectionStyles.toModifier().then(modifier).toAttrs {
+        attrs = CommentSectionStyle.toModifier().then(modifier).toAttrs {
             id("disqus_thread")
         },
     ) { }

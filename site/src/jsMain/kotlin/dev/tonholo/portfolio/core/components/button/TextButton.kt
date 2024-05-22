@@ -5,11 +5,11 @@ import com.varabyte.kobweb.compose.foundation.layout.RowScope
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.graphics.Colors
 import com.varabyte.kobweb.compose.ui.modifiers.backgroundColor
-import com.varabyte.kobweb.silk.components.style.addVariant
-import com.varabyte.kobweb.silk.components.style.hover
+import com.varabyte.kobweb.silk.style.addVariant
+import com.varabyte.kobweb.silk.style.selectors.hover
 import dev.tonholo.portfolio.core.foundation.layout.PaddingValues
 
-val TextButtonVariant by ButtonStyles.addVariant {
+val TextButtonVariant = ButtonStyle.addVariant {
     base {
         Modifier.backgroundColor(Colors.Transparent)
     }

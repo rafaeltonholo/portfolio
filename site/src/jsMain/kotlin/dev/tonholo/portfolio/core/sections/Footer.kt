@@ -8,17 +8,16 @@ import com.varabyte.kobweb.compose.foundation.layout.Row
 import com.varabyte.kobweb.compose.foundation.layout.Spacer
 import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier
-import com.varabyte.kobweb.compose.ui.modifiers.alignSelf
 import com.varabyte.kobweb.compose.ui.modifiers.color
 import com.varabyte.kobweb.compose.ui.modifiers.fillMaxSize
 import com.varabyte.kobweb.compose.ui.modifiers.fillMaxWidth
 import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.silk.components.layout.HorizontalDivider
 import com.varabyte.kobweb.silk.components.navigation.Link
-import com.varabyte.kobweb.silk.components.style.ComponentStyle
-import com.varabyte.kobweb.silk.components.style.hover
-import com.varabyte.kobweb.silk.components.style.toModifier
-import com.varabyte.kobweb.silk.components.style.visited
+import com.varabyte.kobweb.silk.style.CssStyle
+import com.varabyte.kobweb.silk.style.selectors.hover
+import com.varabyte.kobweb.silk.style.selectors.visited
+import com.varabyte.kobweb.silk.style.toModifier
 import dev.tonholo.portfolio.core.components.Logo
 import dev.tonholo.portfolio.core.components.SocialMediaRow
 import dev.tonholo.portfolio.core.components.text.Text
@@ -26,15 +25,14 @@ import dev.tonholo.portfolio.core.extensions.padding
 import dev.tonholo.portfolio.core.ui.theme.Theme
 import dev.tonholo.portfolio.core.ui.theme.colorScheme
 import dev.tonholo.portfolio.core.ui.unit.dp
-import org.jetbrains.compose.web.css.AlignSelf
 
-val FooterStyle by ComponentStyle {
+val FooterStyle = CssStyle {
     base {
         Modifier
     }
 }
 
-val FooterCopyrightRowStyle by ComponentStyle {
+val FooterCopyrightRowStyle = CssStyle {
     base {
         Modifier
             .fillMaxWidth()
@@ -44,7 +42,7 @@ val FooterCopyrightRowStyle by ComponentStyle {
     }
 }
 
-val FooterDesignedByStyle by ComponentStyle {
+val FooterDesignedByStyle = CssStyle {
     base {
         Modifier.padding(start = 4.dp)
     }

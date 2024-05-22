@@ -4,11 +4,11 @@ import androidx.compose.runtime.Composable
 import com.varabyte.kobweb.compose.dom.ElementRefScope
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.toAttrs
-import com.varabyte.kobweb.silk.components.style.ComponentStyle
-import com.varabyte.kobweb.silk.components.style.ComponentVariant
-import com.varabyte.kobweb.silk.components.style.addVariantBase
-import com.varabyte.kobweb.silk.components.style.toModifier
 import com.varabyte.kobweb.silk.components.text.SpanText
+import com.varabyte.kobweb.silk.style.ComponentKind
+import com.varabyte.kobweb.silk.style.CssStyle
+import com.varabyte.kobweb.silk.style.addVariantBase
+import com.varabyte.kobweb.silk.style.toModifier
 import dev.tonholo.portfolio.core.ui.theme.Theme
 import dev.tonholo.portfolio.core.ui.theme.typography
 import dev.tonholo.portfolio.core.ui.theme.typography.TextStyle
@@ -23,55 +23,57 @@ import org.jetbrains.compose.web.dom.P
 import org.jetbrains.compose.web.dom.Text
 import org.w3c.dom.HTMLSpanElement
 
-val BaseTextStyle by ComponentStyle {
+sealed interface TextKind : ComponentKind
+
+val BaseTextStyle = CssStyle<TextKind> {
     base {
         typography.bodyLarge.toModifier()
     }
 }
 
-val DisplayLargeVariant by BaseTextStyle.addVariantBase {
+val DisplayLargeVariant = BaseTextStyle.addVariantBase {
     typography.displayLarge.toModifier()
 }
-val DisplayMediumVariant by BaseTextStyle.addVariantBase {
+val DisplayMediumVariant = BaseTextStyle.addVariantBase {
     typography.displayMedium.toModifier()
 }
-val DisplaySmallVariant by BaseTextStyle.addVariantBase {
+val DisplaySmallVariant = BaseTextStyle.addVariantBase {
     typography.displaySmall.toModifier()
 }
-val HeadlineLargeVariant by BaseTextStyle.addVariantBase {
+val HeadlineLargeVariant = BaseTextStyle.addVariantBase {
     typography.headlineLarge.toModifier()
 }
-val HeadlineMediumVariant by BaseTextStyle.addVariantBase {
+val HeadlineMediumVariant = BaseTextStyle.addVariantBase {
     typography.headlineMedium.toModifier()
 }
-val HeadlineSmallVariant by BaseTextStyle.addVariantBase {
+val HeadlineSmallVariant = BaseTextStyle.addVariantBase {
     typography.headlineSmall.toModifier()
 }
-val TitleLargeVariant by BaseTextStyle.addVariantBase {
+val TitleLargeVariant = BaseTextStyle.addVariantBase {
     typography.titleLarge.toModifier()
 }
-val TitleMediumVariant by BaseTextStyle.addVariantBase {
+val TitleMediumVariant = BaseTextStyle.addVariantBase {
     typography.titleMedium.toModifier()
 }
-val TitleSmallVariant by BaseTextStyle.addVariantBase {
+val TitleSmallVariant = BaseTextStyle.addVariantBase {
     typography.titleSmall.toModifier()
 }
-val BodyLargeVariant by BaseTextStyle.addVariantBase {
+val BodyLargeVariant = BaseTextStyle.addVariantBase {
     typography.bodyLarge.toModifier()
 }
-val BodyMediumVariant by BaseTextStyle.addVariantBase {
+val BodyMediumVariant = BaseTextStyle.addVariantBase {
     typography.bodyMedium.toModifier()
 }
-val BodySmallVariant by BaseTextStyle.addVariantBase {
+val BodySmallVariant = BaseTextStyle.addVariantBase {
     typography.bodySmall.toModifier()
 }
-val LabelLargeVariant by BaseTextStyle.addVariantBase {
+val LabelLargeVariant = BaseTextStyle.addVariantBase {
     typography.labelLarge.toModifier()
 }
-val LabelMediumVariant by BaseTextStyle.addVariantBase {
+val LabelMediumVariant = BaseTextStyle.addVariantBase {
     typography.labelMedium.toModifier()
 }
-val LabelSmallVariant by BaseTextStyle.addVariantBase {
+val LabelSmallVariant = BaseTextStyle.addVariantBase {
     typography.labelSmall.toModifier()
 }
 
@@ -80,7 +82,6 @@ fun Text(
     text: String,
     modifier: Modifier = Modifier,
     style: TextStyle? = null,
-    variant: ComponentVariant? = null,
     ref: ElementRefScope<HTMLSpanElement>? = null,
 ) {
     when {
@@ -235,7 +236,6 @@ fun Text(
         else -> SpanText(
             text = text,
             modifier = BaseTextStyle.toModifier() then style.toModifier() then modifier,
-            variant = variant,
             ref = ref
         )
     }

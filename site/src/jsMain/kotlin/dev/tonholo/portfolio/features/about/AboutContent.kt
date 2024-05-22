@@ -9,8 +9,8 @@ import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.fillMaxSize
 import com.varabyte.kobweb.compose.ui.modifiers.fillMaxWidth
 import com.varabyte.kobweb.compose.ui.modifiers.transition
-import com.varabyte.kobweb.silk.components.style.ComponentStyle
-import com.varabyte.kobweb.silk.components.style.toModifier
+import com.varabyte.kobweb.silk.style.CssStyle
+import com.varabyte.kobweb.silk.style.toModifier
 import dev.tonholo.portfolio.core.components.layout.HorizontalDivider
 import dev.tonholo.portfolio.core.extensions.margin
 import dev.tonholo.portfolio.core.extensions.padding
@@ -25,7 +25,7 @@ import dev.tonholo.portfolio.resources.pages.AboutPage
 import org.jetbrains.compose.web.css.AnimationTimingFunction
 import org.jetbrains.compose.web.css.s
 
-val AboutContentStyle by ComponentStyle {
+val AboutContentStyle = CssStyle {
     base {
         Modifier.transition(
             CSSTransition(

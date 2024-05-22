@@ -3,9 +3,11 @@ package dev.tonholo.portfolio.features.articles.components.marktdown
 import androidx.compose.runtime.Composable
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.borderLeft
-import com.varabyte.kobweb.silk.components.style.ComponentStyle
-import com.varabyte.kobweb.silk.components.style.addVariant
-import com.varabyte.kobweb.silk.components.style.toAttrs
+import com.varabyte.kobweb.compose.ui.toAttrs
+import com.varabyte.kobweb.silk.style.ComponentKind
+import com.varabyte.kobweb.silk.style.CssStyle
+import com.varabyte.kobweb.silk.style.addVariant
+import com.varabyte.kobweb.silk.style.toModifier
 import dev.tonholo.marktdown.domain.content.TextElement
 import dev.tonholo.marktdown.domain.renderer.MarktdownElementScope
 import dev.tonholo.marktdown.domain.renderer.MarktdownRenderer
@@ -16,7 +18,9 @@ import dev.tonholo.portfolio.core.ui.unit.dp
 import org.jetbrains.compose.web.css.LineStyle
 import org.jetbrains.compose.web.dom.Blockquote
 
-val CustomBlockquoteStyles by ComponentStyle {
+sealed interface CustomBlockquoteKind : ComponentKind
+
+val CustomBlockquoteStyle = CssStyle<CustomBlockquoteKind> {
     base {
         Modifier
             .margin(horizontal = 16.dp)
@@ -29,7 +33,7 @@ val CustomBlockquoteStyles by ComponentStyle {
     }
 }
 
-val CustomBlockquoteNoteVariant by CustomBlockquoteStyles.addVariant {
+val CustomBlockquoteNoteVariant = CustomBlockquoteStyle.addVariant {
     base {
         Modifier
             .borderLeft {
@@ -38,7 +42,7 @@ val CustomBlockquoteNoteVariant by CustomBlockquoteStyles.addVariant {
     }
 }
 
-val CustomBlockquoteWarningVariant by CustomBlockquoteStyles.addVariant {
+val CustomBlockquoteWarningVariant = CustomBlockquoteStyle.addVariant {
     base {
         Modifier
             .borderLeft {
@@ -47,7 +51,7 @@ val CustomBlockquoteWarningVariant by CustomBlockquoteStyles.addVariant {
     }
 }
 
-val CustomBlockquoteCautionVariant by CustomBlockquoteStyles.addVariant {
+val CustomBlockquoteCautionVariant = CustomBlockquoteStyle.addVariant {
     base {
         Modifier
             .borderLeft {
@@ -56,7 +60,7 @@ val CustomBlockquoteCautionVariant by CustomBlockquoteStyles.addVariant {
     }
 }
 
-val CustomBlockquoteImportantVariant by CustomBlockquoteStyles.addVariant {
+val CustomBlockquoteImportantVariant = CustomBlockquoteStyle.addVariant {
     base {
         Modifier
             .borderLeft {
@@ -65,7 +69,7 @@ val CustomBlockquoteImportantVariant by CustomBlockquoteStyles.addVariant {
     }
 }
 
-val CustomBlockquoteTipVariant by CustomBlockquoteStyles.addVariant {
+val CustomBlockquoteTipVariant = CustomBlockquoteStyle.addVariant {
     base {
         Modifier
             .borderLeft {
@@ -86,7 +90,7 @@ fun MarktdownElementScope<TextElement.Blockquote>.CustomBlockquote() {
         null -> null
     }
     Blockquote(
-        attrs = CustomBlockquoteStyles.toAttrs(variant),
+        attrs = CustomBlockquoteStyle.toModifier(variant).toAttrs(),
     ) {
         drawContent()
     }

@@ -7,21 +7,21 @@ import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.fillMaxWidth
 import com.varabyte.kobweb.compose.ui.modifiers.flex
 import com.varabyte.kobweb.compose.ui.modifiers.gap
-import com.varabyte.kobweb.silk.components.style.ComponentStyle
-import com.varabyte.kobweb.silk.components.style.toModifier
+import com.varabyte.kobweb.silk.style.CssStyle
+import com.varabyte.kobweb.silk.style.toModifier
 import dev.tonholo.portfolio.core.components.text.Text
 import dev.tonholo.portfolio.core.ui.theme.Theme
 import dev.tonholo.portfolio.core.ui.unit.dp
 import dev.tonholo.portfolio.resources.Education
 import dev.tonholo.portfolio.resources.pages.EducationSection
 
-val EducationSectionStyles by ComponentStyle {
+val EducationSectionStyle = CssStyle {
     base {
         Modifier.gap(24.dp)
     }
 }
 
-val EducationItemTitleStyles by ComponentStyle {
+val EducationItemTitleStyle = CssStyle {
     base {
         Modifier
             .fillMaxWidth()
@@ -38,7 +38,7 @@ fun EducationSection(
     modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = EducationSectionStyles.toModifier() then modifier,
+        modifier = EducationSectionStyle.toModifier() then modifier,
     ) {
         Text(
             text = section.title,
@@ -60,7 +60,7 @@ private fun EducationItem(
 ) {
     Column(modifier = modifier) {
         Row(
-            modifier = EducationItemTitleStyles.toModifier(),
+            modifier = EducationItemTitleStyle.toModifier(),
         ) {
             Text(
                 text = education.title,

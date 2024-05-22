@@ -13,9 +13,9 @@ import com.varabyte.kobweb.compose.ui.modifiers.objectFit
 import com.varabyte.kobweb.compose.ui.modifiers.size
 import com.varabyte.kobweb.navigation.Route
 import com.varabyte.kobweb.silk.components.graphics.Image
-import com.varabyte.kobweb.silk.components.style.ComponentStyle
-import com.varabyte.kobweb.silk.components.style.breakpoint.Breakpoint
-import com.varabyte.kobweb.silk.components.style.toModifier
+import com.varabyte.kobweb.silk.style.CssStyle
+import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
+import com.varabyte.kobweb.silk.style.toModifier
 import dev.tonholo.portfolio.core.components.AdaptiveLayout
 import dev.tonholo.portfolio.core.components.button.LinkButton
 import dev.tonholo.portfolio.core.components.text.Text
@@ -27,7 +27,7 @@ import dev.tonholo.portfolio.core.ui.unit.dp
 import dev.tonholo.portfolio.resources.pages.MainContent
 import org.jetbrains.compose.web.css.AlignItems
 
-val MainSectionStyles by ComponentStyle {
+val MainSectionStyle = CssStyle {
     base {
         Modifier
             .fillMaxWidth()
@@ -38,7 +38,7 @@ val MainSectionStyles by ComponentStyle {
         Modifier.gap(80.dp)
     }
 }
-val MainDetailsStyles by ComponentStyle {
+val MainDetailsStyle = CssStyle {
     base {
         Modifier.gap(24.dp)
     }
@@ -50,7 +50,7 @@ fun MainSection(
     modifier: Modifier = Modifier,
 ) {
     AdaptiveLayout(
-        modifier = MainSectionStyles.toModifier() then modifier,
+        modifier = MainSectionStyle.toModifier() then modifier,
         listPanel = {
             val size by responsiveStateOf(ResponsiveValues(372, 456))
             Column(
@@ -71,7 +71,7 @@ fun MainSection(
         },
         detailPanel = {
             Column(
-                modifier = MainDetailsStyles.toModifier(),
+                modifier = MainDetailsStyle.toModifier(),
             ) {
                 Text(
                     text = mainContent.title,

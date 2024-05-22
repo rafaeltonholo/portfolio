@@ -13,8 +13,8 @@ import com.varabyte.kobweb.compose.ui.modifiers.flexDirection
 import com.varabyte.kobweb.compose.ui.modifiers.gap
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.silk.components.graphics.Image
-import com.varabyte.kobweb.silk.components.style.ComponentStyle
-import com.varabyte.kobweb.silk.components.style.toModifier
+import com.varabyte.kobweb.silk.style.CssStyle
+import com.varabyte.kobweb.silk.style.toModifier
 import dev.tonholo.marktdown.domain.Author
 import dev.tonholo.portfolio.core.collections.ImmutableList
 import dev.tonholo.portfolio.core.components.chip.Chip
@@ -32,7 +32,7 @@ import org.jetbrains.compose.web.css.FlexDirection
 import org.jetbrains.compose.web.css.percent
 import org.jetbrains.compose.web.dom.Header
 
-val ArticleHeaderStyles by ComponentStyle {
+val ArticleHeaderStyle = CssStyle {
     base {
         Modifier
             .display(DisplayStyle.Flex)
@@ -41,12 +41,12 @@ val ArticleHeaderStyles by ComponentStyle {
             .padding(vertical = 16.dp)
     }
 }
-val ArticleHeaderAuthorCardStyles by ComponentStyle {
+val ArticleHeaderAuthorCardStyle = CssStyle {
     base {
         Modifier.padding(vertical = 8.dp)
     }
 }
-val ArticleHeaderTagsStyles by ComponentStyle {
+val ArticleHeaderTagsStyle = CssStyle {
     base {
         Modifier
             .gap(4.dp)
@@ -65,7 +65,7 @@ fun ArticleHeader(
     updatedDate: LocalDateTime? = null,
 ) {
     Header(
-        attrs = ArticleHeaderStyles.toModifier().then(modifier).toAttrs(),
+        attrs = ArticleHeaderStyle.toModifier().then(modifier).toAttrs(),
     ) {
         Text(
             text = title,
@@ -83,10 +83,10 @@ fun ArticleHeader(
             authors = authors,
             postedDate = postedDate,
             updatedDate = updatedDate,
-            modifier = ArticleHeaderAuthorCardStyles.toModifier(),
+            modifier = ArticleHeaderAuthorCardStyle.toModifier(),
         )
         Row(
-            modifier = ArticleHeaderTagsStyles.toModifier(),
+            modifier = ArticleHeaderTagsStyle.toModifier(),
         ) {
             tags.forEach { tag ->
                 Chip(

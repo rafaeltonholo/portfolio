@@ -19,8 +19,8 @@ import com.varabyte.kobweb.compose.ui.modifiers.onClick
 import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.compose.ui.modifiers.setVariable
 import com.varabyte.kobweb.compose.ui.thenIf
-import com.varabyte.kobweb.silk.components.style.ComponentStyle
-import com.varabyte.kobweb.silk.components.style.toModifier
+import com.varabyte.kobweb.silk.style.CssStyle
+import com.varabyte.kobweb.silk.style.toModifier
 import dev.tonholo.portfolio.core.analytics.LocalAnalyticsManager
 import dev.tonholo.portfolio.core.analytics.events.AnalyticEvent
 import dev.tonholo.portfolio.core.components.button.LinkButton
@@ -40,7 +40,7 @@ object ProjectCardVars {
     val MaxHeight by StyleVariable<CSSLengthOrPercentageNumericValue>()
 }
 
-val ProjectCardStyle by ComponentStyle {
+val ProjectCardStyle = CssStyle {
     base {
         Modifier
             .padding(24.dp)

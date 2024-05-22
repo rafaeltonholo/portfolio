@@ -14,8 +14,9 @@ import com.varabyte.kobweb.compose.ui.modifiers.fillMaxWidth
 import com.varabyte.kobweb.compose.ui.modifiers.flex
 import com.varabyte.kobweb.compose.ui.modifiers.gap
 import com.varabyte.kobweb.compose.ui.modifiers.transition
-import com.varabyte.kobweb.silk.components.style.ComponentStyle
-import com.varabyte.kobweb.silk.components.style.toModifier
+import com.varabyte.kobweb.silk.style.CssStyle
+import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
+import com.varabyte.kobweb.silk.style.toModifier
 import dev.tonholo.portfolio.core.analytics.LocalAnalyticsManager
 import dev.tonholo.portfolio.core.analytics.events.AnalyticEvent
 import dev.tonholo.portfolio.core.components.AdaptiveLayout
@@ -37,7 +38,28 @@ import kotlinx.browser.window
 import org.jetbrains.compose.web.css.AnimationTimingFunction
 import org.jetbrains.compose.web.css.s
 
-val ResumeContentStyles by ComponentStyle {
+val ResumeContentStyle = CssStyle {
+    base {
+        Modifier.transition(
+            CSSTransition(
+                property = TransitionProperty.All,
+                duration = 0.4.s,
+                timingFunction = AnimationTimingFunction.Ease,
+                delay = 0.s,
+            )
+        )
+    }
+}
+
+val ResumeContainerStyle = CssStyle {
+    base {
+        Modifier
+            .gap(32.dp)
+            .fillMaxSize()
+    }
+}
+
+val ResumeAdaptiveContainerStyle = CssStyle {
     base {
         Modifier
             .transition(
@@ -48,22 +70,14 @@ val ResumeContentStyles by ComponentStyle {
                     delay = 0.s,
                 )
             )
-    }
-}
-
-val ResumeContainerStyles by ComponentStyle {
-    base {
-        Modifier
-            .gap(32.dp)
-            .fillMaxSize()
-    }
-}
-
-val ResumeAdaptiveContainerStyles by ComponentStyle {
-    base {
-        Modifier
             .fillMaxWidth()
-            .gap(120.dp)
+            .gap(40.dp)
+    }
+    Breakpoint.MD {
+        Modifier.gap(80.dp)
+    }
+    Breakpoint.LG {
+        Modifier.gap(120.dp)
     }
 }
 
@@ -80,7 +94,7 @@ fun ResumeContent(
     val analytics = LocalAnalyticsManager.current
     val lyricist = LocalLyricist.current
     Scaffold(
-        modifier = ResumeContentStyles.toModifier() then modifier,
+        modifier = ResumeContentStyle.toModifier() then modifier,
         topBar = {
             AppBar(
                 selectedLanguage = selectedLanguage,
@@ -97,7 +111,7 @@ fun ResumeContent(
         }
     ) { paddingValues ->
         Column(
-            modifier = ResumeContainerStyles.toModifier()
+            modifier = ResumeContainerStyle.toModifier()
                 .padding(paddingValues),
         ) {
             Row(
@@ -157,7 +171,7 @@ fun ResumeContent(
                         )
                     }
                 },
-                modifier = ResumeAdaptiveContainerStyles.toModifier(),
+                modifier = ResumeAdaptiveContainerStyle.toModifier(),
             )
         }
     }

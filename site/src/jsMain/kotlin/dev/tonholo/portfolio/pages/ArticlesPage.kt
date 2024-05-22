@@ -10,8 +10,8 @@ import com.varabyte.kobweb.compose.ui.modifiers.gap
 import com.varabyte.kobweb.core.Page
 import com.varabyte.kobweb.core.rememberPageContext
 import com.varabyte.kobweb.navigation.Route
-import com.varabyte.kobweb.silk.components.style.ComponentStyle
-import com.varabyte.kobweb.silk.components.style.toModifier
+import com.varabyte.kobweb.silk.style.CssStyle
+import com.varabyte.kobweb.silk.style.toModifier
 import dev.tonholo.portfolio.core.analytics.LocalAnalyticsManager
 import dev.tonholo.portfolio.core.analytics.events.AnalyticEvent
 import dev.tonholo.portfolio.core.components.text.Text
@@ -33,7 +33,7 @@ import dev.tonholo.portfolio.locale.localStorageKey
 import kotlinx.browser.localStorage
 import kotlinx.browser.window
 
-val ArticlePageStyles by ComponentStyle {
+val ArticlePageStyle = CssStyle {
     base {
         Modifier
             .fillMaxSize()
@@ -75,7 +75,7 @@ fun ArticlesPage() {
             )
         },
     ) { paddingValues ->
-        Column(modifier = ArticlePageStyles.toModifier().padding(paddingValues)) {
+        Column(modifier = ArticlePageStyle.toModifier().padding(paddingValues)) {
             Text(
                 text = lyricist.strings.pages.article.title,
                 style = Theme.typography.headlineLarge

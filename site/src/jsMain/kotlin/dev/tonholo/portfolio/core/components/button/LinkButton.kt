@@ -15,11 +15,11 @@ import com.varabyte.kobweb.compose.ui.modifiers.setVariable
 import com.varabyte.kobweb.compose.ui.modifiers.textDecorationLine
 import com.varabyte.kobweb.silk.components.navigation.Link
 import com.varabyte.kobweb.silk.components.navigation.LinkStyle
-import com.varabyte.kobweb.silk.components.style.addVariant
-import com.varabyte.kobweb.silk.components.style.hover
+import com.varabyte.kobweb.silk.style.addVariant
+import com.varabyte.kobweb.silk.style.selectors.hover
 import dev.tonholo.portfolio.core.extensions.padding
-import dev.tonholo.portfolio.core.ui.theme.colorScheme
 import dev.tonholo.portfolio.core.ui.theme.color.copy
+import dev.tonholo.portfolio.core.ui.theme.colorScheme
 import dev.tonholo.portfolio.core.ui.unit.dp
 import org.jetbrains.compose.web.css.LineStyle
 
@@ -29,7 +29,7 @@ object LinkButtonVars {
     val Background by StyleVariable<Color>()
 }
 
-val LinkButtonVariant by LinkStyle.addVariant {
+val LinkButtonVariant = LinkStyle.addVariant {
     base {
         Modifier
             .border {

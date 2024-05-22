@@ -2,11 +2,12 @@ package dev.tonholo.portfolio.core.components
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import com.varabyte.kobweb.compose.css.AlignItems
-import com.varabyte.kobweb.compose.foundation.layout.Box
+import androidx.compose.runtime.movableContentOf
+import androidx.compose.runtime.remember
+import com.varabyte.kobweb.compose.foundation.layout.Column
+import com.varabyte.kobweb.compose.foundation.layout.Row
 import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier
-import com.varabyte.kobweb.compose.ui.modifiers.alignItems
 import com.varabyte.kobweb.compose.ui.modifiers.display
 import com.varabyte.kobweb.compose.ui.modifiers.flexDirection
 import com.varabyte.kobweb.silk.style.CssStyle
@@ -22,7 +23,6 @@ val AdaptiveLayoutStyles = CssStyle {
         Modifier
             .display(DisplayStyle.Flex)
             .flexDirection(FlexDirection.Column)
-            .alignItems(AlignItems.Center)
     }
 
     Breakpoint.LG {
@@ -37,15 +37,27 @@ actual fun AdaptiveLayout(
     listPanel: @Composable () -> Unit,
     detailPanel: @Composable () -> Unit,
 ) {
-    val adaptiveLayoutModifier = AdaptiveLayoutStyles.toModifier()
-    val responsiveAlignment by responsiveStateOf(ResponsiveValues(base = Alignment.Center, lg = Alignment.TopStart))
-    // The Box Composable, differently from the Android implementation
-    // will act like a Row or a Column, depending on the breakpoint.
-    Box(
-        modifier = adaptiveLayoutModifier then modifier,
-        contentAlignment = responsiveAlignment,
-    ) {
-        listPanel()
-        detailPanel()
+    val adaptiveLayoutModifier = AdaptiveLayoutStyles.toModifier() then modifier
+    val useColumn by responsiveStateOf(ResponsiveValues(base = true, lg = false))
+    val content = remember {
+        movableContentOf {
+            listPanel()
+            detailPanel()
+        }
+    }
+    if (useColumn) {
+        Column(
+            modifier = adaptiveLayoutModifier,
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            content()
+        }
+    } else {
+        Row(
+            modifier = adaptiveLayoutModifier,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            content()
+        }
     }
 }

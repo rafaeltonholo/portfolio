@@ -16,8 +16,8 @@ import com.varabyte.kobweb.compose.ui.modifiers.display
 import com.varabyte.kobweb.compose.ui.modifiers.onClick
 import com.varabyte.kobweb.compose.ui.modifiers.setVariable
 import com.varabyte.kobweb.silk.components.layout.Surface
-import com.varabyte.kobweb.silk.components.style.ComponentStyle
-import com.varabyte.kobweb.silk.components.style.toModifier
+import com.varabyte.kobweb.silk.style.CssStyle
+import com.varabyte.kobweb.silk.style.toModifier
 import dev.tonholo.portfolio.core.extensions.padding
 import dev.tonholo.portfolio.core.foundation.BorderStroke
 import dev.tonholo.portfolio.core.foundation.BorderStrokeVars
@@ -29,7 +29,7 @@ import dev.tonholo.portfolio.core.ui.unit.dp
 import org.jetbrains.compose.web.css.DisplayStyle
 import org.jetbrains.compose.web.css.LineStyle
 
-val ChipStyle by ComponentStyle {
+val ChipStyle = CssStyle {
     base {
         Modifier
             .display(DisplayStyle.InlineBlock)
@@ -42,7 +42,7 @@ val ChipStyle by ComponentStyle {
     }
 }
 
-val ChipContentContainerStyle by ComponentStyle {
+val ChipContentContainerStyle = CssStyle {
     base {
         Modifier
             .color(ChipDefaults.Vars.ContentColor.value())

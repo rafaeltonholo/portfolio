@@ -9,12 +9,14 @@ import cafe.adriel.lyricist.ProvideStrings
 import cafe.adriel.lyricist.rememberStrings
 import com.varabyte.kobweb.compose.css.BoxSizing
 import com.varabyte.kobweb.compose.css.CSSLengthOrPercentageNumericValue
+import com.varabyte.kobweb.compose.css.Cursor
 import com.varabyte.kobweb.compose.css.ScrollBehavior
 import com.varabyte.kobweb.compose.css.UserSelect
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.graphics.Colors
 import com.varabyte.kobweb.compose.ui.modifiers.backgroundColor
 import com.varabyte.kobweb.compose.ui.modifiers.boxSizing
+import com.varabyte.kobweb.compose.ui.modifiers.cursor
 import com.varabyte.kobweb.compose.ui.modifiers.fillMaxSize
 import com.varabyte.kobweb.compose.ui.modifiers.fontSize
 import com.varabyte.kobweb.compose.ui.modifiers.margin
@@ -24,17 +26,20 @@ import com.varabyte.kobweb.compose.ui.modifiers.outline
 import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.compose.ui.modifiers.scrollBehavior
 import com.varabyte.kobweb.compose.ui.modifiers.userSelect
+import com.varabyte.kobweb.compose.ui.styleModifier
+import com.varabyte.kobweb.silk.components.forms.ButtonStyle
 import com.varabyte.kobweb.silk.components.layout.Surface
-import com.varabyte.kobweb.silk.components.style.ComponentModifier
-import com.varabyte.kobweb.silk.components.style.ComponentStyle
-import com.varabyte.kobweb.silk.components.style.breakpoint.BreakpointValues
-import com.varabyte.kobweb.silk.components.style.common.SmoothColorStyle
-import com.varabyte.kobweb.silk.components.style.toModifier
-import com.varabyte.kobweb.silk.components.style.vars.color.BackgroundColorVar
 import com.varabyte.kobweb.silk.init.InitSilk
 import com.varabyte.kobweb.silk.init.InitSilkContext
 import com.varabyte.kobweb.silk.init.registerStyleBase
+import com.varabyte.kobweb.silk.style.CssStyle
+import com.varabyte.kobweb.silk.style.CssStyleScopeBase
+import com.varabyte.kobweb.silk.style.breakpoint.BreakpointValues
+import com.varabyte.kobweb.silk.style.common.SmoothColorStyle
+import com.varabyte.kobweb.silk.style.toModifier
+import com.varabyte.kobweb.silk.style.vars.color.BackgroundColorVar
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
+import com.varabyte.kobweb.silk.theme.modifyStyle
 import dev.tonholo.portfolio.core.foundation.shadow
 import dev.tonholo.portfolio.core.ui.theme.color.copy
 import dev.tonholo.portfolio.core.ui.theme.color.from
@@ -48,9 +53,8 @@ import kotlinx.browser.localStorage
 import org.jetbrains.compose.web.css.CSSSizeValue
 import org.jetbrains.compose.web.css.CSSUnit
 import org.jetbrains.compose.web.css.keywords.auto
+import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.css.vh
-
-private const val COLOR_MODE_KEY = "portfolio:colorMode"
 
 private val ElevationsLight = Elevations(
     level1 = Elevation(
@@ -99,21 +103,21 @@ val Theme.icons: IconScheme
  * Workaround to enable [com.varabyte.kobweb.silk.components.style.ComponentStyle]
  * to use [Theme.colorScheme].
  */
-val ComponentModifier.colorScheme
+val CssStyleScopeBase.colorScheme
     get() = if (colorMode == ColorMode.DARK) {
         DarkColorScheme
     } else {
         LightColorScheme
     }
 
-val ComponentModifier.elevations
+val CssStyleScopeBase.elevations
     get() = if (colorMode == ColorMode.DARK) {
         ElevationsDark
     } else {
         ElevationsLight
     }
 
-val ComponentModifier.icons
+val CssStyleScopeBase.icons
     get() = if (colorMode == ColorMode.DARK) {
         IconScheme.Dark
     } else {
@@ -124,38 +128,54 @@ val ComponentModifier.icons
  * Workaround to enable [com.varabyte.kobweb.silk.components.style.ComponentStyle]
  * to use [Theme.typography].
  */
-val ComponentModifier.typography
+val CssStyleScopeBase.typography
     get() = Typography
 
 @InitSilk
 fun initSiteStyles(context: InitSilkContext) {
     context.stylesheet.apply {
-        registerStyleBase(":root") {
-            Modifier.fontSize(DefaultFontSize.dp)
+        layer("reset") {
+            registerStyleBase("*") {
+                Modifier
+                    .margin(0.dp)
+                    .padding(0.dp)
+                    .outline(0.dp)
+                    .boxSizing(BoxSizing.BorderBox)
+            }
+//        }
+            // TODO: remove comments when 0.18.1 is released.
+//        layer("base") {
+            registerStyleBase(":root") {
+                Modifier.fontSize(DefaultFontSize.px)
+            }
+            registerStyleBase("body") {
+                Typography.bodyLarge
+                    .copy(lineHeight = null)
+                    .toModifier()
+                    .fillMaxSize()
+                    .backgroundColor(BackgroundColorVar.value())
+            }
+            registerStyleBase("#root") {
+                Modifier.maxWidth(1440.dp)
+                    .margin(
+                        topBottom = 0.unsafeCast<CSSLengthOrPercentageNumericValue>(),
+                        leftRight = auto.unsafeCast<CSSLengthOrPercentageNumericValue>(),
+                    )
+            }
+            registerStyleBase("img") {
+                Modifier.userSelect(UserSelect.None)
+            }
         }
-        registerStyleBase("*") {
+    }
+
+    context.theme.apply {
+        modifyStyle(ButtonStyle) {
             Modifier
-                .margin(0.dp)
-                .padding(0.dp)
-                .outline(0.dp)
-                .boxSizing(BoxSizing.BorderBox)
-        }
-        registerStyleBase("body") {
-            Typography.bodyLarge
-                .copy(lineHeight = null)
-                .toModifier()
-                .fillMaxSize()
-                .backgroundColor(BackgroundColorVar.value())
-        }
-        registerStyleBase("#root") {
-            Modifier.maxWidth(1440.dp)
-                .margin(
-                    topBottom = 0.unsafeCast<CSSLengthOrPercentageNumericValue>(),
-                    leftRight = auto.unsafeCast<CSSLengthOrPercentageNumericValue>(),
-                )
-        }
-        registerStyleBase("img") {
-            Modifier.userSelect(UserSelect.None)
+                .backgroundColor(Colors.Transparent)
+                .cursor(Cursor.Pointer)
+                .styleModifier {
+                    property(propertyName = "border", value = "none")
+                }
         }
     }
 }
@@ -166,7 +186,7 @@ fun initTheme(context: InitSilkContext) = with(context) {
     theme.palettes.dark.from(DarkColorScheme)
 }
 
-val MainStyle by ComponentStyle(extraModifiers = { SmoothColorStyle.toModifier() }) {
+val MainStyle = CssStyle(extraModifier = { SmoothColorStyle.toModifier() }) {
     base {
         Modifier
             .minHeight(100.vh)

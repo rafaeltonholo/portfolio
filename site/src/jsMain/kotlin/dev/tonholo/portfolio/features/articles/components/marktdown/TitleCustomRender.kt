@@ -14,9 +14,9 @@ import com.varabyte.kobweb.compose.ui.modifiers.onClick
 import com.varabyte.kobweb.compose.ui.modifiers.opacity
 import com.varabyte.kobweb.compose.ui.modifiers.transition
 import com.varabyte.kobweb.compose.ui.toAttrs
-import com.varabyte.kobweb.silk.components.style.ComponentStyle
-import com.varabyte.kobweb.silk.components.style.toModifier
 import com.varabyte.kobweb.silk.components.text.SpanText
+import com.varabyte.kobweb.silk.style.CssStyle
+import com.varabyte.kobweb.silk.style.toModifier
 import dev.tonholo.marktdown.domain.content.TextElement
 import dev.tonholo.marktdown.domain.renderer.MarktdownElementScope
 import dev.tonholo.marktdown.domain.renderer.MarktdownRenderer
@@ -37,7 +37,7 @@ import org.jetbrains.compose.web.dom.H4
 import org.jetbrains.compose.web.dom.H5
 import org.jetbrains.compose.web.dom.H6
 
-val AnchorTokenStyles by ComponentStyle {
+val AnchorTokenStyle = CssStyle {
     base {
         Modifier
             .opacity(0f)
@@ -56,8 +56,8 @@ val AnchorTokenStyles by ComponentStyle {
     }
 }
 
-val ArticleTitleStyles by ComponentStyle {
-    cssRule(":hover .${AnchorTokenStyles.name}") {
+val ArticleTitleStyle = CssStyle {
+    cssRule(":hover .anchor-token") {
         Modifier.opacity(1f)
     }
 }
@@ -70,7 +70,7 @@ fun MarktdownElementScope<TextElement.Title>.TitleCustomRender() {
         movableContentOf {
             SpanText(
                 text = "#",
-                modifier = AnchorTokenStyles
+                modifier = AnchorTokenStyle
                     .toModifier()
                     .onClick {
                         scope.launch {
@@ -87,7 +87,7 @@ fun MarktdownElementScope<TextElement.Title>.TitleCustomRender() {
 
     when (element.style) {
         TextElement.Title.Style.H1 -> H1(
-            attrs = ArticleTitleStyles.toModifier()
+            attrs = ArticleTitleStyle.toModifier()
                 .then(Theme.typography.headlineLarge.toModifier())
                 .toAttrs {
                     element.id?.value?.let {
@@ -100,7 +100,7 @@ fun MarktdownElementScope<TextElement.Title>.TitleCustomRender() {
         }
 
         TextElement.Title.Style.H2 -> H2(
-            attrs = ArticleTitleStyles.toModifier()
+            attrs = ArticleTitleStyle.toModifier()
                 .then(Theme.typography.headlineMedium.toModifier())
                 .toAttrs {
                     element.id?.value?.let {
@@ -113,7 +113,7 @@ fun MarktdownElementScope<TextElement.Title>.TitleCustomRender() {
         }
 
         TextElement.Title.Style.H3 -> H3(
-            attrs = ArticleTitleStyles.toModifier()
+            attrs = ArticleTitleStyle.toModifier()
                 .then(Theme.typography.headlineSmall.toModifier())
                 .toAttrs {
                     element.id?.value?.let {
@@ -126,7 +126,7 @@ fun MarktdownElementScope<TextElement.Title>.TitleCustomRender() {
         }
 
         TextElement.Title.Style.H4 -> H4(
-            attrs = ArticleTitleStyles.toModifier()
+            attrs = ArticleTitleStyle.toModifier()
                 .then(Theme.typography.titleLarge.toModifier())
                 .toAttrs {
                     element.id?.value?.let {
@@ -139,7 +139,7 @@ fun MarktdownElementScope<TextElement.Title>.TitleCustomRender() {
         }
 
         TextElement.Title.Style.H5 -> H5(
-            attrs = ArticleTitleStyles.toModifier()
+            attrs = ArticleTitleStyle.toModifier()
                 .then(Theme.typography.titleMedium.toModifier())
                 .toAttrs {
                     element.id?.value?.let {
@@ -152,7 +152,7 @@ fun MarktdownElementScope<TextElement.Title>.TitleCustomRender() {
         }
 
         TextElement.Title.Style.H6 -> H6(
-            attrs = ArticleTitleStyles.toModifier()
+            attrs = ArticleTitleStyle.toModifier()
                 .then(Theme.typography.titleSmall.toModifier())
                 .toAttrs {
                     element.id?.value?.let {
