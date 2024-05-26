@@ -11,10 +11,12 @@ import com.varabyte.kobweb.compose.ui.modifiers.borderRadius
 import com.varabyte.kobweb.compose.ui.modifiers.color
 import com.varabyte.kobweb.compose.ui.modifiers.fillMaxWidth
 import com.varabyte.kobweb.compose.ui.modifiers.gap
+import com.varabyte.kobweb.compose.ui.modifiers.maxWidth
 import com.varabyte.kobweb.compose.ui.modifiers.objectFit
 import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.silk.components.graphics.Image
 import com.varabyte.kobweb.silk.style.CssStyle
+import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.style.toModifier
 import dev.tonholo.portfolio.core.components.button.PrimaryButton
 import dev.tonholo.portfolio.core.components.text.Paragraph
@@ -36,6 +38,16 @@ val ArticleCardStyle = CssStyle {
                 color(colorScheme.outline)
             }
             .borderRadius(8.dp)
+    }
+
+    Breakpoint.MD {
+        Modifier
+            .maxWidth(435.dp)
+    }
+
+    Breakpoint.LG {
+        Modifier
+            .maxWidth(552.dp)
     }
 }
 
@@ -82,6 +94,7 @@ fun ArticleCard(
             )
             PrimaryButton(
                 onClick = onClick,
+                modifier = Modifier.fillMaxWidth(),
             ) {
                 Text(
                     text = strings.pages.article.readMore,

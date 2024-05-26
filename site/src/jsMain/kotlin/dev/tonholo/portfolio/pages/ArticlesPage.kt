@@ -4,13 +4,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.ui.Modifier
+import com.varabyte.kobweb.compose.ui.modifiers.display
 import com.varabyte.kobweb.compose.ui.modifiers.fillMaxSize
 import com.varabyte.kobweb.compose.ui.modifiers.fillMaxWidth
+import com.varabyte.kobweb.compose.ui.modifiers.flexDirection
+import com.varabyte.kobweb.compose.ui.modifiers.flexWrap
 import com.varabyte.kobweb.compose.ui.modifiers.gap
 import com.varabyte.kobweb.core.Page
 import com.varabyte.kobweb.core.rememberPageContext
 import com.varabyte.kobweb.navigation.Route
 import com.varabyte.kobweb.silk.style.CssStyle
+import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
+import com.varabyte.kobweb.silk.style.toAttrs
 import com.varabyte.kobweb.silk.style.toModifier
 import dev.tonholo.portfolio.core.analytics.LocalAnalyticsManager
 import dev.tonholo.portfolio.core.analytics.events.AnalyticEvent
@@ -32,12 +37,30 @@ import dev.tonholo.portfolio.locale.Locale
 import dev.tonholo.portfolio.locale.localStorageKey
 import kotlinx.browser.localStorage
 import kotlinx.browser.window
+import org.jetbrains.compose.web.css.DisplayStyle
+import org.jetbrains.compose.web.css.FlexDirection
+import org.jetbrains.compose.web.css.FlexWrap
+import org.jetbrains.compose.web.dom.Div
 
 val ArticlePageStyle = CssStyle {
     base {
         Modifier
             .fillMaxSize()
             .gap(24.dp)
+    }
+}
+
+val ArticlesContainerStyle = CssStyle {
+    base {
+        Modifier
+            .display(DisplayStyle.Flex)
+            .flexDirection(FlexDirection.Column)
+            .gap(24.dp)
+    }
+    Breakpoint.MD {
+        Modifier
+            .flexDirection(FlexDirection.Row)
+            .flexWrap(FlexWrap.Wrap)
     }
 }
 
@@ -82,23 +105,27 @@ fun ArticlesPage() {
                 style = Theme.typography.headlineLarge
             )
 
-            lyricist.strings.articles.forEach { (key, value) ->
-                val metadata = value.metadata ?: return@forEach
-                ArticleCard(
-                    title = metadata.title,
-                    shortDescription = metadata.description.orEmpty(),
-                    onClick = {
-                        val url = Route.Article(lyricist.languageTag, key)
-                        analytics.track(
-                            AnalyticEvent.ReadArticle(
-                                articleTitle = metadata.title,
-                                articleUrl = "${window.location.origin}${url}",
+            Div(
+                attrs = ArticlesContainerStyle.toAttrs(),
+            ) {
+                lyricist.strings.articles.forEach { (key, value) ->
+                    val metadata = value.metadata ?: return@forEach
+                    ArticleCard(
+                        title = metadata.title,
+                        shortDescription = metadata.description.orEmpty(),
+                        onClick = {
+                            val url = Route.Article(lyricist.languageTag, key)
+                            analytics.track(
+                                AnalyticEvent.ReadArticle(
+                                    articleTitle = metadata.title,
+                                    articleUrl = "${window.location.origin}${url}",
+                                )
                             )
-                        )
-                        context.router.navigateTo(url)
-                    },
-                    thumbnail = metadata.postThumbnail?.value,
-                )
+                            context.router.navigateTo(url)
+                        },
+                        thumbnail = metadata.postThumbnail?.value,
+                    )
+                }
             }
         }
     }
