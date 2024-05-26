@@ -8,7 +8,8 @@ import dev.tonholo.portfolio.resources.Education
 import dev.tonholo.portfolio.resources.workExperience.Experience
 
 data class ResumePage(
-    val title: String,
+    override val title: String,
+    val resumeTitle: String,
     val viewResumePdf: String,
     val experience: ExperienceSection,
     val educationSection: EducationSection,
@@ -16,14 +17,16 @@ data class ResumePage(
 ) : Page {
     companion object {
         val En = ResumePage(
-            title = "My background",
+            title = "Resume | Rafael Tonholo",
+            resumeTitle = "My background",
             viewResumePdf = "View resume PDF",
             experience = ExperienceSection.En,
             educationSection = EducationSection.En,
             skillSection = SkillSection.En,
         )
         val PtBr = ResumePage(
-            title = "Meu currículo",
+            title = "Currículo | Rafael Tonholo",
+            resumeTitle = "Meu currículo",
             viewResumePdf = "Ver currículo PDF",
             experience = ExperienceSection.PtBr,
             educationSection = EducationSection.PtBr,

@@ -12,9 +12,9 @@ data class ArticlePage(
     val updated: (date: LocalDateTime) -> String,
     val coAuthors: (names: List<String>) -> String,
     val tableOfContents: String,
-    val title: String,
+    override val title: String,
     val readMore: String,
-) {
+) : Page {
     companion object {
         val En = ArticlePage(
             posted = { date -> "Posted on ${date.toFormattedString(MonthNamesEn)}" },

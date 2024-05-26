@@ -74,6 +74,7 @@ fun ArticlesPage() {
                 modifier = Modifier.fillMaxWidth(),
             )
         },
+        pageTitle = "${lyricist.strings.pages.article.title} | Rafael Tonholo",
     ) { paddingValues ->
         Column(modifier = ArticlePageStyle.toModifier().padding(paddingValues)) {
             Text(

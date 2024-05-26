@@ -203,6 +203,10 @@ fun ArticleContentPage() {
         }
     }
 
+    if (article == null) {
+        return
+    }
+
     Scaffold(
         topBar = {
             AppBar(
@@ -235,18 +239,14 @@ fun ArticleContentPage() {
                 modifier = Modifier.fillMaxWidth(),
             )
         },
+        pageTitle = "${article.metadata?.title ?: strings.pages.article.title} | Rafael Tonholo"
     ) { paddingValues ->
         Column(modifier = ArticleContentPageStyle.toModifier().padding(paddingValues)) {
-            if (article == null) {
-                return@Column
-            }
-
             val tableOfContents = remember(article) {
                 article.tableOfContent.items.map {
                     it.toTableOfContentItem()
                 }.toImmutable()
             }
-
 
             article.metadata?.let { metadata ->
                 ArticleHeader(

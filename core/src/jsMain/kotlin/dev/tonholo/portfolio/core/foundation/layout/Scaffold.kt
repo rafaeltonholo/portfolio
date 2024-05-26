@@ -1,6 +1,7 @@
 package dev.tonholo.portfolio.core.foundation.layout
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import com.varabyte.kobweb.compose.css.CSSTransition
@@ -16,6 +17,7 @@ import dev.tonholo.portfolio.core.extensions.ResponsiveValues
 import dev.tonholo.portfolio.core.extensions.padding
 import dev.tonholo.portfolio.core.extensions.responsiveStateOf
 import dev.tonholo.portfolio.core.ui.unit.dp
+import kotlinx.browser.document
 import org.jetbrains.compose.web.css.AnimationTimingFunction
 import org.jetbrains.compose.web.css.s
 
@@ -55,8 +57,15 @@ fun Scaffold(
     modifier: Modifier = Modifier,
     topBar: (@Composable () -> Unit)? = null,
     bottomBar: (@Composable () -> Unit)? = null,
+    pageTitle: String? = null,
     content: @Composable (PaddingValues) -> Unit
 ) {
+    LaunchedEffect(pageTitle) {
+        if (!pageTitle.isNullOrBlank()){
+            document.title = pageTitle
+        }
+    }
+
     Column(
         modifier = ScaffoldStyle.toModifier() then modifier,
     ) {

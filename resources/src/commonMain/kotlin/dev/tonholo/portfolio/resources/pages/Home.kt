@@ -9,17 +9,20 @@ import dev.tonholo.portfolio.core.ui.text.bold
 import dev.tonholo.portfolio.resources.Project
 
 data class Home(
+    override val title: String,
     val welcome: WelcomeSection,
     val about: HomeAboutSection,
     val recentProjects: RecentProjectsSection,
 ) : Page {
     companion object {
         val En = Home(
+            title = "Home | Rafael Tonholo",
             welcome = WelcomeSection.En,
             about = HomeAboutSection.En,
             recentProjects = RecentProjectsSection.En,
         )
         val PtBr = Home(
+            title = "Início | Rafael Tonholo",
             welcome = WelcomeSection.PtBr,
             about = HomeAboutSection.PtBr,
             recentProjects = RecentProjectsSection.PtBr,

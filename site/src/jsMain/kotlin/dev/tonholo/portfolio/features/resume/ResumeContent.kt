@@ -108,7 +108,8 @@ fun ResumeContent(
             Footer(
                 modifier = Modifier.fillMaxWidth(),
             )
-        }
+        },
+        pageTitle = resume.title,
     ) { paddingValues ->
         Column(
             modifier = ResumeContainerStyle.toModifier()
@@ -120,7 +121,7 @@ fun ResumeContent(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
-                    text = resume.title,
+                    text = resume.resumeTitle,
                     style = Theme.typography.displaySmall,
                 )
                 PrimaryButton(

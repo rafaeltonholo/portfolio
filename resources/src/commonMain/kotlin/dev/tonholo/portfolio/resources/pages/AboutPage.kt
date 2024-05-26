@@ -6,15 +6,18 @@ import dev.tonholo.portfolio.core.collections.immutableListOf
 import kotlin.random.Random
 
 data class AboutPage(
+    override val title: String,
     val main: MainContent,
     val moreAboutMe: MoreAboutMe,
 ) : Page {
     companion object {
         val En = AboutPage(
+            title = "About me | Rafael Tonholo",
             main = MainContent.En,
             moreAboutMe = MoreAboutMe.En,
         )
         val PtBr = AboutPage(
+            title = "Sobre mim | Rafael Tonholo",
             main = MainContent.PtBr,
             moreAboutMe = MoreAboutMe.PtBr,
         )

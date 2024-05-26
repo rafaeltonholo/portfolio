@@ -63,7 +63,8 @@ fun AboutContent(
             Footer(
                 modifier = Modifier.fillMaxWidth(),
             )
-        }
+        },
+        pageTitle = about.title,
     ) { paddingValues ->
         Column(
             modifier = Modifier

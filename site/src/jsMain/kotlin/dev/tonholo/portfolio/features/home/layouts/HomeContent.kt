@@ -63,7 +63,8 @@ fun HomeContent(
             Footer(
                 modifier = Modifier.fillMaxWidth(),
             )
-        }
+        },
+        pageTitle = home.title,
     ) { paddingValues ->
         Column(modifier = Modifier.padding(paddingValues)) {
             WelcomeSection(

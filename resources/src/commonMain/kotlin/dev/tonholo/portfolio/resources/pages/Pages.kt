@@ -22,4 +22,6 @@ data class Pages(
     }
 }
 
-interface Page
+interface Page {
+    val title: String
+}
