@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 plugins {
     alias(libs.plugins.org.jetbrains.kotlin.multiplatform)
     alias(libs.plugins.org.jetbrains.compose)
+    alias(libs.plugins.org.jetbrains.kotlin.plugin.compose)
 //    id("dev.tonholo.marktdown") version "+"
     alias(libs.plugins.com.google.devtools.ksp)
 }

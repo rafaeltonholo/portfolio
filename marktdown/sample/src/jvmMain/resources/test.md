@@ -1,5 +1,5 @@
 ---
-documentTitle: My document
+title: My document
 authors:
   - name: Rafael
     links:

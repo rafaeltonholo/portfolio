@@ -45,8 +45,10 @@ kotlin {
 
     targets.all {
         compilations.all {
-            compilerOptions.configure {
-                freeCompilerArgs.add("-Xexpect-actual-classes")
+            compileTaskProvider.configure{
+                compilerOptions {
+                    freeCompilerArgs.add("-Xexpect-actual-classes")
+                }
             }
         }
     }
@@ -87,16 +89,3 @@ marktdown {
 dependencies {
     add("kspJs", libs.dev.tonholo.marktdown.processor)
 }
-
-//tasks.withType<KotlinJsCompile>().configureEach {
-//    kotlinOptions {
-//        moduleKind = org.jetbrains.kotlin.gradle.dsl.JsModuleKind.MODULE_ES.kind
-//        useEsClasses = true
-//    }
-//}
-//tasks.withType<KotlinJsCompile>().configureEach {
-//    compilerOptions {
-//        moduleKind.set(org.jetbrains.kotlin.gradle.dsl.JsModuleKind.MODULE_ES)
-//        useEsClasses = true
-//    }
-//}
