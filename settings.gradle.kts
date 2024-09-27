@@ -22,6 +22,5 @@ include(
     ":resources",
     ":core",
 )
-includeBuild("kotlin-wrapper-highlightjs")
 includeBuild("kotlin-wrapper-shiki")
 includeBuild("marktdown")
