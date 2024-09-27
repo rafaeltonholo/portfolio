@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.jetbrains.compose)
+    alias(libs.plugins.org.jetbrains.kotlin.plugin.compose)
     alias(libs.plugins.kobweb.library)
     alias(libs.plugins.dev.tonholo.marktdown)
     alias(libs.plugins.com.google.devtools.ksp)
@@ -9,6 +10,7 @@ plugins {
 kotlin {
     js {
         browser()
+        useEsModules()
     }
 
     sourceSets {

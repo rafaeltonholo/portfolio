@@ -2,7 +2,7 @@ package dev.tonholo.portfolio.features.home.layouts
 
 import androidx.compose.runtime.Composable
 import cafe.adriel.lyricist.LanguageTag
-import com.varabyte.kobweb.compose.css.CSSTransition
+import com.varabyte.kobweb.compose.css.Transition
 import com.varabyte.kobweb.compose.css.TransitionProperty
 import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.ui.Modifier
@@ -26,7 +26,7 @@ import org.jetbrains.compose.web.css.s
 val HomeContentStyle = CssStyle {
     base {
         Modifier.transition(
-            CSSTransition(
+            Transition.of(
                 property = TransitionProperty.All,
                 duration = 0.4.s,
                 timingFunction = AnimationTimingFunction.Ease,

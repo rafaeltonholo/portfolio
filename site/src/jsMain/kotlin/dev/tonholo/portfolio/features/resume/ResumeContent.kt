@@ -2,7 +2,7 @@ package dev.tonholo.portfolio.features.resume
 
 import androidx.compose.runtime.Composable
 import cafe.adriel.lyricist.LanguageTag
-import com.varabyte.kobweb.compose.css.CSSTransition
+import com.varabyte.kobweb.compose.css.Transition
 import com.varabyte.kobweb.compose.css.TransitionProperty
 import com.varabyte.kobweb.compose.foundation.layout.Arrangement
 import com.varabyte.kobweb.compose.foundation.layout.Column
@@ -41,7 +41,7 @@ import org.jetbrains.compose.web.css.s
 val ResumeContentStyle = CssStyle {
     base {
         Modifier.transition(
-            CSSTransition(
+            Transition.of(
                 property = TransitionProperty.All,
                 duration = 0.4.s,
                 timingFunction = AnimationTimingFunction.Ease,
@@ -63,7 +63,7 @@ val ResumeAdaptiveContainerStyle = CssStyle {
     base {
         Modifier
             .transition(
-                CSSTransition(
+                Transition.of(
                     property = TransitionProperty.All,
                     duration = 0.4.s,
                     timingFunction = AnimationTimingFunction.Ease,

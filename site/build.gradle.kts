@@ -1,12 +1,11 @@
-import com.varabyte.kobweb.gradle.application.extensions.AppBlock.LegacyRouteRedirectStrategy
 import com.varabyte.kobweb.gradle.application.util.configAsKobwebApplication
 import kotlinx.html.link
 import kotlinx.html.meta
-import org.jetbrains.kotlin.gradle.dsl.KotlinJsCompile
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.jetbrains.compose)
+    alias(libs.plugins.org.jetbrains.kotlin.plugin.compose)
     alias(libs.plugins.kobweb.application)
     alias(libs.plugins.dev.tonholo.marktdown)
     alias(libs.plugins.com.google.devtools.ksp)
@@ -31,10 +30,6 @@ kobweb {
             description.set("Powered by Kobweb")
         }
 
-        // Only legacy sites need this set. Sites built after 0.16.0 should default to DISALLOW.
-        // See https://github.com/varabyte/kobweb#legacy-routes for more information.
-        legacyRouteRedirectStrategy.set(LegacyRouteRedirectStrategy.DISALLOW)
-
         export {
             addExtraRoute("/en/articles/hello-world", "/en/articles/hello-world.html")
             addExtraRoute("/pt-BR/articles/hello-world", "/pt-BR/articles/hello-world.html")
@@ -44,6 +39,9 @@ kobweb {
 
 kotlin {
     configAsKobwebApplication("portfolio")
+    js {
+        useEsModules()
+    }
 
     targets.all {
         compilations.all {
@@ -92,9 +90,15 @@ dependencies {
     add("kspJs", libs.dev.tonholo.marktdown.processor)
 }
 
-tasks.withType<KotlinJsCompile>().configureEach {
-    kotlinOptions {
-        moduleKind = org.jetbrains.kotlin.gradle.dsl.JsModuleKind.MODULE_ES.kind
-        useEsClasses = true
-    }
-}
+//tasks.withType<KotlinJsCompile>().configureEach {
+//    kotlinOptions {
+//        moduleKind = org.jetbrains.kotlin.gradle.dsl.JsModuleKind.MODULE_ES.kind
+//        useEsClasses = true
+//    }
+//}
+//tasks.withType<KotlinJsCompile>().configureEach {
+//    compilerOptions {
+//        moduleKind.set(org.jetbrains.kotlin.gradle.dsl.JsModuleKind.MODULE_ES)
+//        useEsClasses = true
+//    }
+//}

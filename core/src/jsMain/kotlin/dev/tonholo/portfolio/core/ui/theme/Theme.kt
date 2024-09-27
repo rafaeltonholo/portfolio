@@ -7,13 +7,14 @@ import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
+import com.varabyte.kobweb.compose.KobwebComposeStyles
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.styleModifier
 import com.varabyte.kobweb.core.KobwebApp
+import com.varabyte.kobweb.silk.SilkFoundationStyles
 import com.varabyte.kobweb.silk.init.InitSilk
 import com.varabyte.kobweb.silk.init.InitSilkContext
 import com.varabyte.kobweb.silk.init.setSilkWidgetVariables
-import com.varabyte.kobweb.silk.prepareSilkFoundation
 import com.varabyte.kobweb.silk.style.breakpoint.BreakpointValues
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import dev.tonholo.portfolio.core.analytics.AnalyticsManager
@@ -74,31 +75,31 @@ fun Theme(
     content: @Composable (colorMode: ColorMode) -> Unit,
 ) {
     KobwebApp {
-        prepareSilkFoundation {
-            val colorMode by ColorMode.currentState
-            LaunchedEffect(colorMode) {
-                localStorage.setItem(COLOR_MODE_KEY, colorMode.name)
-                document
-                    .documentElement
-                    ?.setAttribute("data-theme", colorMode.name.lowercase())
-            }
+        SilkFoundationStyles()
+        KobwebComposeStyles()
+        val colorMode by ColorMode.currentState
+        LaunchedEffect(colorMode) {
+            localStorage.setItem(COLOR_MODE_KEY, colorMode.name)
+            document
+                .documentElement
+                ?.setAttribute("data-theme", colorMode.name.lowercase())
+        }
 
-            val (colorScheme, elevations) = when (colorMode) {
-                ColorMode.LIGHT -> themedColorScheme.light to themedElevations.light
-                ColorMode.DARK -> themedColorScheme.dark to themedElevations.dark
-            }
+        val (colorScheme, elevations) = when (colorMode) {
+            ColorMode.LIGHT -> themedColorScheme.light to themedElevations.light
+            ColorMode.DARK -> themedColorScheme.dark to themedElevations.dark
+        }
 
-            InitSilkWidgetVariables()
+        InitSilkWidgetVariables()
 
-            CompositionLocalProvider(
-                LocalColorScheme provides colorScheme,
-                LocalTypography provides typography,
-                LocalElevations provides elevations,
-                LocalBreakpointValues provides breakpoints,
-                LocalAnalyticsManager provides AnalyticsManager(),
-            ) {
-                content(colorMode)
-            }
+        CompositionLocalProvider(
+            LocalColorScheme provides colorScheme,
+            LocalTypography provides typography,
+            LocalElevations provides elevations,
+            LocalBreakpointValues provides breakpoints,
+            LocalAnalyticsManager provides AnalyticsManager(),
+        ) {
+            content(colorMode)
         }
     }
 }

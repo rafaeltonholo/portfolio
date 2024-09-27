@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import com.varabyte.kobweb.compose.css.StyleVariable
 import com.varabyte.kobweb.compose.dom.ElementRefScope
 import com.varabyte.kobweb.compose.dom.registerRefScope
-import com.varabyte.kobweb.compose.style.toClassName
+import com.varabyte.kobweb.compose.style.toClassNames
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.display
 import com.varabyte.kobweb.compose.ui.modifiers.gap
@@ -69,8 +69,8 @@ fun FlowRow(
             .setVariable(FlowRowVars.maxItemsInEachRow, maxItemsInEachRow ?: -1)
             .toAttrs {
                 classes(
-                    horizontalArrangement.horizontalArrangement.toClassName(),
-                    verticalArrangement.verticalArrangement.toClassName(),
+                    *horizontalArrangement.horizontalArrangement.toClassNames(),
+                    *verticalArrangement.verticalArrangement.toClassNames(),
                 )
             },
     ) {

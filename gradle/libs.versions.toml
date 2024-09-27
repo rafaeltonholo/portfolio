@@ -1,9 +1,9 @@
 [versions]
-jetbrains-compose = "1.6.1"
-kobweb = "0.18.0"
-kotlin = "1.9.23"
+jetbrains-compose = "1.6.11"
+kobweb = "0.19.2"
+kotlin = "2.0.20"
 lyricist = "1.7.0"
-ksp = "1.9.23-1.0.20"
+ksp = "2.0.20-1.0.25"
 kotlinx-datetime = "0.6.0-RC.2"
 kotlin-wrapper-highlightjs = "1.0.0-11.9.0"
 kotlin-wrapper-shiki = "1.0.0-1.5.1"
@@ -11,13 +11,8 @@ marktdown = "1.0.0"
 build-konfig = "0.15.1"
 
 [libraries]
-kobweb-api = { module = "com.varabyte.kobweb:kobweb-api", version.ref = "kobweb" }
 kobweb-core = { module = "com.varabyte.kobweb:kobweb-core ", version.ref = "kobweb" }
 kobweb-silk = { module = "com.varabyte.kobweb:kobweb-silk", version.ref = "kobweb" }
-kobweb-worker = { module = "com.varabyte.kobweb:kobweb-worker", version.ref = "kobweb" }
-kobwebx-markdown = { module = "com.varabyte.kobwebx:kobwebx-markdown", version.ref = "kobweb" }
-silk-foundation = { module = "com.varabyte.kobweb:silk-foundation", version.ref = "kobweb" }
-silk-icons-fa = { module = "com.varabyte.kobwebx:silk-icons-fa", version.ref = "kobweb" }
 silk-icons-mdi = { module = "com.varabyte.kobwebx:silk-icons-mdi", version.ref = "kobweb" }
 lyricist = { module = "cafe.adriel.lyricist:lyricist", version.ref = "lyricist" }
 lyricist-processor = { module = "cafe.adriel.lyricist:lyricist-processor", version.ref = "lyricist" }
@@ -32,10 +27,9 @@ com-codingfeline-buildkonfig-gradle-plugin = { module = "com.codingfeline.buildk
 
 [plugins]
 jetbrains-compose = { id = "org.jetbrains.compose", version.ref = "jetbrains-compose" }
+org-jetbrains-kotlin-plugin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kobweb-application = { id = "com.varabyte.kobweb.application", version.ref = "kobweb" }
 kobweb-library = { id = "com.varabyte.kobweb.library", version.ref = "kobweb" }
-kobweb-worker = { id = "com.varabyte.kobweb.worker", version.ref = "kobweb" }
-kobwebx-markdown = { id = "com.varabyte.kobwebx.markdown", version.ref = "kobweb" }
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 com-google-devtools-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 dev-tonholo-marktdown = { id = "dev.tonholo.marktdown", version.ref = "marktdown" }

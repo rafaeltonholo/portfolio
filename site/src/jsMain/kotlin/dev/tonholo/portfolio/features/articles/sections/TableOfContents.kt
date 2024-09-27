@@ -2,8 +2,8 @@ package dev.tonholo.portfolio.features.articles.sections
 
 import androidx.compose.runtime.Composable
 import cafe.adriel.lyricist.LocalStrings
-import com.varabyte.kobweb.compose.css.CSSTransition
 import com.varabyte.kobweb.compose.css.ListStyleType
+import com.varabyte.kobweb.compose.css.Transition
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.backgroundColor
 import com.varabyte.kobweb.compose.ui.modifiers.borderRadius
@@ -66,12 +66,12 @@ val TableOfContentsStyle = CssStyle {
             .borderRadius(8.dp)
             .padding(24.dp)
             .transition(
-                CSSTransition(
+                Transition.of(
                     property = "min-width",
                     duration = 0.4.s,
                     timingFunction = AnimationTimingFunction.Ease,
                 ),
-                CSSTransition(
+                Transition.of(
                     property = "height",
                     duration = 500.s,
                     timingFunction = AnimationTimingFunction.Ease,
