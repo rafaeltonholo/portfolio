@@ -1,12 +1,11 @@
 package dev.tonholo.portfolio.resources.pages
 
 import androidx.compose.runtime.Immutable
-import dev.tonholo.portfolio.core.collections.ImmutableList
-import dev.tonholo.portfolio.core.collections.immutableListOf
 import dev.tonholo.portfolio.core.ui.text.AnnotatedString
 import dev.tonholo.portfolio.core.ui.text.annotatedString
 import dev.tonholo.portfolio.core.ui.text.bold
 import dev.tonholo.portfolio.resources.Project
+import dev.tonholo.portfolio.resources.ProjectType
 
 data class Home(
     override val title: String,
@@ -105,7 +104,8 @@ data class HomeAboutSection(
 @Immutable
 data class RecentProjectsSection(
     val title: String,
-    val projects: ImmutableList<Project>,
+    val projectTypeLabels: Map<ProjectType, String>,
+    val projects: Map<ProjectType, List<Project>>,
 ) : Section {
     companion object {
         private val SvgToCompose = Project(
@@ -124,72 +124,74 @@ data class RecentProjectsSection(
             },
             src = "https://github.com/raamcosta/compose-destinations",
         )
-//        private val Kobweb = Project(
-//            title = "Kobweb",
-//            description = buildString {
-//                append("A modern framework for full stack web apps in Kotlin, built upon Compose HTML")
-//            },
-//            src = "https://github.com/raamcosta/compose-destinations",
-//        )
-        private val MarKTdown = Project(
-            title = "MarKTdown",
+        private val Kobweb = Project(
+            title = "Kobweb",
             description = buildString {
-                append("MarKTdown is a KMP gradle plugin to process Markdown files and generate")
-                append(" models and renderers based on it.")
+                append("A modern framework for full stack web apps in Kotlin, built upon Compose HTML")
             },
-            src = "https://github.com/varabyte/kobweb",
+            src = "https://github.com/raamcosta/compose-destinations",
         )
-        private val KotlinWrapperHighlightJs = Project(
-            title = "Kotlin Wrapper highlight.js",
+        private val IvyWallet = Project(
+            title = "ivy-wallet",
             description = buildString {
-                append("A Kotlin wrapper for highlight.js enabling its usage on Kotlin/JS applications")
+                append("Ivy Wallet is a free and open source money management android app.")
+                append(" It's written using 100% Kotlin and Jetpack Compose.")
+                append(" It's designed to help you keep track of your personal finances with ease.")
             },
-            src = "https://github.com/rafaeltonholo/kotlin-wrapper-highlightjs",
+            src = "https://github.com/Ivy-Apps/ivy-wallet",
         )
         val En = RecentProjectsSection(
             title = "Projects I worked on or contributed to",
-            projects = immutableListOf(
-                SvgToCompose,
-                ComposeDestinations,
-//                Kobweb,
-                MarKTdown,
-                KotlinWrapperHighlightJs,
-            )
+            projectTypeLabels = mapOf(
+                ProjectType.OpenSource to "Open Source projects",
+                ProjectType.Commercial to "Commercial projects",
+            ),
+            projects = mapOf(
+                ProjectType.OpenSource to listOf(
+                    SvgToCompose,
+                    ComposeDestinations,
+                    Kobweb,
+                    IvyWallet,
+                )
+            ),
         )
 
         val PtBr = RecentProjectsSection(
             title = "Projetos que trabalhei ou contribuí",
-            projects = immutableListOf(
-                SvgToCompose.copy(
-                    description = buildString {
-                        append("Uma ferramenta command-line para converter SVG ")
-                        append("ou um Android Vector Drawable (AVG) para Jetpack Compose icones.")
-                    },
+            projectTypeLabels = mapOf(
+                ProjectType.OpenSource to "Prjetos open source",
+                ProjectType.Commercial to "Projetos comerciais",
+            ),
+            projects = mapOf(
+                ProjectType.OpenSource to listOf(
+                    SvgToCompose.copy(
+                        description = buildString {
+                            append("Uma ferramenta command-line para converter SVG ")
+                            append("ou um Android Vector Drawable (AVG) para Jetpack Compose icones.")
+                        },
+                    ),
+                    ComposeDestinations.copy(
+                        description = buildString {
+                            append("Biblioteca KSP para navegação Jetpack Compose")
+                            append(" com typesafe e sem boilerplate.")
+                        },
+                    ),
+                    Kobweb.copy(
+                        description = buildString {
+                            append("Um framework moderno para aplicativos fullstack para Web em Kotlin,")
+                            append(" desenvolvida com base no Compose HTML")
+                        },
+                    ),
+                    IvyWallet.copy(
+                        description = buildString {
+                            append("Ivy Wallet é um aplicativo Android gerenciador de finanças grátis e open source.")
+                            append(" É escrito usando 100% Kotlin e Jetpack Compose.")
+                            append(" Seu objetivo é ajudar o usuário a manter os registros pessoais de suas finanças")
+                            append(" de maneira simples.")
+                        },
+                    ),
                 ),
-                ComposeDestinations.copy(
-                    description = buildString {
-                        append("Biblioteca KSP para navegação Jetpack Compose")
-                        append(" com typesafe e sem boilerplate.")
-                    },
-                ),
-//                Kobweb.copy(
-//                    description = buildString {
-//                        append("Um framework moderno para aplicativos fullstack para Web em Kotlin,")
-//                        append(" desenvolvida com base no Compose HTML")
-//                    },
-//                ),
-                MarKTdown.copy(
-                    description = buildString {
-                        append("Um KMP gradle plugin que processa arquivos Markdown e gera")
-                        append(" modelos and renderizadores, com customização.")
-                    },
-                ),
-                KotlinWrapperHighlightJs.copy(
-                    description = buildString {
-                        append("Um Kotlin wrapper para a lib highlight.js habilitando seu uso em applicações Kotlin/JS")
-                    },
-                ),
-            )
+            ),
         )
     }
 }

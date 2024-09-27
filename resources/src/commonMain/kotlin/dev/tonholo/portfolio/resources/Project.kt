@@ -5,3 +5,8 @@ data class Project(
     val description: String,
     val src: String,
 )
+
+enum class ProjectType {
+    OpenSource,
+    Commercial
+}

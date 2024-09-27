@@ -17,6 +17,8 @@ import dev.tonholo.portfolio.core.foundation.layout.FlowRow
 import dev.tonholo.portfolio.core.ui.theme.Theme
 import dev.tonholo.portfolio.core.ui.unit.dp
 import dev.tonholo.portfolio.features.home.components.ProjectCard
+import dev.tonholo.portfolio.resources.Project
+import dev.tonholo.portfolio.resources.ProjectType
 import dev.tonholo.portfolio.resources.pages.RecentProjectsSection
 
 val RecentProjectsSectionStyle = CssStyle {
@@ -40,13 +42,40 @@ fun RecentProjectsSection(
             style = Theme.typography.displaySmall,
         )
 
+        recentProjects.projects[ProjectType.Commercial]?.let { projects ->
+            Projects(
+                projectLabel = recentProjects.projectTypeLabels.getValue(ProjectType.Commercial),
+                projects = projects,
+            )
+        }
+        recentProjects.projects[ProjectType.OpenSource]?.let { projects ->
+            Projects(
+                projectLabel = recentProjects.projectTypeLabels.getValue(ProjectType.OpenSource),
+                projects = projects,
+            )
+        }
+    }
+}
+
+@Composable
+private fun Projects(
+    projectLabel: String,
+    projects: List<Project>,
+    modifier: Modifier = Modifier,
+) {
+    Column(modifier = modifier) {
         val maxItemsInEachRow by responsiveStateOf(ResponsiveValues(base = 1, lg = 2))
+        Text(
+            text = projectLabel,
+            style = Theme.typography.titleLarge,
+            modifier = Modifier.padding(bottom = 24.dp),
+        )
         FlowRow(
             horizontalArrangement = ExtendedArrangement.spacedBy(24.dp, alignment = Alignment.Start),
             verticalArrangement = ExtendedArrangement.spacedBy(40.dp, alignment = Alignment.Top),
             maxItemsInEachRow = maxItemsInEachRow,
         ) {
-            recentProjects.projects.forEach { project ->
+            projects.forEach { project ->
                 ProjectCard(
                     name = project.title,
                     description = project.description,
