@@ -1,15 +1,14 @@
 [versions]
 commonmark = "0.22.0"
 gradle = "8.10.2"
-jetbrains-compose = "1.6.1"
-jetbrains-markdown = "0.7.0"
-kotlin = "1.9.23"
-kotlinx-datetime = "0.6.0-RC.2"
-ksp = "1.9.23-1.0.20"
-maven-publish = "0.28.0"
-kotlinpoet = "1.16.0"
-jackson-dataformat = "2.14.2"
-snake-yaml = "2.2"
+jetbrains-compose = "1.6.11"
+jetbrains-markdown = "0.7.3"
+kotlin = "2.0.20"
+kotlinx-datetime = "0.6.1"
+ksp = "2.0.20-1.0.25"
+maven-publish = "0.29.0"
+kotlinpoet = "1.18.1"
+snake-yaml = "2.3"
 
 [libraries]
 com-google-devtools-ksp-gradle-plugin = { module = "com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
@@ -32,6 +31,7 @@ com-vanniktech-maven-publish = { id = "com.vanniktech.maven.publish", version = 
 org-jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 org-jetbrains-kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 org-jetbrains-compose = { id = "org.jetbrains.compose", version.ref = "jetbrains-compose" }
+org-jetbrains-kotlin-plugin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 
 [bundles]
 org-commonmark = ["org-commonmark", "org-commonmark-ext-gfm-tables", "org-commonmark-ext-image-attributes", "org-commonmark-ext-task-list-items", "org-commonmark-ext-yaml-front-matter"]

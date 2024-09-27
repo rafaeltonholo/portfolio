@@ -11,12 +11,12 @@ allprojects {
     version = MarktdownConfig.VERSION
 
     tasks.withType<JavaCompile> {
-        sourceCompatibility = MarktdownConfig.javaTarget.toString()
-        targetCompatibility = MarktdownConfig.javaTarget.toString()
+        sourceCompatibility = MarktdownConfig.javaTarget.target
+        targetCompatibility = MarktdownConfig.javaTarget.target
     }
 
     tasks.withType<KotlinCompile> {
-        kotlinOptions.jvmTarget = MarktdownConfig.javaTarget.toString()
+        compilerOptions.jvmTarget.set(MarktdownConfig.javaTarget)
     }
 
     tasks.withType<ProcessResources> {
