@@ -1,6 +1,6 @@
 [versions]
 commonmark = "0.22.0"
-gradle = "8.2.1"
+gradle = "8.10.2"
 jetbrains-compose = "1.6.1"
 jetbrains-markdown = "0.7.0"
 kotlin = "1.9.23"
