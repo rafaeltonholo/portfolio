@@ -10,7 +10,7 @@ import dev.tonholo.portfolio.core.binding.firebase.GtagConfigParams
 import dev.tonholo.portfolio.core.binding.firebase.initializeAnalytics
 import dev.tonholo.portfolio.core.binding.firebase.initializeApp
 import dev.tonholo.portfolio.core.binding.firebase.logEvent
-import portfolio.config.BuildKonfig
+import portfolio.config.BuildConfig
 
 class AnalyticsManager private constructor() {
     private lateinit var firebaseApp: FirebaseApp
@@ -19,13 +19,13 @@ class AnalyticsManager private constructor() {
     fun initialize() {
         firebaseApp = initializeApp(
             options = FirebaseOptions {
-                apiKey = BuildKonfig.FIREBASE_API_KEY
-                authDomain = BuildKonfig.FIREBASE_AUTH_DOMAIN
-                projectId = BuildKonfig.FIREBASE_PROJECT_ID
-                storageBucket = BuildKonfig.FIREBASE_STORAGE_BUCKET
-                messagingSenderId = BuildKonfig.FIREBASE_MESSAGING_SENDER_ID
-                appId = BuildKonfig.FIREBASE_APP_ID
-                measurementId = BuildKonfig.FIREBASE_MEASUREMENT_ID
+                apiKey = BuildConfig.FIREBASE_API_KEY
+                authDomain = BuildConfig.FIREBASE_AUTH_DOMAIN
+                projectId = BuildConfig.FIREBASE_PROJECT_ID
+                storageBucket = BuildConfig.FIREBASE_STORAGE_BUCKET
+                messagingSenderId = BuildConfig.FIREBASE_MESSAGING_SENDER_ID
+                appId = BuildConfig.FIREBASE_APP_ID
+                measurementId = BuildConfig.FIREBASE_MEASUREMENT_ID
             }
         )
 
