@@ -142,6 +142,7 @@ object ChipDefaults {
 }
 
 @Immutable
+@ConsistentCopyVisibility
 data class ChipColors internal constructor(
     private val containerColor: Color,
     private val contentColor: Color,

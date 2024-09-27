@@ -4,7 +4,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import com.varabyte.kobweb.compose.css.CSSTransition
 import com.varabyte.kobweb.compose.css.Transition
 import com.varabyte.kobweb.compose.css.TransitionProperty
 import com.varabyte.kobweb.compose.foundation.layout.Column
@@ -27,7 +26,7 @@ val ScaffoldStyle = CssStyle {
         Modifier
             .fillMaxSize()
             .transition(
-                CSSTransition(
+                Transition.of(
                     property = TransitionProperty.All,
                     duration = 0.4.s,
                     timingFunction = AnimationTimingFunction.Ease,
