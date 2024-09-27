@@ -4,8 +4,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.movableContentOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import com.varabyte.kobweb.compose.css.CSSTransition
 import com.varabyte.kobweb.compose.css.Cursor
+import com.varabyte.kobweb.compose.css.Transition
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.color
 import com.varabyte.kobweb.compose.ui.modifiers.cursor
@@ -46,7 +46,7 @@ val AnchorTokenStyle = CssStyle {
                 left(8.dp)
             }
             .transition(
-                CSSTransition(
+                Transition.of(
                     property = "opacity",
                     duration = 0.3.s,
                     timingFunction = AnimationTimingFunction.EaseInOut,

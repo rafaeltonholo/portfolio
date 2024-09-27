@@ -5,6 +5,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import com.varabyte.kobweb.compose.css.CSSTransition
+import com.varabyte.kobweb.compose.css.Transition
 import com.varabyte.kobweb.compose.css.TransitionProperty
 import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.ui.Modifier
@@ -42,7 +43,7 @@ val ScaffoldStyle = CssStyle {
     }
     cssRule("> *") {
         Modifier.transition(
-            CSSTransition(
+            Transition.of(
                 property = "padding",
                 duration = 0.4.s,
                 timingFunction = AnimationTimingFunction.Ease,

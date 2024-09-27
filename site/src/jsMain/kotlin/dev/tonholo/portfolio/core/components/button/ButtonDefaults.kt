@@ -2,9 +2,9 @@ package dev.tonholo.portfolio.core.components.button
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
-import com.varabyte.kobweb.compose.css.CSSTransition
 import com.varabyte.kobweb.compose.css.Cursor
 import com.varabyte.kobweb.compose.css.StyleVariable
+import com.varabyte.kobweb.compose.css.Transition
 import com.varabyte.kobweb.compose.css.UserSelect
 import com.varabyte.kobweb.compose.css.VerticalAlign
 import com.varabyte.kobweb.compose.css.boxShadow
@@ -55,7 +55,7 @@ val ButtonStyle = CssStyle<ButtonKind> {
             .border { width(0.dp) }
             .cursor(Vars.Cursor.value())
             .userSelect(UserSelect.None) // No selecting text within buttons
-            .transition(CSSTransition("background-color", duration = ButtonVars.ColorTransitionDuration.value()))
+            .transition(Transition.of("background-color", duration = ButtonVars.ColorTransitionDuration.value()))
     }
 
     hover {
