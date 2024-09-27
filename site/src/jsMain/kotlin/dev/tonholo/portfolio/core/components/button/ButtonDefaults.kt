@@ -160,6 +160,7 @@ object ButtonDefaults {
 }
 
 @Immutable
+@ConsistentCopyVisibility
 data class ButtonColors internal constructor(
     private val containerColor: Color,
     private val contentColor: Color,
@@ -173,6 +174,8 @@ data class ButtonColors internal constructor(
         .setVariable(Vars.DisabledContentColor, disabledContentColor)
 }
 
+@Immutable
+@ConsistentCopyVisibility
 data class ButtonElevation internal constructor(
     private val defaultElevation: Elevation,
     private val pressedElevation: Elevation,

@@ -14,6 +14,7 @@ import com.varabyte.kobweb.core.KobwebApp
 import com.varabyte.kobweb.silk.SilkFoundationStyles
 import com.varabyte.kobweb.silk.init.InitSilk
 import com.varabyte.kobweb.silk.init.InitSilkContext
+import com.varabyte.kobweb.silk.init.SilkWidgetVariables
 import com.varabyte.kobweb.silk.init.setSilkWidgetVariables
 import com.varabyte.kobweb.silk.style.breakpoint.BreakpointValues
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
@@ -107,7 +108,7 @@ fun Theme(
 @Composable
 private fun InitSilkWidgetVariables() {
     val root = remember { document.body }
-    root?.setSilkWidgetVariables()
+    root?.let { SilkWidgetVariables(it) }
 }
 
 object Theme {
