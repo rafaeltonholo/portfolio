@@ -5,6 +5,7 @@ data class Pages(
     val about: AboutPage,
     val resume: ResumePage,
     val article: ArticlePage,
+    val project: ProjectPage,
 ) {
     companion object {
         val En = Pages(
@@ -12,12 +13,14 @@ data class Pages(
             about = AboutPage.En,
             resume = ResumePage.En,
             article = ArticlePage.En,
+            project = ProjectPage.En,
         )
         val PtBr = Pages(
             home = Home.PtBr,
             about = AboutPage.PtBr,
             resume = ResumePage.PtBr,
             article = ArticlePage.PtBr,
+            project = ProjectPage.PtBR,
         )
     }
 }
