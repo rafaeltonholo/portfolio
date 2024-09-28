@@ -2,15 +2,20 @@ package dev.tonholo.portfolio.features.home.components
 
 import androidx.compose.runtime.Composable
 import cafe.adriel.lyricist.LocalStrings
+import com.varabyte.kobweb.compose.css.CSSLengthNumericValue
 import com.varabyte.kobweb.compose.css.CSSLengthOrPercentageNumericValue
 import com.varabyte.kobweb.compose.css.StyleVariable
+import com.varabyte.kobweb.compose.foundation.layout.Arrangement
 import com.varabyte.kobweb.compose.foundation.layout.Column
+import com.varabyte.kobweb.compose.foundation.layout.Row
+import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier
-import com.varabyte.kobweb.compose.ui.modifiers.alignSelf
 import com.varabyte.kobweb.compose.ui.modifiers.backgroundColor
 import com.varabyte.kobweb.compose.ui.modifiers.border
 import com.varabyte.kobweb.compose.ui.modifiers.borderRadius
+import com.varabyte.kobweb.compose.ui.modifiers.fillMaxWidth
 import com.varabyte.kobweb.compose.ui.modifiers.gap
+import com.varabyte.kobweb.compose.ui.modifiers.margin
 import com.varabyte.kobweb.compose.ui.modifiers.maxHeight
 import com.varabyte.kobweb.compose.ui.modifiers.maxWidth
 import com.varabyte.kobweb.compose.ui.modifiers.minHeight
@@ -24,14 +29,16 @@ import com.varabyte.kobweb.silk.style.toModifier
 import dev.tonholo.portfolio.core.analytics.LocalAnalyticsManager
 import dev.tonholo.portfolio.core.analytics.events.AnalyticEvent
 import dev.tonholo.portfolio.core.components.button.LinkButton
+import dev.tonholo.portfolio.core.components.button.TextButton
 import dev.tonholo.portfolio.core.components.text.Paragraph
 import dev.tonholo.portfolio.core.components.text.Text
 import dev.tonholo.portfolio.core.ui.theme.Theme
 import dev.tonholo.portfolio.core.ui.theme.colorScheme
 import dev.tonholo.portfolio.core.ui.unit.Dp
 import dev.tonholo.portfolio.core.ui.unit.dp
-import org.jetbrains.compose.web.css.AlignSelf
+import kotlinx.browser.window
 import org.jetbrains.compose.web.css.LineStyle
+import org.jetbrains.compose.web.css.keywords.auto
 
 object ProjectCardVars {
     val MinWidth by StyleVariable<CSSLengthOrPercentageNumericValue>()
@@ -63,7 +70,8 @@ val ProjectCardStyle = CssStyle {
 fun ProjectCard(
     name: String,
     description: String,
-    src: String,
+    src: String?,
+    playStoreSrc: String?,
     modifier: Modifier = Modifier,
     maxWidth: Dp = Dp.Unspecified,
     minWidth: Dp = Dp.Unspecified,
@@ -95,26 +103,48 @@ fun ProjectCard(
             text = description,
             style = Theme.typography.bodyLarge,
         )
-        LinkButton(
-            path = src,
-            color = Theme.colorScheme.primary,
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(16.dp, alignment = Alignment.End),
             modifier = Modifier
-                .alignSelf(AlignSelf.End)
-                .onClick {
-                    analytics.track(
-                        AnalyticEvent.ViewProject(
-                            projectName = name,
-                            projectUrl = src,
-                        )
-                    )
+                .fillMaxWidth()
+                .margin {
+                    top(auto.unsafeCast<CSSLengthNumericValue>())
                 },
         ) {
-            Text(
-                text = strings.viewProject,
-                style = Theme.typography.labelLarge.copy(
+            playStoreSrc?.let { src ->
+                TextButton(
+                    onClick = { window.open(url = src) },
+                ) {
+                    Text(
+                        text = strings.viewInPlayStore,
+                        style = Theme.typography.labelLarge.copy(
+                            color = Theme.colorScheme.primary,
+                        ),
+                    )
+                }
+            }
+            src?.let { src ->
+                LinkButton(
+                    path = src,
                     color = Theme.colorScheme.primary,
-                ),
-            )
+                    modifier = Modifier
+                        .onClick {
+                            analytics.track(
+                                AnalyticEvent.ViewProject(
+                                    projectName = name,
+                                    projectUrl = src,
+                                )
+                            )
+                        },
+                ) {
+                    Text(
+                        text = strings.viewProject,
+                        style = Theme.typography.labelLarge.copy(
+                            color = Theme.colorScheme.primary,
+                        ),
+                    )
+                }
+            }
         }
     }
 }

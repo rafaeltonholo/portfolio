@@ -80,6 +80,7 @@ private fun Projects(
                     name = project.title,
                     description = project.description,
                     src = project.src,
+                    playStoreSrc = project.playStoreSrc,
                 )
             }
         }
