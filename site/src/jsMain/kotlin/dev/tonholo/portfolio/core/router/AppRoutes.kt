@@ -32,6 +32,12 @@ sealed interface AppRoutes {
         const val ROUTE = "/resume"
         override val route: String = ROUTE
     }
+
+    data object Project : AppRoutes {
+        const val PROJECT_KEY_PARAM = "project-key"
+        const val ROUTE = "/project/{${PROJECT_KEY_PARAM}}"
+        override val route: String = ROUTE
+    }
 }
 
 val Route.Companion.Home get() = AppRoutes.Home.route
@@ -46,5 +52,12 @@ fun Route.Companion.Article(languageTag: LanguageTag, key: String) =
         )
         .replace(
             "{${AppRoutes.ArticleContent.ARTICLE_KEY_PARAM}}",
+            key,
+        )
+
+fun Route.Companion.Project(key: String) =
+    AppRoutes.Project.route
+        .replace(
+            "{${AppRoutes.Project.PROJECT_KEY_PARAM}}",
             key,
         )
