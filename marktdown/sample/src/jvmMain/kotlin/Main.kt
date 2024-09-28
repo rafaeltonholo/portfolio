@@ -1,3 +1,4 @@
+import dev.tonholo.marktdown.flavours.MarktdownFlavourDescriptor
 import dev.tonholo.marktdown.processor.Logger
 import dev.tonholo.marktdown.processor.visitor.MarktdownRenderer
 import java.io.BufferedReader
@@ -47,7 +48,7 @@ fun main() {
     }
 
     val noFrontMatterContent = regex.replace(content, "").trimStart()
-    val flavour = GFMFlavourDescriptor()
+    val flavour = MarktdownFlavourDescriptor()
     val node = MarkdownParser(flavour)
         .buildMarkdownTreeFromString(noFrontMatterContent)
 

@@ -1,23 +1,18 @@
 [versions]
-jetbrains-compose = "1.6.1"
+build-konfig = "0.15.1"
+jetbrains-compose = "1.6.10"
 kobweb = "0.18.0"
 kotlin = "1.9.23"
-lyricist = "1.7.0"
-ksp = "1.9.23-1.0.20"
-kotlinx-datetime = "0.6.0-RC.2"
 kotlin-wrapper-highlightjs = "1.0.0-11.9.0"
 kotlin-wrapper-shiki = "1.0.0-1.5.1"
+kotlinx-datetime = "0.6.0-RC.2"
+ksp = "1.9.23-1.0.20"
+lyricist = "1.7.0"
 marktdown = "1.0.0"
-build-konfig = "0.15.1"
 
 [libraries]
-kobweb-api = { module = "com.varabyte.kobweb:kobweb-api", version.ref = "kobweb" }
 kobweb-core = { module = "com.varabyte.kobweb:kobweb-core ", version.ref = "kobweb" }
 kobweb-silk = { module = "com.varabyte.kobweb:kobweb-silk", version.ref = "kobweb" }
-kobweb-worker = { module = "com.varabyte.kobweb:kobweb-worker", version.ref = "kobweb" }
-kobwebx-markdown = { module = "com.varabyte.kobwebx:kobwebx-markdown", version.ref = "kobweb" }
-silk-foundation = { module = "com.varabyte.kobweb:silk-foundation", version.ref = "kobweb" }
-silk-icons-fa = { module = "com.varabyte.kobwebx:silk-icons-fa", version.ref = "kobweb" }
 silk-icons-mdi = { module = "com.varabyte.kobwebx:silk-icons-mdi", version.ref = "kobweb" }
 lyricist = { module = "cafe.adriel.lyricist:lyricist", version.ref = "lyricist" }
 lyricist-processor = { module = "cafe.adriel.lyricist:lyricist-processor", version.ref = "lyricist" }

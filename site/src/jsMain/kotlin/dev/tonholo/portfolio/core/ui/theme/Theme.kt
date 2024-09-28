@@ -49,12 +49,14 @@ import dev.tonholo.portfolio.core.ui.unit.dp
 import dev.tonholo.portfolio.locale.Locale
 import dev.tonholo.portfolio.locale.localStorageKey
 import dev.tonholo.portfolio.resources.Strings
+import kotlinx.browser.document
 import kotlinx.browser.localStorage
 import org.jetbrains.compose.web.css.CSSSizeValue
 import org.jetbrains.compose.web.css.CSSUnit
 import org.jetbrains.compose.web.css.keywords.auto
 import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.css.vh
+import org.w3c.dom.HTMLScriptElement
 
 private val ElevationsLight = Elevations(
     level1 = Elevation(
@@ -184,6 +186,15 @@ fun initSiteStyles(context: InitSilkContext) {
 fun initTheme(context: InitSilkContext) = with(context) {
     theme.palettes.light.from(LightColorScheme)
     theme.palettes.dark.from(DarkColorScheme)
+}
+
+@InitSilk
+fun initExternalScripts(@Suppress("UNUSED_PARAMETER") context: InitSilkContext) {
+    val script = document.createElement("script") as HTMLScriptElement
+    script.src = "https://unpkg.com/external-svg-loader@latest/svg-loader.min.js"
+    script.type = "text/javascript"
+    script.async = true
+    document.body?.appendChild(script)
 }
 
 val MainStyle = CssStyle(extraModifier = { SmoothColorStyle.toModifier() }) {

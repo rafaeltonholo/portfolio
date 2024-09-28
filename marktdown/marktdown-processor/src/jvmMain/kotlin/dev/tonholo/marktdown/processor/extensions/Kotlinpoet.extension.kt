@@ -79,69 +79,13 @@ fun FunSpec.Builder.modifiers(vararg modifiers: KModifier) {
     addModifiers(modifiers.toList())
 }
 
-fun CodeBlock.Builder.withControlFlow(
-    controlFlow: String,
-    vararg args: Any?,
-    builder: CodeBlock.Builder.() -> Unit,
-) {
-    beginControlFlow(controlFlow, *args)
-    builder()
-    endControlFlow()
-}
-
-fun CodeBlock.Builder.withNullableLet(
-    statement: String,
-    itName: String? = null,
-    vararg args: Any?,
-    builder: CodeBlock.Builder.() -> Unit,
-) {
-    addStatement("$statement?.let {${itName?.let { " $it ->" }.orEmpty()}", *args)
-    withIndent {
-        builder()
-    }
-    addStatement("}")
-}
-
-inline fun <reified T> CodeBlock.Builder.withConstructor(
-    argName: String? = null,
-    trailingComma: Boolean = false,
-    builder: CodeBlock.Builder.() -> Unit,
-) {
-    if (argName == null) {
-        addStatement("%T(", T::class)
-    } else {
-        addStatement("%N = %T(", argName, T::class)
-    }
-    withIndent {
-        builder()
-    }
-    addStatement(")${",".takeIf { trailingComma }.orEmpty()}")
-}
-
-fun CodeBlock.Builder.withSet(
-    argName: String? = null,
-    trailingComma: Boolean = false,
-    builder: CodeBlock.Builder.() -> Unit,
-) {
-    val setOfMemberName = MemberName("kotlin.collections", "setOf")
-    if (argName == null) {
-        addStatement("%M(", setOfMemberName)
-    } else {
-        addStatement("%N = %M(", argName, setOfMemberName)
-    }
-    withIndent {
-        builder()
-    }
-    addStatement(")${",".takeIf { trailingComma }.orEmpty()}")
-}
-
 @DslMarker
 annotation class ParameterSpecDsl
 
+@ParameterSpecDsl
 fun parameter(
     name: String,
     type: TypeName,
     vararg modifiers: KModifier,
     builder: ParameterSpec.Builder.() -> Unit,
 ): ParameterSpec = ParameterSpec.builder(name, type, *modifiers).apply(builder).build()
-

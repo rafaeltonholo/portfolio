@@ -2,6 +2,8 @@ import com.varabyte.kobweb.gradle.application.extensions.AppBlock.LegacyRouteRed
 import com.varabyte.kobweb.gradle.application.util.configAsKobwebApplication
 import kotlinx.html.link
 import kotlinx.html.meta
+import kotlinx.html.style
+import kotlinx.html.unsafe
 import org.jetbrains.kotlin.gradle.dsl.KotlinJsCompile
 
 plugins {
@@ -22,6 +24,10 @@ kobweb {
                 meta {
                     name = "viewport"
                     content = "width=device-width,initial-scale=1"
+                }
+                link {
+                    rel = "stylesheet"
+                    href = "/base.css"
                 }
                 link {
                     rel = "stylesheet"
@@ -72,7 +78,6 @@ kotlin {
             implementation(libs.dev.tonholo.kotlin.wrapper.highlightjs.compose.html)
             implementation(libs.dev.tonholo.marktdown.core)
             implementation(npm(name = "shiki", version = "1.5.1"))
-
         }
     }
 }

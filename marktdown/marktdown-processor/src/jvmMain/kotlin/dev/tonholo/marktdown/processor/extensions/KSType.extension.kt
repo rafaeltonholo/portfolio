@@ -2,7 +2,9 @@ package dev.tonholo.marktdown.processor.extensions
 
 import com.google.devtools.ksp.symbol.KSType
 import dev.tonholo.marktdown.domain.content.CodeFence
+import dev.tonholo.marktdown.domain.content.CustomElement
 import dev.tonholo.marktdown.domain.content.HorizontalRule
+import dev.tonholo.marktdown.domain.content.HtmlBlock
 import dev.tonholo.marktdown.domain.content.ImageElement
 import dev.tonholo.marktdown.domain.content.LineBreak
 import dev.tonholo.marktdown.domain.content.Link.AutoLink
@@ -15,11 +17,13 @@ import dev.tonholo.marktdown.domain.content.ListElement.Task
 import dev.tonholo.marktdown.domain.content.ListElement.Unordered
 import dev.tonholo.marktdown.domain.content.MarktdownElement
 import dev.tonholo.marktdown.domain.content.TableElement
+import dev.tonholo.marktdown.domain.content.TextElement
 import dev.tonholo.marktdown.domain.content.TextElement.Blockquote
 import dev.tonholo.marktdown.domain.content.TextElement.Emoji
 import dev.tonholo.marktdown.domain.content.TextElement.EmphasisText
 import dev.tonholo.marktdown.domain.content.TextElement.Highlight
 import dev.tonholo.marktdown.domain.content.TextElement.InlineCode
+import dev.tonholo.marktdown.domain.content.TextElement.InlineHtml
 import dev.tonholo.marktdown.domain.content.TextElement.Paragraph
 import dev.tonholo.marktdown.domain.content.TextElement.PlainText
 import dev.tonholo.marktdown.domain.content.TextElement.Strikethrough
@@ -56,5 +60,8 @@ fun KSType.toMarktdownKClass(): KClass<out MarktdownElement>? =
         InlineCode::class.qualifiedName -> InlineCode::class
         AutoLink::class.qualifiedName -> AutoLink::class
         PlainText::class.qualifiedName -> PlainText::class
+        InlineHtml::class.qualifiedName -> InlineHtml::class
+        HtmlBlock::class.qualifiedName -> HtmlBlock::class
+        CustomElement::class.qualifiedName -> CustomElement::class
         else -> null
     }

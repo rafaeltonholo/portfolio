@@ -25,3 +25,4 @@ include(
 includeBuild("kotlin-wrapper-highlightjs")
 includeBuild("kotlin-wrapper-shiki")
 includeBuild("marktdown")
+includeBuild("showcase")

@@ -1,5 +1,6 @@
 package dev.tonholo.marktdown.processor
 
+import dev.tonholo.marktdown.flavours.MarktdownFlavourDescriptor
 import dev.tonholo.marktdown.processor.visitor.MarktdownRenderer
 import java.nio.file.Path
 import org.intellij.markdown.flavours.gfm.GFMFlavourDescriptor
@@ -60,7 +61,7 @@ class MarktdownProcessor(
         }
 
         val noFrontMatterContent = regex.replace(content, "").trimStart()
-        val flavour = GFMFlavourDescriptor()
+        val flavour = MarktdownFlavourDescriptor()
         val document = MarkdownParser(flavour)
             .buildMarkdownTreeFromString(noFrontMatterContent)
 

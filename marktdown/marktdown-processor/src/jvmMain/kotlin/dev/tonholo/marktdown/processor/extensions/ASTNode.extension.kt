@@ -1,6 +1,6 @@
 package dev.tonholo.marktdown.processor.extensions
 
-import dev.tonholo.marktdown.processor.visitor.MarktdownElementTypes
+import dev.tonholo.marktdown.flavours.MarktdownElementTypes
 import dev.tonholo.marktdown.processor.visitor.MarktdownRenderer
 import org.intellij.markdown.MarkdownElementTypes
 import org.intellij.markdown.MarkdownTokenTypes

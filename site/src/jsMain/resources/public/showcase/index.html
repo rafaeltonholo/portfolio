@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio showcase</title>
+    <link type="text/css" rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <canvas id="ComposeTarget"></canvas>
+    <script type="application/javascript">
+        const unhandledError = (event, error) => {
+            if (error instanceof WebAssembly.CompileError) {
+                document.getElementById("warning").style.display = "initial";
+
+                // Hide a Scary Webpack Overlay which is less informative in this case.
+                const webpackOverlay = document.getElementById("webpack-dev-server-client-overlay");
+                if (webpackOverlay != null) webpackOverlay.style.display = "none";
+            }
+        }
+        addEventListener("error", (event) => unhandledError(event, event.error));
+        addEventListener("unhandledrejection", (event) => unhandledError(event, event.reason));
+    </script>
+
+    <script type="application/javascript">
+        if (typeof self.crypto.randomUUID == "undefined") {
+            self.crypto.randomUUID = () => {
+                let count = 16;
+                const array = new Uint8Array(count);
+                const h = Array.from(self.crypto.getRandomValues(array)).map((v) => (v < 16 ? "0" : "") + v.toString(16))
+                let prev = 0;
+
+                // 36b8f84d-df4e-4d49-b662-bcde71a8764f
+                return [4, 2, 2, 2, 6].map((v) => {
+                    const start = prev
+                    prev += v
+                    return h.slice(start, start + v).join("")
+                }).join("-")
+            };
+        }
+        if (typeof Notification == "undefined") {
+            self.Notification = class Notification {
+                static permission = "default";
+                static requestPermission() {}
+            }
+        }
+    </script>
+
+    <script type="application/javascript">
+        const body = document.body
+
+        const hasWasmGcSupport = () =>
+            WebAssembly.validate(new Uint8Array([0, 97, 115, 109, 1, 0, 0, 0, 1, 5, 1, 95, 1, 120, 0]))
+
+        const hasWasmExceptionSupport = () =>
+            WebAssembly.validate(new Uint8Array([0, 97, 115, 109, 1, 0, 0, 0, 1, 4, 1, 96, 0, 0, 3, 2, 1, 0, 10, 8, 1, 6, 0, 6, 64, 25, 11, 11])
+            );
+
+        const hasWasmReferenceTypeSupport = () =>
+            WebAssembly.validate(new Uint8Array([0, 97, 115, 109, 1, 0, 0, 0, 1, 4, 1, 96, 0, 0, 3, 2, 1, 0, 10, 7, 1, 5, 0, 208, 112, 26, 11]))
+
+        const createScript = (src) => {
+            const script = document.createElement("script")
+            script.src = src
+            script.type = "application/javascript"
+            return script
+        }
+
+        if (
+            typeof WebAssembly !== "undefined" &&
+            typeof WebAssembly?.validate === "function" &&
+            hasWasmGcSupport() &&
+            hasWasmExceptionSupport() &&
+            hasWasmReferenceTypeSupport()
+        ) {
+            body.removeChild(document.querySelector("#ComposeTarget"));
+            body.appendChild(createScript("portfolio-showcase.wasm.js"));
+        } else {
+            body.appendChild(createScript("skiko.js"));
+            body.appendChild(createScript("portfolio-showcase.js"));
+        }
+    </script>
+</body>
+</html>

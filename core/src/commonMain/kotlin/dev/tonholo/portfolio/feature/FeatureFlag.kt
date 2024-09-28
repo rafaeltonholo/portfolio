@@ -4,5 +4,5 @@ enum class FeatureFlag(
     val enabled: Boolean,
 ) {
     MoreAboutMe(enabled = false),
-    Comments(enabled = false),
+    Comments(enabled = true),
 }

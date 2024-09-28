@@ -17,6 +17,7 @@ import dev.tonholo.marktdown.domain.MarktdownTableOfContent
 import dev.tonholo.marktdown.domain.MarktdownTableOfContentItem
 import dev.tonholo.marktdown.domain.MarktdownTag
 import dev.tonholo.marktdown.domain.content.CodeFence
+import dev.tonholo.marktdown.domain.content.CustomElement
 import dev.tonholo.marktdown.domain.content.EndOfLine
 import dev.tonholo.marktdown.domain.content.HorizontalRule
 import dev.tonholo.marktdown.domain.content.HtmlBlock
@@ -30,25 +31,28 @@ import dev.tonholo.marktdown.domain.content.MarktdownDocument
 import dev.tonholo.marktdown.domain.content.TableContent
 import dev.tonholo.marktdown.domain.content.TableElement
 import dev.tonholo.marktdown.domain.content.TextElement
+import dev.tonholo.marktdown.flavours.MarktdownElementTypes
 import dev.tonholo.marktdown.processor.Logger
 import dev.tonholo.marktdown.processor.extensions.childrenToRender
+import dev.tonholo.marktdown.processor.extensions.kotlinpoet.codeBlockBuilder
+import dev.tonholo.marktdown.processor.extensions.kotlinpoet.withConstructor
+import dev.tonholo.marktdown.processor.extensions.kotlinpoet.withMap
+import dev.tonholo.marktdown.processor.extensions.kotlinpoet.withSet
 import dev.tonholo.marktdown.processor.extensions.literal
 import dev.tonholo.marktdown.processor.extensions.pascalCase
-import dev.tonholo.marktdown.processor.extensions.withConstructor
-import dev.tonholo.marktdown.processor.extensions.withSet
 import java.nio.file.Path
 import java.util.*
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
-import org.intellij.markdown.MarkdownElementType
 import org.intellij.markdown.MarkdownElementTypes
 import org.intellij.markdown.MarkdownTokenTypes
 import org.intellij.markdown.ast.ASTNode
 import org.intellij.markdown.ast.CompositeASTNode
 import org.intellij.markdown.ast.accept
 import org.intellij.markdown.ast.findChildOfType
+import org.intellij.markdown.ast.getTextInNode
 import org.intellij.markdown.ast.impl.ListCompositeNode
 import org.intellij.markdown.ast.visitors.RecursiveVisitor
 import org.intellij.markdown.flavours.gfm.GFMElementTypes
@@ -58,6 +62,8 @@ import org.intellij.markdown.html.ReferenceLinksGeneratingProvider
 import org.intellij.markdown.html.entities.EntityConverter
 import org.intellij.markdown.html.makeXssSafeDestination
 import org.intellij.markdown.parser.LinkMap
+import org.intellij.markdown.parser.LinkMap.Builder.normalizeLabel
+import org.intellij.markdown.parser.LinkMap.LinkInfo
 import kotlin.reflect.KClass
 import dev.tonholo.marktdown.domain.content.Link.Element as LinkElement
 
@@ -175,6 +181,7 @@ class MarktdownRenderer(
     inner class MarktdownVisitor : RecursiveVisitor() {
         private var currentBuilder: CodeBlock.Builder? = null
         private val listMemberName = MemberName(packageName = "kotlin.collections", simpleName = "listOf")
+        private val mapOfMemberName = MemberName(packageName = "kotlin.collections", simpleName = "mapOf")
 
         private var isStrikeThroughOpen = false
         private val strikeThroughChildren = mutableListOf<CodeBlock.Builder>()
@@ -296,6 +303,8 @@ class MarktdownRenderer(
                 GFMElementTypes.TABLE -> visitTable(node)
 
                 MarktdownElementTypes.INLINE_HTML -> visitInlineHtml(node)
+
+                MarktdownElementTypes.CUSTOM_ELEMENT -> visitCustomElement(node)
 
                 // Tokens
                 MarkdownTokenTypes.TEXT -> visitText(node)
@@ -1072,7 +1081,7 @@ class MarktdownRenderer(
                             addStatement("%T(", kClass)
                             withIndent {
                                 addStatement(
-                                    "%N = %S",
+                                    "%N = %S,",
                                     kClass.member(TextElement.InlineHtml::tagName.name),
                                     htmlTag.literal.toString()
                                         .replace("<", "")
@@ -1104,13 +1113,52 @@ class MarktdownRenderer(
                         addStatement(
                             "%N = %S",
                             kClass.member(HtmlBlock::content.name),
-                            node.literal.escaped,
+                            node.literal,
                         )
                     }
                     addStatement("),")
                 }
 
             currentBuilder = parent
+            attachToParent(codeBlock)
+        }
+
+        private fun visitCustomElement(node: ASTNode) {
+            val content = node.children
+                .drop(2)
+                .dropLast(3)
+                .fold(initial = "") { acc, astNode -> acc + astNode.literal }
+                .split(' ')
+                .mapNotNull { it.takeIf { it.isNotBlank() } }
+
+            val name = content.first()
+            val attributes = content
+                .drop(1)
+                .associate { attribute ->
+                    val (key, value) = attribute.split("=")
+                    key to value.removePrefix("\"").removeSuffix("\"")
+                }
+
+            val codeBlock = codeBlockBuilder {
+                withConstructor<CustomElement>(
+                    trailingComma = true,
+                ) {
+                    addStatement(
+                        "%N = %S,",
+                        CustomElement::name.name,
+                        name,
+                    )
+                    withMap(
+                        argName = CustomElement::attributes.name,
+                        trailingComma = true,
+                    ) {
+                        attributes.forEach { (key, value) ->
+                            addStatement("%S to %S,", key, value)
+                        }
+                    }
+                }
+            }
+
             attachToParent(codeBlock)
         }
 
@@ -1417,71 +1465,6 @@ private fun CodeBlock.Builder.addTableOfContent(
     }
     contents += last.toImmutable()
 
-//    val map = mutableMapOf<Int, MutableSet<MarktdownTableOfContentItem>>()
-//    val trees = mutableSetOf<MutableSet<MarktdownTableOfContentItem>>()
-//    val linkedHashMap = linkedMapOf<Int, MutableSet<MarktdownTableOfContentItem>>()
-//    var currentRoot
-//    var lastDepth = Int.MAX_VALUE
-//    for ((item, depth) in tableOfContentItems) {
-//        linkedHashMap.getOrPut(depth) {
-//            mutableSetOf()
-//        }.apply {
-//            add(item)
-//        }
-//
-//        if (depth < lastDepth) {
-//            println(linkedHashMap)
-//            linkedHashMap.clear()
-//        }
-//
-//        lastDepth = depth
-//    }
-
-//    while (iterator.hasNext()) {
-//        val (next, nextDepth) = iterator.next()
-//
-//        when {
-//            depth < nextDepth -> {
-//                parents.addLast(next)
-//            }
-//
-//            depth == nextDepth && depth != 0 -> {
-//                children += next
-//            }
-//
-//            else -> {
-//                val current = parents.removeLast().copy(children = children.toSet())
-//                children.clear()
-//                if (parents.isNotEmpty()) {
-//                    while (parents.size > nextDepth) {
-//                        parents.removeLast().apply {
-//                            val siblings = this.children.toMutableSet()
-//                            siblings += current
-//                        }
-//                    }
-//                    parents.addLast(current)
-//                } else {
-//                    contents += current
-//                }
-//
-//            }
-//        }
-//        depth = nextDepth
-//
-//        if (depth == 0 && parents.isEmpty()) {
-//            parents += next
-//        }
-//    }
-//
-//    if (parents.isNotEmpty()) {
-//        var current = parents.removeLast()
-//        while (parents.isNotEmpty()) {
-//            val parent = parents.removeLast()
-//            current = parent.copy(children = parent.children.toMutableSet().apply { add(current) })
-//        }
-//        contents += current
-//    }
-
     withConstructor<MarktdownTableOfContent>(
         argName = MarktdownDocument::tableOfContent.name,
         trailingComma = true,
@@ -1518,9 +1501,4 @@ private fun CodeBlock.Builder.addTableOfContent(
             contents.forEach(::createItem)
         }
     }
-}
-
-object MarktdownElementTypes {
-    @JvmField
-    val INLINE_HTML = MarkdownElementType("INLINE_HTML")
 }

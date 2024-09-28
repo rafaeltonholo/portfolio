@@ -305,3 +305,8 @@ sealed interface ListElement : MarktdownElement {
 data class HtmlBlock(
     val content: String,
 ) : MarktdownElement
+
+data class CustomElement(
+    val name: String,
+    val attributes: Map<String, String>,
+) : MarktdownElement

@@ -3,12 +3,17 @@ package dev.tonholo.portfolio.features.articles
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import cafe.adriel.lyricist.LocalStrings
 import com.varabyte.kobweb.compose.css.BorderCollapse
+import com.varabyte.kobweb.compose.css.CSSTransition
 import com.varabyte.kobweb.compose.css.Height
 import com.varabyte.kobweb.compose.css.ObjectFit
 import com.varabyte.kobweb.compose.css.OverflowWrap
+import com.varabyte.kobweb.compose.css.TransitionTimingFunction
 import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.alignSelf
@@ -28,9 +33,12 @@ import com.varabyte.kobweb.compose.ui.modifiers.lineHeight
 import com.varabyte.kobweb.compose.ui.modifiers.margin
 import com.varabyte.kobweb.compose.ui.modifiers.minWidth
 import com.varabyte.kobweb.compose.ui.modifiers.objectFit
+import com.varabyte.kobweb.compose.ui.modifiers.opacity
 import com.varabyte.kobweb.compose.ui.modifiers.overflowWrap
 import com.varabyte.kobweb.compose.ui.modifiers.position
 import com.varabyte.kobweb.compose.ui.modifiers.top
+import com.varabyte.kobweb.compose.ui.modifiers.transition
+import com.varabyte.kobweb.compose.ui.styleModifier
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.core.Page
 import com.varabyte.kobweb.core.rememberPageContext
@@ -40,6 +48,7 @@ import com.varabyte.kobweb.silk.style.CssStyle
 import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.style.toAttrs
 import com.varabyte.kobweb.silk.style.toModifier
+import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import dev.tonholo.portfolio.core.analytics.LocalAnalyticsManager
 import dev.tonholo.portfolio.core.analytics.events.AnalyticEvent
 import dev.tonholo.portfolio.core.collections.toImmutable
@@ -72,11 +81,14 @@ import dev.tonholo.portfolio.renderer.Marktdown
 import kotlinx.browser.document
 import kotlinx.browser.localStorage
 import kotlinx.browser.window
+import kotlinx.coroutines.delay
 import org.jetbrains.compose.web.css.AlignSelf
+import org.jetbrains.compose.web.css.CSSColorValue
 import org.jetbrains.compose.web.css.DisplayStyle
 import org.jetbrains.compose.web.css.FlexDirection
 import org.jetbrains.compose.web.css.LineStyle
 import org.jetbrains.compose.web.css.Position
+import org.jetbrains.compose.web.css.s
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Section
 import org.w3c.dom.HTMLScriptElement
@@ -84,6 +96,8 @@ import org.w3c.dom.SMOOTH
 import org.w3c.dom.ScrollBehavior
 import org.w3c.dom.ScrollToOptions
 import kotlin.js.Date
+import kotlin.js.json
+import kotlin.time.Duration.Companion.seconds
 
 val ArticleContentPageStyle = CssStyle {
     base {
@@ -166,6 +180,25 @@ val ArticleContentStyle = CssStyle {
     cssRule("tr:nth-child(2n)") {
         Modifier
             .backgroundColor(colorScheme.surface)
+    }
+    cssRule(" [class*=lang-] pre.shiki code span.line > span.highlighted-word") {
+        val color = "color-mix(in srgb, currentcolor 20%, transparent".unsafeCast<CSSColorValue>()
+        Modifier
+            .border {
+                width(1.dp)
+                style(LineStyle.Solid)
+                color(color)
+            }
+            .borderRadius(2.dp)
+            .padding(vertical = 1.dp, horizontal = 3.dp)
+            .margin(vertical = (-1).dp, horizontal = (-3).dp)
+            .backgroundColor(color)
+    }
+
+    cssRule("iframe#brasil-zoomed") {
+        Modifier
+            .fillMaxWidth()
+            .height(500.dp)
     }
 }
 
@@ -317,9 +350,40 @@ val CommentSectionStyle = CssStyle {
         Modifier
             .margin { top(32.dp) }
             .backgroundColor(colorScheme.surface)
+            .borderRadius(8.dp)
+            .transition(
+                CSSTransition(
+                    property = "opacity",
+                    duration = 0.3.s,
+                    timingFunction = TransitionTimingFunction.EaseOut,
+                    delay = 0.s,
+                ),
+                CSSTransition(
+                    property = "transform",
+                    duration = 0.3.s,
+                    timingFunction = TransitionTimingFunction.EaseOut,
+                    delay = 0.s,
+                ),
+                CSSTransition(
+                    property = "box-shadow",
+                    duration = 0.3.s,
+                    timingFunction = TransitionTimingFunction.EaseInOut,
+                    delay = 0.s,
+                ),
+            )
+            .styleModifier {
+                property(propertyName = "transform-origin", value = "center top")
+            }
     }
     cssRule("#graphcomment > iframe .gc-body") {
         Modifier.backgroundColor(colorScheme.background)
+    }
+    cssRule("> iframe") {
+        Modifier
+            .padding(16.dp)
+            .styleModifier {
+                property("color-scheme", "normal")
+            }
     }
 }
 
@@ -394,10 +458,28 @@ fun CommentSection(
         }
     }
 
+    val colorMode = ColorMode.current
+    var opacity by remember { mutableStateOf(0) }
+    LaunchedEffect(Unit) {
+        while (window.asDynamic().DISQUS == null) {
+            delay(1.seconds)
+        }
+        opacity = 1
+    }
+
+    LaunchedEffect(colorMode) {
+        window.asDynamic().DISQUS?.reset(
+            json("reload" to true)
+        )
+    }
+
     Div(
-        attrs = CommentSectionStyle.toModifier().then(modifier).toAttrs {
-            id("disqus_thread")
-        },
+        attrs = CommentSectionStyle.toModifier()
+            .then(modifier)
+            .opacity(opacity)
+            .toAttrs {
+                id("disqus_thread")
+            },
     ) { }
 }
 

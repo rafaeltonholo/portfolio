@@ -2,7 +2,9 @@ package dev.tonholo.marktdown.processor.renderer
 
 import com.squareup.kotlinpoet.asClassName
 import dev.tonholo.marktdown.domain.content.CodeFence
+import dev.tonholo.marktdown.domain.content.CustomElement
 import dev.tonholo.marktdown.domain.content.HorizontalRule
+import dev.tonholo.marktdown.domain.content.HtmlBlock
 import dev.tonholo.marktdown.domain.content.ImageElement
 import dev.tonholo.marktdown.domain.content.LineBreak
 import dev.tonholo.marktdown.domain.content.Link
@@ -45,6 +47,8 @@ class MarktdownElementRendererCreator(
             Link.AutoLink::class.constructor to Link.AutoLink::class,
             TextElement.PlainText::class.constructor to TextElement.PlainText::class,
             TextElement.InlineHtml::class.constructor to TextElement.InlineHtml::class,
+            HtmlBlock::class.java.name to HtmlBlock::class,
+            CustomElement::class.java.name to CustomElement::class,
         )
         private val KClass<out MarktdownElement>.constructor
             get() = "${asClassName().simpleNames.joinToString(".")}("

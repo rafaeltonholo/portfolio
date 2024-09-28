@@ -8,6 +8,7 @@ import dev.tonholo.kotlin.wrapper.shiki.core.themes.ShikiTheme
 import dev.tonholo.kotlin.wrapper.shiki.core.themes.shikiTheme
 import dev.tonholo.kotlin.wrapper.shiki.core.transformers.notation.transformerNotationFocus
 import dev.tonholo.kotlin.wrapper.shiki.core.transformers.notation.transformerNotationHighlight
+import dev.tonholo.kotlin.wrapper.shiki.core.transformers.notation.transformerNotationWordHighlight
 import dev.tonholo.marktdown.domain.content.CodeFence
 import dev.tonholo.marktdown.domain.renderer.MarktdownElementScope
 import dev.tonholo.marktdown.domain.renderer.MarktdownRenderer
@@ -31,6 +32,7 @@ fun MarktdownElementScope<CodeFence>.CodeFenceCustomRender() {
         transformers = listOf(
             transformerNotationFocus(),
             transformerNotationHighlight(),
+            transformerNotationWordHighlight(),
         ),
         paddingStart = 16.dp,
         paddingEnd = 16.dp,

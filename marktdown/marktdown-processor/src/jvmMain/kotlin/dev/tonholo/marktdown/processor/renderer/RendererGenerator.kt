@@ -2,7 +2,9 @@ package dev.tonholo.marktdown.processor.renderer
 
 import com.squareup.kotlinpoet.FileSpec
 import dev.tonholo.marktdown.domain.content.CodeFence
+import dev.tonholo.marktdown.domain.content.CustomElement
 import dev.tonholo.marktdown.domain.content.HorizontalRule
+import dev.tonholo.marktdown.domain.content.HtmlBlock
 import dev.tonholo.marktdown.domain.content.ImageElement
 import dev.tonholo.marktdown.domain.content.LineBreak
 import dev.tonholo.marktdown.domain.content.Link.AutoLink
@@ -74,6 +76,9 @@ abstract class RendererGenerator(
                     PlainText::class -> it to PlainText::class.createPlainTextDefaultRenderer()
                     TextElement.InlineHtml::class ->
                         it to TextElement.InlineHtml::class.createInlineHtmlDefaultRenderer()
+
+                    HtmlBlock::class -> it to HtmlBlock::class.createHtmlBlockDefaultRenderer()
+                    CustomElement::class -> it to CustomElement::class.createCustomElementDefaultRenderer()
                     else -> null
                 }
             },
@@ -122,4 +127,6 @@ abstract class RendererGenerator(
     protected abstract fun KClass<out AutoLink>.createAutoLinkDefaultRenderer(): FileSpec
     protected abstract fun KClass<out PlainText>.createPlainTextDefaultRenderer(): FileSpec
     protected abstract fun KClass<out TextElement.InlineHtml>.createInlineHtmlDefaultRenderer(): FileSpec
+    protected abstract fun KClass<out HtmlBlock>.createHtmlBlockDefaultRenderer(): FileSpec
+    protected abstract fun KClass<out CustomElement>.createCustomElementDefaultRenderer(): FileSpec
 }

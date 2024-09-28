@@ -4,6 +4,8 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
 import cafe.adriel.lyricist.LyricistStrings
 import dev.tonholo.marktdown.domain.content.MarktdownDocument
+import dev.tonholo.portfolio.AnAlternativeToDrawablesOnComposeEn
+import dev.tonholo.portfolio.AnAlternativeToDrawablesOnComposePtBr
 import dev.tonholo.portfolio.HelloWorldEn
 import dev.tonholo.portfolio.HelloWorldPtBr
 import dev.tonholo.portfolio.core.collections.immutableListOf
@@ -47,6 +49,7 @@ val EnStrings = Strings(
     scrollToTop = "Scroll to top ⬆",
     articles = mapOf(
         "hello-world" to HelloWorldEn,
+        "an-alternative-to-drawables-on-compose" to AnAlternativeToDrawablesOnComposeEn,
     ),
     siteName = "Rafael Tonholo Blog",
 )
@@ -63,6 +66,7 @@ val PtStrings = Strings(
     scrollToTop = "Ir para o início ⬆",
     articles = mapOf(
         "hello-world" to HelloWorldPtBr,
+        "an-alternative-to-drawables-on-compose" to AnAlternativeToDrawablesOnComposePtBr,
     ),
     siteName = "Rafael Tonholo Blog",
 )

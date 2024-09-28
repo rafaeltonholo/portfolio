@@ -19,7 +19,9 @@ import dev.tonholo.marktdown.domain.MarktdownLink
 import dev.tonholo.marktdown.domain.MarktdownMetadata
 import dev.tonholo.marktdown.domain.MarktdownTag
 import dev.tonholo.marktdown.domain.content.CodeFence
+import dev.tonholo.marktdown.domain.content.CustomElement
 import dev.tonholo.marktdown.domain.content.HorizontalRule
+import dev.tonholo.marktdown.domain.content.HtmlBlock
 import dev.tonholo.marktdown.domain.content.ImageElement
 import dev.tonholo.marktdown.domain.content.LineBreak
 import dev.tonholo.marktdown.domain.content.Link
@@ -44,8 +46,8 @@ import dev.tonholo.marktdown.processor.extensions.function
 import dev.tonholo.marktdown.processor.extensions.modifiers
 import dev.tonholo.marktdown.processor.extensions.parameter
 import dev.tonholo.marktdown.processor.extensions.parameters
-import dev.tonholo.marktdown.processor.extensions.withControlFlow
-import dev.tonholo.marktdown.processor.extensions.withNullableLet
+import dev.tonholo.marktdown.processor.extensions.kotlinpoet.withControlFlow
+import dev.tonholo.marktdown.processor.extensions.kotlinpoet.withNullableLet
 import dev.tonholo.marktdown.processor.renderer.RendererGenerator
 import kotlin.reflect.KClass
 
@@ -800,6 +802,28 @@ class ComposeHtmlRendererGenerator(
                 }
             )
         }
+
+    override fun KClass<out HtmlBlock>.createHtmlBlockDefaultRenderer(): FileSpec =
+        baseFileSpec(
+            leafNodeScopeFn = {
+                val div = MemberName(COMPOSE_WEB_DOM, "Div")
+                beginControlFlow("%M", div)
+                beginControlFlow("%M(this)", disposableEffect)
+                addStatement(
+                    "scopeElement.innerHTML = element.%N",
+                    member(HtmlBlock::content.name),
+                )
+                addStatement("onDispose { }")
+                endControlFlow()
+                endControlFlow()
+            },
+        )
+
+    override fun KClass<out CustomElement>.createCustomElementDefaultRenderer(): FileSpec = baseFileSpec(
+        leafNodeScopeFn = {
+            addStatement("// TBD.")
+        }
+    )
 
     private inline fun <reified T : MarktdownElement> KClass<out T>.baseFileSpec(
         noinline leafNodeScopeFn: CodeBlock.Builder.() -> Unit = {},
