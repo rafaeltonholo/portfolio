@@ -78,7 +78,7 @@ private fun Projects(
             projects.forEach { project ->
                 ProjectCard(
                     name = project.title,
-                    description = project.description,
+                    description = project.summary.toString(),
                     src = project.src,
                     playStoreSrc = project.playStoreSrc,
                 )

@@ -24,6 +24,7 @@ import dev.tonholo.portfolio.core.extensions.padding
 import dev.tonholo.portfolio.core.foundation.layout.Scaffold
 import dev.tonholo.portfolio.core.sections.AppBar
 import dev.tonholo.portfolio.core.sections.Footer
+import dev.tonholo.portfolio.core.ui.text.AnnotatedString
 import dev.tonholo.portfolio.core.ui.theme.Theme
 import dev.tonholo.portfolio.core.ui.theme.colorScheme
 import dev.tonholo.portfolio.core.ui.theme.typography
@@ -33,6 +34,8 @@ import dev.tonholo.portfolio.resources.Project
 import dev.tonholo.portfolio.resources.pages.ProjectPage
 import kotlinx.datetime.DatePeriod
 import org.jetbrains.compose.web.css.LineStyle
+
+private const val PARAGRAPH_SPACED_BY = 16
 
 val ProjectContentPageStyle = CssStyle {
     base {
@@ -67,7 +70,7 @@ val ProjectContainerContentStyle = CssStyle {
     base {
         Modifier
             .fillMaxWidth()
-            .gap(40.dp)
+            .gap(32.dp)
     }
 }
 val ProjectContainerContentPanelStyle = CssStyle {
@@ -82,14 +85,27 @@ val ProjectContainerContentTitleStyle = CssStyle {
     base {
         typography.headlineMedium
             .toModifier()
-            .fillMaxWidth()
-            .padding(vertical = 24.dp)
-            .borderBottom {
-                width(1.dp)
-                style(LineStyle.Solid)
-            }
+            .titleModifier()
     }
 }
+
+val ProjectContainerContentDescriptionStyle = CssStyle {
+    base {
+        Modifier
+            .fillMaxWidth()
+            .gap(PARAGRAPH_SPACED_BY.dp)
+    }
+    cssRule("h5") {
+        Modifier.titleModifier()
+    }
+}
+
+private fun Modifier.titleModifier(): Modifier = this then Modifier.fillMaxWidth()
+    .padding(vertical = 24.dp)
+    .borderBottom {
+        width(1.dp)
+        style(LineStyle.Solid)
+    }
 
 @Composable
 fun ProjectContent(
@@ -139,7 +155,7 @@ fun ProjectContent(
                 listPanel = {
                     ProjectBackground(
                         strings = strings,
-                        content = project.description,
+                        content = project.summary,
                         modifier = ProjectContainerContentPanelStyle.toModifier(),
                     )
                 },
@@ -151,6 +167,10 @@ fun ProjectContent(
                     )
                 }
             )
+            Text(
+                text = project.description,
+                modifier = ProjectContainerContentDescriptionStyle.toModifier(),
+            )
         }
     }
 }
@@ -158,7 +178,7 @@ fun ProjectContent(
 @Composable
 private fun ProjectBackground(
     strings: ProjectPage,
-    content: String,
+    content: CharSequence,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -170,7 +190,13 @@ private fun ProjectBackground(
             style = Theme.typography.headlineMedium,
             modifier = ProjectContainerContentTitleStyle.toModifier(),
         )
-        Text(text = content)
+        when (content) {
+            is String -> Text(text = content)
+            is AnnotatedString -> Text(
+                text = content,
+                verticalArrangement = Arrangement.spacedBy(PARAGRAPH_SPACED_BY.dp),
+            )
+        }
     }
 }
 
@@ -182,7 +208,7 @@ private fun ProjectInfo(
 ) {
     Column(
         modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(16.dp),
+        verticalArrangement = Arrangement.spacedBy(PARAGRAPH_SPACED_BY.dp),
     ) {
         Text(
             text = strings.info,
@@ -201,6 +227,12 @@ private fun ProjectInfo(
             )
             Text(text = timeline.toHumanString())
         }
+
+        Text(
+            text = strings.stack,
+            style = Theme.typography.headlineSmall,
+        )
+        Text(text = project.stack.joinToString())
     }
 }
 
