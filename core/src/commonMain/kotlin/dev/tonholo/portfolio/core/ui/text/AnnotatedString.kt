@@ -216,6 +216,77 @@ fun Builder.bold(text: String) {
     }
 }
 
+fun Builder.title(
+    text: String,
+    level: TitleStyle.Level,
+    fontSize: TextUnit = TextUnit.Unspecified,
+    fontWeight: FontWeight? = null,
+    fontStyle: FontStyle? = null,
+    fontSynthesis: FontSynthesis? = null,
+    fontFamily: FontFamily? = null,
+    fontFeatureSettings: String? = null,
+    letterSpacing: TextUnit = TextUnit.Unspecified,
+    background: Color = Color.Unspecified,
+    textDecoration: TextDecorationLine? = null,
+) {
+    withStyle(
+        style = TitleStyle(
+            level = level,
+            fontSize = fontSize,
+            fontWeight = fontWeight,
+            fontStyle = fontStyle,
+            fontSynthesis = fontSynthesis,
+            fontFamily = fontFamily,
+            fontFeatureSettings = fontFeatureSettings,
+            letterSpacing = letterSpacing,
+            background = background,
+            textDecoration = textDecoration,
+        ),
+    ) {
+        append(text)
+    }
+}
+
+fun Builder.subtitle(
+    text: String,
+    fontSize: TextUnit = TextUnit.Unspecified,
+    fontWeight: FontWeight? = null,
+    fontStyle: FontStyle? = null,
+    fontSynthesis: FontSynthesis? = null,
+    fontFamily: FontFamily? = null,
+    fontFeatureSettings: String? = null,
+    letterSpacing: TextUnit = TextUnit.Unspecified,
+    background: Color = Color.Unspecified,
+    textDecoration: TextDecorationLine? = null,
+) {
+    withStyle(
+        style = SubtitleStyle(
+            fontSize = fontSize,
+            fontWeight = fontWeight,
+            fontStyle = fontStyle,
+            fontSynthesis = fontSynthesis,
+            fontFamily = fontFamily,
+            fontFeatureSettings = fontFeatureSettings,
+            letterSpacing = letterSpacing,
+            background = background,
+            textDecoration = textDecoration,
+        ),
+    ) {
+        append(text)
+    }
+}
+
+fun Builder.paragraph(
+    text: String,
+    textAlign: TextAlign = TextAlign.Start,
+    lineHeight: TextUnit? = null,
+    textIndent: TextIndent = TextIndent(),
+) {
+    withStyle(style = ParagraphStyle(textAlign, lineHeight, textIndent)) {
+        append(text)
+    }
+}
+
 /**
  * Pushes [style] to the [AnnotatedString.Builder], executes [block] and then pops the [style].
  *
@@ -312,11 +383,40 @@ internal fun intersect(lStart: Int, lEnd: Int, rStart: Int, rEnd: Int) =
 
 data class ParagraphStyle(
     val textAlign: TextAlign,
-    val lineHeight: TextUnit,
+    val lineHeight: TextUnit?,
     val textIndent: TextIndent,
 ) : Style
 
 data class SpanStyle(
+    val fontSize: TextUnit = TextUnit.Unspecified,
+    val fontWeight: FontWeight? = null,
+    val fontStyle: FontStyle? = null,
+    val fontSynthesis: FontSynthesis? = null,
+    val fontFamily: FontFamily? = null,
+    val fontFeatureSettings: String? = null,
+    val letterSpacing: TextUnit = TextUnit.Unspecified,
+    val background: Color = Color.Unspecified,
+    val textDecoration: TextDecorationLine? = null,
+) : Style
+
+data class TitleStyle(
+    val level: Level,
+    val fontSize: TextUnit = TextUnit.Unspecified,
+    val fontWeight: FontWeight? = null,
+    val fontStyle: FontStyle? = null,
+    val fontSynthesis: FontSynthesis? = null,
+    val fontFamily: FontFamily? = null,
+    val fontFeatureSettings: String? = null,
+    val letterSpacing: TextUnit = TextUnit.Unspecified,
+    val background: Color = Color.Unspecified,
+    val textDecoration: TextDecorationLine? = null,
+) : Style {
+    enum class Level {
+        H1, H2, H3, H4, H5, H6
+    }
+}
+
+data class SubtitleStyle(
     val fontSize: TextUnit = TextUnit.Unspecified,
     val fontWeight: FontWeight? = null,
     val fontStyle: FontStyle? = null,
