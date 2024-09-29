@@ -7,6 +7,7 @@ data class ProjectPage(
     val role: String,
     val client: String,
     val timeline: String,
+    val stack: String,
 ) {
     companion object {
         val En = ProjectPage(
@@ -16,6 +17,7 @@ data class ProjectPage(
             role = "Role",
             client = "Client",
             timeline = "Timeline",
+            stack = "Stack",
         )
         val PtBR = ProjectPage(
             title = "Projeto",
@@ -24,6 +26,7 @@ data class ProjectPage(
             role = "Posição",
             client = "Cliente",
             timeline = "Duração",
+            stack = "Stack",
         )
     }
 }

@@ -34,7 +34,7 @@ fun ProjectPage() {
     }
     val context = rememberPageContext()
     val projectKey = context.route.params.getValue(AppRoutes.Project.PROJECT_KEY_PARAM)
-    val project = remember(projectKey) {
+    val project = remember(projectKey, lyricist.languageTag) {
         Projects.findProject(lyricist.languageTag, projectKey)
     }
     if (project == null) {
