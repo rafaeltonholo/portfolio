@@ -23,6 +23,8 @@ kotlin {
         }
         jsMain.dependencies {
             implementation(compose.html.core)
+            implementation(libs.kobweb.core)
+            implementation(libs.kobweb.silk)
         }
     }
 }
