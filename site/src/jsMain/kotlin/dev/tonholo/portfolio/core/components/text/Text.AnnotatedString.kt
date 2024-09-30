@@ -39,9 +39,6 @@ fun Text(
     ) {
         key(text.text) {
             val styles = remember(text) { text.calculatedNestedStyles() }
-            SideEffect {
-                console.log("styles", styles)
-            }
             styles.forEach { (parentRange, nestedRanges) ->
                 key(parentRange) {
                     when {
