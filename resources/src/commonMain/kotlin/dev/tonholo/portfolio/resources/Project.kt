@@ -157,9 +157,9 @@ object Projects {
     internal val En = mapOf(
         ProjectType.Commercial to listOf(
             Pinterest,
-            Project.BleacherReport,
-            Project.Questrade,
-            Project.WPLSesameStreet,
+//            Project.BleacherReport,
+//            Project.Questrade,
+//            Project.WPLSesameStreet,
         ),
         ProjectType.OpenSource to listOf(
             Project.SvgToCompose,
@@ -172,9 +172,9 @@ object Projects {
     internal val PtBr = mapOf(
         ProjectType.Commercial to listOf(
             PinterestPtBr,
-            Project.BleacherReport,
-            Project.Questrade,
-            Project.WPLSesameStreet,
+//            Project.BleacherReport,
+//            Project.Questrade,
+//            Project.WPLSesameStreet,
         ),
         ProjectType.OpenSource to listOf(
             Project.SvgToCompose.copy(
