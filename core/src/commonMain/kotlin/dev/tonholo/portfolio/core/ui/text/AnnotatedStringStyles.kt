@@ -3,21 +3,13 @@ package dev.tonholo.portfolio.core.ui.text
 import androidx.compose.ui.text.font.FontSynthesis
 import com.varabyte.kobweb.compose.css.FontStyle
 import com.varabyte.kobweb.compose.css.FontWeight
-import com.varabyte.kobweb.compose.css.TextAlign
 import com.varabyte.kobweb.compose.css.TextDecorationLine
 import com.varabyte.kobweb.compose.ui.graphics.Color
 import dev.tonholo.portfolio.core.ui.text.AnnotatedString.Builder
 import dev.tonholo.portfolio.core.ui.text.AnnotatedString.Style
 import dev.tonholo.portfolio.core.ui.theme.color.Unspecified
 import dev.tonholo.portfolio.core.ui.theme.typography.Font
-import dev.tonholo.portfolio.core.ui.unit.TextIndent
 import dev.tonholo.portfolio.core.ui.unit.TextUnit
-
-data class ParagraphStyle(
-    val textAlign: TextAlign = TextAlign.Start,
-    val lineHeight: TextUnit? = null,
-    val textIndent: TextIndent = TextIndent(),
-) : Style
 
 data class TitleStyle(
     val level: Level,
@@ -106,24 +98,4 @@ fun Builder.subtitle(
     ) {
         append(text)
     }
-}
-
-fun Builder.paragraph(
-    text: String,
-    textAlign: TextAlign = TextAlign.Start,
-    lineHeight: TextUnit? = null,
-    textIndent: TextIndent = TextIndent(),
-) {
-    paragraph(textAlign, lineHeight, textIndent) {
-        append(text)
-    }
-}
-
-fun Builder.paragraph(
-    textAlign: TextAlign = TextAlign.Start,
-    lineHeight: TextUnit? = null,
-    textIndent: TextIndent = TextIndent(),
-    block: Builder.() -> Unit,
-) {
-    withStyle(style = ParagraphStyle(textAlign, lineHeight, textIndent), block)
 }
