@@ -47,6 +47,21 @@ class AnnotatedString(
         )
     }
 
+    fun calculatedNestedStyles(): Map<Range<out Style>, List<Range<out Style>>> =
+        buildMap<Range<out Style>, MutableList<Range<out Style>>> {
+            var endRange = 0
+            var currentStyle = styles.first()
+            for (style in styles) {
+                if (endRange < style.end) {
+                    endRange = style.end
+                    currentStyle = style
+                    put(currentStyle, mutableListOf())
+                    continue
+                }
+                getValue(currentStyle).add(style)
+            }
+        }.toMap()
+
     /**
      * The information attached on the text such as a [SpanStyle].
      *
@@ -282,9 +297,18 @@ fun Builder.paragraph(
     lineHeight: TextUnit? = null,
     textIndent: TextIndent = TextIndent(),
 ) {
-    withStyle(style = ParagraphStyle(textAlign, lineHeight, textIndent)) {
+    paragraph(textAlign, lineHeight, textIndent) {
         append(text)
     }
+}
+
+fun Builder.paragraph(
+    textAlign: TextAlign = TextAlign.Start,
+    lineHeight: TextUnit? = null,
+    textIndent: TextIndent = TextIndent(),
+    block: Builder.() -> Unit,
+) {
+    withStyle(style = ParagraphStyle(textAlign, lineHeight, textIndent), block)
 }
 
 /**
@@ -382,9 +406,9 @@ internal fun intersect(lStart: Int, lEnd: Int, rStart: Int, rEnd: Int) =
         contains(lStart, lEnd, rStart, rEnd) || contains(rStart, rEnd, lStart, lEnd)
 
 data class ParagraphStyle(
-    val textAlign: TextAlign,
-    val lineHeight: TextUnit?,
-    val textIndent: TextIndent,
+    val textAlign: TextAlign = TextAlign.Start,
+    val lineHeight: TextUnit? = null,
+    val textIndent: TextIndent = TextIndent(),
 ) : Style
 
 data class SpanStyle(
