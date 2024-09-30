@@ -1,31 +1,22 @@
 package dev.tonholo.portfolio.core.ui.text
 
 import androidx.compose.runtime.Immutable
-import androidx.compose.ui.text.font.FontSynthesis
 import androidx.compose.ui.util.fastFilter
 import androidx.compose.ui.util.fastForEach
 import androidx.compose.ui.util.fastMap
-import com.varabyte.kobweb.compose.css.FontStyle
-import com.varabyte.kobweb.compose.css.FontWeight
-import com.varabyte.kobweb.compose.css.TextAlign
-import com.varabyte.kobweb.compose.css.TextDecorationLine
-import com.varabyte.kobweb.compose.ui.graphics.Color
 import dev.tonholo.portfolio.core.ui.text.AnnotatedString.*
-import dev.tonholo.portfolio.core.ui.theme.color.Unspecified
-import dev.tonholo.portfolio.core.ui.theme.typography.FontFamily
-import dev.tonholo.portfolio.core.ui.unit.TextIndent
-import dev.tonholo.portfolio.core.ui.unit.TextUnit
 
 class AnnotatedString(
     val text: String,
-    internal val stylesOrNull: List<Range<out Style>>? = null,
+    internal val stylesOrNull: List<Range<out Annotation>>? = null,
 ) : CharSequence by text {
-    sealed interface Style
+    sealed interface Annotation
+    sealed interface Style : Annotation
 
     /**
      * All [Style] that have been applied to a range of this String
      */
-    val styles: List<Range<out Style>>
+    val styles: List<Range<out Annotation>>
         get() = stylesOrNull ?: emptyList()
 
     /**
@@ -47,8 +38,8 @@ class AnnotatedString(
         )
     }
 
-    fun calculatedNestedStyles(): Map<Range<out Style>, List<Range<out Style>>> =
-        buildMap<Range<out Style>, MutableList<Range<out Style>>> {
+    fun calculatedNestedStyles(): Map<Range<out Annotation>, List<Range<out Annotation>>> =
+        buildMap<Range<out Annotation>, MutableList<Range<out Annotation>>> {
             var endRange = 0
             var currentStyle = styles.first()
             for (style in styles) {
@@ -100,8 +91,13 @@ class AnnotatedString(
         }
 
         var text = StringBuilder(capacity)
-        private val styles: MutableList<MutableRange<Style>> = mutableListOf()
-        private val styleStack: MutableList<MutableRange<Style>> = mutableListOf()
+        private val styleStack: MutableList<MutableRange<out Annotation>> = mutableListOf()
+
+        /**
+         * Holds all objects of type [AnnotatedString.Annotation] including [SpanStyle]s and
+         * [ParagraphStyle]s in order.
+         */
+        private val annotations: MutableList<MutableRange<out Annotation>> = mutableListOf()
 
         override fun append(value: Char): Builder {
             text.append(value)
@@ -136,7 +132,7 @@ class AnnotatedString(
             this.text.append(text.text)
             // offset every style with start and add to the builder
             text.stylesOrNull?.fastForEach {
-                addStyle(it.item, start + it.start, start + it.end)
+                annotations.add(MutableRange(it.item, start + it.start, start + it.end))
             }
         }
 
@@ -165,7 +161,26 @@ class AnnotatedString(
          * @param end the exclusive end offset of the range
          */
         fun addStyle(style: Style, start: Int, end: Int) {
-            styles.add(MutableRange(item = style, start = start, end = end))
+            this.annotations.add(MutableRange(item = style, start = start, end = end))
+        }
+
+        /**
+         * Set a [LinkAnnotation.Url] for the given [range].
+         *
+         * When clicking on the text in [range], the corresponding URL from the [url] annotation
+         * will be opened using [androidx.compose.ui.platform.UriHandler].
+         *
+         * URLs may be treated specially by screen readers, including being identified while reading
+         * text with an audio icon or being summarized in a links menu.
+         *
+         * @param url A [LinkAnnotation.Url] object that stores the URL being linked to.
+         * @param start the inclusive starting offset of the range
+         * @param end the exclusive end offset of the range
+         * @see getStringAnnotations
+         */
+        @Suppress("SetterReturnsThis")
+        fun addLink(url: LinkAnnotation.Url, start: Int, end: Int) {
+            annotations.add(MutableRange(url, start, end))
         }
 
         /**
@@ -179,7 +194,25 @@ class AnnotatedString(
         fun pushStyle(style: Style): Int {
             MutableRange(item = style, start = text.length).also {
                 styleStack.add(it)
-                styles.add(it)
+                this.annotations.add(it)
+            }
+            return styleStack.size - 1
+        }
+
+        /**
+         * Attach the given [LinkAnnotation] to any appended text until a corresponding [pop] is
+         * called.
+         *
+         * @param link A [LinkAnnotation] object that stores the URL or clickable tag being linked
+         *   to.
+         * @see getStringAnnotations
+         * @see Range
+         */
+        @Suppress("BuilderSetStyle")
+        fun pushLink(link: LinkAnnotation): Int {
+            MutableRange(item = link, start = text.length).also {
+                styleStack.add(it)
+                annotations.add(it)
             }
             return styleStack.size - 1
         }
@@ -218,97 +251,11 @@ class AnnotatedString(
          */
         fun build(): AnnotatedString = AnnotatedString(
             text = text.toString(),
-            stylesOrNull = styles
+            stylesOrNull = this.annotations
                 .fastMap { it.toRange(text.length) }
                 .ifEmpty { null },
         )
     }
-}
-
-fun Builder.bold(text: String) {
-    withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-        append(text)
-    }
-}
-
-fun Builder.title(
-    text: String,
-    level: TitleStyle.Level,
-    fontSize: TextUnit = TextUnit.Unspecified,
-    fontWeight: FontWeight? = null,
-    fontStyle: FontStyle? = null,
-    fontSynthesis: FontSynthesis? = null,
-    fontFamily: FontFamily? = null,
-    fontFeatureSettings: String? = null,
-    letterSpacing: TextUnit = TextUnit.Unspecified,
-    background: Color = Color.Unspecified,
-    textDecoration: TextDecorationLine? = null,
-) {
-    withStyle(
-        style = TitleStyle(
-            level = level,
-            fontSize = fontSize,
-            fontWeight = fontWeight,
-            fontStyle = fontStyle,
-            fontSynthesis = fontSynthesis,
-            fontFamily = fontFamily,
-            fontFeatureSettings = fontFeatureSettings,
-            letterSpacing = letterSpacing,
-            background = background,
-            textDecoration = textDecoration,
-        ),
-    ) {
-        append(text)
-    }
-}
-
-fun Builder.subtitle(
-    text: String,
-    fontSize: TextUnit = TextUnit.Unspecified,
-    fontWeight: FontWeight? = null,
-    fontStyle: FontStyle? = null,
-    fontSynthesis: FontSynthesis? = null,
-    fontFamily: FontFamily? = null,
-    fontFeatureSettings: String? = null,
-    letterSpacing: TextUnit = TextUnit.Unspecified,
-    background: Color = Color.Unspecified,
-    textDecoration: TextDecorationLine? = null,
-) {
-    withStyle(
-        style = SubtitleStyle(
-            fontSize = fontSize,
-            fontWeight = fontWeight,
-            fontStyle = fontStyle,
-            fontSynthesis = fontSynthesis,
-            fontFamily = fontFamily,
-            fontFeatureSettings = fontFeatureSettings,
-            letterSpacing = letterSpacing,
-            background = background,
-            textDecoration = textDecoration,
-        ),
-    ) {
-        append(text)
-    }
-}
-
-fun Builder.paragraph(
-    text: String,
-    textAlign: TextAlign = TextAlign.Start,
-    lineHeight: TextUnit? = null,
-    textIndent: TextIndent = TextIndent(),
-) {
-    paragraph(textAlign, lineHeight, textIndent) {
-        append(text)
-    }
-}
-
-fun Builder.paragraph(
-    textAlign: TextAlign = TextAlign.Start,
-    lineHeight: TextUnit? = null,
-    textIndent: TextIndent = TextIndent(),
-    block: Builder.() -> Unit,
-) {
-    withStyle(style = ParagraphStyle(textAlign, lineHeight, textIndent), block)
 }
 
 /**
@@ -345,14 +292,15 @@ inline fun <R : Any> Builder.withStyle(
 private fun AnnotatedString.getLocalSpanStyles(
     start: Int,
     end: Int
-): List<Range<out Style>>? {
+): List<Range<out SpanStyle>>? {
     if (start == end) return null
-    val spanStyles = stylesOrNull ?: return null
+    val spanStyles = stylesOrNull?.filterIsInstance<Range<out SpanStyle>>() ?: return null
     // If the given range covers the whole AnnotatedString, return SpanStyles without conversion.
     if (start == 0 && end >= this.text.length) {
-        return styles
+        return spanStyles
     }
-    return spanStyles.fastFilter { intersect(start, end, it.start, it.end) }
+    return spanStyles
+        .fastFilter { intersect(start, end, it.start, it.end) }
         .fastMap {
             Range(
                 item = it.item,
@@ -404,53 +352,6 @@ internal fun contains(baseStart: Int, baseEnd: Int, targetStart: Int, targetEnd:
 internal fun intersect(lStart: Int, lEnd: Int, rStart: Int, rEnd: Int) =
     maxOf(lStart, rStart) < minOf(lEnd, rEnd) ||
         contains(lStart, lEnd, rStart, rEnd) || contains(rStart, rEnd, lStart, lEnd)
-
-data class ParagraphStyle(
-    val textAlign: TextAlign = TextAlign.Start,
-    val lineHeight: TextUnit? = null,
-    val textIndent: TextIndent = TextIndent(),
-) : Style
-
-data class SpanStyle(
-    val fontSize: TextUnit = TextUnit.Unspecified,
-    val fontWeight: FontWeight? = null,
-    val fontStyle: FontStyle? = null,
-    val fontSynthesis: FontSynthesis? = null,
-    val fontFamily: FontFamily? = null,
-    val fontFeatureSettings: String? = null,
-    val letterSpacing: TextUnit = TextUnit.Unspecified,
-    val background: Color = Color.Unspecified,
-    val textDecoration: TextDecorationLine? = null,
-) : Style
-
-data class TitleStyle(
-    val level: Level,
-    val fontSize: TextUnit = TextUnit.Unspecified,
-    val fontWeight: FontWeight? = null,
-    val fontStyle: FontStyle? = null,
-    val fontSynthesis: FontSynthesis? = null,
-    val fontFamily: FontFamily? = null,
-    val fontFeatureSettings: String? = null,
-    val letterSpacing: TextUnit = TextUnit.Unspecified,
-    val background: Color = Color.Unspecified,
-    val textDecoration: TextDecorationLine? = null,
-) : Style {
-    enum class Level {
-        H1, H2, H3, H4, H5, H6
-    }
-}
-
-data class SubtitleStyle(
-    val fontSize: TextUnit = TextUnit.Unspecified,
-    val fontWeight: FontWeight? = null,
-    val fontStyle: FontStyle? = null,
-    val fontSynthesis: FontSynthesis? = null,
-    val fontFamily: FontFamily? = null,
-    val fontFeatureSettings: String? = null,
-    val letterSpacing: TextUnit = TextUnit.Unspecified,
-    val background: Color = Color.Unspecified,
-    val textDecoration: TextDecorationLine? = null,
-) : Style
 
 @DslMarker
 annotation class AnnotatedStringDsl
