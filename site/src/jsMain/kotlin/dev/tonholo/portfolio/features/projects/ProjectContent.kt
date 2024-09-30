@@ -6,17 +6,14 @@ import com.varabyte.kobweb.compose.css.TextAlign
 import com.varabyte.kobweb.compose.css.autoLength
 import com.varabyte.kobweb.compose.foundation.layout.Arrangement
 import com.varabyte.kobweb.compose.foundation.layout.Column
-import com.varabyte.kobweb.compose.foundation.layout.Row
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.backgroundColor
 import com.varabyte.kobweb.compose.ui.modifiers.border
 import com.varabyte.kobweb.compose.ui.modifiers.borderBottom
 import com.varabyte.kobweb.compose.ui.modifiers.borderRadius
 import com.varabyte.kobweb.compose.ui.modifiers.color
-import com.varabyte.kobweb.compose.ui.modifiers.display
 import com.varabyte.kobweb.compose.ui.modifiers.fillMaxSize
 import com.varabyte.kobweb.compose.ui.modifiers.fillMaxWidth
-import com.varabyte.kobweb.compose.ui.modifiers.flexDirection
 import com.varabyte.kobweb.compose.ui.modifiers.gap
 import com.varabyte.kobweb.compose.ui.modifiers.margin
 import com.varabyte.kobweb.compose.ui.modifiers.textAlign
@@ -36,11 +33,10 @@ import dev.tonholo.portfolio.core.ui.theme.colorScheme
 import dev.tonholo.portfolio.core.ui.theme.typography
 import dev.tonholo.portfolio.core.ui.theme.typography.toModifier
 import dev.tonholo.portfolio.core.ui.unit.dp
+import dev.tonholo.portfolio.features.projects.components.ProjectHeadline
 import dev.tonholo.portfolio.resources.Project
 import dev.tonholo.portfolio.resources.pages.ProjectPage
 import kotlinx.datetime.DatePeriod
-import org.jetbrains.compose.web.css.DisplayStyle
-import org.jetbrains.compose.web.css.FlexDirection
 import org.jetbrains.compose.web.css.LineStyle
 
 private const val PARAGRAPH_SPACED_BY = 16
@@ -64,7 +60,7 @@ val ProjectContainerHeadlineStyle = CssStyle {
         Modifier
             .fillMaxWidth()
             .backgroundColor(colorScheme.surfaceVariant)
-            .padding(24.dp)
+            .padding(vertical = 48.dp, horizontal = 24.dp)
             .borderRadius(8.dp)
     }
     cssRule("h1") {
@@ -118,7 +114,7 @@ val ProjectContainerContentDescriptionStyle = CssStyle {
             }
             .borderRadius(8.dp)
     }
-    cssRule(breakpoint = Breakpoint.LG,  suffix = " .container-outcome") {
+    cssRule(breakpoint = Breakpoint.LG, suffix = " .container-outcome") {
         Modifier.padding(32.dp)
     }
     cssRule(" .container-outcome > .base-text-title-large") {
@@ -126,13 +122,6 @@ val ProjectContainerContentDescriptionStyle = CssStyle {
             .padding(bottom = PARAGRAPH_SPACED_BY.dp)
     }
 }
-
-private fun Modifier.titleModifier(): Modifier = this then Modifier.fillMaxWidth()
-    .padding(vertical = 24.dp)
-    .borderBottom {
-        width(1.dp)
-        style(LineStyle.Solid)
-    }
 
 @Composable
 fun ProjectContent(
@@ -169,14 +158,10 @@ fun ProjectContent(
             modifier = ProjectContainerStyle.toModifier()
                 .padding(paddingValues),
         ) {
-            Row(
+            ProjectHeadline(
+                project = project,
                 modifier = ProjectContainerHeadlineStyle.toModifier(),
-            ) {
-                Text(
-                    text = project.title,
-                    style = Theme.typography.displayLarge,
-                )
-            }
+            )
             AdaptiveLayout(
                 modifier = ProjectContainerContentStyle.toModifier(),
                 listPanel = {
@@ -280,3 +265,10 @@ private fun DatePeriod.toHumanString(): String = buildList {
         add("$days days")
     }
 }.joinToString()
+
+private fun Modifier.titleModifier(): Modifier = this then Modifier.fillMaxWidth()
+    .padding(vertical = 24.dp)
+    .borderBottom {
+        width(1.dp)
+        style(LineStyle.Solid)
+    }

@@ -144,6 +144,7 @@ data class ProjectHeadline(
     val logoImageSrc: String? = null,
     val backgroundImageSrc: String? = null,
     val backgroundColor: Color? = null,
+    val textColor: Color? = null,
     val customTextStyle: TextStyle? = null,
 )
 
