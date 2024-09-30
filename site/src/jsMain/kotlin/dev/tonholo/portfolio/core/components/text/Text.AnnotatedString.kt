@@ -12,16 +12,6 @@ import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.foundation.layout.ColumnDefaults
 import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier
-import com.varabyte.kobweb.compose.ui.attrsModifier
-import com.varabyte.kobweb.compose.ui.graphics.Color
-import com.varabyte.kobweb.compose.ui.modifiers.background
-import com.varabyte.kobweb.compose.ui.modifiers.fontFamily
-import com.varabyte.kobweb.compose.ui.modifiers.fontSize
-import com.varabyte.kobweb.compose.ui.modifiers.fontStyle
-import com.varabyte.kobweb.compose.ui.modifiers.fontWeight
-import com.varabyte.kobweb.compose.ui.modifiers.letterSpacing
-import com.varabyte.kobweb.compose.ui.modifiers.textDecorationLine
-import com.varabyte.kobweb.compose.ui.styleModifier
 import com.varabyte.kobweb.compose.ui.thenIf
 import com.varabyte.kobweb.silk.components.navigation.Link
 import dev.tonholo.portfolio.core.components.button.TextButton
@@ -31,10 +21,9 @@ import dev.tonholo.portfolio.core.ui.text.ParagraphStyle
 import dev.tonholo.portfolio.core.ui.text.SpanStyle
 import dev.tonholo.portfolio.core.ui.text.SubtitleStyle
 import dev.tonholo.portfolio.core.ui.text.TitleStyle
+import dev.tonholo.portfolio.core.ui.text.paragraphStyle
 import dev.tonholo.portfolio.core.ui.text.spanStyle
 import dev.tonholo.portfolio.core.ui.theme.Theme
-import dev.tonholo.portfolio.core.ui.theme.color.Unspecified
-import dev.tonholo.portfolio.core.ui.unit.TextUnit
 
 @Composable
 fun Text(
@@ -71,8 +60,10 @@ private fun NestedRangeRenderer(
     nestedRanges: List<AnnotatedString.Range<out AnnotatedString.Annotation>>,
     text: AnnotatedString
 ) {
-    when (parentRange.item) {
-        is ParagraphStyle -> Paragraph {
+    when (val style = parentRange.item) {
+        is ParagraphStyle -> Paragraph(
+            modifier = Modifier.paragraphStyle(style),
+        ) {
             var startRange by remember { mutableIntStateOf(parentRange.start) }
             for (nestedRange in nestedRanges) {
                 when {
@@ -125,7 +116,7 @@ private fun RangeRenderer(
 
             is SubtitleStyle -> Text(
                 text = annotatedText.text,
-                style = Theme.typography.titleSmall,
+                style = Theme.typography.titleLarge,
                 disablePreWrap = true,
             )
 

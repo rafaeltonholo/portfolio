@@ -189,10 +189,25 @@ class AnnotatedString(
          *
          * @sample androidx.compose.ui.text.samples.AnnotatedStringBuilderPushSample
          *
-         * @param style SpanStyle to be applied
+         * @param style generic [Style] to be applied
          */
         fun pushStyle(style: Style): Int {
             MutableRange(item = style, start = text.length).also {
+                styleStack.add(it)
+                this.annotations.add(it)
+            }
+            return styleStack.size - 1
+        }
+
+        /**
+         * Applies the given [ParagraphStyle] to any appended text until a corresponding [pop] is
+         * called.
+         *
+         * @sample androidx.compose.ui.text.samples.AnnotatedStringBuilderPushParagraphStyleSample
+         * @param style [ParagraphStyle] to be applied
+         */
+        fun pushStyle(style: ParagraphStyle): Int {
+            MutableRange(item = style, start = text.length, tag = style.tag).also {
                 styleStack.add(it)
                 this.annotations.add(it)
             }
@@ -271,6 +286,29 @@ class AnnotatedString(
  */
 inline fun <R : Any> Builder.withStyle(
     style: Style,
+    block: Builder.() -> R,
+): R {
+    val index = pushStyle(style)
+    return try {
+        block(this)
+    } finally {
+        pop(index)
+    }
+}
+
+/**
+ * Pushes [style] to the [AnnotatedString.Builder], executes [block] and then pops the [style].
+ *
+ * @param style [Style] to be applied
+ * @param block function to be executed
+ *
+ * @return result of the [block]
+ *
+ * @see AnnotatedString.Builder.pushStyle
+ * @see AnnotatedString.Builder.pop
+ */
+inline fun <R : Any> Builder.withStyle(
+    style: ParagraphStyle,
     block: Builder.() -> R,
 ): R {
     val index = pushStyle(style)
