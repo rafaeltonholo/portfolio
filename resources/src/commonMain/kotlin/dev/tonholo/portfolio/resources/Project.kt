@@ -16,6 +16,7 @@ import kotlinx.datetime.minus
 data class Project(
     val id: String,
     val title: String,
+    val client: String,
     val summary: CharSequence,
     val src: String?,
     val role: String,
@@ -29,6 +30,7 @@ data class Project(
         internal val SvgToCompose = Project(
             id = "svg-to-compose",
             title = "SVG to Compose",
+            client = "SVG to Compose",
             summary = buildString {
                 append("A command-line tool to convert SVG ")
                 append("or an Android Vector Drawable (AVG) to Jetpack Compose Icons.")
@@ -41,6 +43,7 @@ data class Project(
         internal val ComposeDestinations = Project(
             id = "compose-destinations",
             title = "Compose Destinations",
+            client = "Compose Destinations",
             summary = buildString {
                 append("Annotation processing library for type-safe Jetpack Compose")
                 append(" navigation with no boilerplate.")
@@ -53,6 +56,7 @@ data class Project(
         internal val Kobweb = Project(
             id = "kobweb",
             title = "Kobweb",
+            client = "Kobweb",
             summary = buildString {
                 append("A modern framework for full stack web apps in Kotlin, built upon Compose HTML")
             },
@@ -64,6 +68,7 @@ data class Project(
         internal val IvyWallet = Project(
             id = "ivy-wallet",
             title = "ivy-wallet",
+            client = "ivy-wallet",
             summary = buildString {
                 append("Ivy Wallet is a free and open source money management android app.")
                 append(" It's written using 100% Kotlin and Jetpack Compose.")
@@ -79,6 +84,7 @@ data class Project(
         internal val BleacherReport = Project(
             id = "bleacher-report",
             title = "Bleacher Report",
+            client = "Bleacher Report",
             summary = buildString {
                 append("Stay up to date with the latest sports scores and news on Bleacher Report.")
             },
@@ -97,6 +103,7 @@ data class Project(
         internal val Questrade = Project(
             id = "questrade",
             title = "Questrade",
+            client = "Questrade",
             summary = buildString {
                 append("Stay up to date with the latest sports scores and news on Bleacher Report.")
             },
@@ -111,6 +118,7 @@ data class Project(
         internal val WPLSesameStreet = Project(
             id = "watch-play-learn",
             title = "Watch, Play, Learn",
+            client = "Sesame Street",
             summary = buildString {
                 append("The \"Watch, Play, Learn\" initiative by Sesame Workshop offers early learning videos designed")
                 append(" to support children affected by crises such as conflict and displacement.")

@@ -23,7 +23,7 @@ data class ProjectPage(
             title = "Projeto",
             projectBackground = "Sobre o projeto",
             info = "Info",
-            role = "Posição",
+            role = "Função",
             client = "Cliente",
             timeline = "Duração",
             stack = "Stack",
