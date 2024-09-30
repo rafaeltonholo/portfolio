@@ -9,14 +9,20 @@ import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.foundation.layout.Row
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.backgroundColor
+import com.varabyte.kobweb.compose.ui.modifiers.border
 import com.varabyte.kobweb.compose.ui.modifiers.borderBottom
 import com.varabyte.kobweb.compose.ui.modifiers.borderRadius
+import com.varabyte.kobweb.compose.ui.modifiers.color
+import com.varabyte.kobweb.compose.ui.modifiers.display
 import com.varabyte.kobweb.compose.ui.modifiers.fillMaxSize
 import com.varabyte.kobweb.compose.ui.modifiers.fillMaxWidth
+import com.varabyte.kobweb.compose.ui.modifiers.flexDirection
 import com.varabyte.kobweb.compose.ui.modifiers.gap
 import com.varabyte.kobweb.compose.ui.modifiers.margin
 import com.varabyte.kobweb.compose.ui.modifiers.textAlign
 import com.varabyte.kobweb.silk.style.CssStyle
+import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
+import com.varabyte.kobweb.silk.style.cssRule
 import com.varabyte.kobweb.silk.style.toModifier
 import dev.tonholo.portfolio.core.components.AdaptiveLayout
 import dev.tonholo.portfolio.core.components.text.Text
@@ -33,6 +39,8 @@ import dev.tonholo.portfolio.core.ui.unit.dp
 import dev.tonholo.portfolio.resources.Project
 import dev.tonholo.portfolio.resources.pages.ProjectPage
 import kotlinx.datetime.DatePeriod
+import org.jetbrains.compose.web.css.DisplayStyle
+import org.jetbrains.compose.web.css.FlexDirection
 import org.jetbrains.compose.web.css.LineStyle
 
 private const val PARAGRAPH_SPACED_BY = 16
@@ -83,7 +91,7 @@ val ProjectContainerContentPanelStyle = CssStyle {
 
 val ProjectContainerContentTitleStyle = CssStyle {
     base {
-        typography.headlineMedium
+        typography.headlineLarge
             .toModifier()
             .titleModifier()
     }
@@ -95,8 +103,27 @@ val ProjectContainerContentDescriptionStyle = CssStyle {
             .fillMaxWidth()
             .gap(PARAGRAPH_SPACED_BY.dp)
     }
-    cssRule("h5") {
+    cssRule("h4") {
         Modifier.titleModifier()
+    }
+    cssRule(" .container-outcome") {
+        Modifier
+            .backgroundColor(colorScheme.surfaceVariant)
+            .color(colorScheme.onSurfaceVariant)
+            .padding(16.dp)
+            .border {
+                width(1.dp)
+                color(colorScheme.outline)
+                style(LineStyle.Solid)
+            }
+            .borderRadius(8.dp)
+    }
+    cssRule(breakpoint = Breakpoint.LG,  suffix = " .container-outcome") {
+        Modifier.padding(32.dp)
+    }
+    cssRule(" .container-outcome > .base-text-title-large") {
+        Modifier
+            .padding(bottom = PARAGRAPH_SPACED_BY.dp)
     }
 }
 
@@ -187,7 +214,7 @@ private fun ProjectBackground(
     ) {
         Text(
             text = strings.projectBackground,
-            style = Theme.typography.headlineMedium,
+            style = Theme.typography.headlineLarge,
             modifier = ProjectContainerContentTitleStyle.toModifier(),
         )
         when (content) {
@@ -212,7 +239,7 @@ private fun ProjectInfo(
     ) {
         Text(
             text = strings.info,
-            style = Theme.typography.headlineMedium,
+            style = Theme.typography.headlineLarge,
             modifier = ProjectContainerContentTitleStyle.toModifier(),
         )
         Text(
@@ -233,6 +260,12 @@ private fun ProjectInfo(
             style = Theme.typography.headlineSmall,
         )
         Text(text = project.stack.joinToString())
+
+        Text(
+            text = strings.client,
+            style = Theme.typography.headlineSmall,
+        )
+        Text(text = project.client)
     }
 }
 
