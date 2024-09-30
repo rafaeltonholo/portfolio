@@ -234,7 +234,7 @@ internal val PinterestPtBr = Pinterest.copy(
             append(
                 value = """
                     |é um aplicativo líder de descoberta visual, inspirando milhões de 
-                    |pessoas com ideias que vão desde receitas até inspiração para casa e estilo.
+                    |pessoas com ideias que vão desde receitas até inspiração para casa e estilo. 
                     """.trimMargin(),
             )
         }

@@ -38,6 +38,8 @@ class AnnotatedString(
         )
     }
 
+    override fun toString(): String = text
+
     fun calculatedNestedStyles(): Map<Range<out Annotation>, List<Range<out Annotation>>> =
         buildMap<Range<out Annotation>, MutableList<Range<out Annotation>>> {
             var endRange = 0
