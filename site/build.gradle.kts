@@ -33,6 +33,7 @@ kobweb {
         export {
             addExtraRoute("/en/articles/hello-world", "/en/articles/hello-world.html")
             addExtraRoute("/pt-BR/articles/hello-world", "/pt-BR/articles/hello-world.html")
+            addExtraRoute("/project/pinterest", "/project/pinterest.html")
         }
     }
 }
