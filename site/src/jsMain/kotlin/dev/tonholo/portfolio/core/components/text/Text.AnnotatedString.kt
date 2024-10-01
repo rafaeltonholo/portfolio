@@ -1,7 +1,6 @@
 package dev.tonholo.portfolio.core.components.text
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
@@ -13,8 +12,8 @@ import com.varabyte.kobweb.compose.foundation.layout.ColumnDefaults
 import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.thenIf
-import com.varabyte.kobweb.silk.components.navigation.Link
 import dev.tonholo.portfolio.core.components.button.TextButton
+import dev.tonholo.portfolio.core.foundation.text.LinkText
 import dev.tonholo.portfolio.core.ui.text.AnnotatedString
 import dev.tonholo.portfolio.core.ui.text.LinkAnnotation
 import dev.tonholo.portfolio.core.ui.text.ParagraphStyle
@@ -117,12 +116,12 @@ private fun RangeRenderer(
                 disablePreWrap = true,
             )
 
-            is LinkAnnotation.Url -> Link(
+            is LinkAnnotation.Url -> LinkText(
                 path = annotation.url,
                 text = annotatedText.text,
                 modifier = Modifier.thenIf(annotation.styles?.style != null) {
                     Modifier.spanStyle(requireNotNull(annotation.styles?.style))
-                }
+                },
             )
 
             is LinkAnnotation.Clickable -> TextButton(
