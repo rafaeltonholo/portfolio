@@ -22,6 +22,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.alignSelf
 import com.varabyte.kobweb.compose.ui.modifiers.background
 import com.varabyte.kobweb.compose.ui.modifiers.backgroundColor
 import com.varabyte.kobweb.compose.ui.modifiers.borderRadius
+import com.varabyte.kobweb.compose.ui.modifiers.classNames
 import com.varabyte.kobweb.compose.ui.modifiers.color
 import com.varabyte.kobweb.compose.ui.modifiers.cursor
 import com.varabyte.kobweb.compose.ui.modifiers.display
@@ -62,6 +63,7 @@ import dev.tonholo.portfolio.core.router.About
 import dev.tonholo.portfolio.core.router.Articles
 import dev.tonholo.portfolio.core.router.Home
 import dev.tonholo.portfolio.core.router.Resume
+import dev.tonholo.portfolio.core.ui.theme.FULL_SCREEN_MENU_CLASSNAME
 import dev.tonholo.portfolio.core.ui.theme.Theme
 import dev.tonholo.portfolio.core.ui.theme.color.Unspecified
 import dev.tonholo.portfolio.core.ui.theme.color.copy
@@ -248,7 +250,9 @@ fun AppBar(
         }
 
         if (isMenuOpen) {
-            Overlay {
+            Overlay(
+                modifier = Modifier.classNames(FULL_SCREEN_MENU_CLASSNAME)
+            ) {
                 AppNavigationDialog(
                     selectedLanguage = selectedLanguage,
                     onLocaleChange = onLocaleChange,

@@ -18,16 +18,16 @@ kobweb {
     app {
         index {
             head.add {
-                meta {
-                    name = "viewport"
-                    content = "width=device-width,initial-scale=1"
-                }
                 link {
                     rel = "stylesheet"
                     href = "/fonts/faces.css"
                 }
+                link {
+                    rel = "manifest"
+                    href = "manifest.json"
+                }
             }
-            description.set("Powered by Kobweb")
+            description.set("Rafael's Website | Powered by Kobweb")
         }
 
         export {

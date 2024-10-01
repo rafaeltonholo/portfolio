@@ -15,7 +15,6 @@ import com.varabyte.kobweb.silk.SilkFoundationStyles
 import com.varabyte.kobweb.silk.init.InitSilk
 import com.varabyte.kobweb.silk.init.InitSilkContext
 import com.varabyte.kobweb.silk.init.SilkWidgetVariables
-import com.varabyte.kobweb.silk.init.setSilkWidgetVariables
 import com.varabyte.kobweb.silk.style.breakpoint.BreakpointValues
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import dev.tonholo.portfolio.core.analytics.AnalyticsManager
@@ -31,6 +30,7 @@ import org.jetbrains.compose.web.css.CSSSizeValue
 import org.jetbrains.compose.web.css.CSSUnit
 
 private const val COLOR_MODE_KEY = "portfolio:colorMode"
+const val FULL_SCREEN_MENU_CLASSNAME = "full-screen-menu"
 
 data class ThemedValue<T>(
     val light: T,
@@ -38,22 +38,23 @@ data class ThemedValue<T>(
 )
 
 @InitSilk
-fun initCssColorScheme(context: InitSilkContext) {
-    context.stylesheet.registerStyle("[data-theme=\"light\"]") {
-        base {
-            Modifier.styleModifier {
-                property("color-scheme", "light")
+fun initCssColorScheme(context: InitSilkContext) =
+    context.stylesheet.apply {
+        registerStyle("[data-theme=\"light\"]") {
+            base {
+                Modifier.styleModifier {
+                    property("color-scheme", "light")
+                }
+            }
+        }
+        registerStyle("[data-theme=\"dark\"]") {
+            base {
+                Modifier.styleModifier {
+                    property("color-scheme", "dark")
+                }
             }
         }
     }
-    context.stylesheet.registerStyle("[data-theme=\"dark\"]") {
-        base {
-            Modifier.styleModifier {
-                property("color-scheme", "dark")
-            }
-        }
-    }
-}
 
 @InitSilk
 fun initColorMode(context: InitSilkContext) {

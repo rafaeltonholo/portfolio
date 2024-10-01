@@ -2,6 +2,7 @@ package dev.tonholo.portfolio.core.ui.theme
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.staticCompositionLocalOf
 import cafe.adriel.lyricist.Lyricist
@@ -10,6 +11,7 @@ import cafe.adriel.lyricist.rememberStrings
 import com.varabyte.kobweb.compose.css.BoxSizing
 import com.varabyte.kobweb.compose.css.CSSLengthOrPercentageNumericValue
 import com.varabyte.kobweb.compose.css.Cursor
+import com.varabyte.kobweb.compose.css.Overflow
 import com.varabyte.kobweb.compose.css.ScrollBehavior
 import com.varabyte.kobweb.compose.css.UserSelect
 import com.varabyte.kobweb.compose.ui.Modifier
@@ -23,6 +25,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.margin
 import com.varabyte.kobweb.compose.ui.modifiers.maxWidth
 import com.varabyte.kobweb.compose.ui.modifiers.minHeight
 import com.varabyte.kobweb.compose.ui.modifiers.outline
+import com.varabyte.kobweb.compose.ui.modifiers.overflow
 import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.compose.ui.modifiers.scrollBehavior
 import com.varabyte.kobweb.compose.ui.modifiers.userSelect
@@ -49,12 +52,15 @@ import dev.tonholo.portfolio.core.ui.unit.dp
 import dev.tonholo.portfolio.locale.Locale
 import dev.tonholo.portfolio.locale.localStorageKey
 import dev.tonholo.portfolio.resources.Strings
+import kotlinx.browser.document
 import kotlinx.browser.localStorage
 import org.jetbrains.compose.web.css.CSSSizeValue
 import org.jetbrains.compose.web.css.CSSUnit
 import org.jetbrains.compose.web.css.keywords.auto
 import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.css.vh
+import org.w3c.dom.HTMLMetaElement
+import org.w3c.dom.asList
 
 private val ElevationsLight = Elevations(
     level1 = Elevation(
@@ -125,7 +131,7 @@ val CssStyleScopeBase.icons
     }
 
 /**
- * Workaround to enable [com.varabyte.kobweb.silk.components.style.ComponentStyle]
+ * Workaround to enable [CssStyleScopeBase]
  * to use [Theme.typography].
  */
 val CssStyleScopeBase.typography
@@ -134,6 +140,12 @@ val CssStyleScopeBase.typography
 @InitSilk
 fun initSiteStyles(context: InitSilkContext) {
     context.stylesheet.apply {
+        registerStyle("body:has(.silk-overlay.$FULL_SCREEN_MENU_CLASSNAME)") {
+            base {
+                Modifier.overflow(Overflow.Hidden)
+            }
+        }
+
         layer("reset") {
             registerStyleBase("*") {
                 Modifier
@@ -142,9 +154,9 @@ fun initSiteStyles(context: InitSilkContext) {
                     .outline(0.dp)
                     .boxSizing(BoxSizing.BorderBox)
             }
-//        }
-            // TODO: remove comments when 0.18.1 is released.
-//        layer("base") {
+        }
+
+        layer("base") {
             registerStyleBase(":root") {
                 Modifier.fontSize(DefaultFontSize.px)
             }
@@ -211,6 +223,26 @@ fun Theme(
         val lyricist = rememberStrings(
             currentLanguageTag = localStorage.getItem(Locale.localStorageKey) ?: Locale.DEFAULT,
         )
+
+        LaunchedEffect(colorMode) {
+            document.head?.let { head ->
+                head
+                    .querySelectorAll("meta[name='theme-color']")
+                    .asList()
+                    .forEach { document.head?.removeChild(it) }
+                head.append(
+                    (document.createElement("meta") as HTMLMetaElement).apply {
+                        name = "theme-color"
+                        this.content = if(colorMode.isLight) {
+                            LightColorScheme.background.toString()
+                        } else {
+                            DarkColorScheme.background.toString()
+                        }
+                    }
+                )
+            }
+        }
+
         CompositionLocalProvider(
             LocalLyricist provides lyricist,
             LocalIconScheme provides if (colorMode == ColorMode.LIGHT) IconScheme.Light else IconScheme.Dark,
