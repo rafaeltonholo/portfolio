@@ -22,10 +22,6 @@ kobweb {
                     rel = "stylesheet"
                     href = "/fonts/faces.css"
                 }
-                link {
-                    rel = "manifest"
-                    href = "manifest.json"
-                }
             }
             description.set("Rafael's Website | Powered by Kobweb")
         }
