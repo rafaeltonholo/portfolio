@@ -6,9 +6,9 @@ import com.varabyte.kobweb.compose.css.CSSLengthNumericValue
 import com.varabyte.kobweb.compose.css.CSSLengthOrPercentageNumericValue
 import com.varabyte.kobweb.compose.css.Overflow
 import com.varabyte.kobweb.compose.css.StyleVariable
-import com.varabyte.kobweb.compose.foundation.layout.Arrangement
+import com.varabyte.kobweb.compose.css.TextAlign
+import com.varabyte.kobweb.compose.css.autoLength
 import com.varabyte.kobweb.compose.foundation.layout.Column
-import com.varabyte.kobweb.compose.foundation.layout.Row
 import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.backgroundColor
@@ -26,9 +26,12 @@ import com.varabyte.kobweb.compose.ui.modifiers.onClick
 import com.varabyte.kobweb.compose.ui.modifiers.overflow
 import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.compose.ui.modifiers.setVariable
+import com.varabyte.kobweb.compose.ui.modifiers.textAlign
+import com.varabyte.kobweb.compose.ui.modifiers.width
 import com.varabyte.kobweb.compose.ui.styleModifier
 import com.varabyte.kobweb.compose.ui.thenIf
 import com.varabyte.kobweb.silk.style.CssStyle
+import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.style.toModifier
 import dev.tonholo.portfolio.core.analytics.LocalAnalyticsManager
 import dev.tonholo.portfolio.core.analytics.events.AnalyticEvent
@@ -36,6 +39,8 @@ import dev.tonholo.portfolio.core.components.button.LinkButton
 import dev.tonholo.portfolio.core.components.button.TextButton
 import dev.tonholo.portfolio.core.components.text.Paragraph
 import dev.tonholo.portfolio.core.components.text.Text
+import dev.tonholo.portfolio.core.foundation.ExtendedArrangement
+import dev.tonholo.portfolio.core.foundation.layout.FlowRow
 import dev.tonholo.portfolio.core.ui.theme.Theme
 import dev.tonholo.portfolio.core.ui.theme.colorScheme
 import dev.tonholo.portfolio.core.ui.unit.Dp
@@ -68,6 +73,14 @@ val ProjectCardStyle = CssStyle {
             .minHeight(ProjectCardVars.MinHeight.value())
             .maxWidth(ProjectCardVars.MaxWidth.value())
             .maxHeight(ProjectCardVars.MinHeight.value())
+    }
+}
+val ProjectCardButtonStyle = CssStyle {
+    base {
+        Modifier.fillMaxWidth()
+    }
+    Breakpoint.LG {
+        Modifier.width(autoLength)
     }
 }
 
@@ -115,8 +128,9 @@ fun ProjectCard(
                 }
                 .overflow(Overflow.Hidden)
         )
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(16.dp, alignment = Alignment.End),
+        FlowRow(
+            horizontalArrangement = ExtendedArrangement.spacedBy(16.dp, alignment = Alignment.End),
+            verticalArrangement = ExtendedArrangement.spacedBy(16.dp),
             modifier = Modifier
                 .fillMaxWidth()
                 .margin {
@@ -126,6 +140,7 @@ fun ProjectCard(
             playStoreSrc?.let { src ->
                 TextButton(
                     onClick = { window.open(url = src) },
+                    modifier = ProjectCardButtonStyle.toModifier(),
                 ) {
                     Text(
                         text = strings.viewInPlayStore,
@@ -139,7 +154,8 @@ fun ProjectCard(
                 LinkButton(
                     path = src,
                     color = Theme.colorScheme.primary,
-                    modifier = Modifier
+                    modifier = ProjectCardButtonStyle
+                        .toModifier()
                         .onClick {
                             analytics.track(
                                 AnalyticEvent.ViewProject(
@@ -147,7 +163,8 @@ fun ProjectCard(
                                     projectUrl = src,
                                 )
                             )
-                        },
+                        }
+                        .textAlign(TextAlign.Center),
                 ) {
                     Text(
                         text = strings.viewProject,
