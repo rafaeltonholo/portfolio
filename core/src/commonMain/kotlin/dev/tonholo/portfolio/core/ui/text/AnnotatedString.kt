@@ -42,16 +42,18 @@ class AnnotatedString(
 
     fun calculatedNestedStyles(): Map<Range<out Annotation>, List<Range<out Annotation>>> =
         buildMap<Range<out Annotation>, MutableList<Range<out Annotation>>> {
-            var endRange = 0
-            var currentStyle = styles.first()
-            for (style in styles) {
-                if (endRange < style.end) {
-                    endRange = style.end
-                    currentStyle = style
-                    put(currentStyle, mutableListOf())
-                    continue
+            if (styles.isNotEmpty()) {
+                var endRange = 0
+                var currentStyle = styles.first()
+                for (style in styles) {
+                    if (endRange < style.end) {
+                        endRange = style.end
+                        currentStyle = style
+                        put(currentStyle, mutableListOf())
+                        continue
+                    }
+                    getValue(currentStyle).add(style)
                 }
-                getValue(currentStyle).add(style)
             }
         }.toMap()
 

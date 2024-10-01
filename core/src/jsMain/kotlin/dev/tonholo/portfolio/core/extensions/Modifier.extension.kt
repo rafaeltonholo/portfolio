@@ -48,9 +48,9 @@ fun Modifier.padding(
     ),
 )
 
-fun Modifier.padding(
+actual fun Modifier.padding(
     paddingValues: PaddingValues,
-) = this then Modifier.padding {
+): Modifier = this then Modifier.padding {
     val start = paddingValues.calculateLeftPadding()
     if (start != 0.dp) {
         left(start)
