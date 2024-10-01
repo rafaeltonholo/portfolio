@@ -21,8 +21,11 @@ data class Strings(
     val present: String,
     val monthNames: MonthNames,
     val scrollToTop: String,
-    val articles: Map<String,MarktdownDocument>,
+    val articles: Map<String, MarktdownDocument>,
     val siteName: String,
+    val years: (Int) -> String,
+    val months: (Int) -> String,
+    val days: (Int) -> String,
 )
 
 @Stable
@@ -51,6 +54,15 @@ val EnStrings = Strings(
         "hello-world" to HelloWorldEn,
     ),
     siteName = "Rafael Tonholo Blog",
+    years = { years ->
+        "$years ${if (years > 1) "years" else "year"}"
+    },
+    months = { months ->
+        "$months ${if (months > 1) "months" else "month"}"
+    },
+    days = { days ->
+        "$days ${if (days > 1) "days" else "day"}"
+    },
 )
 
 @Stable
@@ -68,4 +80,13 @@ val PtStrings = Strings(
         "hello-world" to HelloWorldPtBr,
     ),
     siteName = "Rafael Tonholo Blog",
+    years = { years ->
+        "$years ${if (years > 1) "anos" else "ano"}"
+    },
+    months = { months ->
+        "$months ${if (months > 1) "meses" else "mês"}"
+    },
+    days = { days ->
+        "$days ${if (days > 1) "dias" else "dia"}"
+    },
 )

@@ -2,6 +2,7 @@ package dev.tonholo.portfolio.features.projects
 
 import androidx.compose.runtime.Composable
 import cafe.adriel.lyricist.LanguageTag
+import cafe.adriel.lyricist.LocalStrings
 import com.varabyte.kobweb.compose.css.TextAlign
 import com.varabyte.kobweb.compose.css.autoLength
 import com.varabyte.kobweb.compose.foundation.layout.Arrangement
@@ -35,6 +36,7 @@ import dev.tonholo.portfolio.core.ui.theme.typography.toModifier
 import dev.tonholo.portfolio.core.ui.unit.dp
 import dev.tonholo.portfolio.features.projects.components.ProjectHeadline
 import dev.tonholo.portfolio.resources.Project
+import dev.tonholo.portfolio.resources.Strings
 import dev.tonholo.portfolio.resources.pages.ProjectPage
 import kotlinx.datetime.DatePeriod
 import org.jetbrains.compose.web.css.LineStyle
@@ -152,7 +154,7 @@ fun ProjectContent(
                 modifier = Modifier.fillMaxWidth(),
             )
         },
-        pageTitle = "${strings.title} - ${project.title}",
+        pageTitle = "${strings.title} - ${project.title} | Rafael Tonholo",
     ) { paddingValues ->
         Column(
             modifier = ProjectContainerStyle.toModifier()
@@ -237,7 +239,7 @@ private fun ProjectInfo(
                 text = strings.timeline,
                 style = Theme.typography.headlineSmall,
             )
-            Text(text = timeline.toHumanString())
+            Text(text = timeline.toHumanString(strings = LocalStrings.current))
         }
 
         Text(
@@ -254,15 +256,15 @@ private fun ProjectInfo(
     }
 }
 
-private fun DatePeriod.toHumanString(): String = buildList {
+private fun DatePeriod.toHumanString(strings: Strings): String = buildList {
     if (years > 0) {
-        add("$years years")
+        add(strings.years(years))
     }
     if (months > 0) {
-        add("$months months")
+        add(strings.months(months))
     }
     if (days > 0) {
-        add("$days days")
+        add(strings.days(days))
     }
 }.joinToString()
 
