@@ -153,8 +153,8 @@ internal val Pinterest = Project(
         )
 
         title(text = "Outcomes and Impact", level = TitleStyle.Level.H5)
-        subtitle(text = "30% reduction in build times")
         paragraph(tag = "container-outcome") {
+            subtitle(text = "30% reduction in build times")
             append(value = "The modularization efforts led to a ")
             bold(text = "30% reduction in build times")
             append(
