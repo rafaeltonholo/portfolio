@@ -1,6 +1,5 @@
 import com.varabyte.kobweb.gradle.application.util.configAsKobwebApplication
 import kotlinx.html.link
-import kotlinx.html.meta
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
@@ -30,6 +29,7 @@ kobweb {
             addExtraRoute("/en/articles/hello-world", "/en/articles/hello-world.html")
             addExtraRoute("/pt-BR/articles/hello-world", "/pt-BR/articles/hello-world.html")
             addExtraRoute("/project/pinterest", "/project/pinterest.html")
+            addExtraRoute("/project/bleacher-report", "/project/bleacher-report.html")
         }
     }
 }

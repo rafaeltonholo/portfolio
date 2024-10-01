@@ -6,6 +6,8 @@ import dev.tonholo.portfolio.core.ui.text.AnnotatedString
 import dev.tonholo.portfolio.core.ui.text.annotatedString
 import dev.tonholo.portfolio.core.ui.theme.typography.TextStyle
 import dev.tonholo.portfolio.locale.Locales
+import dev.tonholo.portfolio.resources.projects.BleacherReport
+import dev.tonholo.portfolio.resources.projects.BleacherReportPtBr
 import dev.tonholo.portfolio.resources.projects.Pinterest
 import dev.tonholo.portfolio.resources.projects.PinterestPtBr
 import kotlinx.datetime.DatePeriod
@@ -80,26 +82,6 @@ data class Project(
             stack = listOf(),
             description = annotatedString { },
         )
-
-        internal val BleacherReport = Project(
-            id = "bleacher-report",
-            title = "Bleacher Report",
-            client = "Bleacher Report",
-            summary = buildString {
-                append("Stay up to date with the latest sports scores and news on Bleacher Report.")
-            },
-            src = "/project/bleacher-report",
-            playStoreSrc = "https://play.google.com/store/apps/details?id=com.bleacherreport.android.teamstream",
-            role = "Senior Android Engineer",
-            timeline = LocalDate(2023, Month.AUGUST, 1) -
-                LocalDate(2022, Month.MARCH, 1),
-            stack = listOf(
-                "Java", "Kotlin", "Hilt", "MVVM", "XML View System",
-                "Compose for Android", "Google Ads", "ExoPlayer",
-                "Room",
-            ),
-            description = annotatedString { },
-        )
         internal val Questrade = Project(
             id = "questrade",
             title = "Questrade",
@@ -157,7 +139,7 @@ object Projects {
     internal val En = mapOf(
         ProjectType.Commercial to listOf(
             Pinterest,
-//            Project.BleacherReport,
+            BleacherReport,
 //            Project.Questrade,
 //            Project.WPLSesameStreet,
         ),
@@ -172,7 +154,7 @@ object Projects {
     internal val PtBr = mapOf(
         ProjectType.Commercial to listOf(
             PinterestPtBr,
-//            Project.BleacherReport,
+            BleacherReportPtBr,
 //            Project.Questrade,
 //            Project.WPLSesameStreet,
         ),

@@ -259,7 +259,7 @@ internal val PinterestPtBr = Pinterest.copy(
             bold(text = "Google Play Dynamic Feature Delivery.")
         }
     },
-    role = """Sênior Android Platform Engineer, liderei a modularização com foco 
+    role = """Engenheiro Sênior de Plataforma Android, liderei a modularização com foco 
         |na melhoria da eficiência da build e na viabilização do fornecimento 
         |on-demand de features."""
         .trimMargin(),
