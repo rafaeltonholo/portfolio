@@ -116,6 +116,7 @@ val AppBarButtonStyle = CssStyle {
         typography.headlineLarge.toModifier()
             .padding(horizontal = 24.dp, vertical = 12.dp)
             .background(Color.Unspecified)
+            .color(colorScheme.onSurface)
             .borderRadius(100.dp)
             .styleModifier {
                 property("border", "none")
