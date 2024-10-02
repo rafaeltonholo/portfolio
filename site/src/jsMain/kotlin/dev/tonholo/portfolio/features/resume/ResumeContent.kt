@@ -132,7 +132,7 @@ fun ResumeContent(
                             ),
                         )
                         window.open(
-                            url = "https://drive.google.com/file/d/1u4G0lVEI45S-6wCSSI65N200UFqKCXnM/view?usp=sharing",
+                            url = "/docs/rafael-tonholo-resume.pdf",
                             target = "_blank",
                         )
                     },
