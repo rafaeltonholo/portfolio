@@ -6,6 +6,7 @@ import com.varabyte.kobweb.compose.dom.ElementRefScope
 import com.varabyte.kobweb.compose.dom.registerRefScope
 import com.varabyte.kobweb.compose.style.toClassNames
 import com.varabyte.kobweb.compose.ui.Modifier
+import com.varabyte.kobweb.compose.ui.modifiers.classNames
 import com.varabyte.kobweb.compose.ui.modifiers.display
 import com.varabyte.kobweb.compose.ui.modifiers.flexWrap
 import com.varabyte.kobweb.compose.ui.modifiers.gap
@@ -82,8 +83,9 @@ fun FlowRow(
             .setVariable(FlowRowVars.maxItemsInEachRow, maxItemsInEachRow ?: -1)
             .toAttrs {
                 classes(
-                    *horizontalArrangement.horizontalArrangement.toClassNames(),
+                    "kobweb-row",
                     *verticalArrangement.verticalArrangement.toClassNames(),
+                    *horizontalArrangement.horizontalArrangement.toClassNames(),
                 )
             },
     ) {
