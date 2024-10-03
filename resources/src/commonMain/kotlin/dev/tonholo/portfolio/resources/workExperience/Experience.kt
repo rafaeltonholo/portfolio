@@ -19,7 +19,7 @@ data class Experience(
         val Experiences: Map<LanguageTag, ImmutableList<Experience>> = mapOf(
             Locales.EN to immutableListOf(
                 REDSpace,
-                BairesDev,
+                Pinterest,
                 QuestradePrincipal,
                 QuestradeSenior,
                 Axxiom,
@@ -35,7 +35,7 @@ data class Experience(
                     ),
                     position = "Senior Android Engineer",
                 ),
-                BairesDev.copy(
+                Pinterest.copy(
                     description = Description(
                         "Desenvolvendo soluções, optimizações e mantendo frameworks que ajudam o time de engenheiros de Software a entregar a melhor experiência possível para quem utiliza o Pinterest",
                         "Trabalhando com dynamic feature module, melhorando a velocidade de compilação do app.",
@@ -106,8 +106,8 @@ private val REDSpace = Experience(
     )
 )
 
-private val BairesDev = Experience(
-    company = "BairesDev / Pinterest",
+private val Pinterest = Experience(
+    company = "Pinterest",
     description = Description(
         "Working designing solutions, optimizing and maintaining frameworks that empower the engineering team to deliver the best possible experience for people who use Pinterest.",
         "Working with dynamic feature module, improving build speed.",
@@ -115,7 +115,7 @@ private val BairesDev = Experience(
         "Maintaining unit and integration tests ensuring code quality.",
         "Started migration of XML views to Jetpack Compose.",
     ),
-    position = "Android Engineer",
+    position = "Senior Android Engineer",
     starting = LocalDate.parse("2021-07-23"),
     ending = LocalDate.parse("2022-03-18"),
     technologiesUsed = listOf(
