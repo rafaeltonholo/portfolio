@@ -81,7 +81,6 @@ fun LinkText(
     openInternalLinksStrategy: OpenLinkStrategy? = null,
     openExternalLinksStrategy: OpenLinkStrategy? = null,
     updateHistoryMode: UpdateHistoryMode? = null,
-    autoPrefix: Boolean = true,
     ref: ElementRefScope<HTMLElement>? = null,
 ) {
     Anchor(
@@ -96,7 +95,6 @@ fun LinkText(
         openInternalLinksStrategy,
         openExternalLinksStrategy,
         updateHistoryMode,
-        autoPrefix
     ) {
         registerRefScope(ref)
         Text(value = text ?: path)

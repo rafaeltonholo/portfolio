@@ -1,13 +1,13 @@
 [versions]
 jetbrains-compose = "1.6.11"
-kobweb = "0.19.2"
-kotlin = "2.0.20"
+kobweb = "0.20.0"
+kotlin = "2.1.0"
 lyricist = "1.7.0"
-ksp = "2.0.20-1.0.25"
+ksp = "2.1.0-1.0.29"
 kotlinx-datetime = "0.6.1"
 kotlin-wrapper-shiki = "1.0.0-1.20.0"
 marktdown = "1.0.0"
-buildconfig = "5.5.0"
+buildconfig = "5.5.1"
 
 [libraries]
 kobweb-core = { module = "com.varabyte.kobweb:kobweb-core ", version.ref = "kobweb" }
