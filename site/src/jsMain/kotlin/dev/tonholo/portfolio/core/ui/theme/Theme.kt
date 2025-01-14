@@ -221,6 +221,7 @@ fun Theme(
         breakpoints = breakpoints,
     ) { colorMode ->
         val lyricist = rememberStrings(
+            defaultLanguageTag = Locale.DEFAULT,
             currentLanguageTag = localStorage.getItem(Locale.localStorageKey) ?: Locale.DEFAULT,
         )
 
