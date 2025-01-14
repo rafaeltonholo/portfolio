@@ -1,3 +1,4 @@
+@file:Suppress("NOTHING_TO_INLINE")
 package dev.tonholo.portfolio.core.binding.firebase
 
 fun FirebaseOptions(builder: FirebaseOptions.() -> Unit): FirebaseOptions {
