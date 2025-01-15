@@ -1,6 +1,6 @@
 [versions]
-jetbrains-compose = "1.6.11"
-kobweb = "0.20.0"
+jetbrains-compose = "1.7.3"
+kobweb = "0.20.3-SNAPSHOT"
 kotlin = "2.1.0"
 lyricist = "1.7.0"
 ksp = "2.1.0-1.0.29"

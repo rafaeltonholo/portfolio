@@ -28,7 +28,6 @@ private val textTokens = setOf(
 private val startTagRegex = Regex("^<(\\w+[^>]*)>")
 private val endTagRegex = Regex("^</\\w+[^>]*>")
 
-// TODO: improve with a better caching. Maybe an LRU cache?
 private val nodeChildrenToRenderCache = mutableMapOf<ASTNode, List<ASTNode>>()
 
 context(MarktdownRenderer)
