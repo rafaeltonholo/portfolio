@@ -1,0 +1,14 @@
+[
+    {
+        "relation": [
+            "delegate_permission/common.handle_all_urls"
+        ],
+        "target": {
+            "namespace": "android_app",
+            "package_name": "ca.alc.app_link_association_enforcer_example",
+            "sha256_cert_fingerprints": [
+                "1B:82:70:74:F1:C0:00:B5:F3:ED:B4:72:74:87:D2:FC:7D:E1:F1:B2:4C:07:F2:EC:42:8B:52:B3:43:69:D0:B9"
+            ]
+        }
+    }
+]
