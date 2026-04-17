@@ -1,47 +1,64 @@
 import com.varabyte.kobweb.gradle.application.util.configAsKobwebApplication
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kobweb.application)
     alias(libs.plugins.kobwebx.markdown)
+    alias(libs.plugins.kotlin.power.assert)
+    alias(libs.plugins.detekt)
 }
 
 group = "dev.tonholo.portfolio"
-version = "1.0-SNAPSHOT"
+version = "0.1.0-SNAPSHOT"
+
+val appProperties = Properties().apply {
+    rootProject.rootDir.resolve("app.properties").inputStream().use { load(it) }
+}
 
 kobweb {
     app {
         index {
-            description.set("Powered by Kobweb")
+            description.set("Rafael Tonholo - Android Engineer")
         }
     }
 }
 
 kotlin {
-    // This example is frontend only. However, for a fullstack app, you can uncomment the includeServer parameter
-    // and the `jvmMain` source set below.
-    configAsKobwebApplication("portfolio" /*, includeServer = true*/)
+    configAsKobwebApplication("portfolio")
 
     sourceSets {
-//        commonMain.dependencies {
-//          // Add shared dependencies between JS and JVM here if building a fullstack app
-//        }
-
         jsMain.dependencies {
             implementation(libs.compose.runtime)
             implementation(libs.compose.html.core)
+            implementation(libs.compose.components.resources)
             implementation(libs.kobweb.core)
             implementation(libs.kobweb.silk)
-            // This default template uses built-in SVG icons, but what's available is limited.
-            // Uncomment the following if you want access to a large set of font-awesome icons:
-            // implementation(libs.silk.icons.fa)
             implementation(libs.kobwebx.markdown)
         }
-
-        // Uncomment the following if you pass `includeServer = true` into the `configAsKobwebApplication` call.
-//        jvmMain.dependencies {
-//            compileOnly(libs.kobweb.api) // Provided by Kobweb backend at runtime
-//        }
+        jsTest.dependencies {
+            implementation(libs.kotlin.test)
+        }
     }
+}
+
+powerAssert {
+    functions.addAll(
+        "kotlin.assert",
+        "kotlin.test.assertTrue",
+        "kotlin.test.assertEquals",
+        "kotlin.test.assertNull",
+    )
+}
+
+detekt {
+    config.setFrom(rootProject.file("config/detekt.yml"))
+    buildUponDefaultConfig = true
+    allRules = false
+}
+
+dependencies {
+    detektPlugins(libs.detekt.rules.ktlint.wrapper)
+    detektPlugins(libs.compose.rules.detekt)
 }
