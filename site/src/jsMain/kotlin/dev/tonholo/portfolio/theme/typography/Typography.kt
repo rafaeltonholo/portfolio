@@ -55,7 +55,7 @@ private const val META_SMALL_LETTER_SPACING_EM = 0.06
  * | [serifBody]  | `.prose p` serif variant               | 1.0625rem  | 400    | 1.6         | -              |
  * | [metaLabel]  | `.meta`, `.num`                        | 0.75rem    | 500    | 1.4         | 0.02em + uppercase |
  * | [metaSmall]  | `.meta` small variants                 | 0.6875rem  | 500    | 1.4         | 0.06em + uppercase |
- * | [chip]       | `.chip`                                | 0.6875rem  | 500    | 1.4         | uppercase      |
+ * | [chip]       | `.chip`                                | 0.6875rem  | 500    | 1.4         | -              |
  * | [code]       | `.term`, inline code                   | 0.8125rem  | 400    | 1.6         | -              |
  */
 object Typography {
@@ -149,7 +149,6 @@ object Typography {
         size = CHIP_SIZE_REM.cssRem,
         weight = FontWeight.Medium,
         lineHeight = META_LINE_HEIGHT,
-        transform = TextTransform.Uppercase,
     )
 
     val code: TextStyle = TextStyle(
