@@ -6,6 +6,7 @@ import dev.tonholo.portfolio.theme.color.InkScale
 import dev.tonholo.portfolio.theme.color.MutedScale
 import dev.tonholo.portfolio.theme.color.PaperScale
 import dev.tonholo.portfolio.theme.layout.SpacingScale
+import dev.tonholo.portfolio.theme.typography.Typography
 
 /**
  * Aggregated design tokens resolved for the active color mode and density.
@@ -20,6 +21,7 @@ data class PortfolioTokens(
     val muted: MutedScale,
     val accent: AccentSwatch,
     val spacing: SpacingScale,
+    val typography: Typography,
 )
 
 val LocalPortfolioTokens = compositionLocalOf<PortfolioTokens> {

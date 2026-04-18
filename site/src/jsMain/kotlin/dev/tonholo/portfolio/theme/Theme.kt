@@ -12,6 +12,7 @@ import dev.tonholo.portfolio.theme.color.Muted
 import dev.tonholo.portfolio.theme.color.Paper
 import dev.tonholo.portfolio.theme.layout.Density
 import dev.tonholo.portfolio.theme.layout.SpacingScale
+import dev.tonholo.portfolio.theme.typography.Typography
 import kotlinx.browser.document
 import org.w3c.dom.HTMLElement
 
@@ -41,6 +42,7 @@ fun PortfolioTheme(content: @Composable () -> Unit) {
             muted = if (isDark) Muted.dark else Muted.light,
             accent = if (isDark) AccentMint.dark else AccentMint.light,
             spacing = SpacingScale.from(density = Density.Compact),
+            typography = Typography,
         )
     }
 
