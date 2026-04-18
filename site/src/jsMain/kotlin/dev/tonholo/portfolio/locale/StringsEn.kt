@@ -138,6 +138,9 @@ object StringsEn : Strings() {
         outcomesLabel = "/ outcomes",
         outcomesTitle = "Numbers worth keeping.",
         notFoundCopy = "Project not found",
+        breadcrumbRoot = "work",
+        breadcrumbFile = "case-study.md",
+        coverPlaceholderLabel = "hero image - 16:9",
     )
 
     override val prevNext: PrevNext = PrevNext(

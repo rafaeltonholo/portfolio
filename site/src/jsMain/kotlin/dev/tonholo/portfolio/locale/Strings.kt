@@ -156,6 +156,9 @@ sealed class Strings {
         val outcomesLabel: String,
         val outcomesTitle: String,
         val notFoundCopy: String,
+        val breadcrumbRoot: String,
+        val breadcrumbFile: String,
+        val coverPlaceholderLabel: String,
     )
 
     /** Copy for the [dev.tonholo.portfolio.components.organisms.projects.PrevNextNav]. */

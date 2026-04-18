@@ -10,6 +10,8 @@ import com.varabyte.kobweb.compose.ui.modifiers.borderRadius
 import com.varabyte.kobweb.compose.ui.modifiers.bottom
 import com.varabyte.kobweb.compose.ui.modifiers.color
 import com.varabyte.kobweb.compose.ui.modifiers.display
+import com.varabyte.kobweb.compose.ui.modifiers.fontFamily
+import com.varabyte.kobweb.compose.ui.modifiers.fontSize
 import com.varabyte.kobweb.compose.ui.modifiers.justifyContent
 import com.varabyte.kobweb.compose.ui.modifiers.left
 import com.varabyte.kobweb.compose.ui.modifiers.opacity
@@ -26,8 +28,7 @@ import com.varabyte.kobweb.silk.style.toModifier
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.color.Paper
-import dev.tonholo.portfolio.theme.typography.Typography
-import dev.tonholo.portfolio.theme.typography.apply
+import dev.tonholo.portfolio.theme.typography.FontFamilies
 import org.jetbrains.compose.web.css.AlignItems
 import org.jetbrains.compose.web.css.DisplayStyle
 import org.jetbrains.compose.web.css.JustifyContent
@@ -45,6 +46,11 @@ private const val LABEL_Z_INDEX = 1
 private const val PATTERN_OPACITY = 0.4
 private const val PATTERN_STOP_PERCENT = "25%"
 private const val PATTERN_TILE_PX = "12px"
+
+// Handoff `.ph` CSS: mono family at 11px, no uppercase transform. Chip
+// typography in the project theme forces uppercase, which does not match,
+// so the placeholder sets these directly.
+private const val PLACEHOLDER_FONT_SIZE_REM = 0.6875 // 11px
 
 /**
  * Aspect-ratio-aware placeholder block. Maps to `.ph` in the handoff CSS:
@@ -74,7 +80,8 @@ fun Placeholder(aspectRatio: AspectRatio, label: String, modifier: Modifier = Mo
 
     val finalModifier = PlaceholderStyle
         .toModifier()
-        .apply(Typography.chip)
+        .fontFamily(*FontFamilies.MONO)
+        .fontSize(PLACEHOLDER_FONT_SIZE_REM.cssRem)
         .backgroundColor(tokens.paper.paper2)
         .color(tokens.muted.muted2)
         .aspectRatio(width = aspectRatio.widthRatio, height = aspectRatio.heightRatio)

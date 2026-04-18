@@ -1,11 +1,17 @@
 package dev.tonholo.portfolio.pages.projects
 
 import androidx.compose.runtime.Composable
+import com.varabyte.kobweb.compose.ui.Modifier
+import com.varabyte.kobweb.compose.ui.modifiers.borderRadius
+import com.varabyte.kobweb.compose.ui.modifiers.margin
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.core.Page
 import com.varabyte.kobweb.core.rememberPageContext
 import com.varabyte.kobweb.silk.style.toModifier
+import dev.tonholo.portfolio.components.atoms.AspectRatio
+import dev.tonholo.portfolio.components.atoms.Placeholder
 import dev.tonholo.portfolio.components.layouts.ProjectLayout
+import dev.tonholo.portfolio.components.molecules.ProjectBreadcrumb
 import dev.tonholo.portfolio.components.organisms.projects.OutcomesGrid
 import dev.tonholo.portfolio.components.organisms.projects.ProjectDetailHero
 import dev.tonholo.portfolio.components.organisms.projects.ProjectOutcome
@@ -16,6 +22,7 @@ import dev.tonholo.portfolio.locale.LocalStrings
 import dev.tonholo.portfolio.locale.Strings
 import dev.tonholo.portfolio.navigation.Routes
 import dev.tonholo.portfolio.state.StaticContent
+import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.dom.B
 import org.jetbrains.compose.web.dom.Em
 import org.jetbrains.compose.web.dom.P
@@ -23,6 +30,11 @@ import org.jetbrains.compose.web.dom.Text
 
 private const val PROJECT_SLUG_PARAM = "slug"
 private const val PINTEREST_SLUG = "pinterest"
+
+// `.project-cover` in the handoff CSS: 4px radius, 64px bottom margin above
+// the first case-study section. Aspect ratio comes from the Placeholder atom.
+private const val COVER_RADIUS_REM = 0.25 // 4px
+private const val COVER_MARGIN_BOTTOM_REM = 4.0 // 64px
 
 // Pinterest-only section labels that do not live on the shared Strings surface.
 // The generic / context and / outcomes labels come from [Strings.ProjectDetail].
@@ -145,7 +157,20 @@ fun DynamicProjectPage() {
             }
         },
     ) {
+        ProjectBreadcrumb(
+            projectName = project.name,
+            onBack = {
+                pageContext.router.tryRoutingTo(pathQueryAndFragment = Routes.PROJECTS)
+            },
+        )
         ProjectDetailHero(project = project)
+        Placeholder(
+            aspectRatio = AspectRatio.Hero16x9,
+            label = strings.coverPlaceholderLabel,
+            modifier = Modifier
+                .borderRadius(COVER_RADIUS_REM.cssRem)
+                .margin(bottom = COVER_MARGIN_BOTTOM_REM.cssRem),
+        )
         if (slug == PINTEREST_SLUG) {
             PinterestCaseStudy(strings = strings)
         } else {
