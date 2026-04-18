@@ -29,9 +29,13 @@ import com.varabyte.kobweb.compose.ui.modifiers.onMouseLeave
 import com.varabyte.kobweb.compose.ui.modifiers.opacity
 import com.varabyte.kobweb.compose.ui.modifiers.overflow
 import com.varabyte.kobweb.compose.ui.modifiers.padding
+import com.varabyte.kobweb.compose.ui.modifiers.position
 import com.varabyte.kobweb.compose.ui.modifiers.title
+import com.varabyte.kobweb.compose.ui.modifiers.top
 import com.varabyte.kobweb.compose.ui.modifiers.transition
 import com.varabyte.kobweb.compose.ui.modifiers.whiteSpace
+import com.varabyte.kobweb.compose.ui.modifiers.zIndex
+import com.varabyte.kobweb.compose.ui.styleModifier
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.silk.style.CssStyle
 import com.varabyte.kobweb.silk.style.extendedBy
@@ -58,8 +62,10 @@ import kotlinx.coroutines.delay
 import org.jetbrains.compose.web.css.AlignItems
 import org.jetbrains.compose.web.css.DisplayStyle
 import org.jetbrains.compose.web.css.LineStyle
+import org.jetbrains.compose.web.css.Position
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.keywords.auto
+import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.css.s
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Span
@@ -72,6 +78,13 @@ private const val NAV_INNER_GAP_REM = 2.0 // 32px
 
 // `.nav` bottom hairline width.
 private const val NAV_BORDER_WIDTH_REM = 0.0625 // 1px
+
+// Handoff `.nav` chrome: sticky at top, on top of body content, paints a
+// translucent paper surface with a subtle backdrop blur so long-form pages
+// stay readable as the nav pins.
+private const val NAV_STICKY_Z_INDEX = 40
+private const val NAV_BACKDROP_FILTER = "saturate(140%) blur(12px)"
+private const val NAV_BACKGROUND_PAPER_PERCENT = "92%"
 
 // `.nav-links` cluster.
 private const val NAV_LINKS_GAP_REM = 0.25 // 4px
@@ -229,16 +242,30 @@ private fun StatusBadge(text: String) {
 }
 
 /**
- * Base `CssStyle` for [Nav]. Ports `.nav` from the handoff minus the sticky
- * positioning (the redesign uses a static top bar): a 1px bottom hairline that
- * borrows the `paper-3` swatch on light mode and `paper-2` on dark mode.
+ * Base `CssStyle` for [Nav]. Ports `.nav` from the handoff: sticky at the top
+ * of the viewport, z-indexed above body content, a translucent paper fill
+ * with a saturate+blur backdrop, and a 1px bottom hairline that borrows
+ * `paper-3` on light mode and `paper-2` on dark mode. The translucent fill
+ * uses `color-mix` so the paper token still flows through the active theme.
  */
 val NavStyle = CssStyle {
     base {
         val isDark = colorMode == ColorMode.DARK
         val paper = if (isDark) Paper.dark else Paper.light
         val borderColor = if (isDark) paper.paper2 else paper.paper3
+        val paperToken = paper.paper.toString()
         Modifier
+            .position(Position.Sticky)
+            .top(0.px)
+            .zIndex(NAV_STICKY_Z_INDEX)
+            .styleModifier {
+                property(
+                    "background",
+                    "color-mix(in oklab, $paperToken $NAV_BACKGROUND_PAPER_PERCENT, transparent)",
+                )
+                property("backdrop-filter", NAV_BACKDROP_FILTER)
+                property("-webkit-backdrop-filter", NAV_BACKDROP_FILTER)
+            }
             .borderBottom(
                 width = NAV_BORDER_WIDTH_REM.cssRem,
                 style = LineStyle.Solid,
