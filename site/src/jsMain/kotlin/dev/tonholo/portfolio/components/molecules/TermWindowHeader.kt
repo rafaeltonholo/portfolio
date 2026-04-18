@@ -94,7 +94,7 @@ fun TermWindowHeader(modifier: Modifier = Modifier, title: String = DEFAULT_TERM
         Span(
             attrs = Modifier
                 .margin(left = TITLE_MARGIN_LEFT_REM.cssRem)
-                .fontFamily(FontFamilies.MONO)
+                .fontFamily(*FontFamilies.MONO)
                 .fontSize(TITLE_FONT_SIZE_REM.cssRem)
                 .color(tokens.muted.muted2)
                 .toAttrs(),

@@ -148,7 +148,7 @@ val ArticlesHeaderStyle = CssStyle {
 val ArticlesHeaderSummaryStyle = CssStyle {
     base {
         Modifier
-            .fontFamily(FontFamilies.MONO)
+            .fontFamily(*FontFamilies.MONO)
             .fontSize(META_COPY_SIZE_REM.cssRem)
             .margin(topBottom = 0.cssRem)
     }

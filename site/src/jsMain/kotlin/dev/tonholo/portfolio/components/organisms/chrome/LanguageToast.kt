@@ -197,7 +197,7 @@ val LanguageToastStyle = CssStyle {
                 leftRight = TOAST_PADDING_X_REM.cssRem,
             )
             .borderRadius(TOAST_RADIUS_REM.cssRem)
-            .fontFamily(FontFamilies.MONO)
+            .fontFamily(*FontFamilies.MONO)
             .fontSize(TOAST_FONT_SIZE_REM.cssRem)
             .boxShadow(
                 BoxShadow.of(

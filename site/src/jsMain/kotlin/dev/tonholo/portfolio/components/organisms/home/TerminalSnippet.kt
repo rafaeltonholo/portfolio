@@ -201,7 +201,7 @@ private fun formatGutter(number: Int): String =
 val TerminalSnippetStyle = CssStyle {
     base {
         Modifier
-            .fontFamily(FontFamilies.MONO)
+            .fontFamily(*FontFamilies.MONO)
             .fontSize(TERM_FONT_SIZE_REM.cssRem)
             .lineHeight(TERM_LINE_HEIGHT)
             .borderRadius(TERM_BORDER_RADIUS_REM.cssRem)

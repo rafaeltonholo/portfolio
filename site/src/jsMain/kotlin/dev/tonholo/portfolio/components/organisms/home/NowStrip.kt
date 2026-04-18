@@ -217,7 +217,7 @@ private fun WritingEntry(article: Article) {
         }
         Div(
             attrs = Modifier
-                .fontFamily(FontFamilies.DISPLAY)
+                .fontFamily(*FontFamilies.DISPLAY)
                 .fontSize(WRITING_TITLE_SIZE_REM.cssRem)
                 .fontWeight(FontWeight.Medium)
                 .color(tokens.ink.ink)
@@ -296,7 +296,7 @@ private fun HobbyReadingRow() {
         ComposeText(" $HOBBY_SEPARATOR ")
         Span(
             attrs = Modifier
-                .fontFamily(FontFamilies.SERIF)
+                .fontFamily(*FontFamilies.SERIF)
                 .fontStyle(FontStyle.Italic)
                 .toAttrs(),
         ) {

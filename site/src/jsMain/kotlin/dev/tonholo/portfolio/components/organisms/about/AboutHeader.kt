@@ -168,7 +168,7 @@ val AboutHeaderStyle = CssStyle {
 val AboutHeaderTitleEmphasisStyle = CssStyle {
     base {
         Modifier
-            .fontFamily(FontFamilies.SERIF)
+            .fontFamily(*FontFamilies.SERIF)
             .fontStyle(FontStyle.Italic)
     }
 }
@@ -181,7 +181,7 @@ val AboutHeaderTitleEmphasisStyle = CssStyle {
 val AboutHeaderLedeStyle = CssStyle {
     base {
         Modifier
-            .fontFamily(FontFamilies.SERIF)
+            .fontFamily(*FontFamilies.SERIF)
             .fontSize(LEDE_SIZE_REM.cssRem)
             .lineHeight(LEDE_LINE_HEIGHT)
             .margin(topBottom = 0.cssRem)

@@ -144,7 +144,7 @@ val TickerTrackStyle = CssStyle {
             .flexWrap(FlexWrap.Wrap)
             .alignItems(AlignItems.Center)
             .gap(ROW_GAP_REM.cssRem)
-            .fontFamily(FontFamilies.MONO)
+            .fontFamily(*FontFamilies.MONO)
             .fontSize(ROW_FONT_SIZE_REM.cssRem)
     }
 }

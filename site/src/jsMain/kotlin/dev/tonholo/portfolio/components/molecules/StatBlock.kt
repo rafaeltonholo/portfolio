@@ -95,7 +95,7 @@ fun StatBlock(
             StatSize.Small ->
                 Modifier
                     .display(DisplayStyle.Block)
-                    .fontFamily(FontFamilies.MONO)
+                    .fontFamily(*FontFamilies.MONO)
                     .fontSize(SMALL_NUM_SIZE_REM.cssRem)
                     .fontWeight(FontWeight.SemiBold)
                     .lineHeight(NUM_LINE_HEIGHT_UNITLESS)
@@ -104,7 +104,7 @@ fun StatBlock(
             StatSize.Large ->
                 Modifier
                     .display(DisplayStyle.Block)
-                    .fontFamily(FontFamilies.DISPLAY)
+                    .fontFamily(*FontFamilies.DISPLAY)
                     .fontSize(LARGE_NUM_SIZE_REM.cssRem)
                     .fontWeight(FontWeight.Medium)
                     .lineHeight(NUM_LINE_HEIGHT_UNITLESS)
@@ -120,7 +120,7 @@ fun StatBlock(
             StatSize.Small ->
                 Modifier
                     .display(DisplayStyle.Block)
-                    .fontFamily(FontFamilies.MONO)
+                    .fontFamily(*FontFamilies.MONO)
                     .fontSize(SMALL_LABEL_SIZE_REM.cssRem)
                     .margin(top = SMALL_LABEL_MARGIN_TOP_REM.cssRem)
                     .letterSpacing(SMALL_LABEL_LETTER_SPACING_EM.em)
@@ -130,7 +130,7 @@ fun StatBlock(
             StatSize.Large ->
                 Modifier
                     .display(DisplayStyle.Block)
-                    .fontFamily(FontFamilies.BODY)
+                    .fontFamily(*FontFamilies.BODY)
                     .fontSize(LARGE_LABEL_SIZE_REM.cssRem)
                     .lineHeight(LARGE_LABEL_LINE_HEIGHT)
                     .maxWidth(LARGE_LABEL_MAX_WIDTH_CH.unsafeCast<CSSSizeValue<CSSUnit.ch>>())
@@ -149,7 +149,7 @@ fun StatBlock(
  */
 val StatBlockSmallStyle = CssStyle {
     base {
-        Modifier.fontFamily(FontFamilies.MONO)
+        Modifier.fontFamily(*FontFamilies.MONO)
     }
 }
 

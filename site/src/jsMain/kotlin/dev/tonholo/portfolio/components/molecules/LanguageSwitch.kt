@@ -184,7 +184,7 @@ val LanguageSwitchStyle = CssStyle {
             .display(DisplayStyle.LegacyInlineFlex)
             .alignItems(AlignItems.Center)
             .gap(LANG_SWITCH_GAP_REM.cssRem)
-            .fontFamily(FontFamilies.MONO)
+            .fontFamily(*FontFamilies.MONO)
             .fontSize(LANG_SWITCH_FONT_SIZE_REM.cssRem)
             .color(ink.ink3)
     }
@@ -210,7 +210,7 @@ val LanguageOptionStyle = CssStyle {
             )
             .cursor(Cursor.Pointer)
             .color(ink.ink3)
-            .fontFamily(FontFamilies.MONO)
+            .fontFamily(*FontFamilies.MONO)
             .fontSize(LANG_SWITCH_FONT_SIZE_REM.cssRem)
             .letterSpacing(LANG_OPT_LETTER_SPACING_EM.em)
             .borderRadius(LANG_OPT_RADIUS_REM.cssRem)

@@ -119,7 +119,7 @@ val ArticleMetaRowStyle = CssStyle {
     base {
         Modifier
             .display(DisplayStyle.Flex)
-            .fontFamily(FontFamilies.MONO)
+            .fontFamily(*FontFamilies.MONO)
             .fontSize(META_ROW_FONT_SIZE_REM.cssRem)
             .gap(META_ROW_GAP_REM.cssRem)
             .margin(bottom = META_ROW_MARGIN_BOTTOM_REM.cssRem)

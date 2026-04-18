@@ -209,7 +209,7 @@ private fun SidebarHeading(text: String, marginTopRem: Double) {
 
     H5(
         attrs = Modifier
-            .fontFamily(FontFamilies.MONO)
+            .fontFamily(*FontFamilies.MONO)
             .fontSize(HEADING_FONT_SIZE_REM.cssRem)
             .letterSpacing(HEADING_LETTER_SPACING_EM.em)
             .textTransform(TextTransform.Uppercase)
@@ -231,7 +231,7 @@ private fun SidebarHeading(text: String, marginTopRem: Double) {
 val ArticleTocSidebarStyle = CssStyle {
     base {
         Modifier
-            .fontFamily(FontFamilies.MONO)
+            .fontFamily(*FontFamilies.MONO)
             .fontSize(SIDEBAR_FONT_SIZE_REM.cssRem)
             .position(Position.Sticky)
             .top(SIDEBAR_STICKY_TOP_REM.cssRem)

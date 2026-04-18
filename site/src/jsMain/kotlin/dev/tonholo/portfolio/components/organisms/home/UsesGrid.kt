@@ -198,7 +198,7 @@ val UsesListStyle = CssStyle {
             .gap(LIST_GAP_REM.cssRem)
             .margin(topBottom = 0.cssRem)
             .padding(left = 0.cssRem)
-            .fontFamily(FontFamilies.MONO)
+            .fontFamily(*FontFamilies.MONO)
             .fontSize(LIST_FONT_SIZE_REM.cssRem)
             .lineHeight(LIST_LINE_HEIGHT)
     }

@@ -187,7 +187,7 @@ val PrevNextLinkStyle = CssStyle {
             .display(DisplayStyle.LegacyInlineFlex)
             .alignItems(AlignItems.Center)
             .gap(LINK_GAP_REM.cssRem)
-            .fontFamily(FontFamilies.MONO)
+            .fontFamily(*FontFamilies.MONO)
             .fontSize(LINK_FONT_SIZE_REM.cssRem)
             .cursor(Cursor.Pointer)
     }

@@ -102,7 +102,7 @@ val BrandMarkStyle = CssStyle {
             .display(DisplayStyle.Flex)
             .alignItems(AlignItems.Center)
             .gap(BRAND_GAP_REM.cssRem)
-            .fontFamily(FontFamilies.MONO)
+            .fontFamily(*FontFamilies.MONO)
             .fontSize(BRAND_FONT_SIZE_REM.cssRem)
             .fontWeight(FontWeight.SemiBold)
             .letterSpacing(BRAND_LETTER_SPACING_EM.em)

@@ -163,7 +163,7 @@ private fun HiringCtaCopy() {
     Div(attrs = Modifier.toAttrs()) {
         Div(
             attrs = Modifier
-                .fontFamily(FontFamilies.MONO)
+                .fontFamily(*FontFamilies.MONO)
                 .fontSize(META_FONT_SIZE_REM.cssRem)
                 .letterSpacing(META_LETTER_SPACING_EM.em)
                 .textTransform(TextTransform.Uppercase)
@@ -274,7 +274,7 @@ val HiringCtaHeadingStyle = CssStyle {
     base {
         Modifier
             .margin(topBottom = 0.cssRem)
-            .fontFamily(FontFamilies.DISPLAY)
+            .fontFamily(*FontFamilies.DISPLAY)
             .fontWeight(HEADING_WEIGHT_FIVE_HUNDRED)
             .fontSize(
                 clamp(

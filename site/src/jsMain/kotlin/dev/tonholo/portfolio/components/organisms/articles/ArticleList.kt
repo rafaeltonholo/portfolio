@@ -341,7 +341,7 @@ val ArticleRowStyle = CssStyle {
 val ArticleDateCellStyle = CssStyle {
     base {
         Modifier
-            .fontFamily(FontFamilies.MONO)
+            .fontFamily(*FontFamilies.MONO)
             .fontSize(DATE_SIZE_REM.cssRem)
             .padding(top = DATE_COL_PADDING_TOP_REM.cssRem)
     }
@@ -356,7 +356,7 @@ val ArticleDateCellStyle = CssStyle {
 val ArticleStatusStyle = CssStyle {
     base {
         Modifier
-            .fontFamily(FontFamilies.MONO)
+            .fontFamily(*FontFamilies.MONO)
             .fontSize(STATUS_SIZE_REM.cssRem)
             .letterSpacing(STATUS_LETTER_SPACING_EM.em)
             .textTransform(TextTransform.Uppercase)
@@ -373,7 +373,7 @@ val ArticleStatusStyle = CssStyle {
 val ArticleTitleStyle = CssStyle {
     base {
         Modifier
-            .fontFamily(FontFamilies.DISPLAY)
+            .fontFamily(*FontFamilies.DISPLAY)
             .fontSize(TITLE_SIZE_REM.cssRem)
             .fontWeight(FontWeight.Medium)
             .lineHeight(TITLE_LINE_HEIGHT)
@@ -390,7 +390,7 @@ val ArticleTitleStyle = CssStyle {
 val ArticleDescStyle = CssStyle {
     base {
         Modifier
-            .fontFamily(FontFamilies.BODY)
+            .fontFamily(*FontFamilies.BODY)
             .fontSize(DESC_SIZE_REM.cssRem)
             .lineHeight(DESC_LINE_HEIGHT)
             .maxWidth(DESC_MAX_WIDTH_CH.unsafeCast<CSSSizeValue<CSSUnit.ch>>())
@@ -420,7 +420,7 @@ val ArticleReadCellStyle = CssStyle {
     base {
         Modifier
             .display(DisplayStyle.Block)
-            .fontFamily(FontFamilies.MONO)
+            .fontFamily(*FontFamilies.MONO)
             .fontSize(READ_SIZE_REM.cssRem)
             .padding(top = READ_COL_PADDING_TOP_REM.cssRem)
     }

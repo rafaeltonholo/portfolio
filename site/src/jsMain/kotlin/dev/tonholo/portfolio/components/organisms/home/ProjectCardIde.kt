@@ -298,7 +298,7 @@ val ProjectCardHeadStyle = CssStyle {
                 topBottom = HEAD_PADDING_Y_REM.cssRem,
                 leftRight = HEAD_PADDING_X_REM.cssRem,
             )
-            .fontFamily(FontFamilies.MONO)
+            .fontFamily(*FontFamilies.MONO)
             .fontSize(HEAD_FONT_SIZE_REM.cssRem)
     }
 }
@@ -345,7 +345,7 @@ val ProjectCardBodyStyle = CssStyle {
 val ProjectCardTitleStyle = CssStyle {
     base {
         Modifier
-            .fontFamily(FontFamilies.DISPLAY)
+            .fontFamily(*FontFamilies.DISPLAY)
             .fontSize(TITLE_FONT_SIZE_REM.cssRem)
             .fontWeight(FontWeight.Medium)
             .letterSpacing(TITLE_LETTER_SPACING_EM.em)
@@ -361,7 +361,7 @@ val ProjectCardTitleStyle = CssStyle {
 val ProjectCardDescStyle = CssStyle {
     base {
         Modifier
-            .fontFamily(FontFamilies.BODY)
+            .fontFamily(*FontFamilies.BODY)
             .fontSize(DESC_FONT_SIZE_REM.cssRem)
             .lineHeight(DESC_LINE_HEIGHT)
             .maxWidth(DESC_MAX_WIDTH_CH.unsafeCast<CSSSizeValue<CSSUnit.ch>>())
@@ -400,7 +400,7 @@ val ProjectCardFootStyle = CssStyle {
             .alignItems(AlignItems.Center)
             .justifyContent(JustifyContent.SpaceBetween)
             .padding(top = FOOT_PADDING_TOP_REM.cssRem)
-            .fontFamily(FontFamilies.MONO)
+            .fontFamily(*FontFamilies.MONO)
             .fontSize(FOOT_FONT_SIZE_REM.cssRem)
     }
 }

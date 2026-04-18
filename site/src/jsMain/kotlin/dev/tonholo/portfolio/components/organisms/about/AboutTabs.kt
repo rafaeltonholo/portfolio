@@ -449,7 +449,7 @@ val TabsBarStyle = CssStyle {
 val TabButtonStyle = CssStyle {
     base {
         Modifier
-            .fontFamily(FontFamilies.MONO)
+            .fontFamily(*FontFamilies.MONO)
             .fontSize(TAB_FONT_SIZE_REM.cssRem)
             .fontWeight(FontWeight.Medium)
             .padding(
@@ -476,7 +476,7 @@ val TabButtonStyle = CssStyle {
 val ProseStyle = CssStyle {
     base {
         Modifier
-            .fontFamily(FontFamilies.SERIF)
+            .fontFamily(*FontFamilies.SERIF)
             .fontSize(PROSE_FONT_SIZE_REM.cssRem)
             .lineHeight(PROSE_LINE_HEIGHT)
             .maxWidth(PROSE_MAX_WIDTH_CH.unsafeCast<CSSSizeValue<CSSUnit.ch>>())
@@ -491,7 +491,7 @@ val ProseStyle = CssStyle {
 val AboutProseHeadingStyle = CssStyle {
     base {
         Modifier
-            .fontFamily(FontFamilies.DISPLAY)
+            .fontFamily(*FontFamilies.DISPLAY)
             .fontSize(PROSE_H3_FONT_SIZE_REM.cssRem)
             .fontWeight(FontWeight.Medium)
             .lineHeight(PROSE_H3_LINE_HEIGHT)
@@ -506,7 +506,7 @@ val AboutProseHeadingStyle = CssStyle {
 val NowTimestampStyle = CssStyle {
     base {
         Modifier
-            .fontFamily(FontFamilies.MONO)
+            .fontFamily(*FontFamilies.MONO)
             .fontSize(NOW_TIMESTAMP_FONT_SIZE_REM.cssRem)
             .margin(top = 0.cssRem, bottom = NOW_TIMESTAMP_MARGIN_BOTTOM_REM.cssRem)
     }
@@ -541,7 +541,7 @@ val HobbiesGridStyle = CssStyle {
 val HobbiesMetaStyle = CssStyle {
     base {
         Modifier
-            .fontFamily(FontFamilies.MONO)
+            .fontFamily(*FontFamilies.MONO)
             .fontSize(HOBBIES_META_FONT_SIZE_REM.cssRem)
             .fontWeight(FontWeight.Medium)
             .lineHeight(HOBBIES_META_LINE_HEIGHT)
@@ -558,7 +558,7 @@ val HobbiesMetaStyle = CssStyle {
 val HobbiesBodyStyle = CssStyle {
     base {
         Modifier
-            .fontFamily(FontFamilies.SERIF)
+            .fontFamily(*FontFamilies.SERIF)
             .fontSize(HOBBIES_BODY_FONT_SIZE_REM.cssRem)
             .lineHeight(HOBBIES_BODY_LINE_HEIGHT)
             .margin(topBottom = 0.cssRem)

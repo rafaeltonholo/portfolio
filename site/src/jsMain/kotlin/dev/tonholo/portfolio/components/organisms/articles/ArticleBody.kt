@@ -396,7 +396,7 @@ val ArticleBodyTitleStyle = CssStyle {
 val ArticleBodyLedeStyle = CssStyle {
     base {
         Modifier
-            .fontFamily(FontFamilies.SERIF)
+            .fontFamily(*FontFamilies.SERIF)
             .fontSize(LEDE_SIZE_REM.cssRem)
             .lineHeight(LEDE_LINE_HEIGHT)
             .fontStyle(FontStyle.Italic)
@@ -414,7 +414,7 @@ val ArticleBodyLedeStyle = CssStyle {
 val ArticleBodyProseStyle = CssStyle {
     base {
         Modifier
-            .fontFamily(FontFamilies.SERIF)
+            .fontFamily(*FontFamilies.SERIF)
             .fontSize(PROSE_SIZE_REM.cssRem)
             .lineHeight(PROSE_LINE_HEIGHT)
             .maxWidth(PROSE_MAX_WIDTH_CH.unsafeCast<CSSSizeValue<CSSUnit.ch>>())
@@ -445,7 +445,7 @@ val ProseParagraphStyle = CssStyle {
 val ArticleProseHeadingStyle = CssStyle {
     base {
         Modifier
-            .fontFamily(FontFamilies.DISPLAY)
+            .fontFamily(*FontFamilies.DISPLAY)
             .fontSize(PROSE_H3_SIZE_REM.cssRem)
             .letterSpacing(PROSE_H3_LETTER_SPACING_EM.em)
             .margin(
@@ -464,7 +464,7 @@ val ArticleProseHeadingStyle = CssStyle {
 val InlineCodeStyle = CssStyle {
     base {
         Modifier
-            .fontFamily(FontFamilies.MONO)
+            .fontFamily(*FontFamilies.MONO)
             .fontSize(INLINE_CODE_SIZE_REM.cssRem)
             .padding(
                 topBottom = INLINE_CODE_PADDING_Y_REM.cssRem,

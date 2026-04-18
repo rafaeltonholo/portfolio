@@ -289,7 +289,7 @@ val NavMetaStyle = CssStyle {
         Modifier
             .display(DisplayStyle.Flex)
             .alignItems(AlignItems.Center)
-            .fontFamily(FontFamilies.MONO)
+            .fontFamily(*FontFamilies.MONO)
             .fontSize(NAV_META_FONT_SIZE_REM.cssRem)
             .color(textColor)
             .cursor(Cursor.Default)

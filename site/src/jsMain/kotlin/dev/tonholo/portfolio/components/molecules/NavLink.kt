@@ -104,7 +104,7 @@ fun NavLink(
 val NavLinkStyle = CssStyle {
     base {
         Modifier
-            .fontFamily(FontFamilies.MONO)
+            .fontFamily(*FontFamilies.MONO)
             .fontSize(NAV_LINK_FONT_SIZE_REM.cssRem)
             .fontWeight(FontWeight.Normal)
             .padding(

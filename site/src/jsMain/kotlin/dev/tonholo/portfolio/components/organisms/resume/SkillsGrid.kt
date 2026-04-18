@@ -231,7 +231,7 @@ val SkillsGridStyle = CssStyle {
 val SkillsColumnHeadingStyle = CssStyle {
     base {
         Modifier
-            .fontFamily(FontFamilies.MONO)
+            .fontFamily(*FontFamilies.MONO)
             .fontSize(HEADING_FONT_SIZE_REM.cssRem)
             .fontWeight(FontWeight.SemiBold)
             .letterSpacing(HEADING_LETTER_SPACING_EM.em)
@@ -266,7 +266,7 @@ val SkillsEducationListStyle = CssStyle {
 val SkillsEducationTitleStyle = CssStyle {
     base {
         Modifier
-            .fontFamily(FontFamilies.DISPLAY)
+            .fontFamily(*FontFamilies.DISPLAY)
             .fontSize(EDUCATION_TITLE_FONT_SIZE_REM.cssRem)
             .fontWeight(FontWeight.Medium)
             .margin(top = EDUCATION_TITLE_MARGIN_TOP_REM.cssRem, bottom = 0.cssRem)
@@ -281,7 +281,7 @@ val SkillsEducationTitleStyle = CssStyle {
 val SkillsEducationSubtitleStyle = CssStyle {
     base {
         Modifier
-            .fontFamily(FontFamilies.MONO)
+            .fontFamily(*FontFamilies.MONO)
             .fontSize(EDUCATION_SUBTITLE_FONT_SIZE_REM.cssRem)
             .fontWeight(FontWeight.Normal)
             .lineHeight(EDUCATION_SUBTITLE_LINE_HEIGHT)

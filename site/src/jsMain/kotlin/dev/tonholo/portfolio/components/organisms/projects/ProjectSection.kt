@@ -203,7 +203,7 @@ val ProjectSectionStyle = CssStyle {
 val ProjectSectionLabelStyle = CssStyle {
     base {
         Modifier
-            .fontFamily(FontFamilies.MONO)
+            .fontFamily(*FontFamilies.MONO)
             .fontSize(LABEL_FONT_SIZE_REM.cssRem)
             .letterSpacing(LABEL_LETTER_SPACING_EM.em)
             .textTransform(TextTransform.Uppercase)
@@ -220,7 +220,7 @@ val ProjectSectionLabelStyle = CssStyle {
 val ProjectSectionContentStyle = CssStyle {
     base {
         Modifier
-            .fontFamily(FontFamilies.SERIF)
+            .fontFamily(*FontFamilies.SERIF)
             .fontSize(CONTENT_BODY_SIZE_REM.cssRem)
             .lineHeight(CONTENT_BODY_LINE_HEIGHT)
             .maxWidth(CONTENT_MAX_WIDTH_CH.unsafeCast<CSSSizeValue<CSSUnit.ch>>())

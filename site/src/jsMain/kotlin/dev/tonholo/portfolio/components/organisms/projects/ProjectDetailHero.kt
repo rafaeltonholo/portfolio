@@ -263,7 +263,7 @@ val ProjectDetailHeroInfoStyle = CssStyle {
                 size(INFO_COL_FR.fr)
             }
             .gap(rowGap = INFO_ROW_GAP_REM.cssRem, columnGap = INFO_COL_GAP_REM.cssRem)
-            .fontFamily(FontFamilies.MONO)
+            .fontFamily(*FontFamilies.MONO)
             .fontSize(INFO_FONT_SIZE_REM.cssRem)
     }
 }

@@ -16,7 +16,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.textTransform
  */
 fun Modifier.apply(style: TextStyle): Modifier {
     var modifier = this
-        .fontFamily(style.family)
+        .fontFamily(*style.family)
         .fontSize(style.size)
         .fontWeight(style.weight)
         .lineHeight(style.lineHeight)

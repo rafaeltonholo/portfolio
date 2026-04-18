@@ -216,7 +216,7 @@ private fun TaglineColumn() {
         P(
             attrs = Modifier
                 .margin(topBottom = 0.cssRem)
-                .fontFamily(FontFamilies.BODY)
+                .fontFamily(*FontFamilies.BODY)
                 .fontSize(FOOTER_TAGLINE_FONT_SIZE_REM.cssRem)
                 .lineHeight(FOOTER_TAGLINE_LINE_HEIGHT)
                 .color(tokens.ink.ink3)
@@ -389,7 +389,7 @@ val FooterStyle = CssStyle {
                 top = FOOTER_PADDING_TOP_REM.cssRem,
                 bottom = FOOTER_PADDING_BOTTOM_REM.cssRem,
             )
-            .fontFamily(FontFamilies.MONO)
+            .fontFamily(*FontFamilies.MONO)
             .fontSize(FOOTER_FONT_SIZE_REM.cssRem)
     }
 }
@@ -427,7 +427,7 @@ val FooterGridStyle = CssStyle {
 val FooterHeadingStyle = CssStyle {
     base {
         Modifier
-            .fontFamily(FontFamilies.MONO)
+            .fontFamily(*FontFamilies.MONO)
             .fontSize(FOOTER_HEADING_FONT_SIZE_REM.cssRem)
             .fontWeight(FontWeight.SemiBold)
             .letterSpacing(FOOTER_HEADING_LETTER_SPACING_EM.em)

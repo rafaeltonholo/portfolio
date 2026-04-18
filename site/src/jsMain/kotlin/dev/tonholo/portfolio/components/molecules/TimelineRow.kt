@@ -142,7 +142,7 @@ fun TimelineRow(experience: Experience, modifier: Modifier = Modifier, last: Boo
             Span(
                 attrs = Modifier
                     .display(DisplayStyle.Block)
-                    .fontFamily(FontFamilies.MONO)
+                    .fontFamily(*FontFamilies.MONO)
                     .fontSize(DATE_SIZE_REM.cssRem)
                     .lineHeight(META_LINE_HEIGHT)
                     .color(tokens.muted.muted)
@@ -153,7 +153,7 @@ fun TimelineRow(experience: Experience, modifier: Modifier = Modifier, last: Boo
             Span(
                 attrs = Modifier
                     .display(DisplayStyle.Block)
-                    .fontFamily(FontFamilies.MONO)
+                    .fontFamily(*FontFamilies.MONO)
                     .fontSize(DURATION_SIZE_REM.cssRem)
                     .lineHeight(META_LINE_HEIGHT)
                     .color(tokens.muted.muted2)
@@ -170,7 +170,7 @@ fun TimelineRow(experience: Experience, modifier: Modifier = Modifier, last: Boo
         // Column 3: role (display medium) with company subtitle block.
         Div(
             attrs = Modifier
-                .fontFamily(FontFamilies.DISPLAY)
+                .fontFamily(*FontFamilies.DISPLAY)
                 .fontSize(ROLE_SIZE_REM.cssRem)
                 .fontWeight(FontWeight.Medium)
                 .lineHeight(ROLE_LINE_HEIGHT)
@@ -182,7 +182,7 @@ fun TimelineRow(experience: Experience, modifier: Modifier = Modifier, last: Boo
             Span(
                 attrs = Modifier
                     .display(DisplayStyle.Block)
-                    .fontFamily(FontFamilies.BODY)
+                    .fontFamily(*FontFamilies.BODY)
                     .fontSize(COMPANY_SIZE_REM.cssRem)
                     .fontWeight(FontWeight.Normal)
                     .margin(top = COMPANY_MARGIN_TOP_REM.cssRem)
@@ -197,7 +197,7 @@ fun TimelineRow(experience: Experience, modifier: Modifier = Modifier, last: Boo
         Div(
             attrs = TimelineBodyStyle
                 .toModifier()
-                .fontFamily(FontFamilies.BODY)
+                .fontFamily(*FontFamilies.BODY)
                 .fontSize(BODY_SIZE_REM.cssRem)
                 .lineHeight(BODY_LINE_HEIGHT)
                 .maxWidth(BODY_MAX_WIDTH_CH.unsafeCast<CSSSizeValue<CSSUnit.ch>>())

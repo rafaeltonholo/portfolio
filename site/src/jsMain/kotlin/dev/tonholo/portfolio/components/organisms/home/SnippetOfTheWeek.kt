@@ -166,7 +166,7 @@ private fun CopyColumn() {
 private fun MetaRow(text: String, color: Color) {
     Div(
         attrs = Modifier
-            .fontFamily(FontFamilies.MONO)
+            .fontFamily(*FontFamilies.MONO)
             .fontSize(META_ROW_FONT_SIZE_REM.cssRem)
             .color(color)
             .toAttrs(),

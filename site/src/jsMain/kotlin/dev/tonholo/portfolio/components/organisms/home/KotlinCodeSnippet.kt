@@ -221,7 +221,7 @@ private fun Dim(text: String) {
 val KotlinCodeSnippetStyle = CssStyle {
     base {
         Modifier
-            .fontFamily(FontFamilies.MONO)
+            .fontFamily(*FontFamilies.MONO)
             .fontSize(CODE_FONT_SIZE_REM.cssRem)
             .lineHeight(CODE_LINE_HEIGHT)
     }

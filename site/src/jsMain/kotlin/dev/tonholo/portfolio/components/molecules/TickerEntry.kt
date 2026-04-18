@@ -69,7 +69,7 @@ val TickerEntryStyle = CssStyle {
             .display(DisplayStyle.LegacyInlineFlex)
             .alignItems(AlignItems.Center)
             .gap(INNER_GAP_REM.cssRem)
-            .fontFamily(FontFamilies.MONO)
+            .fontFamily(*FontFamilies.MONO)
             .fontSize(FONT_SIZE_REM.cssRem)
     }
 }
