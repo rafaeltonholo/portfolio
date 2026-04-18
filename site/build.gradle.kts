@@ -212,24 +212,37 @@ val generateSitemap by tasks.registering {
     doLast {
         val pagePaths = pagesDir.asFile.walkTopDown()
             .filter { it.isFile && it.extension == "kt" }
-            .filter { file -> file.readText().contains("@Page") }
+            .filter { file ->
+                val text = file.readText()
+                // Include only static @Page routes; skip dynamic routes like @Page("/foo/{slug}")
+                val pageAnnotationLine = text.lines().firstOrNull { it.trimStart().startsWith("@Page") }
+                pageAnnotationLine != null && !pageAnnotationLine.contains("{")
+            }
             .map { file ->
-                val relative = file.relativeTo(pagesDir.asFile).path
-                    .removeSuffix(".kt")
-                    .replace("\\", "/")
-                if (relative == "Index") {
-                    "/"
+                val text = file.readText()
+                // Prefer the explicit routeOverride from the @Page annotation when present
+                val routeOverride = Regex("""@Page\(routeOverride\s*=\s*"([^"]+)"""")
+                    .find(text)?.groupValues?.get(1)
+                if (routeOverride != null) {
+                    routeOverride
                 } else {
-                    "/" + relative
-                        .replace("/Index", "")
-                        .split("/")
-                        .joinToString("/") { segment ->
-                            segment
-                                .replace(Regex("([a-z])([A-Z])")) { m ->
-                                    $$"${m.groupValues[1]}-${m.groupValues[2]}"
-                                }
-                                .lowercase()
-                        }
+                    val relative = file.relativeTo(pagesDir.asFile).path
+                        .removeSuffix(".kt")
+                        .replace("\\", "/")
+                    if (relative == "Index") {
+                        "/"
+                    } else {
+                        "/" + relative
+                            .replace("/Index", "")
+                            .split("/")
+                            .joinToString("/") { segment ->
+                                segment
+                                    .replace(Regex("([a-z])([A-Z])")) { m ->
+                                        "${m.groupValues[1]}-${m.groupValues[2]}"
+                                    }
+                                    .lowercase()
+                            }
+                    }
                 }
             }
             .toList()
