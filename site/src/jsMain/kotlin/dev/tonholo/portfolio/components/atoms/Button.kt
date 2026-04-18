@@ -56,6 +56,9 @@ private val Transparent: Color = Color.rgba(r = 0, g = 0, b = 0, a = 0f)
  * @param href optional link; when provided, renders as an anchor for use as
  *   navigation CTAs (`See featured work`, `Download CV`, etc.).
  * @param onClick optional click handler, wired to both button and anchor.
+ * @param trailing optional composable rendered after [text]; typically a
+ *   [PhosphorIcon] such as `arrow-up-right` for external-link CTAs. Inherits
+ *   the button gap and foreground color.
  */
 @Composable
 fun Button(
@@ -64,6 +67,7 @@ fun Button(
     variant: ButtonVariant = ButtonVariant.Solid,
     href: String? = null,
     onClick: (() -> Unit)? = null,
+    trailing: (@Composable () -> Unit)? = null,
 ) {
     val tokens = LocalPortfolioTokens.current
     val background = variant.background(tokens = tokens)
@@ -88,10 +92,16 @@ fun Button(
     if (href != null) {
         A(href = href, attrs = finalModifier.textDecorationLine(TextDecorationLine.None).toAttrs()) {
             ComposeText(text)
+            if (trailing != null) {
+                trailing()
+            }
         }
     } else {
         WebButton(attrs = finalModifier.toAttrs()) {
             ComposeText(text)
+            if (trailing != null) {
+                trailing()
+            }
         }
     }
 }
