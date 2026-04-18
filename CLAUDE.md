@@ -40,10 +40,10 @@ cd site && kobweb run                  # http://localhost:8080, Q to stop
 - **Single `:site` module.** The old `:core`, `:resources`, `kotlin-wrapper-shiki`,
   and `marktdown` modules are deleted. Their source is in `old-layout/` for
   reference only - do not import from there.
-- **i18n via Compose Multiplatform Resources.** Strings are in
-  `site/src/jsMain/composeResources/values/strings.xml` (en) and
-  `values-pt-rBR/strings.xml` (pt-BR). Access via the generated `Res.string.*`
-  accessor (`dev.tonholo.portfolio.resources` package). No Lyricist.
+- **i18n via hand-rolled `Strings` sealed class** under `locale/`. No Compose
+  Multiplatform Resources, no `Res.string.*` accessor, no Lyricist. The Compose MP
+  plugin was dropped because it pulled the Skiko runtime that is broken under
+  Kobweb Compose HTML.
 - **No `docs/` output committed.** Deployment uses the native GitHub Actions GH
   Pages artifact uploaded from `site/.kobweb/site/`. No `CNAME` file in the repo.
 - **Register extra routes in `site/build.gradle.kts`** via
@@ -58,9 +58,16 @@ cd site && kobweb run                  # http://localhost:8080, Q to stop
 
 ## Phase 2 Redesign
 
-The Atomic Design UI rebuild (7 routes, design tokens, etc.) is planned but has
-NOT started. See [`.ai/plans/PRD.md`](.ai/plans/PRD.md) and
-[`.ai/plans/phase2-redesign-plan.md`](.ai/plans/phase2-redesign-plan.md).
+Phase 2 core is landed; see [`.ai/plans/phase2-redesign-plan.md`](.ai/plans/phase2-redesign-plan.md)
+for future polish items. Shipped routes: `/`, `/about`, `/projects`, `/projects/{slug}`,
+`/articles`, `/articles/{slug}`, `/resume`. Dynamic slug lists live in
+`site/build.gradle.kts` as `projectSlugs` / `articleSlugs`.
+
+Atomic Design package layout: `components/{atoms,molecules,organisms,layouts}`,
+`theme/`, `state/`, `domain/`, `locale/`, `navigation/`, `extensions/`.
+
+Icons use Phosphor Icons via `@phosphor-icons/web@2.1.2` CDN, wrapped by
+`components/atoms/PhosphorIcon.kt`.
 
 ## Module CLAUDE.md Files
 

@@ -1,11 +1,11 @@
 # site - Kobweb Application
 
 This is the single active Gradle module. It owns `@Page` routes, feature
-screens, site-scoped utilities, i18n strings (Compose Multiplatform Resources),
-analytics wiring, and custom Gradle tasks (`generateSitemap`,
-`generateBuildAnalytics`). The static export is produced by `kobweb export`
-and uploaded to GitHub Pages via the Actions workflow - no `docs/` directory
-is committed.
+screens, Atomic Design components, theme tokens, i18n strings (hand-rolled
+`Strings` sealed class), analytics wiring, and custom Gradle tasks
+(`generateSitemap`, `generateBuildAnalytics`). The static export is produced
+by `kobweb export` and uploaded to GitHub Pages via the Actions workflow - no
+`docs/` directory is committed.
 
 Read [../.ai/guidelines.md](../.ai/guidelines.md) first.
 
@@ -13,19 +13,22 @@ Read [../.ai/guidelines.md](../.ai/guidelines.md) first.
 
 ```
 site/src/jsMain/kotlin/dev/tonholo/portfolio/
-├── pages/                             # @Page entry points
-│   └── Index.kt                       # "/"
+├── pages/                             # @Page entry points (one per route)
 ├── features/                          # Feature screens pages delegate to
-├── core/                              # Site-scoped helpers
-│   ├── components/                    # Site-only composables
-│   ├── router/                        # Route helpers + locale routing
-│   ├── sections/                      # Reusable page sections (hero, footer, etc.)
-│   └── ui/                            # Site-specific UI glue
+├── components/
+│   ├── atoms/                         # Smallest reusable UI units
+│   │                                  #   PhosphorIcon, Arrow, Caret, Placeholder, ...
+│   ├── molecules/                     # Composed atoms (StatBlock, SectionHead, ...)
+│   ├── organisms/                     # Larger page sections built from molecules
+│   └── layouts/                       # Page-level layout shells
+├── theme/                             # Design tokens: colors, typography, density, breakpoints
+├── state/                             # UI state holders
+├── domain/                            # Pure domain models (no framework deps)
+├── locale/                            # Hand-rolled i18n via Strings sealed class
+│                                      #   One subclass per locale (en, pt-BR)
+├── navigation/                        # Route constants and locale routing helpers
+├── extensions/                        # Kotlin extension utilities
 └── analytics/                         # BuildAnalytics (generated) + UmamiInjector
-
-site/src/jsMain/composeResources/      # Compose Multiplatform Resources
-├── values/strings.xml                 # Default (en) localized strings
-└── values-pt-rBR/strings.xml          # Portuguese (pt-BR) strings
 
 site/src/jsMain/resources/public/      # Static assets copied into the export
 └── public/{images,icons,fonts,docs,.well-known}/
@@ -37,19 +40,34 @@ Generated sources (not committed):
 - `build/generated/analytics/kotlin/` - `BuildAnalytics` object from `generateBuildAnalytics`
 - `src/jsMain/resources/public/sitemap.xml` - written by `generateSitemap`
 
+## Shipped Routes
+
+| Route | Registration |
+|---|---|
+| `/` | auto-discovered |
+| `/about` | auto-discovered |
+| `/projects` | auto-discovered |
+| `/projects/{slug}` | `projectSlugs` list in `build.gradle.kts` |
+| `/articles` | auto-discovered |
+| `/articles/{slug}` | `articleSlugs` list in `build.gradle.kts` |
+| `/resume` | auto-discovered |
+
 ## Key Conventions
 
 - **Pages stay thin.** `pages/*.kt` is a `@Page` composable that delegates to
   the matching feature screen. Real implementation lives under `features/<name>/`.
-- **i18n via Compose Resources.** Strings are accessed through the generated
-  `Res.string.*` accessor (package `dev.tonholo.portfolio.resources`). No Lyricist.
-  Edit `composeResources/values/strings.xml` and the `values-pt-rBR/` counterpart.
-- **Register non-discoverable routes.** Locale-prefixed article pages and
-  project detail pages must be added to `kobweb { app { export {
-  addExtraRoute(...) } } }` in `build.gradle.kts`. Forgetting this leaves them
-  out of the static export.
-- **Head additions** (fonts, meta tags) go inside `kobweb { app { index {
-  head.add { ... } } } }` in `build.gradle.kts`.
+- **i18n via hand-rolled `Strings` sealed class.** Add or update locale entries
+  in `locale/`. No Compose Multiplatform Resources; no `Res.string.*` accessor.
+  The Compose MP plugin was removed due to Skiko runtime incompatibility with
+  Kobweb Compose HTML.
+- **Icons via Phosphor.** Use `PhosphorIcon` composable (`components/atoms/`).
+  The icon set loads from `@phosphor-icons/web@2.1.2` CDN. No unicode glyphs.
+- **Register non-discoverable routes.** Dynamic slug routes must be added to
+  `kobweb { app { export { addExtraRoute(...) } } }` in `build.gradle.kts` via
+  the `projectSlugs` / `articleSlugs` lists. Forgetting this leaves them out of
+  the static export.
+- **Head additions** (fonts, meta tags, favicons) go inside `kobweb { app {
+  index { head.add { ... } } } }` in `build.gradle.kts`.
 - **Prefer native Kobweb `Modifier` APIs** over `styleModifier`. See
   [`.ai/guidelines.md`](../.ai/guidelines.md).
 - **Detekt source-set tasks are the real lint gates.**
