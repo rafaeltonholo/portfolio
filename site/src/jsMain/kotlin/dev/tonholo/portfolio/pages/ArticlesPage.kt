@@ -12,8 +12,11 @@ import dev.tonholo.portfolio.state.StaticContent
 /**
  * Articles route "/articles" - renders the editorial writing header followed
  * by the full article list. Row clicks route to each article's detail page.
+ *
+ * The `routeOverride` collapses Kobweb's default `ArticlesPage` ->
+ * `/articles-page` path to the expected `/articles` slug.
  */
-@Page
+@Page(routeOverride = "/articles")
 @Composable
 @Suppress("ModifierMissing")
 fun ArticlesPage() {

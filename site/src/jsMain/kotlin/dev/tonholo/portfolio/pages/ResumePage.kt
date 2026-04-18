@@ -18,8 +18,11 @@ private const val RESUME_PDF_TARGET = "_blank"
  * Resume route "/resume" - renders the editorial resume header with a PDF
  * download CTA, the experience timeline, and the stacked skills + education
  * grid.
+ *
+ * The `routeOverride` collapses Kobweb's default `ResumePage` ->
+ * `/resume-page` path to the expected `/resume` slug.
  */
-@Page
+@Page(routeOverride = "/resume")
 @Composable
 @Suppress("ModifierMissing")
 fun ResumePage() {

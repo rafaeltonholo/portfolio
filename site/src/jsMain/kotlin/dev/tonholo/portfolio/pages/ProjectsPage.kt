@@ -48,8 +48,11 @@ private const val TITLE_MARGIN_BOTTOM_REM = 2.0
  * Projects route "/projects" - renders the editorial "Work." header, a client-
  * side filter bar (all / commercial / open source), and the selected-work grid
  * filtered against the active [ProjectsFilter].
+ *
+ * The `routeOverride` collapses Kobweb's default `ProjectsPage` ->
+ * `/projects-page` path to the expected `/projects` slug.
  */
-@Page
+@Page(routeOverride = "/projects")
 @Composable
 @Suppress("ModifierMissing")
 fun ProjectsPage() {
