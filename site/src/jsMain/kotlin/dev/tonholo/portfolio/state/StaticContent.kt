@@ -1,7 +1,6 @@
 package dev.tonholo.portfolio.state
 
 import dev.tonholo.portfolio.domain.model.Article
-import dev.tonholo.portfolio.domain.model.ArticleStatus
 import dev.tonholo.portfolio.domain.model.Education
 import dev.tonholo.portfolio.domain.model.Experience
 import dev.tonholo.portfolio.domain.model.NowStripEntry
@@ -12,6 +11,7 @@ import dev.tonholo.portfolio.domain.model.SkillBucket
 import dev.tonholo.portfolio.domain.model.SkillCategory
 import dev.tonholo.portfolio.domain.model.TickerItem
 import dev.tonholo.portfolio.domain.model.UseCategory
+import dev.tonholo.portfolio.generated.articles.GeneratedArticles
 
 /**
  * Seed static content copied verbatim from the handoff JSX prototype. Drives
@@ -112,71 +112,13 @@ object StaticContent {
         ),
     )
 
-    val ARTICLES: List<Article> = listOf(
-        Article(
-            slug = "a1",
-            date = "apr 10, 2026",
-            title = "Compose stability, without the cult",
-            description = "Why most of what you read about @Stable is wrong, and what " +
-                "actually matters when you're profiling recompositions in real apps.",
-            tags = listOf("compose", "performance"),
-            readTime = "9 min",
-            status = ArticleStatus.Draft,
-        ),
-        Article(
-            slug = "a2",
-            date = "mar 28, 2026",
-            title = "Why I stopped fearing Gradle",
-            description = "A short letter to everyone who groans when they see " +
-                "build.gradle.kts. The tooling got good. The docs did not.",
-            tags = listOf("gradle", "build"),
-            readTime = "7 min",
-        ),
-        Article(
-            slug = "a3",
-            date = "mar 12, 2026",
-            title = "The honest cost of KMP",
-            description = "I shipped a KMP feature to production last quarter. Here's " +
-                "what it gave me, and here's what it took.",
-            tags = listOf("kmp", "kotlin"),
-            readTime = "12 min",
-        ),
-        Article(
-            slug = "a4",
-            date = "feb 24, 2026",
-            title = "A very boring dynamic-feature system",
-            description = "Boring is good. Boring is stable. Boring is what you want at 2am.",
-            tags = listOf("architecture", "android"),
-            readTime = "11 min",
-        ),
-        Article(
-            slug = "a5",
-            date = "feb 02, 2026",
-            title = "Composing SVGs at build time",
-            description = "How svg-to-compose works, and why generating code is still " +
-                "the most under-appreciated Kotlin trick.",
-            tags = listOf("compose", "tooling"),
-            readTime = "6 min",
-        ),
-        Article(
-            slug = "a6",
-            date = "jan 18, 2026",
-            title = "Ottawa, Compose, and the first year",
-            description = "A non-technical one. What it's like to move across a " +
-                "hemisphere mid-career.",
-            tags = listOf("personal"),
-            readTime = "8 min",
-        ),
-        Article(
-            slug = "a7",
-            date = "dec 20, 2025",
-            title = "Hello World!",
-            description = "The author shares his passion for mobile development in a " +
-                "new blog. Advanced content on Android engineering, Compose, DI, architecture.",
-            tags = listOf("meta"),
-            readTime = "4 min",
-        ),
-    )
+    /**
+     * The article index is generated at build time from the markdown sources
+     * under `site/src/jsMain/resources/markdown/articles/`. See
+     * [GeneratedArticles] (produced by the kobwebx-markdown `process` block
+     * in `site/build.gradle.kts`) for the canonical list.
+     */
+    val ARTICLES: List<Article> = GeneratedArticles.ALL
 
     val EXPERIENCE: List<Experience> = listOf(
         Experience(
