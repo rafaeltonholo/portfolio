@@ -7,23 +7,21 @@ import com.varabyte.kobweb.compose.ui.graphics.Color
 import com.varabyte.kobweb.compose.ui.modifiers.color
 import com.varabyte.kobweb.compose.ui.modifiers.display
 import com.varabyte.kobweb.compose.ui.modifiers.transition
-import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.silk.style.CssStyle
 import com.varabyte.kobweb.silk.style.toModifier
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import org.jetbrains.compose.web.css.DisplayStyle
 import org.jetbrains.compose.web.css.s
-import org.jetbrains.compose.web.dom.Span
-import org.jetbrains.compose.web.dom.Text as ComposeText
 
-private const val ARROW_GLYPH = "\u2192" // →
+private const val ARROW_ICON_NAME = "arrow-right"
 private const val ARROW_TRANSITION_DURATION_S = 0.2
 
 /**
- * Inline rightward arrow glyph (`→`). Maps to the `.arrow` span used across
- * the handoff card footers and CTA labels. The base style sets up a smooth
- * transform transition so parent selectors (e.g., `.proj-card:hover .arrow`)
- * can animate a 4px translate with no extra setup.
+ * Inline rightward arrow icon. Renders a Phosphor `arrow-right` glyph inside
+ * the `.arrow` wrapper used across the handoff card footers and CTA labels.
+ * The base style sets up a smooth transform transition so parent selectors
+ * (e.g., `.proj-card:hover .arrow`) can animate a translate with no extra
+ * setup. Color inherits from the parent by default.
  *
  * @param modifier optional [Modifier] chained after the base styles.
  * @param color optional color override; defaults to `inherit`.
@@ -40,9 +38,10 @@ fun Arrow(modifier: Modifier = Modifier, color: Color? = null) {
     }
     finalModifier = finalModifier.then(modifier)
 
-    Span(attrs = finalModifier.toAttrs { attr("aria-hidden", "true") }) {
-        ComposeText(ARROW_GLYPH)
-    }
+    PhosphorIcon(
+        name = ARROW_ICON_NAME,
+        modifier = finalModifier,
+    )
 }
 
 /**

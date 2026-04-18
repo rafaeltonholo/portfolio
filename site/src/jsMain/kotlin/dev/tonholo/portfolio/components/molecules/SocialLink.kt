@@ -15,6 +15,7 @@ import com.varabyte.kobweb.silk.style.CssStyle
 import com.varabyte.kobweb.silk.style.selectors.hover
 import com.varabyte.kobweb.silk.style.toModifier
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
+import dev.tonholo.portfolio.components.atoms.PhosphorIcon
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.color.AccentMint
 import org.jetbrains.compose.web.css.AlignItems
@@ -25,7 +26,8 @@ import org.jetbrains.compose.web.dom.A
 import org.jetbrains.compose.web.dom.Span
 import org.jetbrains.compose.web.dom.Text as ComposeText
 
-private const val EXTERNAL_ARROW_GLYPH = "\u2197" // ↗
+private const val EXTERNAL_ARROW_ICON_NAME = "arrow-up-right"
+private const val EXTERNAL_ARROW_SIZE_REM = 0.875
 private const val EXTERNAL_TARGET = "_blank"
 private const val EXTERNAL_REL = "noopener noreferrer"
 
@@ -34,7 +36,8 @@ private const val SOCIAL_LINK_TRANSITION_DURATION_S = 0.18
 
 /**
  * Footer-style social link. Renders a horizontal row composed of an optional
- * leading [icon] slot, the [label] text, and an external `↗` arrow glyph.
+ * leading [icon] slot, the [label] text, and a trailing Phosphor
+ * `arrow-up-right` glyph indicating an external destination.
  *
  * Maps to the footer `"Elsewhere"` column entries in the handoff (`.footer a`),
  * where links read as `"github.com/rafaeltonholo"`, `"linkedin.com/in/..."`,
@@ -88,15 +91,18 @@ fun SocialLink(
                 .toModifier()
                 .toAttrs { attr("aria-hidden", "true") },
         ) {
-            ComposeText(EXTERNAL_ARROW_GLYPH)
+            PhosphorIcon(
+                name = EXTERNAL_ARROW_ICON_NAME,
+                size = EXTERNAL_ARROW_SIZE_REM.cssRem,
+            )
         }
     }
 }
 
 /**
- * Base `CssStyle` for the trailing `↗` glyph inside [SocialLink]. Displayed
- * inline so it flows with the label text; spacing is handled by the parent
- * anchor's `gap`.
+ * Base `CssStyle` for the trailing external-arrow glyph inside [SocialLink].
+ * Displayed inline so the Phosphor icon flows with the label text; spacing is
+ * handled by the parent anchor's `gap`.
  */
 val SocialLinkArrowStyle = CssStyle {
     base {
