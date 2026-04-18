@@ -34,6 +34,8 @@ import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.style.selectors.hover
 import com.varabyte.kobweb.silk.style.toModifier
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
+import dev.tonholo.portfolio.components.atoms.PhosphorIcon
+import dev.tonholo.portfolio.components.atoms.PhosphorWeight
 import dev.tonholo.portfolio.components.molecules.TagList
 import dev.tonholo.portfolio.domain.model.Article
 import dev.tonholo.portfolio.domain.model.ArticleStatus
@@ -80,7 +82,7 @@ private const val DATE_COL_PADDING_TOP_REM = 0.375 // 6px
 private const val STATUS_MARGIN_TOP_REM = 0.25 // 4px
 private const val STATUS_SIZE_REM = 0.625 // 10px
 private const val STATUS_LETTER_SPACING_EM = 0.08
-private const val STATUS_GLYPH = "\u25CF " // "● " black circle + space
+private const val STATUS_ICON_SIZE_REM = 0.5 // 8px
 
 // Column 2: title (24px display medium) over body copy (14px body ink-3).
 private const val TITLE_SIZE_REM = 1.5 // 24px
@@ -205,7 +207,12 @@ private fun ArticleDateCell(article: Article, tokens: PortfolioTokens) {
                     .color(tokens.accent.accent)
                     .toAttrs(),
             ) {
-                ComposeText("$STATUS_GLYPH${article.status.label}")
+                PhosphorIcon(
+                    name = "circle",
+                    weight = PhosphorWeight.Fill,
+                    size = STATUS_ICON_SIZE_REM.cssRem,
+                )
+                ComposeText(" ${article.status.label}")
             }
         }
     }
