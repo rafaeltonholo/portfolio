@@ -248,7 +248,7 @@ private fun ProseH3(id: String, text: String) {
     val tokens = LocalPortfolioTokens.current
 
     H3(
-        attrs = ProseHeadingStyle
+        attrs = ArticleProseHeadingStyle
             .toModifier()
             .id(id)
             .color(tokens.ink.ink)
@@ -442,7 +442,7 @@ val ProseParagraphStyle = CssStyle {
  * `.prose h3`: display font at 22px with -0.015em tracking, 2em top margin,
  * and 0.6em bottom margin. Color is applied inline from the `ink` token.
  */
-val ProseHeadingStyle = CssStyle {
+val ArticleProseHeadingStyle = CssStyle {
     base {
         Modifier
             .fontFamily(FontFamilies.DISPLAY)

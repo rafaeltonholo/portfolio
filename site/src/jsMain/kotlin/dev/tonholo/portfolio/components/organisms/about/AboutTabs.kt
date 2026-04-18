@@ -407,7 +407,7 @@ private fun ProseParagraph(text: String, isFirst: Boolean, tokens: PortfolioToke
 private fun ProseHeading(text: String, tokens: PortfolioTokens, collapseTop: Boolean = false) {
     val topMargin = if (collapseTop) 0.em else PROSE_H3_MARGIN_TOP_EM.em
     H3(
-        attrs = ProseHeadingStyle
+        attrs = AboutProseHeadingStyle
             .toModifier()
             .margin(top = topMargin, bottom = PROSE_H3_MARGIN_BOTTOM_EM.em)
             .color(tokens.ink.ink)
@@ -488,7 +488,7 @@ val ProseStyle = CssStyle {
  * letter-spacing. Top / bottom margins are applied inline by [ProseHeading]
  * so the `Now` panel's first heading can collapse the top gap.
  */
-val ProseHeadingStyle = CssStyle {
+val AboutProseHeadingStyle = CssStyle {
     base {
         Modifier
             .fontFamily(FontFamilies.DISPLAY)
