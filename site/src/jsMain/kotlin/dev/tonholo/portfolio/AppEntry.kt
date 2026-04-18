@@ -8,6 +8,8 @@ import com.varabyte.kobweb.silk.SilkApp
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import dev.tonholo.portfolio.analytics.UmamiInjector
 import dev.tonholo.portfolio.extensions.InstallRevealObserver
+import dev.tonholo.portfolio.locale.LocalStrings
+import dev.tonholo.portfolio.locale.stringsFor
 import dev.tonholo.portfolio.state.LocalLocaleState
 import dev.tonholo.portfolio.state.LocalThemeState
 import dev.tonholo.portfolio.state.rememberLocaleState
@@ -33,9 +35,12 @@ fun PortfolioApp(content: @Composable () -> Unit) {
             silkColorMode.value = themeState.current
         }
 
+        val strings = stringsFor(locale = localeState.current)
+
         CompositionLocalProvider(
             LocalThemeState provides themeState,
             LocalLocaleState provides localeState,
+            LocalStrings provides strings,
         ) {
             PortfolioTheme {
                 InstallRevealObserver()
