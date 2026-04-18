@@ -65,6 +65,22 @@ kobweb {
                     rel = "stylesheet"
                     href = "https://unpkg.com/@phosphor-icons/web@2.1.2/src/duotone/style.css"
                 }
+                link {
+                    rel = "apple-touch-icon"
+                    href = "/logo192.png"
+                }
+                link {
+                    rel = "icon"
+                    type = "image/png"
+                    sizes = "192x192"
+                    href = "/logo192.png"
+                }
+                link {
+                    rel = "icon"
+                    type = "image/png"
+                    sizes = "512x512"
+                    href = "/logo512.png"
+                }
             }
         }
         export {
@@ -185,9 +201,12 @@ val generateSitemap by tasks.registering {
         "/resume" to ("monthly" to "0.7"),
     )
 
+    val extraSlugs = projectSlugs.map { "/projects/$it" } + articleSlugs.map { "/articles/$it" }
+
     inputs.dir(pagesDir)
     inputs.file(appPropertiesFile)
     inputs.property("lastModified", lastModified)
+    inputs.property("extraSlugs", extraSlugs.joinToString(","))
     outputs.file(outputFile)
 
     doLast {
@@ -213,14 +232,21 @@ val generateSitemap by tasks.registering {
                         }
                 }
             }
-            .sorted()
             .toList()
+
+        val extraSlugMetadata = extraSlugs.associate { slug ->
+            val priority = if (slug.startsWith("/projects/")) "0.7" else "0.6"
+            slug to ("monthly" to priority)
+        }
+        val allMetadata = pageMetadata + extraSlugMetadata
+
+        val allPaths = (pagePaths + extraSlugs).distinct().sorted()
 
         val sitemap = buildString {
             appendLine($$"""<?xml version="1.0" encoding="UTF-8"?>""")
             appendLine($$"""<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">""")
-            for (path in pagePaths) {
-                val (changefreq, priority) = pageMetadata[path] ?: ("monthly" to "0.5")
+            for (path in allPaths) {
+                val (changefreq, priority) = allMetadata[path] ?: ("monthly" to "0.5")
                 appendLine("  <url>")
                 appendLine("    <loc>$baseUrl$path</loc>")
                 appendLine("    <lastmod>$lastModified</lastmod>")
