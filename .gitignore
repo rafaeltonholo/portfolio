@@ -398,3 +398,4 @@ obj/
 **/superpowers/**
 .superpowers/**
 .ai/plans
+site/src/jsMain/resources/public/sitemap.xml
