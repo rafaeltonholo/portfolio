@@ -22,6 +22,7 @@ import dev.tonholo.portfolio.components.atoms.MetaLabel
 import dev.tonholo.portfolio.components.atoms.MetaLabelVariant
 import dev.tonholo.portfolio.components.molecules.SectionHead
 import dev.tonholo.portfolio.domain.model.UseCategory
+import dev.tonholo.portfolio.locale.LocalStrings
 import dev.tonholo.portfolio.state.StaticContent
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.layout.ShellStyle
@@ -40,11 +41,9 @@ import org.jetbrains.compose.web.dom.Text as ComposeText
 // (80px base) per handoff `.section { padding: var(--pad-y) 0; }`.
 private const val SECTION_PADDING_Y_REM = 5.0
 
-// Section head copy. Handoff lines 231-238:
-//   // 03  Uses  rule  "full list ->" (accent).
+// Ordinal prefix stays as a mono literal across locales; the title + trailing
+// link come from [LocalStrings.uses].
 private const val SECTION_NUMBER = "// 03"
-private const val SECTION_TITLE = "Uses"
-private const val SECTION_TRAILING_LABEL = "full list ->"
 
 // Grid: 4 equal columns, 32px gap (handoff line 239). Collapses to 2 cols
 // below LG (820px) and 1 col below MD (720px).
@@ -83,6 +82,7 @@ private const val CATEGORY_NAME_PREFIX = "/"
 @Composable
 fun UsesGrid(modifier: Modifier = Modifier) {
     val categories = StaticContent.USES
+    val strings = LocalStrings.current.uses
 
     val sectionModifier = UsesSectionStyle
         .toModifier()
@@ -92,10 +92,10 @@ fun UsesGrid(modifier: Modifier = Modifier) {
         Div(attrs = ShellStyle.toModifier().toAttrs()) {
             SectionHead(
                 number = SECTION_NUMBER,
-                title = SECTION_TITLE,
+                title = strings.sectionTitle,
                 trailing = {
                     MetaLabel(
-                        text = SECTION_TRAILING_LABEL,
+                        text = strings.sectionTrailingLabel,
                         variant = MetaLabelVariant.Accent,
                     )
                 },

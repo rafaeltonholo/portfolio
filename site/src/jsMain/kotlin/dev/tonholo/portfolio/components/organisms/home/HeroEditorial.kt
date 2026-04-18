@@ -22,6 +22,7 @@ import dev.tonholo.portfolio.components.atoms.ButtonVariant
 import dev.tonholo.portfolio.components.atoms.MetaLabel
 import dev.tonholo.portfolio.components.atoms.MetaLabelVariant
 import dev.tonholo.portfolio.components.atoms.PhosphorIcon
+import dev.tonholo.portfolio.locale.LocalStrings
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.layout.ShellStyle
 import dev.tonholo.portfolio.theme.typography.Typography
@@ -65,17 +66,8 @@ private const val CTA_ROW_GAP_REM = 0.75 // 12px
 // padding (vertical padding is 0 to keep the handoff's tight cap-height halo).
 private const val UNDER_PADDING_X_REM = 0.5 // 8px
 
-// Hardcoded v1 copy. Lifts into Compose Resources during the i18n pass.
+// Mono meta eyebrow is a technical literal (file name) and stays untranslated.
 private const val META_TEXT = "// signature.kt"
-private const val TITLE_LINE_1 = "Android"
-private const val TITLE_LINE_2 = "engineer"
-private const val TITLE_LINE_3 = "since 2010."
-private const val SUBTITLE_TEXT =
-    "I build apps that millions of people use every day. Lately it's Kotlin, " +
-        "Jetpack Compose, and occasionally venturing into iOS via KMP. Currently " +
-        "based in Halifax, Nova Scotia."
-private const val CTA_PRIMARY_LABEL = "see featured work"
-private const val CTA_SECONDARY_LABEL = "download CV"
 
 /**
  * Home hero organism, variant `a` from the handoff. Maps to `.hero` + `.hero-a`
@@ -122,6 +114,7 @@ fun HeroEditorial(
 @Composable
 private fun HeroCopyColumn(onFeaturedWorkClick: () -> Unit, onDownloadCvClick: () -> Unit) {
     val tokens = LocalPortfolioTokens.current
+    val strings = LocalStrings.current.hero
 
     Div(attrs = Modifier.toAttrs()) {
         MetaLabel(
@@ -138,7 +131,7 @@ private fun HeroCopyColumn(onFeaturedWorkClick: () -> Unit, onDownloadCvClick: (
                 .margin(top = 0.cssRem, bottom = TITLE_MARGIN_BOTTOM_REM.cssRem)
                 .toAttrs(),
         ) {
-            ComposeText(TITLE_LINE_1)
+            ComposeText(strings.titleLine1)
             Br()
             Span(
                 attrs = HeroEditorialUnderStyle
@@ -146,10 +139,10 @@ private fun HeroCopyColumn(onFeaturedWorkClick: () -> Unit, onDownloadCvClick: (
                     .backgroundColor(tokens.accent.accentSoft)
                     .toAttrs(),
             ) {
-                ComposeText(TITLE_LINE_2)
+                ComposeText(strings.titleLine2)
             }
             Br()
-            ComposeText(TITLE_LINE_3)
+            ComposeText(strings.titleLine3)
         }
         P(
             attrs = HeroEditorialSubtitleStyle
@@ -157,17 +150,17 @@ private fun HeroCopyColumn(onFeaturedWorkClick: () -> Unit, onDownloadCvClick: (
                 .color(tokens.ink.ink2)
                 .toAttrs(),
         ) {
-            ComposeText(SUBTITLE_TEXT)
+            ComposeText(strings.subtitle)
         }
         Div(attrs = HeroEditorialCtaRowStyle.toModifier().toAttrs()) {
             Button(
-                text = CTA_PRIMARY_LABEL,
+                text = strings.ctaPrimary,
                 variant = ButtonVariant.Accent,
                 onClick = onFeaturedWorkClick,
                 trailing = { PhosphorIcon(name = "arrow-right") },
             )
             Button(
-                text = CTA_SECONDARY_LABEL,
+                text = strings.ctaSecondary,
                 variant = ButtonVariant.Ghost,
                 onClick = onDownloadCvClick,
             )

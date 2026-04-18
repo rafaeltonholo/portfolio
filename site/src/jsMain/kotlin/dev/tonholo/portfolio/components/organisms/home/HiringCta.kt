@@ -32,6 +32,7 @@ import com.varabyte.kobweb.silk.style.toModifier
 import dev.tonholo.portfolio.components.atoms.Button
 import dev.tonholo.portfolio.components.atoms.ButtonVariant
 import dev.tonholo.portfolio.components.atoms.PhosphorIcon
+import dev.tonholo.portfolio.locale.LocalStrings
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.layout.ShellStyle
 import dev.tonholo.portfolio.theme.typography.FontFamilies
@@ -84,12 +85,10 @@ private const val GHOST_BORDER_ALPHA = 0.2f
 private const val GHOST_BORDER_WIDTH_REM = 0.0625 // 1px
 private const val GHOST_BORDER_RGB = 255
 
-// Copy (hardcoded for v1; i18n can lift later).
+// Mono eyebrow is a shell-script-style technical literal and stays
+// untranslated. The email address is also stable across locales.
 private const val META_LABEL_COPY = "// hiring_me.sh"
-private const val HEADING_COPY = "If you're building something mobile, we should talk."
-private const val EMAIL_LABEL = "rafael@tonholo.dev"
 private const val EMAIL_HREF = "mailto:rafael@tonholo.dev"
-private const val BOOKING_LABEL = "book 30 min"
 
 /**
  * Home page organism. Inverted dark CTA block that sits at the bottom of the
@@ -159,6 +158,7 @@ private fun HiringCtaBlock(onEmailClick: () -> Unit, onBookingClick: () -> Unit)
 @Composable
 private fun HiringCtaCopy() {
     val tokens = LocalPortfolioTokens.current
+    val strings = LocalStrings.current.hiringCta
 
     Div(attrs = Modifier.toAttrs()) {
         Div(
@@ -176,7 +176,7 @@ private fun HiringCtaCopy() {
         H3(
             attrs = HiringCtaHeadingStyle.toModifier().toAttrs(),
         ) {
-            ComposeText(HEADING_COPY)
+            ComposeText(strings.heading)
         }
     }
 }
@@ -190,16 +190,17 @@ private fun HiringCtaCopy() {
 @Composable
 private fun HiringCtaActions(onEmailClick: () -> Unit, onBookingClick: () -> Unit) {
     val tokens = LocalPortfolioTokens.current
+    val strings = LocalStrings.current.hiringCta
 
     Div(attrs = HiringCtaActionsStyle.toModifier().toAttrs()) {
         Button(
-            text = EMAIL_LABEL,
+            text = strings.emailLabel,
             variant = ButtonVariant.Accent,
             href = EMAIL_HREF,
             onClick = onEmailClick,
         )
         Button(
-            text = BOOKING_LABEL,
+            text = strings.bookingLabel,
             variant = ButtonVariant.Ghost,
             onClick = onBookingClick,
             modifier = Modifier

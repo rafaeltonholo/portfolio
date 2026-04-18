@@ -21,6 +21,7 @@ import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.style.toModifier
 import dev.tonholo.portfolio.components.atoms.MetaLabel
 import dev.tonholo.portfolio.components.molecules.SectionHead
+import dev.tonholo.portfolio.locale.LocalStrings
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.layout.ShellStyle
 import dev.tonholo.portfolio.theme.typography.FontFamilies
@@ -43,10 +44,9 @@ import org.jetbrains.compose.web.dom.Text as ComposeText
 // (80px base, per handoff `.section { padding: var(--pad-y) 0; }`).
 private const val SECTION_PADDING_Y_REM = 5.0
 
-// Section head copy (handoff lines 196-201): `// 02 Snippet of the week ...
-// week 15 - 2026`.
+// Ordinal prefix + week/year stamp are mono technical literals and stay
+// stable across locales.
 private const val SECTION_NUMBER = "// 02"
-private const val SECTION_TITLE = "Snippet of the week"
 private const val SECTION_TRAILING_LABEL = "week 15 \u00B7 2026"
 
 // Two-column grid (handoff line 202): `1fr 1.3fr`, 48px gap, align-items start.
@@ -74,12 +74,8 @@ private const val BODY_MAX_WIDTH_CH = 48.0
 private const val META_ROW_FONT_SIZE_REM = 0.75 // 12px
 private const val META_ROW_GAP_REM = 0.25 // 4px
 
-// Handoff copy for the copy column. Middle dot (U+00B7) is the separator used
-// in the first meta row (`debounced-click.kt - 542 B`).
-private const val COPY_TITLE = "A tiny Compose extension I keep re-writing."
-private const val COPY_BODY =
-    "Every time I need a debounced click, I reach for this. It's 9 lines, and " +
-        "it saves hours of \"why did the button fire three times?\""
+// Mono meta rows stay as technical literals (file path, last-edited line);
+// the editorial title and body are sourced from [LocalStrings].
 private const val META_FILE_ROW = "// debounced-click.kt \u00B7 542 B"
 private const val META_EDITED_ROW = "// last edited 2 days ago"
 
@@ -99,6 +95,8 @@ private const val META_EDITED_ROW = "// last edited 2 days ago"
  */
 @Composable
 fun SnippetOfTheWeek(modifier: Modifier = Modifier) {
+    val strings = LocalStrings.current.snippet
+
     val sectionModifier = SnippetOfTheWeekSectionStyle
         .toModifier()
         .then(modifier)
@@ -107,7 +105,7 @@ fun SnippetOfTheWeek(modifier: Modifier = Modifier) {
         Div(attrs = ShellStyle.toModifier().toAttrs()) {
             SectionHead(
                 number = SECTION_NUMBER,
-                title = SECTION_TITLE,
+                title = strings.sectionTitle,
                 trailing = {
                     MetaLabel(text = SECTION_TRAILING_LABEL)
                 },
@@ -128,6 +126,7 @@ fun SnippetOfTheWeek(modifier: Modifier = Modifier) {
 @Composable
 private fun CopyColumn() {
     val tokens = LocalPortfolioTokens.current
+    val strings = LocalStrings.current.snippet
 
     Div(attrs = Modifier.toAttrs()) {
         H3(
@@ -138,7 +137,7 @@ private fun CopyColumn() {
                 .margin(top = 0.cssRem, bottom = TITLE_MARGIN_BOTTOM_REM.cssRem)
                 .toAttrs(),
         ) {
-            ComposeText(COPY_TITLE)
+            ComposeText(strings.copyTitle)
         }
         P(
             attrs = Modifier
@@ -148,7 +147,7 @@ private fun CopyColumn() {
                 .maxWidth(BODY_MAX_WIDTH_CH.unsafeCast<CSSSizeValue<CSSUnit.ch>>())
                 .toAttrs(),
         ) {
-            ComposeText(COPY_BODY)
+            ComposeText(strings.copyBody)
         }
         Div(attrs = MetaRowsStyle.toModifier().toAttrs()) {
             MetaRow(text = META_FILE_ROW, color = tokens.muted.muted)

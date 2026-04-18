@@ -26,6 +26,8 @@ import dev.tonholo.portfolio.components.atoms.MetaLabel
 import dev.tonholo.portfolio.components.molecules.SectionHead
 import dev.tonholo.portfolio.domain.model.Article
 import dev.tonholo.portfolio.domain.model.ArticleStatus
+import dev.tonholo.portfolio.locale.LocalStrings
+import dev.tonholo.portfolio.locale.Strings
 import dev.tonholo.portfolio.state.StaticContent
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.layout.ShellStyle
@@ -48,8 +50,8 @@ import org.jetbrains.compose.web.dom.Span
 import org.jetbrains.compose.web.dom.Ul
 import org.jetbrains.compose.web.dom.Text as ComposeText
 
+// Ordinal prefix is a mono literal and stays stable across locales.
 private const val SECTION_NUMBER = "// 01"
-private const val SECTION_TITLE = "Currently"
 
 // Grid layout per handoff: `grid-template-columns: 1.4fr 1fr 1fr; gap: 48px`.
 private const val NOW_GRID_WIDE_FR = 1.4
@@ -101,6 +103,7 @@ private const val WORKING_TITLE_MARGIN_BOTTOM_REM = 0.75 // 12px
 fun NowStrip(modifier: Modifier = Modifier) {
     val workingEntry = StaticContent.NOW_STRIP.firstOrNull()
     val recentArticles = StaticContent.ARTICLES.take(WRITING_ARTICLES_TAKE)
+    val strings = LocalStrings.current.nowStrip
 
     val sectionModifier = NowStripStyle
         .toModifier()
@@ -108,14 +111,15 @@ fun NowStrip(modifier: Modifier = Modifier) {
 
     Section(attrs = sectionModifier.toAttrs()) {
         Div(attrs = ShellStyle.toModifier().toAttrs()) {
-            SectionHead(number = SECTION_NUMBER, title = SECTION_TITLE)
+            SectionHead(number = SECTION_NUMBER, title = strings.sectionTitle)
             Div(attrs = NowGridStyle.toModifier().toAttrs()) {
                 WorkingOnColumn(
                     title = workingEntry?.title ?: DEFAULT_WORKING_TITLE,
                     body = workingEntry?.body ?: DEFAULT_WORKING_BODY,
+                    strings = strings,
                 )
-                WritingColumn(articles = recentArticles)
-                OffTheClockColumn()
+                WritingColumn(articles = recentArticles, strings = strings)
+                OffTheClockColumn(strings = strings)
             }
         }
     }
@@ -135,12 +139,12 @@ private const val DEFAULT_WORKING_BODY =
  * `.now-grid` in the handoff JSX.
  */
 @Composable
-private fun WorkingOnColumn(title: String, body: String) {
+private fun WorkingOnColumn(title: String, body: String, strings: Strings.NowStrip) {
     val tokens = LocalPortfolioTokens.current
 
     Div(attrs = Modifier.toAttrs()) {
         MetaLabel(
-            text = LABEL_WORKING_ON,
+            text = strings.labelWorkingOn,
             modifier = Modifier
                 .display(DisplayStyle.Block)
                 .margin(bottom = META_MARGIN_BOTTOM_REM.cssRem),
@@ -176,17 +180,17 @@ private fun WorkingOnColumn(title: String, body: String) {
  * (`draft|published - short date`) and a display-font title.
  */
 @Composable
-private fun WritingColumn(articles: List<Article>) {
+private fun WritingColumn(articles: List<Article>, strings: Strings.NowStrip) {
     Div(attrs = Modifier.toAttrs()) {
         MetaLabel(
-            text = LABEL_WRITING,
+            text = strings.labelWriting,
             modifier = Modifier
                 .display(DisplayStyle.Block)
                 .margin(bottom = META_MARGIN_BOTTOM_REM.cssRem),
         )
         Ul(attrs = WritingListStyle.toModifier().toAttrs()) {
             articles.forEach { article ->
-                WritingEntry(article = article)
+                WritingEntry(article = article, strings = strings)
             }
         }
     }
@@ -197,11 +201,11 @@ private fun WritingColumn(articles: List<Article>) {
  * article title rendered in the display font.
  */
 @Composable
-private fun WritingEntry(article: Article) {
+private fun WritingEntry(article: Article, strings: Strings.NowStrip) {
     val tokens = LocalPortfolioTokens.current
     val statusLabel = when (article.status) {
-        ArticleStatus.Draft -> STATUS_DRAFT
-        ArticleStatus.Published -> STATUS_PUBLISHED
+        ArticleStatus.Draft -> strings.statusDraft
+        ArticleStatus.Published -> strings.statusPublished
     }
     val shortDate = article.date.substringBefore(delimiter = ',')
     val metaText = "$statusLabel $STATUS_SEPARATOR $shortDate"
@@ -233,12 +237,12 @@ private fun WritingEntry(article: Article) {
  * of hobbies. Matches the hardcoded JSX list from the handoff (lines 182-188).
  */
 @Composable
-private fun OffTheClockColumn() {
+private fun OffTheClockColumn(strings: Strings.NowStrip) {
     val tokens = LocalPortfolioTokens.current
 
     Div(attrs = Modifier.toAttrs()) {
         MetaLabel(
-            text = LABEL_OFF_THE_CLOCK,
+            text = strings.labelOffTheClock,
             modifier = Modifier
                 .display(DisplayStyle.Block)
                 .margin(bottom = META_MARGIN_BOTTOM_REM.cssRem),
@@ -305,16 +309,8 @@ private fun HobbyReadingRow() {
     }
 }
 
-// Column labels kept here so the organism is self-contained; matches the copy
-// shown in the handoff JSX.
-private const val LABEL_WORKING_ON = "working on"
-private const val LABEL_WRITING = "writing"
-private const val LABEL_OFF_THE_CLOCK = "off the clock"
-
-// Meta row labels for the writing column.
-private const val STATUS_DRAFT = "draft"
-private const val STATUS_PUBLISHED = "published"
-private const val STATUS_SEPARATOR = "\u00B7" // middle dot, matches handoff
+// Middle-dot separator used in the writing meta row ("draft · dec 20").
+private const val STATUS_SEPARATOR = "\u00B7"
 
 // Hobby copy ported verbatim from the handoff JSX; the `NowStripEntry` shape
 // cannot express this structure, so the content is inline.

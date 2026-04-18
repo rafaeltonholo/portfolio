@@ -14,6 +14,7 @@ import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import dev.tonholo.portfolio.components.atoms.MetaLabel
 import dev.tonholo.portfolio.components.molecules.SectionHead
 import dev.tonholo.portfolio.domain.model.Project
+import dev.tonholo.portfolio.locale.LocalStrings
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.layout.ShellStyle
 import org.jetbrains.compose.web.css.DisplayStyle
@@ -22,11 +23,9 @@ import org.jetbrains.compose.web.css.fr
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Section
 
-// Section head copy per handoff `home.jsx` lines 300-306: `// 00` + `Selected
-// work` + a meta chip summarising the list length and span.
+// Ordinal prefix + year span are mono technical literals and stay stable
+// across locales.
 private const val SECTION_NUMBER = "// 00"
-private const val SECTION_TITLE = "Selected work"
-private const val META_PROJECTS_LABEL = "projects"
 private const val META_YEAR_SPAN = "2021 - present"
 private const val META_SEPARATOR = " \u00B7 " // " · " middle dot
 
@@ -67,6 +66,7 @@ fun SelectedWorkGrid(
 ) {
     val tokens = LocalPortfolioTokens.current
     val colorMode = ColorMode.current
+    val strings = LocalStrings.current.selectedWork
     val gridBackground = when (colorMode) {
         ColorMode.LIGHT -> tokens.paper.paper3
         ColorMode.DARK -> tokens.paper.paper2
@@ -81,10 +81,10 @@ fun SelectedWorkGrid(
             if (showSectionHead) {
                 SectionHead(
                     number = SECTION_NUMBER,
-                    title = SECTION_TITLE,
+                    title = strings.sectionTitle,
                     trailing = {
                         MetaLabel(
-                            text = "${projects.size} ${META_PROJECTS_LABEL}${META_SEPARATOR}${META_YEAR_SPAN}",
+                            text = "${projects.size} ${strings.projectsSuffix}$META_SEPARATOR$META_YEAR_SPAN",
                         )
                     },
                 )
