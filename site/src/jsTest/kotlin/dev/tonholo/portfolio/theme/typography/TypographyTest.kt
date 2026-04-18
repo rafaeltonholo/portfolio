@@ -44,11 +44,11 @@ class TypographyTest {
 
         // Assert
         assertContentEquals(expected = FontFamilies.DISPLAY, actual = style.family)
-        assertEquals(expected = 5.5, actual = style.size.value.toDouble(), absoluteTolerance = TOLERANCE)
+        assertEquals(expected = 5.375, actual = style.size.value.toDouble(), absoluteTolerance = TOLERANCE)
         assertEquals(FontWeight.Medium, style.weight)
         assertEquals(expected = 0.95, actual = style.lineHeight, absoluteTolerance = TOLERANCE)
         val letterSpacing = assertNotNull(style.letterSpacing)
-        assertEquals(expected = -0.03, actual = letterSpacing.value.toDouble(), absoluteTolerance = TOLERANCE)
+        assertEquals(expected = -0.035, actual = letterSpacing.value.toDouble(), absoluteTolerance = TOLERANCE)
         assertNull(style.transform)
     }
 

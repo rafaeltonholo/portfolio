@@ -6,7 +6,7 @@ import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.em
 
 // Size scale in cssRem (1rem == 16px). Values mirror handoff px divided by 16.
-private const val HERO_SIZE_REM = 5.5 // clamp max 88px
+private const val HERO_SIZE_REM = 5.375 // clamp max 86px
 private const val H1_SIZE_REM = 4.25 // clamp max 68px
 private const val H2_SIZE_REM = 1.75 // 28px
 private const val H3_DISPLAY_SIZE_REM = 1.625 // 26px
@@ -32,7 +32,7 @@ private const val META_LINE_HEIGHT = 1.4
 private const val CODE_LINE_HEIGHT = 1.6
 
 // Letter-spacing in em (negative for display tightening, positive for meta tracking).
-private const val HERO_LETTER_SPACING_EM = -0.03
+private const val HERO_LETTER_SPACING_EM = -0.035
 private const val H1_LETTER_SPACING_EM = -0.025
 private const val H2_LETTER_SPACING_EM = -0.02
 private const val H3_DISPLAY_LETTER_SPACING_EM = -0.02

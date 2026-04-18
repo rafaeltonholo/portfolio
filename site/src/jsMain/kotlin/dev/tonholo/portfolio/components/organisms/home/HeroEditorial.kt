@@ -126,7 +126,7 @@ private fun HeroCopyColumn(onFeaturedWorkClick: () -> Unit, onDownloadCvClick: (
         )
         H1(
             attrs = Modifier
-                .apply(Typography.h1)
+                .apply(Typography.hero)
                 .color(tokens.ink.ink)
                 .margin(top = 0.cssRem, bottom = TITLE_MARGIN_BOTTOM_REM.cssRem)
                 .toAttrs(),
