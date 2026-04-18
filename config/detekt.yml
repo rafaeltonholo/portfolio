@@ -771,6 +771,8 @@ ktlint:
   FunctionSignature:
     forceMultilineWhenParameterCountGreaterOrEqualThan: 4
     maxLineLength: 100
+  BinaryExpressionWrapping:
+    active: false
 
 Compose:
   ComposableAnnotationNaming:
