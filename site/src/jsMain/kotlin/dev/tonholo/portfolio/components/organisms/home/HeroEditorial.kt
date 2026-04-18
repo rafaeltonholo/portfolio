@@ -95,7 +95,17 @@ fun HeroEditorial(
         .then(modifier)
 
     Div(attrs = finalModifier.toAttrs()) {
-        Div(attrs = ShellStyle.toModifier().toAttrs()) {
+        // Handoff rule: `.hero { padding: ... 0 ... }` overrides `.shell` 's
+        // horizontal gutter so hero copy aligns with the shell's outer border,
+        // not its padded content box. We mirror that by zeroing the shell's
+        // left/right padding here. Mobile breathing room still comes from the
+        // surrounding viewport (shell max-width collapses to viewport width).
+        Div(
+            attrs = ShellStyle
+                .toModifier()
+                .padding(leftRight = 0.cssRem)
+                .toAttrs(),
+        ) {
             Div(attrs = HeroEditorialGridStyle.toModifier().toAttrs()) {
                 HeroCopyColumn(
                     onFeaturedWorkClick = onFeaturedWorkClick,
