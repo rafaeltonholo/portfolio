@@ -106,11 +106,17 @@ private const val FOOTER_LINK_TRANSITION_DURATION_S = 0.18
 private const val FOOTER_BOTTOM_PADDING_TOP_REM = 1.5 // 24px
 
 // Work column entries stay as mono technical literals (product / project
-// names), not user-facing copy that needs translation.
-private const val WORK_PINTEREST = "Pinterest"
-private const val WORK_BLEACHER_REPORT = "Bleacher Report"
-private const val WORK_SVG_TO_COMPOSE = "SVG to Compose"
-private const val WORK_IVY_WALLET = "ivy-wallet"
+// names), not user-facing copy that needs translation. Slug values match
+// the seed project ids in `StaticContent.PROJECTS` and route through
+// `Routes.project(...)` when the row is clicked.
+private const val WORK_PINTEREST_LABEL = "Pinterest"
+private const val WORK_PINTEREST_SLUG = "pinterest"
+private const val WORK_BLEACHER_REPORT_LABEL = "Bleacher Report"
+private const val WORK_BLEACHER_REPORT_SLUG = "bleacher-report"
+private const val WORK_SVG_TO_COMPOSE_LABEL = "SVG to Compose"
+private const val WORK_SVG_TO_COMPOSE_SLUG = "svg-compose"
+private const val WORK_IVY_WALLET_LABEL = "ivy-wallet"
+private const val WORK_IVY_WALLET_SLUG = "ivy-wallet"
 
 // Elsewhere column rows are static social destinations (labels match the
 // handles), so they stay as constants rather than localized strings.
@@ -183,7 +189,7 @@ fun Footer(
             Div(attrs = FooterGridStyle.toModifier().toAttrs()) {
                 TaglineColumn(strings = strings)
                 PagesColumn(strings = strings, onNavigate = onNavigate)
-                WorkColumn(heading = strings.headingWork)
+                WorkColumn(heading = strings.headingWork, onNavigate = onNavigate)
                 ElsewhereColumn(heading = strings.headingElsewhere)
             }
             FooterBottom(
@@ -240,19 +246,36 @@ private fun PagesColumn(strings: Strings.Footer, onNavigate: (route: String) -> 
 }
 
 /**
- * Third column: featured project names. Rendered as plain anchors without an
- * `href` for v1, matching the JSX placeholder links. Project names are mono
- * technical literals and stay untranslated.
+ * Third column: featured project names. Each row routes to its project
+ * detail page via [onNavigate]; the seed slugs mirror the ids in
+ * `StaticContent.PROJECTS`. Labels are mono technical literals and stay
+ * untranslated.
  */
 @Composable
-private fun WorkColumn(heading: String) {
+private fun WorkColumn(heading: String, onNavigate: (route: String) -> Unit) {
     Div(attrs = Modifier.toAttrs()) {
         ColumnHeading(text = heading)
         Ul(attrs = FooterListStyle.toModifier().toAttrs()) {
-            FooterStaticItem(label = WORK_PINTEREST)
-            FooterStaticItem(label = WORK_BLEACHER_REPORT)
-            FooterStaticItem(label = WORK_SVG_TO_COMPOSE)
-            FooterStaticItem(label = WORK_IVY_WALLET)
+            FooterNavItem(
+                label = WORK_PINTEREST_LABEL,
+                route = Routes.project(slug = WORK_PINTEREST_SLUG),
+                onNavigate = onNavigate,
+            )
+            FooterNavItem(
+                label = WORK_BLEACHER_REPORT_LABEL,
+                route = Routes.project(slug = WORK_BLEACHER_REPORT_SLUG),
+                onNavigate = onNavigate,
+            )
+            FooterNavItem(
+                label = WORK_SVG_TO_COMPOSE_LABEL,
+                route = Routes.project(slug = WORK_SVG_TO_COMPOSE_SLUG),
+                onNavigate = onNavigate,
+            )
+            FooterNavItem(
+                label = WORK_IVY_WALLET_LABEL,
+                route = Routes.project(slug = WORK_IVY_WALLET_SLUG),
+                onNavigate = onNavigate,
+            )
         }
     }
 }
@@ -321,20 +344,6 @@ private fun FooterNavItem(label: String, route: String, onNavigate: (route: Stri
                 }
                 .toAttrs { attr("role", "link") },
         ) {
-            ComposeText(label)
-        }
-    }
-}
-
-/**
- * Static (non-interactive) list row. Used by the `Work` column where the JSX
- * renders `<a>` elements without `href`; we keep the same semantics so the
- * anchors inherit the hover color treatment from [FooterLinkStyle].
- */
-@Composable
-private fun FooterStaticItem(label: String) {
-    Li(attrs = Modifier.toAttrs()) {
-        Span(attrs = FooterLinkStyle.toModifier().toAttrs()) {
             ComposeText(label)
         }
     }
