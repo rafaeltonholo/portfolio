@@ -9,7 +9,7 @@ import dev.tonholo.portfolio.components.organisms.resume.ExperienceTimeline
 import dev.tonholo.portfolio.components.organisms.resume.ResumeHeader
 import dev.tonholo.portfolio.components.organisms.resume.SkillsGrid
 import dev.tonholo.portfolio.state.StaticContent
-import dev.tonholo.portfolio.theme.layout.ShellStyle
+import dev.tonholo.portfolio.theme.layout.PageSectionShellStyle
 import kotlinx.browser.window
 import org.jetbrains.compose.web.dom.Div
 
@@ -31,7 +31,7 @@ private const val RESUME_PDF_TARGET = "_blank"
 @Suppress("ModifierMissing")
 fun ResumePage() {
     PageLayout {
-        Div(attrs = ShellStyle.toModifier().toAttrs()) {
+        Div(attrs = PageSectionShellStyle.toModifier().toAttrs()) {
             ResumeHeader(
                 onDownloadPdf = {
                     window.open(url = RESUME_PDF_PATH, target = RESUME_PDF_TARGET)

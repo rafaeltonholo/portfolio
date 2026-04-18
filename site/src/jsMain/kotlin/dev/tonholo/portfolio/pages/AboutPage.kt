@@ -7,7 +7,7 @@ import com.varabyte.kobweb.silk.style.toModifier
 import dev.tonholo.portfolio.components.layouts.PageLayout
 import dev.tonholo.portfolio.components.organisms.about.AboutHeader
 import dev.tonholo.portfolio.components.organisms.about.AboutTabs
-import dev.tonholo.portfolio.theme.layout.ShellStyle
+import dev.tonholo.portfolio.theme.layout.PageSectionShellStyle
 import org.jetbrains.compose.web.dom.Div
 
 /**
@@ -23,7 +23,7 @@ import org.jetbrains.compose.web.dom.Div
 @Suppress("ModifierMissing")
 fun AboutPage() {
     PageLayout {
-        Div(attrs = ShellStyle.toModifier().toAttrs()) {
+        Div(attrs = PageSectionShellStyle.toModifier().toAttrs()) {
             AboutHeader()
             AboutTabs()
         }
