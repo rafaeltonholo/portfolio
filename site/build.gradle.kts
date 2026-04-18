@@ -19,6 +19,19 @@ val appProperties = Properties().apply {
     rootProject.rootDir.resolve("app.properties").inputStream().use { load(it) }
 }
 
+// Dynamic-route slugs registered with the Kobweb static exporter. Each entry
+// in `projectSlugs` and `articleSlugs` maps to a `@Page("/projects/{slug}")` or
+// `@Page("/articles/{slug}")` composable; the exporter needs an explicit URL
+// + destination HTML file for each known value to produce static pages.
+val projectSlugs = listOf(
+    "thunderbird",
+    "bleacher-report",
+    "pinterest",
+    "svg-compose",
+    "ivy-wallet",
+)
+val articleSlugs = listOf("a1", "a2", "a3", "a4", "a5", "a6", "a7")
+
 kobweb {
     app {
         index {
@@ -53,6 +66,14 @@ kobweb {
                     rel = "stylesheet"
                     href = "https://unpkg.com/@phosphor-icons/web@2.1.2/src/duotone/style.css"
                 }
+            }
+        }
+        export {
+            projectSlugs.forEach { slug ->
+                addExtraRoute(route = "/projects/$slug", exportPath = "projects/$slug.html")
+            }
+            articleSlugs.forEach { slug ->
+                addExtraRoute(route = "/articles/$slug", exportPath = "articles/$slug.html")
             }
         }
     }
