@@ -3,6 +3,7 @@ package dev.tonholo.portfolio.theme.typography
 import com.varabyte.kobweb.compose.css.FontWeight
 import com.varabyte.kobweb.compose.css.TextTransform
 import kotlin.test.Test
+import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
@@ -20,14 +21,20 @@ class TypographyTest {
     @Test
     fun `given FontFamilies, when constants are read, then they match handoff stack`() {
         // Arrange / Act / Assert
-        assertEquals(
-            "'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace",
-            FontFamilies.MONO,
+        assertContentEquals(
+            expected = arrayOf("JetBrains Mono", "ui-monospace", "SFMono-Regular", "Menlo", "monospace"),
+            actual = FontFamilies.MONO,
         )
-        assertEquals("'Geist', -apple-system, sans-serif", FontFamilies.SANS)
-        assertEquals("'Fraunces', Georgia, serif", FontFamilies.SERIF)
-        assertEquals(FontFamilies.MONO, FontFamilies.DISPLAY)
-        assertEquals(FontFamilies.SANS, FontFamilies.BODY)
+        assertContentEquals(
+            expected = arrayOf("Geist", "-apple-system", "sans-serif"),
+            actual = FontFamilies.SANS,
+        )
+        assertContentEquals(
+            expected = arrayOf("Fraunces", "Georgia", "serif"),
+            actual = FontFamilies.SERIF,
+        )
+        assertContentEquals(expected = FontFamilies.MONO, actual = FontFamilies.DISPLAY)
+        assertContentEquals(expected = FontFamilies.SANS, actual = FontFamilies.BODY)
     }
 
     @Test
@@ -36,7 +43,7 @@ class TypographyTest {
         val style = Typography.hero
 
         // Assert
-        assertEquals(FontFamilies.DISPLAY, style.family)
+        assertContentEquals(expected = FontFamilies.DISPLAY, actual = style.family)
         assertEquals(expected = 5.5, actual = style.size.value.toDouble(), absoluteTolerance = TOLERANCE)
         assertEquals(FontWeight.Medium, style.weight)
         assertEquals(expected = 0.95, actual = style.lineHeight, absoluteTolerance = TOLERANCE)
@@ -51,7 +58,7 @@ class TypographyTest {
         val style = Typography.h1
 
         // Assert
-        assertEquals(FontFamilies.DISPLAY, style.family)
+        assertContentEquals(expected = FontFamilies.DISPLAY, actual = style.family)
         assertEquals(expected = 4.25, actual = style.size.value.toDouble(), absoluteTolerance = TOLERANCE)
         assertEquals(FontWeight.Medium, style.weight)
         assertEquals(expected = 1.05, actual = style.lineHeight, absoluteTolerance = TOLERANCE)
@@ -66,7 +73,7 @@ class TypographyTest {
         val style = Typography.h2
 
         // Assert
-        assertEquals(FontFamilies.DISPLAY, style.family)
+        assertContentEquals(expected = FontFamilies.DISPLAY, actual = style.family)
         assertEquals(expected = 1.75, actual = style.size.value.toDouble(), absoluteTolerance = TOLERANCE)
         assertEquals(FontWeight.Medium, style.weight)
         assertEquals(expected = 1.15, actual = style.lineHeight, absoluteTolerance = TOLERANCE)
@@ -81,7 +88,7 @@ class TypographyTest {
         val style = Typography.h3Display
 
         // Assert
-        assertEquals(FontFamilies.DISPLAY, style.family)
+        assertContentEquals(expected = FontFamilies.DISPLAY, actual = style.family)
         assertEquals(expected = 1.625, actual = style.size.value.toDouble(), absoluteTolerance = TOLERANCE)
         assertEquals(FontWeight.Medium, style.weight)
         assertEquals(expected = 1.2, actual = style.lineHeight, absoluteTolerance = TOLERANCE)
@@ -96,7 +103,7 @@ class TypographyTest {
         val style = Typography.bodyLarge
 
         // Assert
-        assertEquals(FontFamilies.BODY, style.family)
+        assertContentEquals(expected = FontFamilies.BODY, actual = style.family)
         assertEquals(expected = 1.0625, actual = style.size.value.toDouble(), absoluteTolerance = TOLERANCE)
         assertEquals(FontWeight.Normal, style.weight)
         assertEquals(expected = 1.55, actual = style.lineHeight, absoluteTolerance = TOLERANCE)
@@ -110,7 +117,7 @@ class TypographyTest {
         val style = Typography.body
 
         // Assert
-        assertEquals(FontFamilies.BODY, style.family)
+        assertContentEquals(expected = FontFamilies.BODY, actual = style.family)
         assertEquals(expected = 1.0, actual = style.size.value.toDouble(), absoluteTolerance = TOLERANCE)
         assertEquals(FontWeight.Normal, style.weight)
         assertEquals(expected = 1.55, actual = style.lineHeight, absoluteTolerance = TOLERANCE)
@@ -124,7 +131,7 @@ class TypographyTest {
         val style = Typography.bodySmall
 
         // Assert
-        assertEquals(FontFamilies.BODY, style.family)
+        assertContentEquals(expected = FontFamilies.BODY, actual = style.family)
         assertEquals(expected = 0.875, actual = style.size.value.toDouble(), absoluteTolerance = TOLERANCE)
         assertEquals(FontWeight.Normal, style.weight)
         assertEquals(expected = 1.55, actual = style.lineHeight, absoluteTolerance = TOLERANCE)
@@ -138,7 +145,7 @@ class TypographyTest {
         val style = Typography.serifLead
 
         // Assert
-        assertEquals(FontFamilies.SERIF, style.family)
+        assertContentEquals(expected = FontFamilies.SERIF, actual = style.family)
         assertEquals(expected = 1.25, actual = style.size.value.toDouble(), absoluteTolerance = TOLERANCE)
         assertEquals(FontWeight.Normal, style.weight)
         assertEquals(expected = 1.5, actual = style.lineHeight, absoluteTolerance = TOLERANCE)
@@ -152,7 +159,7 @@ class TypographyTest {
         val style = Typography.serifBody
 
         // Assert
-        assertEquals(FontFamilies.SERIF, style.family)
+        assertContentEquals(expected = FontFamilies.SERIF, actual = style.family)
         assertEquals(expected = 1.0625, actual = style.size.value.toDouble(), absoluteTolerance = TOLERANCE)
         assertEquals(FontWeight.Normal, style.weight)
         assertEquals(expected = 1.6, actual = style.lineHeight, absoluteTolerance = TOLERANCE)
@@ -166,7 +173,7 @@ class TypographyTest {
         val style = Typography.metaLabel
 
         // Assert
-        assertEquals(FontFamilies.MONO, style.family)
+        assertContentEquals(expected = FontFamilies.MONO, actual = style.family)
         assertEquals(expected = 0.75, actual = style.size.value.toDouble(), absoluteTolerance = TOLERANCE)
         assertEquals(FontWeight.Medium, style.weight)
         assertEquals(expected = 1.4, actual = style.lineHeight, absoluteTolerance = TOLERANCE)
@@ -181,7 +188,7 @@ class TypographyTest {
         val style = Typography.metaSmall
 
         // Assert
-        assertEquals(FontFamilies.MONO, style.family)
+        assertContentEquals(expected = FontFamilies.MONO, actual = style.family)
         assertEquals(expected = 0.6875, actual = style.size.value.toDouble(), absoluteTolerance = TOLERANCE)
         assertEquals(FontWeight.Medium, style.weight)
         assertEquals(expected = 1.4, actual = style.lineHeight, absoluteTolerance = TOLERANCE)
@@ -196,7 +203,7 @@ class TypographyTest {
         val style = Typography.chip
 
         // Assert
-        assertEquals(FontFamilies.MONO, style.family)
+        assertContentEquals(expected = FontFamilies.MONO, actual = style.family)
         assertEquals(expected = 0.6875, actual = style.size.value.toDouble(), absoluteTolerance = TOLERANCE)
         assertEquals(FontWeight.Medium, style.weight)
         assertEquals(expected = 1.4, actual = style.lineHeight, absoluteTolerance = TOLERANCE)
@@ -210,7 +217,7 @@ class TypographyTest {
         val style = Typography.code
 
         // Assert
-        assertEquals(FontFamilies.MONO, style.family)
+        assertContentEquals(expected = FontFamilies.MONO, actual = style.family)
         assertEquals(expected = 0.8125, actual = style.size.value.toDouble(), absoluteTolerance = TOLERANCE)
         assertEquals(FontWeight.Normal, style.weight)
         assertEquals(expected = 1.6, actual = style.lineHeight, absoluteTolerance = TOLERANCE)
