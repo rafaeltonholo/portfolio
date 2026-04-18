@@ -1,0 +1,423 @@
+package dev.tonholo.portfolio.components.organisms.home
+
+import androidx.compose.runtime.Composable
+import com.varabyte.kobweb.compose.css.Cursor
+import com.varabyte.kobweb.compose.css.FontWeight
+import com.varabyte.kobweb.compose.css.TextTransform
+import com.varabyte.kobweb.compose.css.Transition
+import com.varabyte.kobweb.compose.ui.Modifier
+import com.varabyte.kobweb.compose.ui.modifiers.alignItems
+import com.varabyte.kobweb.compose.ui.modifiers.backgroundColor
+import com.varabyte.kobweb.compose.ui.modifiers.borderRadius
+import com.varabyte.kobweb.compose.ui.modifiers.borderTop
+import com.varabyte.kobweb.compose.ui.modifiers.color
+import com.varabyte.kobweb.compose.ui.modifiers.cursor
+import com.varabyte.kobweb.compose.ui.modifiers.display
+import com.varabyte.kobweb.compose.ui.modifiers.fontFamily
+import com.varabyte.kobweb.compose.ui.modifiers.fontSize
+import com.varabyte.kobweb.compose.ui.modifiers.fontWeight
+import com.varabyte.kobweb.compose.ui.modifiers.gap
+import com.varabyte.kobweb.compose.ui.modifiers.gridTemplateColumns
+import com.varabyte.kobweb.compose.ui.modifiers.justifyContent
+import com.varabyte.kobweb.compose.ui.modifiers.letterSpacing
+import com.varabyte.kobweb.compose.ui.modifiers.lineHeight
+import com.varabyte.kobweb.compose.ui.modifiers.margin
+import com.varabyte.kobweb.compose.ui.modifiers.maxWidth
+import com.varabyte.kobweb.compose.ui.modifiers.onClick
+import com.varabyte.kobweb.compose.ui.modifiers.padding
+import com.varabyte.kobweb.compose.ui.modifiers.textTransform
+import com.varabyte.kobweb.compose.ui.modifiers.transition
+import com.varabyte.kobweb.compose.ui.modifiers.translateY
+import com.varabyte.kobweb.compose.ui.toAttrs
+import com.varabyte.kobweb.silk.style.CssStyle
+import com.varabyte.kobweb.silk.style.selectors.hover
+import com.varabyte.kobweb.silk.style.toModifier
+import com.varabyte.kobweb.silk.theme.colors.ColorMode
+import dev.tonholo.portfolio.components.atoms.ArrowStyle
+import dev.tonholo.portfolio.components.atoms.PhosphorIcon
+import dev.tonholo.portfolio.components.molecules.StatBlock
+import dev.tonholo.portfolio.components.molecules.StatSize
+import dev.tonholo.portfolio.domain.model.Project
+import dev.tonholo.portfolio.domain.model.ProjectKind
+import dev.tonholo.portfolio.extensions.toKebabCase
+import dev.tonholo.portfolio.theme.LocalPortfolioTokens
+import dev.tonholo.portfolio.theme.color.Paper
+import dev.tonholo.portfolio.theme.typography.FontFamilies
+import org.jetbrains.compose.web.css.AlignItems
+import org.jetbrains.compose.web.css.CSSSizeValue
+import org.jetbrains.compose.web.css.CSSUnit
+import org.jetbrains.compose.web.css.DisplayStyle
+import org.jetbrains.compose.web.css.JustifyContent
+import org.jetbrains.compose.web.css.LineStyle
+import org.jetbrains.compose.web.css.cssRem
+import org.jetbrains.compose.web.css.em
+import org.jetbrains.compose.web.css.fr
+import org.jetbrains.compose.web.css.s
+import org.jetbrains.compose.web.dom.Div
+import org.jetbrains.compose.web.dom.Span
+import org.jetbrains.compose.web.dom.Text as ComposeText
+
+// Head spec: `.proj-head { padding: 14px 24px; background: var(--paper-2); ... }`.
+private const val HEAD_PADDING_Y_REM = 0.875 // 14px
+private const val HEAD_PADDING_X_REM = 1.5 // 24px
+private const val HEAD_GAP_REM = 0.75 // 12px
+private const val HEAD_FONT_SIZE_REM = 0.75 // 12px
+
+// Tag spec: `.proj-head .tag { padding: 3px 8px; border-radius: 2px; font-size: 10px; }`.
+private const val TAG_PADDING_Y_REM = 0.1875 // 3px
+private const val TAG_PADDING_X_REM = 0.5 // 8px
+private const val TAG_BORDER_RADIUS_REM = 0.125 // 2px
+private const val TAG_FONT_SIZE_REM = 0.625 // 10px
+
+// Body spec: `.proj-body { padding: 32px 24px; }`.
+private const val BODY_PADDING_Y_REM = 2.0 // 32px
+private const val BODY_PADDING_X_REM = 1.5 // 24px
+
+// Title spec: `.proj-title { font-size: 32px; font-weight: 500; letter-spacing: -0.02em; margin-bottom: 10px; }`.
+private const val TITLE_FONT_SIZE_REM = 2.0 // 32px
+private const val TITLE_LETTER_SPACING_EM = -0.02
+private const val TITLE_MARGIN_BOTTOM_REM = 0.625 // 10px
+
+// Description spec: `.proj-desc { font-size: 14px; line-height: 1.55; max-width: 48ch; margin-bottom: 24px; }`.
+private const val DESC_FONT_SIZE_REM = 0.875 // 14px
+private const val DESC_LINE_HEIGHT = 1.55
+private const val DESC_MAX_WIDTH_CH = 48.0
+private const val DESC_MARGIN_BOTTOM_REM = 1.5 // 24px
+
+// Stats grid spec: `.proj-stats { display: flex; gap: 32px; margin-bottom: 20px; }`.
+// We ship a 3-column grid per the task spec to keep the stat cells aligned.
+private const val STATS_GAP_REM = 2.0 // 32px
+private const val STATS_MARGIN_BOTTOM_REM = 1.25 // 20px
+private const val STATS_COLUMNS_FR = 1
+private const val STATS_COLUMN_COUNT = 3
+
+// Foot spec: `.proj-foot { padding-top: 20px; border-top: 1px solid var(--paper-3); font-size: 12px; }`.
+private const val FOOT_PADDING_TOP_REM = 1.25 // 20px
+private const val FOOT_BORDER_WIDTH_REM = 0.0625 // 1px hairline
+private const val FOOT_FONT_SIZE_REM = 0.75 // 12px
+
+// Hover motion spec: `.proj-card:hover .arrow { transform: translateX(4px); }` is owned by the
+// `Arrow` atom; the card additionally lifts by -2px per the task spec.
+private const val CARD_HOVER_LIFT_REM = -0.125 // -2px
+private const val CARD_TRANSITION_DURATION_S = 0.2
+
+private const val KIND_COMMERCIAL_LABEL = "COMMERCIAL"
+private const val KIND_OPEN_SOURCE_LABEL = "OPEN SOURCE"
+private const val FILENAME_PREFIX = "- "
+private const val FILENAME_EXTENSION = ".kt"
+private const val STACK_SEPARATOR = " \u00B7 " // " · " - middle dot
+private const val CTA_LABEL = "read case study"
+
+private const val ARROW_ICON_NAME = "arrow-right"
+private const val ARROW_GAP_REM = 0.375 // 6px between label and arrow glyph
+
+/**
+ * Home "Selected work" card rendered in the IDE-block style. Ports the
+ * `ProjectCard` JSX branch keyed on `style === 'ide'` (handoff `home.jsx`
+ * lines 100-125): a paper card with a paper-2 filename header (kind tag,
+ * `project.kt`-style filename, year) followed by a body containing a display
+ * title, a body paragraph, a 3-column stats grid, and a footer that pairs a
+ * mono stack line with a mono `read case study ->` CTA.
+ *
+ * The whole card is clickable; `onClick` receives the project [Project.slug]
+ * so parents can route to the matching detail page.
+ *
+ * @param project the [Project] to render.
+ * @param onClick invoked with [Project.slug] when the card is activated.
+ * @param modifier optional [Modifier] chained after the base styles.
+ */
+@Composable
+fun ProjectCardIde(
+    project: Project,
+    onClick: (slug: String) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val tokens = LocalPortfolioTokens.current
+
+    val cardModifier = ProjectCardIdeStyle
+        .toModifier()
+        .backgroundColor(tokens.paper.paper)
+        .onClick { onClick(project.slug) }
+        .then(modifier)
+
+    Div(
+        attrs = cardModifier.toAttrs {
+            attr("role", "button")
+            attr("tabindex", "0")
+            attr("aria-label", "${project.name} - ${CTA_LABEL}")
+        },
+    ) {
+        ProjectCardHead(project = project)
+        ProjectCardBody(project = project)
+    }
+}
+
+@Composable
+private fun ProjectCardHead(project: Project) {
+    val tokens = LocalPortfolioTokens.current
+    val kindLabel = when (project.kind) {
+        ProjectKind.Commercial -> KIND_COMMERCIAL_LABEL
+        ProjectKind.OpenSource -> KIND_OPEN_SOURCE_LABEL
+    }
+    val filename = "${FILENAME_PREFIX}${project.name.toKebabCase()}${FILENAME_EXTENSION}"
+
+    Div(
+        attrs = ProjectCardHeadStyle
+            .toModifier()
+            .backgroundColor(tokens.paper.paper2)
+            .color(tokens.muted.muted)
+            .toAttrs(),
+    ) {
+        Span(
+            attrs = ProjectCardTagStyle
+                .toModifier()
+                .backgroundColor(tokens.accent.accentSoft)
+                .color(tokens.accent.accentInk)
+                .toAttrs(),
+        ) {
+            ComposeText(kindLabel)
+        }
+        Span { ComposeText(filename) }
+        Span { ComposeText(project.year) }
+    }
+}
+
+@Composable
+private fun ProjectCardBody(project: Project) {
+    val tokens = LocalPortfolioTokens.current
+
+    Div(attrs = ProjectCardBodyStyle.toModifier().toAttrs()) {
+        Div(
+            attrs = ProjectCardTitleStyle
+                .toModifier()
+                .color(tokens.ink.ink)
+                .toAttrs(),
+        ) {
+            ComposeText(project.name)
+        }
+        Div(
+            attrs = ProjectCardDescStyle
+                .toModifier()
+                .color(tokens.ink.ink3)
+                .toAttrs(),
+        ) {
+            ComposeText(project.description)
+        }
+        Div(attrs = ProjectCardStatsStyle.toModifier().toAttrs()) {
+            project.stats.forEach { stat ->
+                StatBlock(
+                    value = stat.value,
+                    label = stat.label,
+                    size = StatSize.Small,
+                )
+            }
+        }
+        ProjectCardFoot(project = project)
+    }
+}
+
+@Composable
+private fun ProjectCardFoot(project: Project) {
+    val tokens = LocalPortfolioTokens.current
+
+    Div(
+        attrs = ProjectCardFootStyle
+            .toModifier()
+            .borderTop(
+                width = FOOT_BORDER_WIDTH_REM.cssRem,
+                style = LineStyle.Solid,
+                color = tokens.paper.paper3,
+            )
+            .toAttrs(),
+    ) {
+        Span(
+            attrs = Modifier
+                .color(tokens.muted.muted)
+                .toAttrs(),
+        ) {
+            ComposeText(project.stack.joinToString(separator = STACK_SEPARATOR))
+        }
+        Span(
+            attrs = ProjectCardCtaStyle
+                .toModifier()
+                .color(tokens.accent.accent)
+                .toAttrs(),
+        ) {
+            ComposeText(CTA_LABEL)
+            PhosphorIcon(
+                name = ARROW_ICON_NAME,
+                modifier = ArrowStyle
+                    .toModifier()
+                    .margin(left = ARROW_GAP_REM.cssRem),
+            )
+        }
+    }
+}
+
+/**
+ * Base `CssStyle` for the IDE-block project card. Ports `.proj-card` scoped by
+ * `[data-cards="ide"]`: no padding at the card level (head and body own their
+ * own spacing), pointer cursor, and a transform + background transition so the
+ * hover state can lift the card and flip the background. The base background
+ * (`--paper`) is applied inline by the composable so it stays token-aware.
+ */
+val ProjectCardIdeStyle = CssStyle {
+    base {
+        Modifier
+            .display(DisplayStyle.Block)
+            .cursor(Cursor.Pointer)
+            .transition(
+                Transition.group(
+                    properties = listOf("background-color", "transform"),
+                    duration = CARD_TRANSITION_DURATION_S.s,
+                ),
+            )
+    }
+    hover {
+        val paper = if (colorMode == ColorMode.DARK) Paper.dark else Paper.light
+        Modifier
+            .backgroundColor(paper.paper2)
+            .translateY(CARD_HOVER_LIFT_REM.cssRem)
+    }
+}
+
+/**
+ * Base `CssStyle` for the card head. Ports `.proj-head`: mono 12px row with
+ * padding 14px/24px and a 12px column gap. Background and text color are
+ * applied inline by the composable so they resolve against the current theme
+ * tokens.
+ */
+val ProjectCardHeadStyle = CssStyle {
+    base {
+        Modifier
+            .display(DisplayStyle.Flex)
+            .alignItems(AlignItems.Center)
+            .justifyContent(JustifyContent.SpaceBetween)
+            .gap(HEAD_GAP_REM.cssRem)
+            .padding(
+                topBottom = HEAD_PADDING_Y_REM.cssRem,
+                leftRight = HEAD_PADDING_X_REM.cssRem,
+            )
+            .fontFamily(FontFamilies.MONO)
+            .fontSize(HEAD_FONT_SIZE_REM.cssRem)
+    }
+}
+
+/**
+ * Base `CssStyle` for the kind tag inside the card head. Ports
+ * `.proj-head .tag`: a 10px uppercase mono pill with 2px radius and 3px/8px
+ * padding. Background and foreground colors are applied inline so the accent
+ * soft / accent ink pairing resolves per theme.
+ */
+val ProjectCardTagStyle = CssStyle {
+    base {
+        Modifier
+            .display(DisplayStyle.LegacyInlineFlex)
+            .alignItems(AlignItems.Center)
+            .padding(
+                topBottom = TAG_PADDING_Y_REM.cssRem,
+                leftRight = TAG_PADDING_X_REM.cssRem,
+            )
+            .borderRadius(TAG_BORDER_RADIUS_REM.cssRem)
+            .fontSize(TAG_FONT_SIZE_REM.cssRem)
+            .fontWeight(FontWeight.SemiBold)
+    }
+}
+
+/**
+ * Base `CssStyle` for the card body. Ports `.proj-body`: 32px / 24px padding.
+ */
+val ProjectCardBodyStyle = CssStyle {
+    base {
+        Modifier
+            .padding(
+                topBottom = BODY_PADDING_Y_REM.cssRem,
+                leftRight = BODY_PADDING_X_REM.cssRem,
+            )
+    }
+}
+
+/**
+ * Base `CssStyle` for the card title. Ports `.proj-title` under
+ * `[data-cards="ide"]`: 32px display font, medium weight, tightened tracking,
+ * 10px bottom margin.
+ */
+val ProjectCardTitleStyle = CssStyle {
+    base {
+        Modifier
+            .fontFamily(FontFamilies.DISPLAY)
+            .fontSize(TITLE_FONT_SIZE_REM.cssRem)
+            .fontWeight(FontWeight.Medium)
+            .letterSpacing(TITLE_LETTER_SPACING_EM.em)
+            .margin(bottom = TITLE_MARGIN_BOTTOM_REM.cssRem)
+    }
+}
+
+/**
+ * Base `CssStyle` for the card description. Ports `.proj-desc` under
+ * `[data-cards="ide"]`: 14px body copy with a 48ch soft cap and a 24px bottom
+ * margin before the stats grid.
+ */
+val ProjectCardDescStyle = CssStyle {
+    base {
+        Modifier
+            .fontFamily(FontFamilies.BODY)
+            .fontSize(DESC_FONT_SIZE_REM.cssRem)
+            .lineHeight(DESC_LINE_HEIGHT)
+            .maxWidth(DESC_MAX_WIDTH_CH.unsafeCast<CSSSizeValue<CSSUnit.ch>>())
+            .margin(bottom = DESC_MARGIN_BOTTOM_REM.cssRem)
+    }
+}
+
+/**
+ * Base `CssStyle` for the stats row. Ports `.proj-stats`: a 3-column grid with
+ * 32px gaps and a 20px bottom margin before the foot rule. Using a grid (vs.
+ * the handoff's flex row) keeps stat cells aligned when individual values span
+ * different lengths.
+ */
+val ProjectCardStatsStyle = CssStyle {
+    base {
+        Modifier
+            .display(DisplayStyle.Grid)
+            .gridTemplateColumns {
+                repeat(STATS_COLUMN_COUNT) { size(STATS_COLUMNS_FR.fr) }
+            }
+            .gap(STATS_GAP_REM.cssRem)
+            .margin(bottom = STATS_MARGIN_BOTTOM_REM.cssRem)
+    }
+}
+
+/**
+ * Base `CssStyle` for the card foot. Ports `.proj-foot` under
+ * `[data-cards="ide"]`: flex row with a 20px top padding and a hairline top
+ * rule. The border color is applied inline by the composable so it resolves
+ * per theme.
+ */
+val ProjectCardFootStyle = CssStyle {
+    base {
+        Modifier
+            .display(DisplayStyle.Flex)
+            .alignItems(AlignItems.Center)
+            .justifyContent(JustifyContent.SpaceBetween)
+            .padding(top = FOOT_PADDING_TOP_REM.cssRem)
+            .fontFamily(FontFamilies.MONO)
+            .fontSize(FOOT_FONT_SIZE_REM.cssRem)
+    }
+}
+
+/**
+ * Base `CssStyle` for the `read case study ->` CTA inside the card foot.
+ * Mono font, semi-bold, inline flex so the Phosphor arrow sits alongside the
+ * label. The surrounding `.proj-foot` already forces mono typography; the
+ * `TextTransform.None` here is an explicit guard so nested utility classes
+ * cannot uppercase the copy.
+ */
+val ProjectCardCtaStyle = CssStyle {
+    base {
+        Modifier
+            .display(DisplayStyle.LegacyInlineFlex)
+            .alignItems(AlignItems.Center)
+            .fontWeight(FontWeight.SemiBold)
+            .textTransform(TextTransform.None)
+    }
+}
