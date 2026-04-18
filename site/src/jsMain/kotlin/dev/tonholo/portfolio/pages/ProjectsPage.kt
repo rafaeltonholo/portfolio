@@ -65,13 +65,15 @@ fun ProjectsPage() {
     }
 
     PageLayout {
-        ProjectsPageHeader(current = filter, onSelect = { filter = it })
-        SelectedWorkGrid(
-            projects = filtered,
-            onProjectClick = { slug ->
-                router.tryRoutingTo(pathQueryAndFragment = Routes.project(slug = slug))
-            },
-        )
+        Div(attrs = ShellStyle.toModifier().toAttrs()) {
+            ProjectsPageHeader(current = filter, onSelect = { filter = it })
+            SelectedWorkGrid(
+                projects = filtered,
+                onProjectClick = { slug ->
+                    router.tryRoutingTo(pathQueryAndFragment = Routes.project(slug = slug))
+                },
+            )
+        }
     }
 }
 
@@ -83,8 +85,7 @@ fun ProjectsPage() {
 private fun ProjectsPageHeader(current: ProjectsFilter, onSelect: (ProjectsFilter) -> Unit) {
     val tokens = LocalPortfolioTokens.current
     Div(
-        attrs = ShellStyle
-            .toModifier()
+        attrs = Modifier
             .padding(
                 top = HEADER_PADDING_TOP_REM.cssRem,
                 bottom = HEADER_PADDING_BOTTOM_REM.cssRem,
