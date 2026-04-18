@@ -2,45 +2,48 @@
 
 - **Primary language**: Kotlin (Kotlin Multiplatform, JS target).
 - **Build system**: Gradle (Kotlin DSL) with typesafe project accessors.
-- **Framework**: [Kobweb](https://github.com/varabyte/kobweb) (Silk UI, Compose
-  HTML).
-- **Repository structure**: Multi-module Gradle project plus two included
-  builds.
-- **Deployment**: Static export to `docs/`, served by GitHub Pages on the
-  domain pinned in `docs/CNAME`.
+- **Framework**: [Kobweb](https://github.com/varabyte/kobweb) (Silk UI, Compose HTML).
+- **Repository structure**: Single `:site` Gradle module (Phase 1 scaffold). The old
+  `:core`, `:resources`, `kotlin-wrapper-shiki`, and `marktdown` artifacts live under
+  `old-layout/` for reference only and are NOT wired into any build.
+- **Deployment**: GitHub Actions workflow (`.github/workflows/export-and-deploy-site.yml`)
+  runs `kobweb export` and uploads the native GH Pages artifact from
+  `site/.kobweb/site/`. No `docs/` directory is committed. No `CNAME` file in the repo.
 
 > CRITICAL:
 > All agents MUST follow [`.ai/guidelines.md`](.ai/guidelines.md) at all times
 > for code style, architecture, commit conventions, and testing rules.
 
-## Module-Specific Context
+## Module Map
 
-| Module                 | Description                                                                | AGENTS.md                                  |
-|------------------------|----------------------------------------------------------------------------|--------------------------------------------|
-| `site`                 | Kobweb application. Pages, features, site-scoped core and locale code.     | [site/AGENTS.md](site/AGENTS.md)           |
-| `core`                 | Kobweb library. Cross-feature UI primitives and JS-only bindings.          | [core/AGENTS.md](core/AGENTS.md)           |
-| `resources`            | Kobweb library. i18n registries (Lyricist) and Markdown model sources.     | [resources/AGENTS.md](resources/AGENTS.md) |
-| `kotlin-wrapper-shiki` | Git submodule (Shiki syntax highlighter wrapper), wired as `includeBuild`. | See submodule's own README                 |
-| `marktdown`            | Markdown -> Compose plugin + processor, wired as `includeBuild`.           | See `marktdown/README.md`                  |
-| `docs`                 | Committed static export output. GH Pages serves from here.                 | -                                          |
+| Module | Description                                                  | AGENTS.md                        |
+|--------|--------------------------------------------------------------|----------------------------------|
+| `site` | Single Kobweb application. Pages, features, i18n, analytics. | [site/AGENTS.md](site/AGENTS.md) |
+
+Source under `old-layout/` is reference only - do not import or depend on it.
+
+## Upcoming Redesign
+
+Phase 2 (Atomic Design UI, 7 routes, design tokens, etc.) is planned but has NOT started.
+See [`.ai/plans/PRD.md`](.ai/plans/PRD.md) and
+[`.ai/plans/phase2-redesign-plan.md`](.ai/plans/phase2-redesign-plan.md) for the
+source-of-truth plan.
 
 ## Verification Workflow
 
 After making changes, perform an **empirical validation**:
 
-1. **Build**: `./gradlew build` (or the narrower `:site:build` / `:core:build`
-   / `:resources:build` while iterating).
-2. **Run dev server**: from `site/`, `kobweb run`, and open
-   http://localhost:8080.
-3. **Visual check**: use the `mcp__claude-in-chrome__*` tools to navigate to
-   the affected routes. For multi-step UI flows, record a GIF via
-   `mcp__claude-in-chrome__gif_creator`. Zoom into each changed element on
-   both the reference and the implementation before declaring the work done.
-4. **Static export smoke**: `cd site && kobweb export --layout static`, then
-   spot-check the generated files under `docs/` (especially any route added via
-   `addExtraRoute(...)`).
-5. **Tests**: run `./gradlew allTests` once the first test source set is
-   wired. Until then, visual verification is mandatory for UI changes.
+1. **Lint**: `./gradlew :site:detektJsMainSourceSet :site:detektJsTestSourceSet`
+   (the top-level `:site:detekt` reports NO-SOURCE and is a no-op; use the
+   source-set-specific tasks).
+2. **Build**: `./gradlew :site:build`.
+3. **Run dev server**: from `site/`, `kobweb run`, and open http://localhost:8080.
+4. **Visual check**: use the `mcp__claude-in-chrome__*` tools to navigate to the
+   affected routes. For multi-step UI flows, record a GIF via
+   `mcp__claude-in-chrome__gif_creator`. Zoom into each changed element before
+   declaring the work done.
+5. **Tests**: `./gradlew :site:jsTest` runs the `kotlin-test` + Power-Assert suite
+   (`StringExtensionTest`, `UmamiInjectorTest`, `ResAccessorTest`).
 
 ## Key Workflows
 
@@ -48,38 +51,35 @@ After making changes, perform an **empirical validation**:
 
 1. Add the route's `@Page` composable under
    `site/src/jsMain/kotlin/dev/tonholo/portfolio/pages/`.
-2. Implement the screen under `features/<name>/` in the same module; share UI
-   primitives via `:core`.
-3. Add Lyricist strings in `resources/src/commonMain/kotlin/.../resources/`
-   and pull them through `site/src/jsMain/kotlin/.../locale/`.
+2. Implement the screen under `features/<name>/` in the same module.
+3. Add localized strings in
+   `site/src/jsMain/composeResources/values/strings.xml` (default `en`) and
+   `site/src/jsMain/composeResources/values-pt-rBR/strings.xml` (`pt-BR`).
+   Access strings via the generated `Res.string.*` accessor
+   (`dev.tonholo.portfolio.resources` package).
 4. If the route is not auto-discovered (locale-prefixed, dynamic segment),
    register it via `kobweb { app { export { addExtraRoute(...) } } }` in
    `site/build.gradle.kts`.
 5. Re-run the dev server and verify visually in Chrome.
 
-### Add a new article
-
-1. Drop the Markdown file into `resources/markdown/` following the existing
-   naming convention (`<slug>-<locale>.md`).
-2. Run `./gradlew :resources:kspCommonMainKotlinMetadata` to regenerate models,
-   then `./gradlew :site:kspKotlinJs` to regenerate renderers.
-3. Register any new localized slug via `addExtraRoute` in
-   `site/build.gradle.kts` so it lands in the static export.
-
 ### Update localized strings
 
-- Strings live in `resources/src/commonMain/kotlin/dev/tonholo/portfolio/resources/`
-  grouped by feature (`pages/`, `projects/`, `workExperience/`).
-- After editing, rerun `./gradlew :resources:kspCommonMainKotlinMetadata` so
-  the Lyricist registry is regenerated; `site` picks up the change on the next
-  build.
+- Strings live in `site/src/jsMain/composeResources/` under
+  `values/strings.xml` (en) and `values-pt-rBR/strings.xml` (pt-BR).
+- The `Res.string.*` accessor is auto-generated by the
+  `org.jetbrains.compose.components:components-resources` plugin.
+- After editing, run `./gradlew :site:build` (or `./gradlew :site:kspKotlinJs`)
+  to pick up changes.
 
-## Local Configuration
+### Update analytics / build metadata
 
-`core/build.gradle.kts` reads `local.properties` at configuration time for
-Firebase keys. See
-[.ai/guidelines.md#local-configuration](.ai/guidelines.md#local-configuration)
-for the full list of keys; the file is git-ignored.
+- `app.properties` keys: `VERSION`, `LAST_MODIFIED`, `UMAMI_SCRIPT_URL`,
+  `UMAMI_WEBSITE_ID`. Consumed at configuration time by `site/build.gradle.kts`.
+- `generateBuildAnalytics` task produces
+  `dev.tonholo.portfolio.analytics.BuildAnalytics` under
+  `build/generated/analytics/kotlin/`.
+- `UmamiInjector` appends the analytics `<script>` to `document.head` at app
+  init; it skips `localhost`, `127.0.0.1`, and empty hostnames automatically.
 
 ## Recommended Tools & MCP
 
@@ -87,6 +87,4 @@ for the full list of keys; the file is git-ignored.
   changes. Supports navigation, screenshots, console and network inspection,
   and GIF recording.
 - **Context7 MCP** (`mcp__plugin_context7_context7__*`): preferred over web
-  search for Kobweb, Compose HTML, Kotlin, and Lyricist documentation.
-- **`diff`**: handy when the static export changes to compare `docs/` output
-  between builds.
+  search for Kobweb, Compose HTML, and Kotlin documentation.
