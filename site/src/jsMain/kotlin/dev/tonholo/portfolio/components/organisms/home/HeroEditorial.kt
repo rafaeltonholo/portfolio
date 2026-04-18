@@ -21,6 +21,7 @@ import dev.tonholo.portfolio.components.atoms.Button
 import dev.tonholo.portfolio.components.atoms.ButtonVariant
 import dev.tonholo.portfolio.components.atoms.MetaLabel
 import dev.tonholo.portfolio.components.atoms.MetaLabelVariant
+import dev.tonholo.portfolio.components.atoms.PhosphorIcon
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.layout.ShellStyle
 import dev.tonholo.portfolio.theme.typography.Typography
@@ -73,7 +74,7 @@ private const val SUBTITLE_TEXT =
     "I build apps that millions of people use every day. Lately it's Kotlin, " +
         "Jetpack Compose, and occasionally venturing into iOS via KMP. Currently " +
         "based in Halifax, Nova Scotia."
-private const val CTA_PRIMARY_LABEL = "see featured work \u2192"
+private const val CTA_PRIMARY_LABEL = "see featured work"
 private const val CTA_SECONDARY_LABEL = "download CV"
 
 /**
@@ -163,6 +164,7 @@ private fun HeroCopyColumn(onFeaturedWorkClick: () -> Unit, onDownloadCvClick: (
                 text = CTA_PRIMARY_LABEL,
                 variant = ButtonVariant.Accent,
                 onClick = onFeaturedWorkClick,
+                trailing = { PhosphorIcon(name = "arrow-right") },
             )
             Button(
                 text = CTA_SECONDARY_LABEL,
