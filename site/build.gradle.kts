@@ -41,6 +41,18 @@ kobweb {
                         "&display=swap"
                     rel = "stylesheet"
                 }
+                link {
+                    rel = "stylesheet"
+                    href = "https://unpkg.com/@phosphor-icons/web@2.1.2/src/regular/style.css"
+                }
+                link {
+                    rel = "stylesheet"
+                    href = "https://unpkg.com/@phosphor-icons/web@2.1.2/src/fill/style.css"
+                }
+                link {
+                    rel = "stylesheet"
+                    href = "https://unpkg.com/@phosphor-icons/web@2.1.2/src/duotone/style.css"
+                }
             }
         }
     }
@@ -57,6 +69,7 @@ kotlin {
             implementation(libs.kobweb.core)
             implementation(libs.kobweb.silk)
             implementation(libs.kobwebx.markdown)
+            implementation(npm("@phosphor-icons/web", "2.1.2"))
         }
         jsTest.dependencies {
             implementation(libs.kotlin.test)
