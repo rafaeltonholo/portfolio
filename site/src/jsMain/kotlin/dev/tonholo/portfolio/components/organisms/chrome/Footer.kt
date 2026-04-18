@@ -42,7 +42,7 @@ import dev.tonholo.portfolio.locale.Strings
 import dev.tonholo.portfolio.navigation.Routes
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.color.AccentMint
-import dev.tonholo.portfolio.theme.layout.ShellStyle
+import dev.tonholo.portfolio.theme.layout.ChromeShellStyle
 import dev.tonholo.portfolio.theme.typography.FontFamilies
 import org.jetbrains.compose.web.css.CSSSizeValue
 import org.jetbrains.compose.web.css.CSSUnit
@@ -185,7 +185,7 @@ fun Footer(
         .then(modifier)
 
     WebFooter(attrs = finalModifier.toAttrs()) {
-        Div(attrs = ShellStyle.toModifier().toAttrs()) {
+        Div(attrs = ChromeShellStyle.toModifier().toAttrs()) {
             Div(attrs = FooterGridStyle.toModifier().toAttrs()) {
                 TaglineColumn(strings = strings)
                 PagesColumn(strings = strings, onNavigate = onNavigate)

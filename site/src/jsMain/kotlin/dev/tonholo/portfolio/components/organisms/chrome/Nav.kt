@@ -56,7 +56,7 @@ import dev.tonholo.portfolio.state.LocalThemeState
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.color.Muted
 import dev.tonholo.portfolio.theme.color.Paper
-import dev.tonholo.portfolio.theme.layout.ShellStyle
+import dev.tonholo.portfolio.theme.layout.ChromeShellStyle
 import dev.tonholo.portfolio.theme.typography.FontFamilies
 import kotlinx.coroutines.delay
 import org.jetbrains.compose.web.css.AlignItems
@@ -276,20 +276,21 @@ val NavStyle = CssStyle {
 
 /**
  * Base `CssStyle` for the inner flex row. Ports `.nav-inner`: caps content at
- * the [ShellStyle] max-width, centers horizontally with auto margins, and
- * applies the symmetric vertical padding plus the 32px gap between children.
- * Horizontal gutters come from [ShellStyle].
+ * the shell max-width, centers horizontally with auto margins, and layers the
+ * nav's 16px vertical padding plus a 32px gap between children. Horizontal
+ * gutters come from [ChromeShellStyle], which keeps the 48px desktop gutter
+ * rather than zeroing it like the page-body shell does.
  */
-val NavInnerStyle = ShellStyle.extendedBy {
+val NavInnerStyle = ChromeShellStyle.extendedBy {
     base {
         Modifier
             .display(DisplayStyle.Flex)
             .alignItems(AlignItems.Center)
             .gap(NAV_INNER_GAP_REM.cssRem)
-            .padding(
-                topBottom = NAV_INNER_PADDING_Y_REM.cssRem,
-                leftRight = 0.cssRem,
-            )
+            .styleModifier {
+                property("padding-top", "${NAV_INNER_PADDING_Y_REM}rem")
+                property("padding-bottom", "${NAV_INNER_PADDING_Y_REM}rem")
+            }
     }
 }
 
