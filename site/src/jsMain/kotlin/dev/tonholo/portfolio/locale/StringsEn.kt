@@ -14,7 +14,7 @@ object StringsEn : Strings() {
     )
 
     override val statusBadge: StatusBadge = StatusBadge(
-        text = "not looking - happy @ Mozilla",
+        text = "not looking \u00B7 happy @ Mozilla",
     )
 
     override val themeToggle: ThemeToggle = ThemeToggle(

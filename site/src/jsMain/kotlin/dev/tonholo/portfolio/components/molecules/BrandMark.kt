@@ -61,6 +61,7 @@ fun BrandMark(onClick: () -> Unit, modifier: Modifier = Modifier) {
 
     val finalModifier = BrandMarkStyle
         .toModifier()
+        .color(tokens.ink.ink)
         .onClick { event ->
             event.preventDefault()
             onClick()
