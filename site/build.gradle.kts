@@ -18,10 +18,11 @@ val appProperties = Properties().apply {
     rootProject.rootDir.resolve("app.properties").inputStream().use { load(it) }
 }
 
-// Dynamic-route slugs registered with the Kobweb static exporter. Each entry
-// in `projectSlugs` and `articleSlugs` maps to a `@Page("/projects/{slug}")` or
-// `@Page("/articles/{slug}")` composable; the exporter needs an explicit URL
-// + destination HTML file for each known value to produce static pages.
+// Dynamic-route slugs registered with the Kobweb static exporter. Project
+// slugs stay hard-coded for `@Page("/projects/{slug}")`. Article slugs are
+// discovered at configuration time by scanning the markdown source so the
+// exporter can emit one HTML file per markdown article without maintaining
+// a parallel list.
 val projectSlugs = listOf(
     "thunderbird",
     "bleacher-report",
@@ -29,7 +30,16 @@ val projectSlugs = listOf(
     "svg-compose",
     "ivy-wallet",
 )
-val articleSlugs = listOf("a1", "a2", "a3", "a4", "a5", "a6", "a7")
+
+val articlesMarkdownDir = layout.projectDirectory
+    .dir("src/jsMain/resources/markdown/articles")
+
+val articleSlugs: List<String> = articlesMarkdownDir.asFile
+    .takeIf { it.exists() }
+    ?.listFiles { file -> file.isFile && file.extension == "md" }
+    ?.map { it.nameWithoutExtension }
+    ?.sorted()
+    .orEmpty()
 
 kobweb {
     app {
@@ -90,6 +100,98 @@ kobweb {
             articleSlugs.forEach { slug ->
                 addExtraRoute(route = "/articles/$slug", exportPath = "articles/$slug.html")
             }
+        }
+    }
+
+    markdown {
+        // Every generated markdown page wraps its body in `ArticleMarkdownLayout`
+        // so detail pages inherit the sidebar, meta row, title, and lede chrome.
+        defaultLayout.set("dev.tonholo.portfolio.components.layouts.ArticleMarkdownLayout")
+
+        // Process callback that collects frontmatter from every article under
+        // `src/jsMain/resources/markdown/articles/` and generates a Kotlin
+        // object (`GeneratedArticles`) with the same shape as the old
+        // `StaticContent.ARTICLES` list. The generated object is the new single
+        // source of truth for the /articles index.
+        //
+        // All helper logic is inlined inside the lambda so the configuration
+        // cache can serialize the task without capturing build-script types.
+        process.set { entries ->
+            fun String.escapeForKotlin(): String = this
+                .replace(oldValue = "\\", newValue = "\\\\")
+                .replace(oldValue = "\"", newValue = "\\\"")
+                .replace(oldValue = "\n", newValue = "\\n")
+                .replace(oldValue = "\r", newValue = "\\r")
+                .replace(oldValue = "\t", newValue = "\\t")
+
+            data class Row(
+                val slug: String,
+                val date: String,
+                val title: String,
+                val description: String,
+                val tags: List<String>,
+                val readTime: String,
+                val status: String,
+            )
+
+            val rows = entries
+                .filter { entry -> entry.filePath.startsWith("articles/") }
+                .mapNotNull { entry ->
+                    val frontMatter = entry.frontMatter
+                    val slug = entry.filePath
+                        .removePrefix("articles/")
+                        .removeSuffix(".md")
+                    val title = frontMatter["title"]?.singleOrNull() ?: return@mapNotNull null
+                    val date = frontMatter["date"]?.singleOrNull().orEmpty()
+                    val description = frontMatter["description"]?.singleOrNull().orEmpty()
+                    val readTime = frontMatter["readTime"]?.singleOrNull().orEmpty()
+                    val statusRaw = frontMatter["status"]?.singleOrNull()?.lowercase().orEmpty()
+                    val tags = frontMatter["tags"].orEmpty()
+                    Row(
+                        slug = slug,
+                        date = date,
+                        title = title,
+                        description = description,
+                        tags = tags,
+                        readTime = readTime,
+                        status = if (statusRaw == "draft") "Draft" else "Published",
+                    )
+                }
+                .sortedBy { it.slug }
+
+            val content = buildString {
+                appendLine("package dev.tonholo.portfolio.generated.articles")
+                appendLine()
+                appendLine("import dev.tonholo.portfolio.domain.model.Article")
+                appendLine("import dev.tonholo.portfolio.domain.model.ArticleStatus")
+                appendLine()
+                appendLine("/**")
+                appendLine(" * Article index generated from the markdown sources under")
+                appendLine(" * `src/jsMain/resources/markdown/articles/`. Do not edit by hand;")
+                appendLine(" * re-run the `kobwebxMarkdownProcess` task to regenerate.")
+                appendLine(" */")
+                appendLine("object GeneratedArticles {")
+                appendLine("    val ALL: List<Article> = listOf(")
+                rows.forEach { row ->
+                    val tagsLiteral = row.tags.joinToString(separator = ", ") { "\"${it}\"" }
+                    appendLine("        Article(")
+                    appendLine("            slug = \"${row.slug}\",")
+                    appendLine("            date = \"${row.date}\",")
+                    appendLine("            title = \"${row.title.escapeForKotlin()}\",")
+                    appendLine("            description = \"${row.description.escapeForKotlin()}\",")
+                    appendLine("            tags = listOf($tagsLiteral),")
+                    appendLine("            readTime = \"${row.readTime}\",")
+                    appendLine("            status = ArticleStatus.${row.status},")
+                    appendLine("        ),")
+                }
+                appendLine("    )")
+                appendLine("}")
+            }
+
+            generateKotlin(
+                filePath = "dev/tonholo/portfolio/generated/articles/GeneratedArticles.kt",
+                content = content,
+            )
         }
     }
 }
