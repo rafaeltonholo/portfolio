@@ -766,6 +766,11 @@ ktlint:
     excludes: ['**/test/**', '**/commonTest/**', '**/jvmTest/**', '**/functionalTest/**']
   EnumEntryNameCase:
     excludes: ['**/test/**', '**/commonTest/**', '**/jvmTest/**', '**/functionalTest/**']
+  ClassSignature:
+    maxLineLength: 100
+  FunctionSignature:
+    forceMultilineWhenParameterCountGreaterOrEqualThan: 4
+    maxLineLength: 100
 
 Compose:
   ComposableAnnotationNaming:
@@ -784,7 +789,7 @@ Compose:
   CompositionLocalAllowlist:
     active: true
     # -- You can optionally define a list of CompositionLocals that are allowed here
-    # allowedCompositionLocals: LocalSomething,LocalSomethingElse
+    allowedCompositionLocals: LocalPortfolioTokens
   CompositionLocalNaming:
     active: true
   ContentEmitterReturningValues:

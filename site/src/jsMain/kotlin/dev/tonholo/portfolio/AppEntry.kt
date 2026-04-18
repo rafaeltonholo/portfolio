@@ -5,6 +5,7 @@ import androidx.compose.runtime.LaunchedEffect
 import com.varabyte.kobweb.core.App
 import com.varabyte.kobweb.silk.SilkApp
 import dev.tonholo.portfolio.analytics.UmamiInjector
+import dev.tonholo.portfolio.theme.PortfolioTheme
 
 @App
 @Composable
@@ -13,6 +14,8 @@ fun PortfolioApp(content: @Composable () -> Unit) {
         LaunchedEffect(Unit) {
             UmamiInjector.inject()
         }
-        content()
+        PortfolioTheme {
+            content()
+        }
     }
 }
