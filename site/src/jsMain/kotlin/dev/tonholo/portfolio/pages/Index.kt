@@ -2,12 +2,40 @@ package dev.tonholo.portfolio.pages
 
 import androidx.compose.runtime.Composable
 import com.varabyte.kobweb.core.Page
-import org.jetbrains.compose.web.dom.Text
+import com.varabyte.kobweb.core.rememberPageContext
+import dev.tonholo.portfolio.components.layouts.PageLayout
+import dev.tonholo.portfolio.components.organisms.chrome.Ticker
+import dev.tonholo.portfolio.components.organisms.home.HeroEditorial
+import dev.tonholo.portfolio.components.organisms.home.HiringCta
+import dev.tonholo.portfolio.components.organisms.home.NowStrip
+import dev.tonholo.portfolio.components.organisms.home.SelectedWorkGrid
+import dev.tonholo.portfolio.components.organisms.home.SnippetOfTheWeek
+import dev.tonholo.portfolio.components.organisms.home.UsesGrid
+import dev.tonholo.portfolio.navigation.Routes
+import dev.tonholo.portfolio.state.StaticContent
 
+/**
+ * Home route "/" - renders the full editorial stack: hero, ticker strip,
+ * selected-work grid, now strip, snippet of the week, uses grid, and the
+ * hiring CTA. Card clicks route to each project's detail page.
+ */
 @Page
 @Composable
-// Kobweb @Page route composables are never called from a parent composable, so no modifier is needed.
 @Suppress("ModifierMissing")
 fun HomePage() {
-    Text("portfolio scaffold online")
+    val router = rememberPageContext().router
+    PageLayout {
+        HeroEditorial()
+        Ticker()
+        SelectedWorkGrid(
+            projects = StaticContent.PROJECTS,
+            onProjectClick = { slug ->
+                router.tryRoutingTo(pathQueryAndFragment = Routes.project(slug = slug))
+            },
+        )
+        NowStrip()
+        SnippetOfTheWeek()
+        UsesGrid()
+        HiringCta()
+    }
 }
