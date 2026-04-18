@@ -208,7 +208,7 @@ class TypographyTest {
         assertEquals(FontWeight.Medium, style.weight)
         assertEquals(expected = 1.4, actual = style.lineHeight, absoluteTolerance = TOLERANCE)
         assertNull(style.letterSpacing)
-        assertEquals(TextTransform.Uppercase, style.transform)
+        assertNull(style.transform)
     }
 
     @Test
