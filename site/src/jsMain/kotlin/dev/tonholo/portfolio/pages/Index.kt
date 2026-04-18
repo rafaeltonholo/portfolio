@@ -6,6 +6,8 @@ import org.jetbrains.compose.web.dom.Text
 
 @Page
 @Composable
+// Kobweb @Page route composables are never called from a parent composable, so no modifier is needed.
+@Suppress("ModifierMissing")
 fun HomePage() {
     Text("portfolio scaffold online")
 }

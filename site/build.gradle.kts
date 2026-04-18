@@ -65,6 +65,16 @@ detekt {
     allRules = false
 }
 
+// Exclude all generated sources from every Detekt task.
+// Generated dirs include Compose resource accessors, KSP output, and Kobweb entry files.
+tasks.matching { it.name.startsWith("detekt") }.configureEach {
+    if (this is org.gradle.api.tasks.SourceTask) {
+        exclude { element ->
+            element.file.absolutePath.contains("/build/generated/")
+        }
+    }
+}
+
 dependencies {
     detektPlugins(libs.detekt.rules.ktlint.wrapper)
     detektPlugins(libs.compose.rules.detekt)
