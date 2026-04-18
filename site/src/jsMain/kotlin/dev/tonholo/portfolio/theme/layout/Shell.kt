@@ -7,16 +7,17 @@ import com.varabyte.kobweb.compose.ui.modifiers.maxWidth
 import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.silk.style.CssStyle
 import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
+import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.keywords.auto
-import org.jetbrains.compose.web.css.px
 
-private const val SHELL_MAX_WIDTH_PX = 1280
-private const val SHELL_GUTTER_MOBILE_PX = 24
-private const val SHELL_GUTTER_DESKTOP_PX = 48
+private const val SHELL_MAX_WIDTH_REM = 80.0
+private const val SHELL_GUTTER_MOBILE_REM = 1.5
+private const val SHELL_GUTTER_DESKTOP_REM = 3.0
 
 /**
- * Page-level shell container. Caps content at 1280px wide, centers horizontally,
- * and applies an inline gutter (24px on mobile, 48px from [Breakpoint.MD] upwards).
+ * Page-level shell container. Caps content at 80rem (1280px) wide, centers
+ * horizontally, and applies an inline gutter (1.5rem on mobile, 3rem from
+ * [Breakpoint.MD] upwards).
  *
  * `Breakpoint.MD { ... }` resolves to `min-width: 45rem` (720px) per the Silk
  * breakpoint configuration in [dev.tonholo.portfolio.theme.initBreakpoints], so
@@ -25,14 +26,14 @@ private const val SHELL_GUTTER_DESKTOP_PX = 48
 val ShellStyle = CssStyle {
     base {
         Modifier
-            .maxWidth(SHELL_MAX_WIDTH_PX.px)
+            .maxWidth(SHELL_MAX_WIDTH_REM.cssRem)
             .margin(
-                topBottom = 0.px,
+                topBottom = 0.cssRem,
                 leftRight = auto.unsafeCast<CSSLengthOrPercentageNumericValue>(),
             )
-            .padding(leftRight = SHELL_GUTTER_MOBILE_PX.px)
+            .padding(leftRight = SHELL_GUTTER_MOBILE_REM.cssRem)
     }
     Breakpoint.MD {
-        Modifier.padding(leftRight = SHELL_GUTTER_DESKTOP_PX.px)
+        Modifier.padding(leftRight = SHELL_GUTTER_DESKTOP_REM.cssRem)
     }
 }

@@ -128,43 +128,43 @@ class TokensTest {
     }
 
     @Test
-    fun `given Density Compact, when SpacingScale is created, then padY equals 57px`() {
+    fun `given Density Compact, when SpacingScale is created, then padY equals 3_6rem`() {
         // Arrange
         val density = Density.Compact
 
         // Act
         val scale = SpacingScale.from(density = density)
 
-        // Assert - 80 * 0.72 = 57.6 -> 57 (int truncation)
-        assertEquals(57, scale.padY.value.toInt())
+        // Assert - 5rem * 0.72 = 3.6rem
+        assertEquals(3.6, scale.padY.value.toDouble(), absoluteTolerance = 0.001)
     }
 
     @Test
-    fun `given Density Compact, when SpacingScale is created, then padYSmall equals 28px`() {
+    fun `given Density Compact, when SpacingScale is created, then padYSmall equals 1_8rem`() {
         // Arrange
         val density = Density.Compact
 
         // Act
         val scale = SpacingScale.from(density = density)
 
-        // Assert - 40 * 0.72 = 28.8 -> 28 (int truncation)
-        assertEquals(28, scale.padYSmall.value.toInt())
+        // Assert - 2.5rem * 0.72 = 1.8rem
+        assertEquals(1.8, scale.padYSmall.value.toDouble(), absoluteTolerance = 0.001)
     }
 
     @Test
-    fun `given Density Compact, when SpacingScale is created, then gap equals 17px`() {
+    fun `given Density Compact, when SpacingScale is created, then gap equals 1_08rem`() {
         // Arrange
         val density = Density.Compact
 
         // Act
         val scale = SpacingScale.from(density = density)
 
-        // Assert - 24 * 0.72 = 17.28 -> 17 (int truncation)
-        assertEquals(17, scale.gap.value.toInt())
+        // Assert - 1.5rem * 0.72 = 1.08rem
+        assertEquals(1.08, scale.gap.value.toDouble(), absoluteTolerance = 0.001)
     }
 
     @Test
-    fun `given Density Normal, when SpacingScale is created, then padY equals 80px`() {
+    fun `given Density Normal, when SpacingScale is created, then padY equals 5rem`() {
         // Arrange
         val density = Density.Normal
 
@@ -172,19 +172,19 @@ class TokensTest {
         val scale = SpacingScale.from(density = density)
 
         // Assert
-        assertEquals(80, scale.padY.value.toInt())
+        assertEquals(5.0, scale.padY.value.toDouble(), absoluteTolerance = 0.001)
     }
 
     @Test
-    fun `given Density Spacious, when SpacingScale is created, then padY equals 100px`() {
+    fun `given Density Spacious, when SpacingScale is created, then padY equals 6_25rem`() {
         // Arrange
         val density = Density.Spacious
 
         // Act
         val scale = SpacingScale.from(density = density)
 
-        // Assert - 80 * 1.25 = 100
-        assertEquals(100, scale.padY.value.toInt())
+        // Assert - 5rem * 1.25 = 6.25rem
+        assertEquals(6.25, scale.padY.value.toDouble(), absoluteTolerance = 0.001)
     }
 
     @Test
