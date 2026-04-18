@@ -21,8 +21,8 @@ import com.varabyte.kobweb.compose.ui.modifiers.gridTemplateColumns
 import com.varabyte.kobweb.compose.ui.modifiers.letterSpacing
 import com.varabyte.kobweb.compose.ui.modifiers.lineHeight
 import com.varabyte.kobweb.compose.ui.modifiers.margin
-import com.varabyte.kobweb.compose.ui.modifiers.maxWidth
 import com.varabyte.kobweb.compose.ui.modifiers.padding
+import com.varabyte.kobweb.compose.ui.styleModifier
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.core.PageContext
 import com.varabyte.kobweb.core.data.add
@@ -48,8 +48,6 @@ import dev.tonholo.portfolio.theme.typography.apply
 import kotlinx.browser.document
 import kotlinx.browser.window
 import org.jetbrains.compose.web.css.AlignItems
-import org.jetbrains.compose.web.css.CSSSizeValue
-import org.jetbrains.compose.web.css.CSSUnit
 import org.jetbrains.compose.web.css.DisplayStyle
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.em
@@ -175,6 +173,35 @@ fun ArticleMarkdownLayout(context: PageContext, content: @Composable () -> Unit)
 
     PageLayout {
         Div(attrs = ArticleMarkdownShellStyle.toModifier().toAttrs()) {
+            // Handoff structure: meta row, title, and lede span the full shell
+            // width above the sidebar/body grid. The two-column layout only
+            // applies to the article body + TOC, not to the editorial header.
+            ArticleMetaRow(
+                date = data.date,
+                readTime = data.readTime,
+                onBack = {
+                    context.router.tryRoutingTo(pathQueryAndFragment = Routes.ARTICLES)
+                },
+            )
+            H1(
+                attrs = ArticleMarkdownTitleStyle
+                    .toModifier()
+                    .apply(Typography.h1)
+                    .color(tokens.ink.ink)
+                    .toAttrs(),
+            ) {
+                ComposeText(data.title)
+            }
+            if (data.description.isNotEmpty()) {
+                P(
+                    attrs = ArticleMarkdownLedeStyle
+                        .toModifier()
+                        .color(tokens.ink.ink2)
+                        .toAttrs(),
+                ) {
+                    ComposeText(data.description)
+                }
+            }
             Div(attrs = ArticleMarkdownGridStyle.toModifier().toAttrs()) {
                 ArticleTocSidebar(
                     contents = tocEntries,
@@ -182,32 +209,6 @@ fun ArticleMarkdownLayout(context: PageContext, content: @Composable () -> Unit)
                     onCopyLink = { copyCurrentLocation() },
                 )
                 Article(attrs = ArticleMarkdownBodyStyle.toModifier().toAttrs()) {
-                    ArticleMetaRow(
-                        date = data.date,
-                        readTime = data.readTime,
-                        onBack = {
-                            context.router.tryRoutingTo(pathQueryAndFragment = Routes.ARTICLES)
-                        },
-                    )
-                    H1(
-                        attrs = ArticleMarkdownTitleStyle
-                            .toModifier()
-                            .apply(Typography.h1)
-                            .color(tokens.ink.ink)
-                            .toAttrs(),
-                    ) {
-                        ComposeText(data.title)
-                    }
-                    if (data.description.isNotEmpty()) {
-                        P(
-                            attrs = ArticleMarkdownLedeStyle
-                                .toModifier()
-                                .color(tokens.ink.ink2)
-                                .toAttrs(),
-                        ) {
-                            ComposeText(data.description)
-                        }
-                    }
                     content()
 
                     DisposableEffect(data.slug) {
@@ -322,7 +323,7 @@ val ArticleMarkdownTitleStyle = CssStyle {
     base {
         Modifier
             .margin(top = 0.cssRem, bottom = TITLE_MARGIN_BOTTOM_REM.cssRem)
-            .maxWidth(TITLE_MAX_WIDTH_CH.unsafeCast<CSSSizeValue<CSSUnit.ch>>())
+            .styleModifier { property("max-width", "${TITLE_MAX_WIDTH_CH}ch") }
     }
 }
 
@@ -339,7 +340,7 @@ val ArticleMarkdownLedeStyle = CssStyle {
             .fontSize(LEDE_SIZE_REM.cssRem)
             .lineHeight(LEDE_LINE_HEIGHT)
             .fontStyle(FontStyle.Italic)
-            .maxWidth(LEDE_MAX_WIDTH_CH.unsafeCast<CSSSizeValue<CSSUnit.ch>>())
+            .styleModifier { property("max-width", "${LEDE_MAX_WIDTH_CH}ch") }
             .margin(top = 0.cssRem, bottom = LEDE_MARGIN_BOTTOM_REM.cssRem)
     }
 }
