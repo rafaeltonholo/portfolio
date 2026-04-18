@@ -41,10 +41,7 @@ private const val LABEL_VALUE_SEPARATOR = " - "
  * @param modifier optional [Modifier] chained after the base ticker-entry styles.
  */
 @Composable
-fun TickerEntry(
-    item: TickerItem,
-    modifier: Modifier = Modifier,
-) {
+fun TickerEntry(item: TickerItem, modifier: Modifier = Modifier) {
     val tokens = LocalPortfolioTokens.current
 
     Div(attrs = TickerEntryStyle.toModifier().then(modifier).toAttrs()) {

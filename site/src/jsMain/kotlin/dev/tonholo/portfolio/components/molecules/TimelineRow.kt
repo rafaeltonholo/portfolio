@@ -80,10 +80,9 @@ private const val BULLETS_MARGIN_TOP_REM = 0.5 // 8px
 private const val BULLETS_GAP_REM = 0.375 // 6px
 private const val BULLET_PADDING_LEFT_REM = 1.125 // 18px
 
-// The handoff renders the bullet glyph as an em dash via `::before`. We keep
-// the same visual without typing a literal em dash in source by using the
-// Unicode escape for U+2014.
-private const val BULLET_GLYPH = "\u2014"
+// Bullet glyph for `::before`. Handoff used an em dash; project rule requires
+// regular dash, so we render a hyphen instead.
+private const val BULLET_GLYPH = "-"
 
 /**
  * Returns the hairline border color for a timeline row, matching the handoff:
