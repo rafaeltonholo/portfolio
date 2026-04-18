@@ -44,6 +44,8 @@ import dev.tonholo.portfolio.components.atoms.PhosphorIcon
 import dev.tonholo.portfolio.components.molecules.BrandMark
 import dev.tonholo.portfolio.components.molecules.LanguageSwitch
 import dev.tonholo.portfolio.components.molecules.NavLink
+import dev.tonholo.portfolio.locale.LocalStrings
+import dev.tonholo.portfolio.locale.Strings
 import dev.tonholo.portfolio.navigation.Routes
 import dev.tonholo.portfolio.state.LocalLocaleState
 import dev.tonholo.portfolio.state.LocalThemeState
@@ -89,16 +91,6 @@ private const val NAV_META_OPACITY_TRANSITION_S = 0.22
 // Delay (in ms) before the status badge auto-collapses after mount.
 private const val STATUS_AUTO_COLLAPSE_DELAY_MS = 4500L
 
-// Copy rendered inside the status badge. The handoff uses an interpunct; we
-// swap it for a hyphen to keep the commit-lint clean of the disallowed em-dash
-// family while matching the original cadence.
-private const val STATUS_TEXT = "not looking - happy @ Mozilla"
-
-// Aria labels for the theme toggle.
-private const val THEME_TOGGLE_ARIA_LABEL = "toggle theme"
-private const val THEME_TOGGLE_TITLE_TO_LIGHT = "switch to light"
-private const val THEME_TOGGLE_TITLE_TO_DARK = "switch to dark"
-
 // Phosphor glyph names for the theme toggle.
 private const val THEME_ICON_SUN = "sun"
 private const val THEME_ICON_MOON = "moon"
@@ -106,16 +98,19 @@ private const val THEME_ICON_MOON = "moon"
 // Fully transparent color used as the collapsed-border stand-in.
 private val TransparentColor: Color = Color.rgba(r = 0, g = 0, b = 0, a = 0f)
 
-// Link labels match `chrome.jsx`; each entry maps to a [Routes] constant.
-private val NAV_LINKS: List<NavLinkEntry> = listOf(
-    NavLinkEntry(label = "home", route = Routes.HOME),
-    NavLinkEntry(label = "projects", route = Routes.PROJECTS),
-    NavLinkEntry(label = "about", route = Routes.ABOUT),
-    NavLinkEntry(label = "articles", route = Routes.ARTICLES),
-    NavLinkEntry(label = "resume", route = Routes.RESUME),
-)
-
 private data class NavLinkEntry(val label: String, val route: String)
+
+/**
+ * Builds the ordered list of nav link entries for the current locale. Route
+ * constants stay stable across locales; only the rendered label changes.
+ */
+private fun navLinksFor(nav: Strings.Nav): List<NavLinkEntry> = listOf(
+    NavLinkEntry(label = nav.home, route = Routes.HOME),
+    NavLinkEntry(label = nav.projects, route = Routes.PROJECTS),
+    NavLinkEntry(label = nav.about, route = Routes.ABOUT),
+    NavLinkEntry(label = nav.articles, route = Routes.ARTICLES),
+    NavLinkEntry(label = nav.resume, route = Routes.RESUME),
+)
 
 /**
  * Top site chrome. Maps to the `<nav className="nav">` block in the handoff
@@ -139,6 +134,7 @@ private data class NavLinkEntry(val label: String, val route: String)
 fun Nav(currentRoute: String, onNavigate: (route: String) -> Unit, modifier: Modifier = Modifier) {
     val themeState = LocalThemeState.current
     val localeState = LocalLocaleState.current
+    val strings = LocalStrings.current
     val isDark = themeState.current.isDark
 
     val finalModifier = NavStyle
@@ -148,14 +144,18 @@ fun Nav(currentRoute: String, onNavigate: (route: String) -> Unit, modifier: Mod
     WebNav(attrs = finalModifier.toAttrs()) {
         Div(attrs = NavInnerStyle.toModifier().toAttrs()) {
             BrandMark(onClick = { onNavigate(Routes.HOME) })
-            NavLinksCluster(currentRoute = currentRoute, onNavigate = onNavigate)
-            StatusBadge()
+            NavLinksCluster(
+                currentRoute = currentRoute,
+                onNavigate = onNavigate,
+                links = navLinksFor(nav = strings.nav),
+            )
+            StatusBadge(text = strings.statusBadge.text)
             LanguageSwitch(current = localeState.current, onSwitch = { localeState.set(it) })
             IconButton(
                 modifier = Modifier.title(
-                    if (isDark) THEME_TOGGLE_TITLE_TO_LIGHT else THEME_TOGGLE_TITLE_TO_DARK,
+                    if (isDark) strings.themeToggle.titleToLight else strings.themeToggle.titleToDark,
                 ),
-                ariaLabel = THEME_TOGGLE_ARIA_LABEL,
+                ariaLabel = strings.themeToggle.ariaLabel,
                 onClick = { themeState.toggle() },
             ) {
                 PhosphorIcon(name = if (isDark) THEME_ICON_SUN else THEME_ICON_MOON)
@@ -165,9 +165,13 @@ fun Nav(currentRoute: String, onNavigate: (route: String) -> Unit, modifier: Mod
 }
 
 @Composable
-private fun NavLinksCluster(currentRoute: String, onNavigate: (String) -> Unit) {
+private fun NavLinksCluster(
+    currentRoute: String,
+    onNavigate: (String) -> Unit,
+    links: List<NavLinkEntry>,
+) {
     Div(attrs = NavLinksStyle.toModifier().toAttrs()) {
-        NAV_LINKS.forEach { entry ->
+        links.forEach { entry ->
             NavLink(
                 label = entry.label,
                 active = currentRoute == entry.route,
@@ -178,7 +182,7 @@ private fun NavLinksCluster(currentRoute: String, onNavigate: (String) -> Unit) 
 }
 
 @Composable
-private fun StatusBadge() {
+private fun StatusBadge(text: String) {
     val tokens = LocalPortfolioTokens.current
     var collapsed by remember { mutableStateOf(value = false) }
 
@@ -208,7 +212,7 @@ private fun StatusBadge() {
         )
         .onMouseEnter { collapsed = false }
         .onMouseLeave { collapsed = true }
-        .title(STATUS_TEXT)
+        .title(text)
 
     Div(attrs = badgeModifier.toAttrs()) {
         Dot(variant = DotVariant.Static, color = tokens.muted.muted2)
@@ -219,7 +223,7 @@ private fun StatusBadge() {
                 .opacity(value = textOpacity)
                 .toAttrs(),
         ) {
-            ComposeText(STATUS_TEXT)
+            ComposeText(text)
         }
     }
 }

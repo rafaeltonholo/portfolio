@@ -39,6 +39,7 @@ import com.varabyte.kobweb.silk.style.animation.toAnimation
 import com.varabyte.kobweb.silk.style.toModifier
 import dev.tonholo.portfolio.components.atoms.Dot
 import dev.tonholo.portfolio.components.atoms.DotVariant
+import dev.tonholo.portfolio.locale.LocalStrings
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.typography.FontFamilies
 import org.jetbrains.compose.web.css.AlignItems
@@ -92,9 +93,9 @@ private const val TOAST_SHADOW_BLUR_REM = 1.5 // 24px
 private const val TOAST_SHADOW_ALPHA = 0.08f
 private const val TOAST_SHADOW_CHANNEL = 0
 
+// The bold language code stays as a literal BCP-47 tag; it is a technical
+// identifier that does not change between locales.
 private const val PT_BR_LABEL = "pt-BR"
-private const val PT_BR_TRANSLATION_NOTE = " - tradução em andamento"
-private const val PT_BR_SECONDARY_NOTE = "Most content is still in English for now."
 
 private val ToastShadowColor: Color = Color.rgba(
     r = TOAST_SHADOW_CHANNEL,
@@ -125,6 +126,7 @@ fun LanguageToast(visible: Boolean, modifier: Modifier = Modifier) {
     if (!visible) return
 
     val tokens = LocalPortfolioTokens.current
+    val strings = LocalStrings.current.languageToast
 
     val finalModifier = LanguageToastStyle
         .toModifier()
@@ -161,14 +163,14 @@ fun LanguageToast(visible: Boolean, modifier: Modifier = Modifier) {
                     .opacity(TOAST_SUFFIX_OPACITY)
                     .toAttrs(),
             ) {
-                ComposeText(PT_BR_TRANSLATION_NOTE)
+                ComposeText(strings.primary)
             }
             Div(
                 attrs = LanguageToastNoteStyle
                     .toModifier()
                     .toAttrs(),
             ) {
-                ComposeText(PT_BR_SECONDARY_NOTE)
+                ComposeText(strings.secondary)
             }
         }
     }

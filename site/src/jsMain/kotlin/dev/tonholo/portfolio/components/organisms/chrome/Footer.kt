@@ -37,6 +37,8 @@ import com.varabyte.kobweb.silk.style.selectors.hover
 import com.varabyte.kobweb.silk.style.toModifier
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import dev.tonholo.portfolio.components.molecules.SocialLink
+import dev.tonholo.portfolio.locale.LocalStrings
+import dev.tonholo.portfolio.locale.Strings
 import dev.tonholo.portfolio.navigation.Routes
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.color.AccentMint
@@ -103,25 +105,15 @@ private const val FOOTER_LINK_TRANSITION_DURATION_S = 0.18
 //   flex row, space-between, padding-top 24px, 1px top border.
 private const val FOOTER_BOTTOM_PADDING_TOP_REM = 1.5 // 24px
 
-// Hardcoded copy for v1. pt-BR / i18n can lift later.
-private const val TAGLINE_COPY =
-    "Android engineer. Halifax, Nova Scotia, by way of Belo Horizonte. Writing Kotlin since 2015."
-
-private const val HEADING_RAFAEL = "Rafael Tonholo"
-private const val HEADING_PAGES = "Pages"
-private const val HEADING_WORK = "Work"
-private const val HEADING_ELSEWHERE = "Elsewhere"
-
-private const val LINK_HOME = "Home"
-private const val LINK_ABOUT = "About"
-private const val LINK_ARTICLES = "Articles"
-private const val LINK_RESUME = "Resume"
-
+// Work column entries stay as mono technical literals (product / project
+// names), not user-facing copy that needs translation.
 private const val WORK_PINTEREST = "Pinterest"
 private const val WORK_BLEACHER_REPORT = "Bleacher Report"
 private const val WORK_SVG_TO_COMPOSE = "SVG to Compose"
 private const val WORK_IVY_WALLET = "ivy-wallet"
 
+// Elsewhere column rows are static social destinations (labels match the
+// handles), so they stay as constants rather than localized strings.
 private const val GITHUB_LABEL = "github.com/rafaeltonholo"
 private const val GITHUB_HREF = "https://github.com/rafaeltonholo"
 private const val LINKEDIN_LABEL = "linkedin.com/in/rafaeltonholo"
@@ -130,11 +122,6 @@ private const val TWITTER_LABEL = "twitter/@rafaeltonholo"
 private const val TWITTER_HREF = "https://twitter.com/rafaeltonholo"
 private const val EMAIL_LABEL = "rafael@tonholo.dev"
 private const val EMAIL_HREF = "mailto:rafael@tonholo.dev"
-
-// Bottom bar copy. Middle dot (U+00B7) is allowed; em dash is not, so the right
-// half renders a regular dash per the project style rules.
-private const val BOTTOM_LEFT_COPY =
-    "\u00A9 2026 \u00B7 Built with Kotlin + Compose HTML \u00B7 Designed in the terminal"
 
 /**
  * Resolves the hairline border color shared by `.footer` and `.footer-bottom`.
@@ -178,6 +165,7 @@ fun Footer(
     versionInfo: String = DEFAULT_VERSION_INFO,
 ) {
     val tokens = LocalPortfolioTokens.current
+    val strings = LocalStrings.current.footer
     val borderColor = footerBorderColor()
 
     val finalModifier = FooterStyle
@@ -193,12 +181,16 @@ fun Footer(
     WebFooter(attrs = finalModifier.toAttrs()) {
         Div(attrs = ShellStyle.toModifier().toAttrs()) {
             Div(attrs = FooterGridStyle.toModifier().toAttrs()) {
-                TaglineColumn()
-                PagesColumn(onNavigate = onNavigate)
-                WorkColumn()
-                ElsewhereColumn()
+                TaglineColumn(strings = strings)
+                PagesColumn(strings = strings, onNavigate = onNavigate)
+                WorkColumn(heading = strings.headingWork)
+                ElsewhereColumn(heading = strings.headingElsewhere)
             }
-            FooterBottom(versionInfo = versionInfo, borderColor = borderColor)
+            FooterBottom(
+                leftCopy = strings.bottomLeftCopy,
+                versionInfo = versionInfo,
+                borderColor = borderColor,
+            )
         }
     }
 }
@@ -208,11 +200,11 @@ fun Footer(
  * 34ch (matches `maxWidth:'34ch'` in the JSX).
  */
 @Composable
-private fun TaglineColumn() {
+private fun TaglineColumn(strings: Strings.Footer) {
     val tokens = LocalPortfolioTokens.current
 
     Div(attrs = Modifier.toAttrs()) {
-        ColumnHeading(text = HEADING_RAFAEL)
+        ColumnHeading(text = strings.headingName)
         P(
             attrs = Modifier
                 .margin(topBottom = 0.cssRem)
@@ -225,7 +217,7 @@ private fun TaglineColumn() {
                 )
                 .toAttrs(),
         ) {
-            ComposeText(TAGLINE_COPY)
+            ComposeText(strings.tagline)
         }
     }
 }
@@ -235,26 +227,27 @@ private fun TaglineColumn() {
  * [onNavigate] with the matching [Routes] constant.
  */
 @Composable
-private fun PagesColumn(onNavigate: (route: String) -> Unit) {
+private fun PagesColumn(strings: Strings.Footer, onNavigate: (route: String) -> Unit) {
     Div(attrs = Modifier.toAttrs()) {
-        ColumnHeading(text = HEADING_PAGES)
+        ColumnHeading(text = strings.headingPages)
         Ul(attrs = FooterListStyle.toModifier().toAttrs()) {
-            FooterNavItem(label = LINK_HOME, route = Routes.HOME, onNavigate = onNavigate)
-            FooterNavItem(label = LINK_ABOUT, route = Routes.ABOUT, onNavigate = onNavigate)
-            FooterNavItem(label = LINK_ARTICLES, route = Routes.ARTICLES, onNavigate = onNavigate)
-            FooterNavItem(label = LINK_RESUME, route = Routes.RESUME, onNavigate = onNavigate)
+            FooterNavItem(label = strings.linkHome, route = Routes.HOME, onNavigate = onNavigate)
+            FooterNavItem(label = strings.linkAbout, route = Routes.ABOUT, onNavigate = onNavigate)
+            FooterNavItem(label = strings.linkArticles, route = Routes.ARTICLES, onNavigate = onNavigate)
+            FooterNavItem(label = strings.linkResume, route = Routes.RESUME, onNavigate = onNavigate)
         }
     }
 }
 
 /**
  * Third column: featured project names. Rendered as plain anchors without an
- * `href` for v1, matching the JSX placeholder links.
+ * `href` for v1, matching the JSX placeholder links. Project names are mono
+ * technical literals and stay untranslated.
  */
 @Composable
-private fun WorkColumn() {
+private fun WorkColumn(heading: String) {
     Div(attrs = Modifier.toAttrs()) {
-        ColumnHeading(text = HEADING_WORK)
+        ColumnHeading(text = heading)
         Ul(attrs = FooterListStyle.toModifier().toAttrs()) {
             FooterStaticItem(label = WORK_PINTEREST)
             FooterStaticItem(label = WORK_BLEACHER_REPORT)
@@ -267,12 +260,13 @@ private fun WorkColumn() {
 /**
  * Fourth column: external social/email destinations. Uses the [SocialLink]
  * molecule so each row gets the shared `arrow-up-right` trailing glyph and the
- * hover accent flip defined there.
+ * hover accent flip defined there. Row labels are handles / URLs and stay
+ * untranslated.
  */
 @Composable
-private fun ElsewhereColumn() {
+private fun ElsewhereColumn(heading: String) {
     Div(attrs = Modifier.toAttrs()) {
-        ColumnHeading(text = HEADING_ELSEWHERE)
+        ColumnHeading(text = heading)
         Ul(attrs = FooterListStyle.toModifier().toAttrs()) {
             Li(attrs = Modifier.toAttrs()) {
                 SocialLink(label = GITHUB_LABEL, href = GITHUB_HREF)
@@ -351,7 +345,7 @@ private fun FooterStaticItem(label: String) {
  * color as the outer footer border).
  */
 @Composable
-private fun FooterBottom(versionInfo: String, borderColor: Color) {
+private fun FooterBottom(leftCopy: String, versionInfo: String, borderColor: Color) {
     Div(
         attrs = FooterBottomStyle
             .toModifier()
@@ -363,7 +357,7 @@ private fun FooterBottom(versionInfo: String, borderColor: Color) {
             .toAttrs(),
     ) {
         Span(attrs = Modifier.toAttrs()) {
-            ComposeText(BOTTOM_LEFT_COPY)
+            ComposeText(leftCopy)
         }
         Span(attrs = Modifier.toAttrs()) {
             ComposeText(versionInfo)
