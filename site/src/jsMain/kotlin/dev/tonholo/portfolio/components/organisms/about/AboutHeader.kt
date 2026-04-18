@@ -160,15 +160,14 @@ val AboutHeaderStyle = CssStyle {
 }
 
 /**
- * Base `CssStyle` for the `<em>` inside the `h1`. Ports the handoff's
- * emphasized word styling: italic serif with the accent color applied inline
- * by the composable so it follows the active theme.
+ * Base `CssStyle` for the `<em>` inside the `h1`. Ports the handoff rule
+ * `.about-hdr h1 em { font-style: normal; color: var(--accent); }`: keep the
+ * inherited mono display family, override the browser default italic, and
+ * let the composable paint the accent color inline so it follows the theme.
  */
 val AboutHeaderTitleEmphasisStyle = CssStyle {
     base {
-        Modifier
-            .fontFamily(*FontFamilies.SERIF)
-            .fontStyle(FontStyle.Italic)
+        Modifier.fontStyle(FontStyle.Normal)
     }
 }
 
