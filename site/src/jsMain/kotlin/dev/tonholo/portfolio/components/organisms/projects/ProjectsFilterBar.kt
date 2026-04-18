@@ -8,6 +8,8 @@ import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.silk.style.CssStyle
 import com.varabyte.kobweb.silk.style.toModifier
 import dev.tonholo.portfolio.components.molecules.NavLink
+import dev.tonholo.portfolio.locale.LocalStrings
+import dev.tonholo.portfolio.locale.Strings
 import org.jetbrains.compose.web.css.DisplayStyle
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.dom.Div
@@ -15,11 +17,6 @@ import org.jetbrains.compose.web.dom.Div
 // Handoff `home.jsx` lines 269-281 render the filter as a tight `<div style={{display:'flex', gap:4}}>`
 // row of `nav-link` buttons. 4px at 1rem=16px = 0.25rem.
 private const val FILTER_BAR_GAP_REM = 0.25
-
-// Labels mirror the lower-case `l` copy in the handoff filter list.
-private const val LABEL_ALL = "all"
-private const val LABEL_COMMERCIAL = "commercial"
-private const val LABEL_OPEN_SOURCE = "open source"
 
 /**
  * Filter axis for the Projects list page. Maps to the `{id}` values in the
@@ -50,6 +47,8 @@ fun ProjectsFilterBar(
     onSelect: (ProjectsFilter) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val strings = LocalStrings.current.projectsFilter
+
     val finalModifier = ProjectsFilterBarStyle
         .toModifier()
         .then(modifier)
@@ -57,7 +56,7 @@ fun ProjectsFilterBar(
     Div(attrs = finalModifier.toAttrs()) {
         ProjectsFilter.entries.forEach { filter ->
             NavLink(
-                label = filter.label,
+                label = filter.labelFor(strings = strings),
                 active = filter == current,
                 onClick = { onSelect(filter) },
             )
@@ -67,14 +66,13 @@ fun ProjectsFilterBar(
 
 /**
  * Lower-case human label for a filter. Matches the `l` property on each handoff
- * filter entry.
+ * filter entry, resolved against the current locale.
  */
-private val ProjectsFilter.label: String
-    get() = when (this) {
-        ProjectsFilter.All -> LABEL_ALL
-        ProjectsFilter.Commercial -> LABEL_COMMERCIAL
-        ProjectsFilter.OpenSource -> LABEL_OPEN_SOURCE
-    }
+private fun ProjectsFilter.labelFor(strings: Strings.ProjectsFilter): String = when (this) {
+    ProjectsFilter.All -> strings.all
+    ProjectsFilter.Commercial -> strings.commercial
+    ProjectsFilter.OpenSource -> strings.openSource
+}
 
 /**
  * Base `CssStyle` for [ProjectsFilterBar]. Ports the inline flex row from the

@@ -21,6 +21,7 @@ import com.varabyte.kobweb.silk.style.CssStyle
 import com.varabyte.kobweb.silk.style.toModifier
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import dev.tonholo.portfolio.components.atoms.PhosphorIcon
+import dev.tonholo.portfolio.locale.LocalStrings
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.PortfolioTokens
 import dev.tonholo.portfolio.theme.typography.FontFamilies
@@ -46,9 +47,6 @@ private const val NAV_BORDER_WIDTH_REM = 0.0625 // 1px
 private const val LINK_FONT_SIZE_REM = 0.75 // 12px
 private const val LINK_GAP_REM = 0.5 // 8px
 
-// Copy. Hardcoded for v1 to match the rest of Phase 2 until i18n lifts these.
-private const val BACK_COPY = "back to work"
-private const val NEXT_PREFIX = "next: "
 private const val ICON_ARROW_LEFT = "arrow-left"
 private const val ICON_ARROW_RIGHT = "arrow-right"
 
@@ -104,6 +102,7 @@ fun PrevNextNav(
 @Composable
 private fun BackLink(onBack: () -> Unit) {
     val tokens = LocalPortfolioTokens.current
+    val strings = LocalStrings.current.prevNext
 
     A(
         href = null,
@@ -117,7 +116,7 @@ private fun BackLink(onBack: () -> Unit) {
             .toAttrs { attr("role", "link") },
     ) {
         PhosphorIcon(name = ICON_ARROW_LEFT)
-        ComposeText(BACK_COPY)
+        ComposeText(strings.back)
     }
 }
 
@@ -128,6 +127,7 @@ private fun BackLink(onBack: () -> Unit) {
 @Composable
 private fun NextLink(projectName: String, onNext: () -> Unit) {
     val tokens = LocalPortfolioTokens.current
+    val strings = LocalStrings.current.prevNext
 
     A(
         href = null,
@@ -140,7 +140,7 @@ private fun NextLink(projectName: String, onNext: () -> Unit) {
             }
             .toAttrs { attr("role", "link") },
     ) {
-        ComposeText(NEXT_PREFIX + projectName)
+        ComposeText(strings.nextPrefix + projectName)
         PhosphorIcon(name = ICON_ARROW_RIGHT)
     }
 }

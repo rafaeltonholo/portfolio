@@ -11,14 +11,13 @@ import dev.tonholo.portfolio.components.atoms.MetaLabel
 import dev.tonholo.portfolio.components.molecules.SectionHead
 import dev.tonholo.portfolio.components.molecules.TimelineRow
 import dev.tonholo.portfolio.domain.model.Experience
+import dev.tonholo.portfolio.locale.LocalStrings
 import org.jetbrains.compose.web.css.DisplayStyle
 import org.jetbrains.compose.web.css.FlexDirection
 import org.jetbrains.compose.web.dom.Div
 
-// Section header copy per handoff `pages2.jsx` lines 15-20.
+// Section head ordinal prefix stays as a mono literal across locales.
 private const val SECTION_NUMBER = "// 01"
-private const val SECTION_TITLE = "Experience"
-private const val SECTION_TRAILING = "most recent first"
 
 /**
  * Stacked list of resume timeline rows. Ports the `<div class="timeline">`
@@ -37,6 +36,8 @@ private const val SECTION_TRAILING = "most recent first"
  */
 @Composable
 fun ExperienceTimeline(experiences: List<Experience>, modifier: Modifier = Modifier) {
+    val strings = LocalStrings.current.experience
+
     val finalModifier = ExperienceTimelineStyle
         .toModifier()
         .then(modifier)
@@ -44,8 +45,8 @@ fun ExperienceTimeline(experiences: List<Experience>, modifier: Modifier = Modif
     Div(attrs = finalModifier.toAttrs()) {
         SectionHead(
             number = SECTION_NUMBER,
-            title = SECTION_TITLE,
-            trailing = { MetaLabel(text = SECTION_TRAILING) },
+            title = strings.sectionTitle,
+            trailing = { MetaLabel(text = strings.sectionTrailing) },
         )
         Div(attrs = ExperienceTimelineListStyle.toModifier().toAttrs()) {
             experiences.forEachIndexed { index, experience ->

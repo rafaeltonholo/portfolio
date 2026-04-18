@@ -29,6 +29,7 @@ import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import dev.tonholo.portfolio.components.molecules.TagList
 import dev.tonholo.portfolio.domain.model.Education
 import dev.tonholo.portfolio.domain.model.SkillBucket
+import dev.tonholo.portfolio.locale.LocalStrings
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.typography.FontFamilies
 import org.jetbrains.compose.web.css.DisplayStyle
@@ -42,11 +43,6 @@ import org.jetbrains.compose.web.dom.H4
 import org.jetbrains.compose.web.dom.Li
 import org.jetbrains.compose.web.dom.Ul
 import org.jetbrains.compose.web.dom.Text as ComposeText
-
-// Heading copy per handoff `pages2.jsx` lines 51, 57, 63.
-private const val PRIMARY_STACK_HEADING = "// primary stack"
-private const val ALSO_COMFORTABLE_HEADING = "// also comfortable"
-private const val EDUCATION_HEADING = "// education"
 
 // `.resume-skills` container: 3-column grid, 48px gap, 80px top margin, 48px
 // top padding, 1px top hairline border. Below `@media (max-width: 820px)`
@@ -119,6 +115,7 @@ fun SkillsGrid(
     modifier: Modifier = Modifier,
 ) {
     val borderColor = skillsTopBorderColor()
+    val strings = LocalStrings.current.skills
 
     val finalModifier = SkillsGridStyle
         .toModifier()
@@ -130,13 +127,13 @@ fun SkillsGrid(
         .then(modifier)
 
     Div(attrs = finalModifier.toAttrs()) {
-        SkillsColumn(heading = PRIMARY_STACK_HEADING) {
+        SkillsColumn(heading = strings.primaryStack) {
             TagList(tags = primaryStack.skills)
         }
-        SkillsColumn(heading = ALSO_COMFORTABLE_HEADING) {
+        SkillsColumn(heading = strings.alsoComfortable) {
             TagList(tags = alsoComfortable.skills)
         }
-        SkillsColumn(heading = EDUCATION_HEADING) {
+        SkillsColumn(heading = strings.education) {
             EducationList(entries = education)
         }
     }

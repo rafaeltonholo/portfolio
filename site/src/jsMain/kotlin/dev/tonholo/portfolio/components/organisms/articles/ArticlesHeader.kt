@@ -17,6 +17,7 @@ import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.style.toModifier
 import dev.tonholo.portfolio.components.atoms.MetaLabel
 import dev.tonholo.portfolio.components.atoms.MetaLabelVariant
+import dev.tonholo.portfolio.locale.LocalStrings
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.typography.FontFamilies
 import dev.tonholo.portfolio.theme.typography.Typography
@@ -50,12 +51,8 @@ private const val META_MARGIN_BOTTOM_REM = 1.0 // 16px
 // Handoff `.articles-hdr p { color: var(--muted); font-family: var(--font-mono); font-size: 13px; }`.
 private const val META_COPY_SIZE_REM = 0.8125 // 13px
 
-// Hardcoded v1 copy from `pages1.jsx` line 108-111. Lifts into Compose Resources during i18n.
+// Mono eyebrow is a technical path literal and stays untranslated.
 private const val META_TEXT = "// articles/"
-private const val TITLE_TEXT = "Writing."
-private const val POSTS_SUFFIX = "posts"
-private const val RSS_COPY = "RSS available"
-private const val SUBSCRIBERS_COPY = "subscribed by 342 readers"
 private const val SEPARATOR = " \u00B7 " // " · " middle dot
 
 /**
@@ -74,6 +71,7 @@ private const val SEPARATOR = " \u00B7 " // " · " middle dot
 @Composable
 fun ArticlesHeader(articleCount: Int, modifier: Modifier = Modifier) {
     val tokens = LocalPortfolioTokens.current
+    val strings = LocalStrings.current.articlesList
 
     val finalModifier = ArticlesHeaderStyle
         .toModifier()
@@ -95,7 +93,7 @@ fun ArticlesHeader(articleCount: Int, modifier: Modifier = Modifier) {
                     .margin(topBottom = 0.cssRem)
                     .toAttrs(),
             ) {
-                ComposeText(TITLE_TEXT)
+                ComposeText(strings.title)
             }
         }
         P(
@@ -104,7 +102,9 @@ fun ArticlesHeader(articleCount: Int, modifier: Modifier = Modifier) {
                 .color(tokens.muted.muted)
                 .toAttrs(),
         ) {
-            ComposeText("$articleCount $POSTS_SUFFIX$SEPARATOR$RSS_COPY$SEPARATOR$SUBSCRIBERS_COPY")
+            ComposeText(
+                "$articleCount ${strings.postsSuffix}$SEPARATOR${strings.rssCopy}$SEPARATOR${strings.subscribersCopy}",
+            )
         }
     }
 }

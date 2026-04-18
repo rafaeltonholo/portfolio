@@ -21,6 +21,8 @@ import dev.tonholo.portfolio.components.atoms.Text
 import dev.tonholo.portfolio.components.atoms.TextSlot
 import dev.tonholo.portfolio.domain.model.Project
 import dev.tonholo.portfolio.domain.model.ProjectKind
+import dev.tonholo.portfolio.locale.LocalStrings
+import dev.tonholo.portfolio.locale.Strings
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.typography.FontFamilies
 import dev.tonholo.portfolio.theme.typography.Typography
@@ -63,17 +65,8 @@ private const val INFO_LABEL_MARGIN_BOTTOM_REM = 0.375 // 6px
 // the Nav status badge spacing.
 private const val STATUS_ROW_GAP_REM = 0.5 // 8px
 
-// Copy. Hardcoded for v1 like the rest of Phase 2; i18n lifts these into
-// Compose Resources later.
-private const val META_COMMERCIAL = "commercial project"
-private const val META_OPEN_SOURCE = "open source"
 private const val META_SEPARATOR = " \u00B7 "
 private const val META_PREFIX = "// "
-private const val LABEL_ROLE = "Role"
-private const val LABEL_TIMELINE = "Timeline"
-private const val LABEL_STACK = "Stack"
-private const val LABEL_STATUS = "Status"
-private const val STATUS_TEXT = "shipped to production"
 private const val STACK_SEPARATOR = ", "
 
 /**
@@ -94,13 +87,15 @@ private const val STACK_SEPARATOR = ", "
  */
 @Composable
 fun ProjectDetailHero(project: Project, modifier: Modifier = Modifier) {
+    val strings = LocalStrings.current.projectDetail
+
     val finalModifier = ProjectDetailHeroStyle
         .toModifier()
         .then(modifier)
 
     Div(attrs = finalModifier.toAttrs()) {
-        ProjectDetailHeroCopyColumn(project = project)
-        ProjectDetailHeroInfoGrid(project = project)
+        ProjectDetailHeroCopyColumn(project = project, strings = strings)
+        ProjectDetailHeroInfoGrid(project = project, strings = strings)
     }
 }
 
@@ -109,12 +104,12 @@ fun ProjectDetailHero(project: Project, modifier: Modifier = Modifier) {
  * the display `h1` project name.
  */
 @Composable
-private fun ProjectDetailHeroCopyColumn(project: Project) {
+private fun ProjectDetailHeroCopyColumn(project: Project, strings: Strings.ProjectDetail) {
     val tokens = LocalPortfolioTokens.current
 
     Div(attrs = Modifier.toAttrs()) {
         MetaLabel(
-            text = projectMetaText(project = project),
+            text = projectMetaText(project = project, strings = strings),
             modifier = Modifier
                 .display(DisplayStyle.Block)
                 .margin(bottom = META_MARGIN_BOTTOM_REM.cssRem),
@@ -135,18 +130,18 @@ private fun ProjectDetailHeroCopyColumn(project: Project) {
  * Right column of the project hero: the `.project-info` grid rendering the four
  * Role / Timeline / Stack / Status pairs. Each pair uses a mono uppercase label
  * sitting above a body value; the Status pair composes a pulsing [Dot] with
- * the `"shipped to production"` copy, tinted with the active accent.
+ * the shipped-status copy tinted with the active accent.
  */
 @Composable
-private fun ProjectDetailHeroInfoGrid(project: Project) {
+private fun ProjectDetailHeroInfoGrid(project: Project, strings: Strings.ProjectDetail) {
     Div(attrs = ProjectDetailHeroInfoStyle.toModifier().toAttrs()) {
-        ProjectDetailHeroInfoCell(label = LABEL_ROLE, value = project.role)
-        ProjectDetailHeroInfoCell(label = LABEL_TIMELINE, value = project.year)
+        ProjectDetailHeroInfoCell(label = strings.labelRole, value = project.role)
+        ProjectDetailHeroInfoCell(label = strings.labelTimeline, value = project.year)
         ProjectDetailHeroInfoCell(
-            label = LABEL_STACK,
+            label = strings.labelStack,
             value = project.stack.joinToString(separator = STACK_SEPARATOR),
         )
-        ProjectDetailHeroStatusCell()
+        ProjectDetailHeroStatusCell(strings = strings)
     }
 }
 
@@ -177,17 +172,17 @@ private fun ProjectDetailHeroInfoCell(label: String, value: String) {
 
 /**
  * Dedicated Status cell: the label row then a row combining a pulsing [Dot]
- * with the `"shipped to production"` copy. The whole value row adopts the
+ * with the localized shipped-status copy. The whole value row adopts the
  * accent color so the dot and text visually pair, matching
  * `style={{color:'var(--accent)'}}` on the JSX `.val`.
  */
 @Composable
-private fun ProjectDetailHeroStatusCell() {
+private fun ProjectDetailHeroStatusCell(strings: Strings.ProjectDetail) {
     val tokens = LocalPortfolioTokens.current
 
     Div(attrs = Modifier.toAttrs()) {
         MetaLabel(
-            text = LABEL_STATUS,
+            text = strings.labelStatus,
             modifier = Modifier
                 .display(DisplayStyle.Block)
                 .margin(bottom = INFO_LABEL_MARGIN_BOTTOM_REM.cssRem),
@@ -200,7 +195,7 @@ private fun ProjectDetailHeroStatusCell() {
         ) {
             Dot(variant = DotVariant.Pulsing)
             Text(
-                text = STATUS_TEXT,
+                text = strings.statusShipped,
                 slot = TextSlot.BodySmall,
                 color = tokens.accent.accent,
             )
@@ -209,10 +204,10 @@ private fun ProjectDetailHeroStatusCell() {
 }
 
 /** Builds the eyebrow copy: `"// commercial project · 2021-2022"`. */
-private fun projectMetaText(project: Project): String {
+private fun projectMetaText(project: Project, strings: Strings.ProjectDetail): String {
     val kindLabel = when (project.kind) {
-        ProjectKind.Commercial -> META_COMMERCIAL
-        ProjectKind.OpenSource -> META_OPEN_SOURCE
+        ProjectKind.Commercial -> strings.commercialKind
+        ProjectKind.OpenSource -> strings.openSourceKind
     }
     return META_PREFIX + kindLabel + META_SEPARATOR + project.year
 }

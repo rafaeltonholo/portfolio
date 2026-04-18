@@ -35,6 +35,8 @@ import com.varabyte.kobweb.silk.style.CssStyle
 import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.style.toModifier
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
+import dev.tonholo.portfolio.locale.LocalStrings
+import dev.tonholo.portfolio.locale.Strings
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.PortfolioTokens
 import dev.tonholo.portfolio.theme.color.Paper
@@ -122,11 +124,22 @@ private const val HOBBIES_BODY_LINE_HEIGHT = 1.55
  * border; the others stay muted. Only the active panel renders; the rest stay
  * unmounted (matching the handoff `.tab-panel { display: none }` rule).
  */
-enum class AboutTab(val number: String, val label: String) {
-    Story(number = "01", label = "Story"),
-    Now(number = "02", label = "Now"),
-    Hobbies(number = "03", label = "Hobbies"),
-    Beyond(number = "04", label = "Beyond code"),
+enum class AboutTab(val number: String) {
+    Story(number = "01"),
+    Now(number = "02"),
+    Hobbies(number = "03"),
+    Beyond(number = "04"),
+}
+
+/**
+ * Resolves the localized label for a given [AboutTab]. Kept inline so callers
+ * do not have to thread [Strings.About] through every helper.
+ */
+private fun AboutTab.labelFor(strings: Strings.About): String = when (this) {
+    AboutTab.Story -> strings.tabStory
+    AboutTab.Now -> strings.tabNow
+    AboutTab.Hobbies -> strings.tabHobbies
+    AboutTab.Beyond -> strings.tabBeyond
 }
 
 /**
@@ -139,20 +152,22 @@ enum class AboutTab(val number: String, val label: String) {
 @Composable
 fun AboutTabs(modifier: Modifier = Modifier) {
     var selected by remember { mutableStateOf(AboutTab.Story) }
+    val strings = LocalStrings.current.about
 
     Div(attrs = modifier.toAttrs()) {
         Div(attrs = TabsBarStyle.toModifier().toAttrs()) {
             AboutTab.entries.forEach { tab ->
                 TabButton(
                     tab = tab,
+                    label = tab.labelFor(strings = strings),
                     isActive = tab == selected,
                     onClick = { selected = tab },
                 )
             }
         }
         when (selected) {
-            AboutTab.Story -> StoryPanel()
-            AboutTab.Now -> NowPanel()
+            AboutTab.Story -> StoryPanel(strings = strings)
+            AboutTab.Now -> NowPanel(strings = strings)
             AboutTab.Hobbies -> HobbiesPanel()
             AboutTab.Beyond -> BeyondPanel()
         }
@@ -164,7 +179,12 @@ fun AboutTabs(modifier: Modifier = Modifier) {
  * bottom border; inactive state stays muted with a transparent border.
  */
 @Composable
-private fun TabButton(tab: AboutTab, isActive: Boolean, onClick: () -> Unit) {
+private fun TabButton(
+    tab: AboutTab,
+    label: String,
+    isActive: Boolean,
+    onClick: () -> Unit,
+) {
     val tokens = LocalPortfolioTokens.current
     val textColor = if (isActive) tokens.ink.ink else tokens.muted.muted
     val borderColor = if (isActive) tokens.accent.accent else Transparent
@@ -188,7 +208,7 @@ private fun TabButton(tab: AboutTab, isActive: Boolean, onClick: () -> Unit) {
         ) {
             ComposeText(tab.number)
         }
-        ComposeText(tab.label)
+        ComposeText(label)
     }
 }
 
@@ -199,7 +219,7 @@ private val Transparent: Color = Color.rgba(r = 0, g = 0, b = 0, a = 0f)
 // ---------------------------------------------------------------------------
 
 @Composable
-private fun StoryPanel() {
+private fun StoryPanel(strings: Strings.About) {
     val tokens = LocalPortfolioTokens.current
     ProseContainer {
         ProseParagraph(
@@ -216,7 +236,7 @@ private fun StoryPanel() {
             isFirst = false,
             tokens = tokens,
         )
-        ProseHeading(text = "2010 - first Android build", tokens = tokens)
+        ProseHeading(text = strings.storyHeading2010, tokens = tokens)
         ProseParagraph(
             text = "High school technical program, Java class, and the Android SDK was " +
                 "brand new. I built a barely functional TODO app. It crashed on orientation " +
@@ -224,7 +244,7 @@ private fun StoryPanel() {
             isFirst = true,
             tokens = tokens,
         )
-        ProseHeading(text = "2015 - full-time mobile", tokens = tokens)
+        ProseHeading(text = strings.storyHeading2015, tokens = tokens)
         ProseParagraph(
             text = "After a few years of full-stack work, I realized I only wanted to work " +
                 "on what I could hold. Android became the focus. Kotlin landed the next year " +
@@ -232,7 +252,7 @@ private fun StoryPanel() {
             isFirst = true,
             tokens = tokens,
         )
-        ProseHeading(text = "2021 - Pinterest", tokens = tokens)
+        ProseHeading(text = strings.storyHeading2021, tokens = tokens)
         ProseParagraph(
             text = "First time working on a codebase with millions of users and millions of " +
                 "lines. Everything I thought I knew about architecture got rearranged. Compose " +
@@ -241,7 +261,7 @@ private fun StoryPanel() {
             isFirst = true,
             tokens = tokens,
         )
-        ProseHeading(text = "Today", tokens = tokens)
+        ProseHeading(text = strings.storyHeadingToday, tokens = tokens)
         ProseParagraph(
             text = "Bleacher Report, Ottawa, more Compose, more Kotlin. Writing a bit more. " +
                 "Cooking a lot more.",
@@ -252,7 +272,7 @@ private fun StoryPanel() {
 }
 
 @Composable
-private fun NowPanel() {
+private fun NowPanel(strings: Strings.About) {
     val tokens = LocalPortfolioTokens.current
     ProseContainer {
         P(
@@ -261,9 +281,9 @@ private fun NowPanel() {
                 .color(tokens.muted.muted)
                 .toAttrs(),
         ) {
-            ComposeText("// updated apr 12, 2026")
+            ComposeText(strings.nowUpdatedPrefix)
         }
-        ProseHeading(text = "Working on", tokens = tokens, collapseTop = true)
+        ProseHeading(text = strings.nowHeadingWorking, tokens = tokens, collapseTop = true)
         ProseParagraph(
             text = "A feature-delivery system at Bleacher Report that lets us ship entire " +
                 "sections on-demand without the usual APK bloat. Think Play Feature Delivery, " +
@@ -271,21 +291,21 @@ private fun NowPanel() {
             isFirst = true,
             tokens = tokens,
         )
-        ProseHeading(text = "Learning", tokens = tokens)
+        ProseHeading(text = strings.nowHeadingLearning, tokens = tokens)
         ProseParagraph(
             text = "Compose Multiplatform on desktop. It's rough in spots but the feeling of " +
                 "one codebase across 4 targets is genuinely exciting again.",
             isFirst = true,
             tokens = tokens,
         )
-        ProseHeading(text = "Writing", tokens = tokens)
+        ProseHeading(text = strings.nowHeadingWriting, tokens = tokens)
         ProseParagraph(
             text = "Two drafts in the queue - one on Compose stability (the good, the painful, " +
                 "the \"actually fine\") and one on why I stopped fearing Gradle.",
             isFirst = true,
             tokens = tokens,
         )
-        ProseHeading(text = "Thinking about", tokens = tokens)
+        ProseHeading(text = strings.nowHeadingThinking, tokens = tokens)
         ProseParagraph(
             text = "How to share knowledge without falling into the trap of writing beginner " +
                 "content I don't enjoy writing. Also, whether to start a YouTube channel " +

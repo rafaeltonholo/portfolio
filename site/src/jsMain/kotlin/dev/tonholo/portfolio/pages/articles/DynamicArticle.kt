@@ -10,6 +10,10 @@ import dev.tonholo.portfolio.state.StaticContent
 import org.jetbrains.compose.web.dom.Text
 
 private const val ARTICLE_SLUG_PARAM = "slug"
+
+// Not-found fallback stays in English for v1; it is only shown when a
+// bookmarked or mistyped slug is visited, which is rare enough that deferring
+// the translation is fine.
 private const val NOT_FOUND_COPY = "Article not found"
 
 /**

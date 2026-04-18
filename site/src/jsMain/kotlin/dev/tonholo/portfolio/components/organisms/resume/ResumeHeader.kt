@@ -18,6 +18,7 @@ import dev.tonholo.portfolio.components.atoms.ButtonVariant
 import dev.tonholo.portfolio.components.atoms.MetaLabel
 import dev.tonholo.portfolio.components.atoms.MetaLabelVariant
 import dev.tonholo.portfolio.components.atoms.PhosphorIcon
+import dev.tonholo.portfolio.locale.LocalStrings
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.typography.Typography
 import dev.tonholo.portfolio.theme.typography.apply
@@ -52,15 +53,8 @@ private const val PARAGRAPH_MARGIN_TOP_REM = 1.0 // 16px
 // Handoff `.resume-head p` serif paragraph cap.
 private const val PARAGRAPH_MAX_WIDTH_CH = 50.0
 
-// Hardcoded v1 copy, mirrors `pages2.jsx` lines 8-12. Lifts into Compose
-// Resources during the i18n pass.
+// Mono eyebrow is a technical literal (file name) and stays untranslated.
 private const val META_TEXT = "// cv.json"
-private const val TITLE_LINE_1 = "Sixteen years of"
-private const val TITLE_LINE_2 = "shipping software."
-private const val BODY_TEXT =
-    "Mostly Android. Increasingly Kotlin. Occasionally iOS via KMP, " +
-        "whenever someone asks nicely. Always in production."
-private const val DOWNLOAD_LABEL = "download PDF"
 private const val DOWNLOAD_ICON = "arrow-down"
 
 /**
@@ -77,6 +71,8 @@ private const val DOWNLOAD_ICON = "arrow-down"
  */
 @Composable
 fun ResumeHeader(modifier: Modifier = Modifier, onDownloadPdf: () -> Unit = {}) {
+    val strings = LocalStrings.current.resume
+
     val finalModifier = ResumeHeaderStyle
         .toModifier()
         .then(modifier)
@@ -84,7 +80,7 @@ fun ResumeHeader(modifier: Modifier = Modifier, onDownloadPdf: () -> Unit = {}) 
     Div(attrs = finalModifier.toAttrs()) {
         ResumeHeaderCopyColumn()
         Button(
-            text = DOWNLOAD_LABEL,
+            text = strings.downloadCta,
             variant = ButtonVariant.Accent,
             onClick = onDownloadPdf,
             trailing = { PhosphorIcon(name = DOWNLOAD_ICON) },
@@ -99,6 +95,7 @@ fun ResumeHeader(modifier: Modifier = Modifier, onDownloadPdf: () -> Unit = {}) 
 @Composable
 private fun ResumeHeaderCopyColumn() {
     val tokens = LocalPortfolioTokens.current
+    val strings = LocalStrings.current.resume
 
     Div(attrs = Modifier.toAttrs()) {
         MetaLabel(
@@ -115,9 +112,9 @@ private fun ResumeHeaderCopyColumn() {
                 .margin(topBottom = 0.cssRem)
                 .toAttrs(),
         ) {
-            ComposeText(TITLE_LINE_1)
+            ComposeText(strings.titleLine1)
             Br()
-            ComposeText(TITLE_LINE_2)
+            ComposeText(strings.titleLine2)
         }
         P(
             attrs = ResumeHeaderParagraphStyle
@@ -125,7 +122,7 @@ private fun ResumeHeaderCopyColumn() {
                 .color(tokens.ink.ink2)
                 .toAttrs(),
         ) {
-            ComposeText(BODY_TEXT)
+            ComposeText(strings.body)
         }
     }
 }

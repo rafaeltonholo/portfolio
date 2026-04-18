@@ -12,6 +12,8 @@ import dev.tonholo.portfolio.components.organisms.projects.ProjectOutcome
 import dev.tonholo.portfolio.components.organisms.projects.ProjectSection
 import dev.tonholo.portfolio.components.organisms.projects.ProjectSectionParagraphStyle
 import dev.tonholo.portfolio.domain.model.Project
+import dev.tonholo.portfolio.locale.LocalStrings
+import dev.tonholo.portfolio.locale.Strings
 import dev.tonholo.portfolio.navigation.Routes
 import dev.tonholo.portfolio.state.StaticContent
 import org.jetbrains.compose.web.dom.B
@@ -22,11 +24,10 @@ import org.jetbrains.compose.web.dom.Text
 private const val PROJECT_SLUG_PARAM = "slug"
 private const val PINTEREST_SLUG = "pinterest"
 
-// Section labels shared by both the Pinterest case study and the fallback layout.
-private const val LABEL_CONTEXT = "/ context"
+// Pinterest-only section labels that do not live on the shared Strings surface.
+// The generic / context and / outcomes labels come from [Strings.ProjectDetail].
 private const val LABEL_PROBLEM = "/ problem"
 private const val LABEL_APPROACH = "/ approach"
-private const val LABEL_OUTCOMES = "/ outcomes"
 private const val LABEL_LEARNINGS = "/ learnings"
 
 // Pinterest case-study copy - verbatim from handoff pages2.jsx lines 125-181,
@@ -98,10 +99,6 @@ private const val PINTEREST_LEARNINGS_P3_REST =
     " Some of the most useful feedback came from engineers who had worked in the " +
         "codebase for five years and had a long list of papercuts. They knew where the bodies were buried."
 
-// Fallback for non-Pinterest projects (v1 single-section layout)
-private const val OUTCOMES_TITLE = "Numbers worth keeping."
-private const val NOT_FOUND_COPY = "Project not found"
-
 /**
  * Dynamic project route "/projects/{slug}" - looks up the requested project
  * in [StaticContent.PROJECTS] and renders a case-study shell. Pinterest gets
@@ -116,6 +113,7 @@ private const val NOT_FOUND_COPY = "Project not found"
 @Suppress("ModifierMissing")
 fun DynamicProjectPage() {
     val pageContext = rememberPageContext()
+    val strings = LocalStrings.current.projectDetail
     val slug = pageContext.route.params[PROJECT_SLUG_PARAM].orEmpty()
     val index = StaticContent.PROJECTS.indexOfFirst { it.slug == slug }
     val project = StaticContent.PROJECTS.getOrNull(index = index)
@@ -129,7 +127,7 @@ fun DynamicProjectPage() {
             },
             onNext = {},
         ) {
-            Text(NOT_FOUND_COPY)
+            Text(strings.notFoundCopy)
         }
         return
     }
@@ -149,9 +147,9 @@ fun DynamicProjectPage() {
     ) {
         ProjectDetailHero(project = project)
         if (slug == PINTEREST_SLUG) {
-            PinterestCaseStudy()
+            PinterestCaseStudy(strings = strings)
         } else {
-            DefaultProjectSections(project = project)
+            DefaultProjectSections(project = project, strings = strings)
         }
     }
 }
@@ -163,8 +161,8 @@ fun DynamicProjectPage() {
  * Sections: context, problem, approach, outcomes (with [OutcomesGrid]), learnings.
  */
 @Composable
-private fun PinterestCaseStudy() {
-    ProjectSection(label = LABEL_CONTEXT, title = PINTEREST_CONTEXT_TITLE) {
+private fun PinterestCaseStudy(strings: Strings.ProjectDetail) {
+    ProjectSection(label = strings.contextLabel, title = PINTEREST_CONTEXT_TITLE) {
         P(attrs = ProjectSectionParagraphStyle.toModifier().toAttrs()) {
             Text(PINTEREST_CONTEXT_P1)
         }
@@ -187,7 +185,7 @@ private fun PinterestCaseStudy() {
             Text(PINTEREST_APPROACH_P2_AFTER)
         }
     }
-    ProjectSection(label = LABEL_OUTCOMES, title = PINTEREST_OUTCOMES_TITLE) {
+    ProjectSection(label = strings.outcomesLabel, title = PINTEREST_OUTCOMES_TITLE) {
         OutcomesGrid(
             outcomes = listOf(
                 ProjectOutcome(
@@ -230,11 +228,11 @@ private fun PinterestCaseStudy() {
  * built from [Project.stats].
  */
 @Composable
-private fun DefaultProjectSections(project: Project) {
-    ProjectSection(label = LABEL_CONTEXT, title = project.name) {
+private fun DefaultProjectSections(project: Project, strings: Strings.ProjectDetail) {
+    ProjectSection(label = strings.contextLabel, title = project.name) {
         Text(project.description)
     }
-    ProjectSection(label = LABEL_OUTCOMES, title = OUTCOMES_TITLE) {
+    ProjectSection(label = strings.outcomesLabel, title = strings.outcomesTitle) {
         OutcomesGrid(
             outcomes = project.stats.map { stat ->
                 ProjectOutcome(value = stat.value, label = stat.label)

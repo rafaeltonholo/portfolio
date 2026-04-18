@@ -22,6 +22,7 @@ import dev.tonholo.portfolio.components.atoms.AspectRatio
 import dev.tonholo.portfolio.components.atoms.MetaLabel
 import dev.tonholo.portfolio.components.atoms.MetaLabelVariant
 import dev.tonholo.portfolio.components.atoms.Placeholder
+import dev.tonholo.portfolio.locale.LocalStrings
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.typography.FontFamilies
 import dev.tonholo.portfolio.theme.typography.Typography
@@ -56,14 +57,11 @@ private const val LEDE_SIZE_REM = 1.25 // 20px
 private const val LEDE_LINE_HEIGHT = 1.55
 private const val LEDE_MAX_WIDTH_CH = 48.0
 
-// Hardcoded v1 copy. Lifts into Compose Resources during the i18n pass, same
-// approach as every other Phase 2 organism.
+// Mono eyebrow label is a technical literal (file path) and stays in English.
 private const val META_TEXT = "// about.me"
-private const val TITLE_PREFIX = "The long way to "
-private const val TITLE_EMPHASIS = "Kotlin."
-private const val LEDE_TEXT =
-    "Brazilian, Ottawa-based, Android-focused. Started programming at 12 on a " +
-        "MU server for my cousins. Haven't stopped since."
+
+// Placeholder label for the portrait slot stays untranslated; it is a debug
+// caption shown only while the real asset is pending.
 private const val PORTRAIT_LABEL = "portrait - 4:5"
 
 /**
@@ -97,6 +95,7 @@ fun AboutHeader(modifier: Modifier = Modifier) {
 @Composable
 private fun AboutHeaderCopyColumn() {
     val tokens = LocalPortfolioTokens.current
+    val strings = LocalStrings.current.about
 
     Div(attrs = Modifier.toAttrs()) {
         MetaLabel(
@@ -113,14 +112,14 @@ private fun AboutHeaderCopyColumn() {
                 .margin(top = 0.cssRem, bottom = TITLE_MARGIN_BOTTOM_REM.cssRem)
                 .toAttrs(),
         ) {
-            ComposeText(TITLE_PREFIX)
+            ComposeText(strings.titlePrefix)
             Em(
                 attrs = AboutHeaderTitleEmphasisStyle
                     .toModifier()
                     .color(tokens.accent.accent)
                     .toAttrs(),
             ) {
-                ComposeText(TITLE_EMPHASIS)
+                ComposeText(strings.titleEmphasis)
             }
         }
         P(
@@ -129,7 +128,7 @@ private fun AboutHeaderCopyColumn() {
                 .color(tokens.ink.ink2)
                 .toAttrs(),
         ) {
-            ComposeText(LEDE_TEXT)
+            ComposeText(strings.lede)
         }
     }
 }

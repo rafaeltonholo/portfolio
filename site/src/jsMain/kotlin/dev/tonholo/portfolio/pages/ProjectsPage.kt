@@ -21,6 +21,7 @@ import dev.tonholo.portfolio.components.organisms.home.SelectedWorkGrid
 import dev.tonholo.portfolio.components.organisms.projects.ProjectsFilter
 import dev.tonholo.portfolio.components.organisms.projects.ProjectsFilterBar
 import dev.tonholo.portfolio.domain.model.ProjectKind
+import dev.tonholo.portfolio.locale.LocalStrings
 import dev.tonholo.portfolio.navigation.Routes
 import dev.tonholo.portfolio.state.StaticContent
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
@@ -33,9 +34,8 @@ import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.H1
 import org.jetbrains.compose.web.dom.Text as ComposeText
 
-// Hardcoded v1 copy. Lifts into Compose Resources during the i18n pass.
+// Mono eyebrow is a technical path literal and stays untranslated.
 private const val META_TEXT = "// projects/"
-private const val TITLE_TEXT = "Work."
 
 // Header vertical rhythm, mirrors the pad-y density cadence used by
 // [ArticlesHeader] and [ResumeHeader].
@@ -85,6 +85,7 @@ fun ProjectsPage() {
 @Composable
 private fun ProjectsPageHeader(current: ProjectsFilter, onSelect: (ProjectsFilter) -> Unit) {
     val tokens = LocalPortfolioTokens.current
+    val strings = LocalStrings.current.projectsList
     Div(
         attrs = Modifier
             .padding(
@@ -107,7 +108,7 @@ private fun ProjectsPageHeader(current: ProjectsFilter, onSelect: (ProjectsFilte
                 .margin(top = 0.cssRem, bottom = TITLE_MARGIN_BOTTOM_REM.cssRem)
                 .toAttrs(),
         ) {
-            ComposeText(TITLE_TEXT)
+            ComposeText(strings.title)
         }
         ProjectsFilterBar(current = current, onSelect = onSelect)
     }

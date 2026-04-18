@@ -39,6 +39,8 @@ import dev.tonholo.portfolio.components.atoms.PhosphorWeight
 import dev.tonholo.portfolio.components.molecules.TagList
 import dev.tonholo.portfolio.domain.model.Article
 import dev.tonholo.portfolio.domain.model.ArticleStatus
+import dev.tonholo.portfolio.locale.LocalStrings
+import dev.tonholo.portfolio.locale.Strings
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.PortfolioTokens
 import dev.tonholo.portfolio.theme.color.Paper
@@ -102,9 +104,6 @@ private const val READ_COL_PADDING_TOP_REM = 0.375 // 6px
 
 private const val TAG_PREFIX = "#"
 
-private const val DRAFT_LABEL = "draft"
-private const val PUBLISHED_LABEL = "published"
-
 /**
  * Returns the hairline border color for an article row, matching the handoff:
  * light theme uses `--paper-3`; dark theme overrides to `--paper-2`.
@@ -141,6 +140,8 @@ fun ArticleList(
     onArticleClick: (slug: String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val strings = LocalStrings.current.articlesList
+
     val finalModifier = ArticleListStyle
         .toModifier()
         .then(modifier)
@@ -150,6 +151,7 @@ fun ArticleList(
             ArticleRow(
                 article = article,
                 isLast = index == articles.lastIndex,
+                strings = strings,
                 onClick = onArticleClick,
             )
         }
@@ -157,7 +159,12 @@ fun ArticleList(
 }
 
 @Composable
-private fun ArticleRow(article: Article, isLast: Boolean, onClick: (slug: String) -> Unit) {
+private fun ArticleRow(
+    article: Article,
+    isLast: Boolean,
+    strings: Strings.ArticlesList,
+    onClick: (slug: String) -> Unit,
+) {
     val tokens = LocalPortfolioTokens.current
     val borderColor = articleRowBorderColor()
 
@@ -184,7 +191,7 @@ private fun ArticleRow(article: Article, isLast: Boolean, onClick: (slug: String
             attr("aria-label", article.title)
         },
     ) {
-        ArticleDateCell(article = article, tokens = tokens)
+        ArticleDateCell(article = article, strings = strings, tokens = tokens)
         ArticleMainCell(article = article, tokens = tokens)
         ArticleTagsCell(tags = article.tags)
         ArticleReadCell(readTime = article.readTime, tokens = tokens)
@@ -192,7 +199,11 @@ private fun ArticleRow(article: Article, isLast: Boolean, onClick: (slug: String
 }
 
 @Composable
-private fun ArticleDateCell(article: Article, tokens: PortfolioTokens) {
+private fun ArticleDateCell(
+    article: Article,
+    strings: Strings.ArticlesList,
+    tokens: PortfolioTokens,
+) {
     Div(
         attrs = ArticleDateCellStyle
             .toModifier()
@@ -212,7 +223,7 @@ private fun ArticleDateCell(article: Article, tokens: PortfolioTokens) {
                     weight = PhosphorWeight.Fill,
                     size = STATUS_ICON_SIZE_REM.cssRem,
                 )
-                ComposeText(" ${article.status.label}")
+                ComposeText(" ${article.status.labelFor(strings = strings)}")
             }
         }
     }
@@ -263,11 +274,10 @@ private fun ArticleReadCell(readTime: String, tokens: PortfolioTokens) {
     }
 }
 
-private val ArticleStatus.label: String
-    get() = when (this) {
-        ArticleStatus.Draft -> DRAFT_LABEL
-        ArticleStatus.Published -> PUBLISHED_LABEL
-    }
+private fun ArticleStatus.labelFor(strings: Strings.ArticlesList): String = when (this) {
+    ArticleStatus.Draft -> strings.statusDraft
+    ArticleStatus.Published -> strings.statusPublished
+}
 
 /**
  * Base `CssStyle` for [ArticleList]. Ports `.article-list`: a vertical flex

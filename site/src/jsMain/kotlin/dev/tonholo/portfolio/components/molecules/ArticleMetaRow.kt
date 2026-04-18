@@ -18,6 +18,7 @@ import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.silk.style.CssStyle
 import com.varabyte.kobweb.silk.style.toModifier
 import dev.tonholo.portfolio.components.atoms.PhosphorIcon
+import dev.tonholo.portfolio.locale.LocalStrings
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.typography.FontFamilies
 import org.jetbrains.compose.web.css.AlignItems
@@ -32,14 +33,14 @@ private const val META_ROW_FONT_SIZE_REM = 0.75 // 12px
 private const val META_ROW_GAP_REM = 1.25 // 20px between inline segments
 private const val META_ROW_MARGIN_BOTTOM_REM = 1.5 // 24px
 
+// Byline default is the author's first name; keeping it here as a constant
+// avoids threading identity through an i18n surface that describes formatting,
+// not personal data.
 private const val DEFAULT_AUTHOR = "rafael"
 private const val BACK_ICON_NAME = "arrow-left"
 private const val BACK_ICON_SIZE_REM = 0.875
 private const val BACK_ICON_GAP_REM = 0.25
-private const val BACK_LABEL = "articles"
 private const val SEPARATOR = "\u00B7" // middle dot (U+00B7)
-private const val AUTHOR_PREFIX = "by"
-private const val READ_SUFFIX = "read"
 
 /**
  * Inline meta row rendered at the top of an article detail page. Ports
@@ -69,6 +70,7 @@ fun ArticleMetaRow(
     author: String = DEFAULT_AUTHOR,
 ) {
     val tokens = LocalPortfolioTokens.current
+    val strings = LocalStrings.current.articleMeta
 
     val finalModifier = ArticleMetaRowStyle
         .toModifier()
@@ -95,16 +97,16 @@ fun ArticleMetaRow(
                 name = BACK_ICON_NAME,
                 size = BACK_ICON_SIZE_REM.cssRem,
             )
-            ComposeText(BACK_LABEL)
+            ComposeText(strings.backLabel)
         }
         Span(attrs = Modifier.toAttrs()) {
             ComposeText("$SEPARATOR $date")
         }
         Span(attrs = Modifier.toAttrs()) {
-            ComposeText("$SEPARATOR $readTime $READ_SUFFIX")
+            ComposeText("$SEPARATOR $readTime ${strings.readSuffix}")
         }
         Span(attrs = Modifier.toAttrs()) {
-            ComposeText("$SEPARATOR $AUTHOR_PREFIX $author")
+            ComposeText("$SEPARATOR ${strings.authorPrefix} $author")
         }
     }
 }

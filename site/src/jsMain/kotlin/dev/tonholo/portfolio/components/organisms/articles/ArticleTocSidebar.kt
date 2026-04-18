@@ -27,6 +27,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.top
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.silk.style.CssStyle
 import com.varabyte.kobweb.silk.style.toModifier
+import dev.tonholo.portfolio.locale.LocalStrings
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.typography.FontFamilies
 import org.jetbrains.compose.web.css.AlignSelf
@@ -70,13 +71,9 @@ private const val ENTRY_NUMBER_PAD_CHAR = '0'
 // the repo style forbids em-dashes so we fall back to a regular hyphen.
 private const val ENTRY_SEPARATOR = " - "
 
-// Hardcoded share copy. The share links are rendered as plain anchors for v1;
-// twitter / linkedin intents are wired in a follow-up.
-private const val LABEL_CONTENTS = "Contents"
-private const val LABEL_SHARE = "Share"
-private const val SHARE_COPY_LINK = "copy link"
-private const val SHARE_TWITTER = "on twitter"
-private const val SHARE_LINKEDIN = "on linkedin"
+// Share copy is sourced from `LocalStrings.articlesSidebar` so the two share
+// rows that would normally wire twitter / linkedin intents can reuse the same
+// translation table once those integrations land.
 
 /**
  * One entry in the sidebar table of contents. [id] is the matching anchor id
@@ -112,6 +109,7 @@ fun ArticleTocSidebar(
     modifier: Modifier = Modifier,
 ) {
     val tokens = LocalPortfolioTokens.current
+    val strings = LocalStrings.current.articlesSidebar
 
     val finalModifier = ArticleTocSidebarStyle
         .toModifier()
@@ -119,7 +117,7 @@ fun ArticleTocSidebar(
         .then(modifier)
 
     Aside(attrs = finalModifier.toAttrs()) {
-        SidebarHeading(text = LABEL_CONTENTS, marginTopRem = 0.0)
+        SidebarHeading(text = strings.contents, marginTopRem = 0.0)
         Ul(attrs = SidebarListStyle.toModifier().toAttrs()) {
             contents.forEachIndexed { index, entry ->
                 TocAnchorRow(
@@ -131,11 +129,11 @@ fun ArticleTocSidebar(
                 )
             }
         }
-        SidebarHeading(text = LABEL_SHARE, marginTopRem = SHARE_HEADING_MARGIN_TOP_REM)
+        SidebarHeading(text = strings.share, marginTopRem = SHARE_HEADING_MARGIN_TOP_REM)
         Ul(attrs = SidebarListStyle.toModifier().toAttrs()) {
-            ShareAnchorRow(label = SHARE_COPY_LINK, onClick = onCopyLink, mutedColor = tokens.muted.muted)
-            ShareAnchorRow(label = SHARE_TWITTER, onClick = null, mutedColor = tokens.muted.muted)
-            ShareAnchorRow(label = SHARE_LINKEDIN, onClick = null, mutedColor = tokens.muted.muted)
+            ShareAnchorRow(label = strings.shareCopyLink, onClick = onCopyLink, mutedColor = tokens.muted.muted)
+            ShareAnchorRow(label = strings.shareTwitter, onClick = null, mutedColor = tokens.muted.muted)
+            ShareAnchorRow(label = strings.shareLinkedIn, onClick = null, mutedColor = tokens.muted.muted)
         }
     }
 }
