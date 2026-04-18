@@ -43,7 +43,7 @@ private const val GRID_COLUMN_FR = 1
  * shell">` block in `home.jsx` (lines 300-311) and the `.projects-grid.two
  * [data-cards="ide"]` rules in the handoff CSS.
  *
- * Renders a [SectionHead] (`// 00 - Selected work`, trailing meta chip
+ * Renders an optional [SectionHead] (`// 00 - Selected work`, trailing meta chip
  * summarising the project count and year span) followed by a 2-column grid of
  * [ProjectCardIde] entries. The 1px grid gap is backed by the `--paper-3`
  * token (light) or `--paper-2` (dark) so the gutter reads as a hairline
@@ -54,12 +54,16 @@ private const val GRID_COLUMN_FR = 1
  * @param onProjectClick invoked with the [Project.slug] when a card is
  *   activated; route to the matching detail page.
  * @param modifier optional [Modifier] chained after the base section styles.
+ * @param showSectionHead whether to render the [SectionHead] above the grid.
+ *   Pass `false` on pages that already carry their own editorial header (e.g.
+ *   the `/projects` route whose `"Work."` title is sufficient).
  */
 @Composable
 fun SelectedWorkGrid(
     projects: List<Project>,
     onProjectClick: (slug: String) -> Unit,
     modifier: Modifier = Modifier,
+    showSectionHead: Boolean = true,
 ) {
     val tokens = LocalPortfolioTokens.current
     val colorMode = ColorMode.current
@@ -74,15 +78,17 @@ fun SelectedWorkGrid(
 
     Section(attrs = sectionModifier.toAttrs()) {
         Div(attrs = ShellStyle.toModifier().toAttrs()) {
-            SectionHead(
-                number = SECTION_NUMBER,
-                title = SECTION_TITLE,
-                trailing = {
-                    MetaLabel(
-                        text = "${projects.size} ${META_PROJECTS_LABEL}${META_SEPARATOR}${META_YEAR_SPAN}",
-                    )
-                },
-            )
+            if (showSectionHead) {
+                SectionHead(
+                    number = SECTION_NUMBER,
+                    title = SECTION_TITLE,
+                    trailing = {
+                        MetaLabel(
+                            text = "${projects.size} ${META_PROJECTS_LABEL}${META_SEPARATOR}${META_YEAR_SPAN}",
+                        )
+                    },
+                )
+            }
             Div(
                 attrs = SelectedWorkProjectsGridStyle
                     .toModifier()

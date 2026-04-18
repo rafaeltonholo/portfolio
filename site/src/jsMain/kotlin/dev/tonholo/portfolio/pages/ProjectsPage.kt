@@ -72,6 +72,7 @@ fun ProjectsPage() {
                 onProjectClick = { slug ->
                     router.tryRoutingTo(pathQueryAndFragment = Routes.project(slug = slug))
                 },
+                showSectionHead = false,
             )
         }
     }
