@@ -45,7 +45,10 @@ class StaticContentTest {
 
         // Assert
         assertEquals(expected = 7, actual = articles.size)
-        assertEquals(expected = "a1", actual = articles[0].slug)
+        assertEquals(
+            expected = "compose-stability-without-the-cult",
+            actual = articles[0].slug,
+        )
         assertEquals(expected = ArticleStatus.Draft, actual = articles[0].status)
     }
 

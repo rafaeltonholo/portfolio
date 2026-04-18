@@ -17,13 +17,13 @@ class RoutesTest {
     @Test
     fun `given an article slug, when article is called, then it returns the articles path`() {
         // Arrange
-        val slug = "a1"
+        val slug = "compose-stability-without-the-cult"
 
         // Act
         val result = Routes.article(slug)
 
         // Assert
-        assertEquals("/articles/a1", result)
+        assertEquals("/articles/compose-stability-without-the-cult", result)
     }
 
     @Test

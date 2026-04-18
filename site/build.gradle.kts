@@ -1,5 +1,8 @@
 import com.varabyte.kobweb.gradle.application.util.configAsKobwebApplication
 import kotlinx.html.link
+import java.time.LocalDate
+import java.time.format.DateTimeFormatterBuilder
+import java.util.Locale
 import java.util.Properties
 
 plugins {
@@ -17,6 +20,32 @@ version = "0.1.0-SNAPSHOT"
 val appProperties = Properties().apply {
     rootProject.rootDir.resolve("app.properties").inputStream().use { load(it) }
 }
+
+/**
+ * Convert a TitleCamelCase string to kebab-case, matching Kobweb's own
+ * `camelCaseToKebabCase` used to derive URL slugs from markdown filenames.
+ * Acronym-aware: "ExampleABC" -> "example-abc", "ABCExample" -> "abc-example".
+ */
+fun String.splitCamelCase(): List<String> {
+    val currWord = StringBuilder()
+    val words = mutableListOf<String>()
+    var lastIsUpper = false
+    forEachIndexed { i, c ->
+        val isUpper = c.isUpperCase()
+        if (isUpper) {
+            if (currWord.isNotEmpty() && (!lastIsUpper || (i < lastIndex && this[i + 1].isLowerCase()))) {
+                words.add(currWord.toString())
+                currWord.clear()
+            }
+        }
+        currWord.append(c.lowercase())
+        lastIsUpper = isUpper
+    }
+    if (currWord.isNotEmpty()) words.add(currWord.toString())
+    return words
+}
+
+fun String.camelCaseToKebabCase(): String = splitCamelCase().joinToString("-")
 
 // Dynamic-route slugs registered with the Kobweb static exporter. Project
 // slugs stay hard-coded for `@Page("/projects/{slug}")`. Article slugs are
@@ -37,7 +66,7 @@ val articlesMarkdownDir = layout.projectDirectory
 val articleSlugs: List<String> = articlesMarkdownDir.asFile
     .takeIf { it.exists() }
     ?.listFiles { file -> file.isFile && file.extension == "md" }
-    ?.map { it.nameWithoutExtension }
+    ?.map { it.nameWithoutExtension.camelCaseToKebabCase() }
     ?.sorted()
     .orEmpty()
 
@@ -124,6 +153,29 @@ kobweb {
                 .replace(oldValue = "\r", newValue = "\\r")
                 .replace(oldValue = "\t", newValue = "\\t")
 
+            // Local re-impl of Kobweb's `camelCaseToKebabCase` so the
+            // configuration cache can serialize the lambda without capturing
+            // script-level helpers. Acronym-aware: "ExampleABC" -> "example-abc",
+            // "ABCExample" -> "abc-example".
+            fun String.toKebabSlug(): String {
+                val words = mutableListOf<String>()
+                val curr = StringBuilder()
+                var lastIsUpper = false
+                forEachIndexed { i, c ->
+                    val isUpper = c.isUpperCase()
+                    if (isUpper && curr.isNotEmpty() &&
+                        (!lastIsUpper || (i < lastIndex && this[i + 1].isLowerCase()))
+                    ) {
+                        words += curr.toString()
+                        curr.clear()
+                    }
+                    curr.append(c.lowercase())
+                    lastIsUpper = isUpper
+                }
+                if (curr.isNotEmpty()) words += curr.toString()
+                return words.joinToString("-")
+            }
+
             data class Row(
                 val slug: String,
                 val date: String,
@@ -134,6 +186,15 @@ kobweb {
                 val status: String,
             )
 
+            val articleDateFormatter = DateTimeFormatterBuilder()
+                .parseCaseInsensitive()
+                .appendPattern("MMM d, yyyy")
+                .toFormatter(Locale.ENGLISH)
+
+            fun String.toSortableDate(): LocalDate = runCatching {
+                LocalDate.parse(this.trim(), articleDateFormatter)
+            }.getOrElse { LocalDate.MIN }
+
             val rows = entries
                 .filter { entry -> entry.filePath.startsWith("articles/") }
                 .mapNotNull { entry ->
@@ -141,6 +202,7 @@ kobweb {
                     val slug = entry.filePath
                         .removePrefix("articles/")
                         .removeSuffix(".md")
+                        .toKebabSlug()
                     val title = frontMatter["title"]?.singleOrNull() ?: return@mapNotNull null
                     val date = frontMatter["date"]?.singleOrNull().orEmpty()
                     val description = frontMatter["description"]?.singleOrNull().orEmpty()
@@ -157,7 +219,7 @@ kobweb {
                         status = if (statusRaw == "draft") "Draft" else "Published",
                     )
                 }
-                .sortedBy { it.slug }
+                .sortedByDescending { it.date.toSortableDate() }
 
             val content = buildString {
                 appendLine("package dev.tonholo.portfolio.generated.articles")
