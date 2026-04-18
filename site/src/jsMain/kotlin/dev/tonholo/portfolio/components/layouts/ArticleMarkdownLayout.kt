@@ -7,6 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.varabyte.kobweb.compose.css.FontStyle
+import com.varabyte.kobweb.compose.css.FontWeight
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.alignItems
 import com.varabyte.kobweb.compose.ui.modifiers.color
@@ -14,8 +15,10 @@ import com.varabyte.kobweb.compose.ui.modifiers.display
 import com.varabyte.kobweb.compose.ui.modifiers.fontFamily
 import com.varabyte.kobweb.compose.ui.modifiers.fontSize
 import com.varabyte.kobweb.compose.ui.modifiers.fontStyle
+import com.varabyte.kobweb.compose.ui.modifiers.fontWeight
 import com.varabyte.kobweb.compose.ui.modifiers.gap
 import com.varabyte.kobweb.compose.ui.modifiers.gridTemplateColumns
+import com.varabyte.kobweb.compose.ui.modifiers.letterSpacing
 import com.varabyte.kobweb.compose.ui.modifiers.lineHeight
 import com.varabyte.kobweb.compose.ui.modifiers.margin
 import com.varabyte.kobweb.compose.ui.modifiers.maxWidth
@@ -30,6 +33,7 @@ import com.varabyte.kobweb.core.layout.Layout
 import com.varabyte.kobweb.silk.style.CssStyle
 import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.style.extendedBy
+import com.varabyte.kobweb.silk.style.selectors.descendants
 import com.varabyte.kobweb.silk.style.toModifier
 import com.varabyte.kobwebx.markdown.markdown
 import dev.tonholo.portfolio.components.molecules.ArticleMetaRow
@@ -48,6 +52,7 @@ import org.jetbrains.compose.web.css.CSSSizeValue
 import org.jetbrains.compose.web.css.CSSUnit
 import org.jetbrains.compose.web.css.DisplayStyle
 import org.jetbrains.compose.web.css.cssRem
+import org.jetbrains.compose.web.css.em
 import org.jetbrains.compose.web.css.fr
 import org.jetbrains.compose.web.dom.Article
 import org.jetbrains.compose.web.dom.Div
@@ -81,6 +86,13 @@ private const val LEDE_SIZE_REM = 1.375
 private const val LEDE_LINE_HEIGHT = 1.45
 private const val LEDE_MAX_WIDTH_CH = 48.0
 private const val LEDE_MARGIN_BOTTOM_REM = 2.5
+
+// Handoff `.prose h3` (applied to any nested heading under the article body):
+// display mono at 22px, weight 500, -0.015em tracking, margin `2em 0 0.6em`.
+private const val BODY_HEADING_SIZE_REM = 1.375 // 22px
+private const val BODY_HEADING_LETTER_SPACING_EM = -0.015
+private const val BODY_HEADING_MARGIN_TOP_EM = 2.0
+private const val BODY_HEADING_MARGIN_BOTTOM_EM = 0.6
 
 // Selector the runtime TOC scraper uses to find every heading under the
 // markdown body. `<article>` is the body wrapper so we scope the query to
@@ -169,7 +181,7 @@ fun ArticleMarkdownLayout(context: PageContext, content: @Composable () -> Unit)
                     activeId = tocEntries.firstOrNull()?.id.orEmpty(),
                     onCopyLink = { copyCurrentLocation() },
                 )
-                Article(attrs = Modifier.toAttrs()) {
+                Article(attrs = ArticleMarkdownBodyStyle.toModifier().toAttrs()) {
                     ArticleMetaRow(
                         date = data.date,
                         readTime = data.readTime,
@@ -329,5 +341,27 @@ val ArticleMarkdownLedeStyle = CssStyle {
             .fontStyle(FontStyle.Italic)
             .maxWidth(LEDE_MAX_WIDTH_CH.unsafeCast<CSSSizeValue<CSSUnit.ch>>())
             .margin(top = 0.cssRem, bottom = LEDE_MARGIN_BOTTOM_REM.cssRem)
+    }
+}
+
+/**
+ * Base `CssStyle` for the markdown article body wrapper. Applies the handoff
+ * `.prose h3` rule to every nested `<h2>` / `<h3>` the markdown renderer emits
+ * so subsection headings inherit the IDE-voice: display mono at 22px, weight
+ * 500, slight negative tracking, and the handoff `2em 0 0.6em` vertical rhythm.
+ * Color is intentionally omitted here so each heading still reads from the
+ * surrounding ink token via inheritance.
+ */
+val ArticleMarkdownBodyStyle = CssStyle {
+    descendants("h2", "h3") {
+        Modifier
+            .fontFamily(*FontFamilies.DISPLAY)
+            .fontSize(BODY_HEADING_SIZE_REM.cssRem)
+            .fontWeight(FontWeight.Medium)
+            .letterSpacing(BODY_HEADING_LETTER_SPACING_EM.em)
+            .margin(
+                top = BODY_HEADING_MARGIN_TOP_EM.em,
+                bottom = BODY_HEADING_MARGIN_BOTTOM_EM.em,
+            )
     }
 }
