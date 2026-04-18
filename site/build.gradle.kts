@@ -44,6 +44,12 @@ kotlin {
     }
 }
 
+compose.resources {
+    publicResClass = true
+    packageOfResClass = "dev.tonholo.portfolio.resources"
+    generateResClass = always
+}
+
 powerAssert {
     functions.addAll(
         "kotlin.assert",
