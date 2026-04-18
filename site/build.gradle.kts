@@ -5,7 +5,6 @@ import java.util.Properties
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.compose.compiler)
-    alias(libs.plugins.jetbrains.compose)
     alias(libs.plugins.kobweb.application)
     alias(libs.plugins.kobwebx.markdown)
     alias(libs.plugins.kotlin.power.assert)
@@ -86,7 +85,6 @@ kotlin {
         jsMain.dependencies {
             implementation(libs.compose.runtime)
             implementation(libs.compose.html.core)
-            implementation(libs.compose.components.resources)
             implementation(libs.kobweb.core)
             implementation(libs.kobweb.silk)
             implementation(libs.kobwebx.markdown)
@@ -96,12 +94,6 @@ kotlin {
             implementation(libs.kotlin.test)
         }
     }
-}
-
-compose.resources {
-    publicResClass = true
-    packageOfResClass = "dev.tonholo.portfolio.resources"
-    generateResClass = always
 }
 
 powerAssert {
