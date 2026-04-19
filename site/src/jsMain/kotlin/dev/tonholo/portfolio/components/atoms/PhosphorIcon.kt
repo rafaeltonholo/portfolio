@@ -46,15 +46,14 @@ fun PhosphorIcon(
 }
 
 /**
- * Weight variants of the Phosphor Icons family. Each variant maps to the CSS
- * class prefix loaded from the Phosphor stylesheet (e.g. `ph`, `ph-fill`,
- * `ph-duotone`).
+ * Weight variants of the Phosphor Icons family. Only the weights whose
+ * stylesheets are actually loaded by `site/build.gradle.kts` are exposed.
+ * Adding a new variant here requires appending the matching
+ * `@phosphor-icons/web/src/<weight>/style.css` link under the Kobweb head
+ * config; otherwise the glyph renders blank. Thin, Light, Bold, and Duotone
+ * stylesheets were dropped from the bundle since no call site used them.
  */
 enum class PhosphorWeight(val cssClass: String) {
-    Thin("ph-thin"),
-    Light("ph-light"),
     Regular("ph"),
-    Bold("ph-bold"),
     Fill("ph-fill"),
-    Duotone("ph-duotone"),
 }

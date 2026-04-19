@@ -92,6 +92,10 @@ kobweb {
                         "&display=swap"
                     rel = "stylesheet"
                 }
+                // Phosphor icon stylesheets. Only the weights actually rendered
+                // by the site ship. If a new weight is needed, add it here AND
+                // expose it on PhosphorWeight; the enum and the loaded
+                // stylesheets must stay in sync or the icon will render blank.
                 link {
                     rel = "stylesheet"
                     href = "https://unpkg.com/@phosphor-icons/web@2.1.2/src/regular/style.css"
@@ -99,10 +103,6 @@ kobweb {
                 link {
                     rel = "stylesheet"
                     href = "https://unpkg.com/@phosphor-icons/web@2.1.2/src/fill/style.css"
-                }
-                link {
-                    rel = "stylesheet"
-                    href = "https://unpkg.com/@phosphor-icons/web@2.1.2/src/duotone/style.css"
                 }
                 link {
                     rel = "apple-touch-icon"

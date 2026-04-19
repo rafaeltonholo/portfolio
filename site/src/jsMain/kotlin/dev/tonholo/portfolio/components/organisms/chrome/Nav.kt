@@ -313,10 +313,17 @@ val NavMetaStyle = CssStyle {
     base {
         val isDark = colorMode == ColorMode.DARK
         val textColor = if (isDark) Muted.dark.muted else Muted.light.muted
-        // Only animate `gap` and `border-color`: `padding-left` is left to
-        // snap so the sticky nav does not thrash layout on scroll during
-        // the collapse transition. `gap` is cheap because the badge is a
-        // tiny flex row; `border-color` is composited.
+        // Intentional tradeoff:
+        //   - `gap` animates (16px <-> 0). It is a layout property that
+        //     triggers flex reflow every frame, but the badge contains only
+        //     two nodes (a dot and a span) so the reflow cost measures in
+        //     tens of microseconds per frame. Kept animated because the
+        //     visual slide is the whole point of the collapse UX.
+        //   - `border-color` animates (paper3 <-> transparent). Composited.
+        //   - `padding-left` SNAPS - previously animated, dropped because
+        //     it was visibly jittering on scroll while the sticky nav was
+        //     also repainting the backdrop-filter.
+        //   - Text fade + max-width snap live on NavMetaTextStyle.
         Modifier
             .display(DisplayStyle.Flex)
             .alignItems(AlignItems.Center)
