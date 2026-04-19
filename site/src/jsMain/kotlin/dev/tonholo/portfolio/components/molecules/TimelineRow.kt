@@ -66,8 +66,10 @@ private const val DURATION_SIZE_REM = 0.6875 // 11px
 private const val META_LINE_HEIGHT = 1.4
 
 // Right column: role (18px display medium) + company subtitle (13px, muted).
+// Line-height is held at >=1.3 so the 18px display type keeps enough leading
+// for multi-line role titles (e.g. "Senior Software Engineer, Mobile").
 private const val ROLE_SIZE_REM = 1.125 // 18px
-private const val ROLE_LINE_HEIGHT = 1.2
+private const val ROLE_LINE_HEIGHT = 1.35
 private const val ROLE_LETTER_SPACING_EM = -0.01
 private const val COMPANY_SIZE_REM = 0.8125 // 13px
 private const val COMPANY_MARGIN_TOP_REM = 0.125 // 2px
