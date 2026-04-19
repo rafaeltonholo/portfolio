@@ -125,23 +125,14 @@ object StaticContent {
             date = "apr 2025 - present",
             duration = "1 yr 1 mo",
             role = "Senior Software Engineer, Mobile",
-            company = "Mozilla - Remote - Canada",
-            body = "Working on Mozilla's Android surface. Kotlin-first, privacy-first, " +
+            company = "Mozilla / Thunderbird for Android - Remote - Canada",
+            body = "Helping bring Thunderbird to Android alongside broader Mozilla " +
+                "mobile work. Kotlin-first, privacy-first, Compose-forward, " +
                 "everything-in-the-open.",
             bullets = listOf(
                 "Feature work across the flagship Android app",
-                "Contributing upstream to shared mobile libraries",
-            ),
-        ),
-        Experience(
-            date = "apr 2025 - present",
-            duration = "1 yr 1 mo",
-            role = "Senior Software Engineer, Mobile",
-            company = "Thunderbird Project - Remote - Canada",
-            body = "Helping bring Thunderbird to Android. Compose-forward, open source, " +
-                "the good kind of hard.",
-            bullets = listOf(
                 "Android, Jetpack Compose, and a long list of infrastructure bits",
+                "Contributing upstream to shared mobile libraries",
                 "Shipping to a community that genuinely cares",
             ),
         ),

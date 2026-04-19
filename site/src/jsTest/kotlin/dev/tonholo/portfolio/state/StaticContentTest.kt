@@ -63,12 +63,12 @@ class StaticContentTest {
     }
 
     @Test
-    fun `given StaticContent EXPERIENCE, when read, then it has nine entries`() {
+    fun `given StaticContent EXPERIENCE, when read, then it has eight entries`() {
         // Arrange / Act
         val experience = StaticContent.EXPERIENCE
 
         // Assert
-        assertEquals(expected = 9, actual = experience.size)
+        assertEquals(expected = 8, actual = experience.size)
         assertEquals(expected = "Senior Software Engineer, Mobile", actual = experience[0].role)
     }
 
