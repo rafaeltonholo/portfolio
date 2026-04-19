@@ -1,14 +1,21 @@
 package dev.tonholo.portfolio.components.organisms.home
 
 import androidx.compose.runtime.Composable
+import com.varabyte.kobweb.compose.css.Cursor
 import com.varabyte.kobweb.compose.css.FontWeight
+import com.varabyte.kobweb.compose.css.TextDecorationLine
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.color
+import com.varabyte.kobweb.compose.ui.modifiers.cursor
 import com.varabyte.kobweb.compose.ui.modifiers.fontFamily
 import com.varabyte.kobweb.compose.ui.modifiers.fontSize
 import com.varabyte.kobweb.compose.ui.modifiers.fontWeight
 import com.varabyte.kobweb.compose.ui.modifiers.lineHeight
 import com.varabyte.kobweb.compose.ui.modifiers.margin
+import com.varabyte.kobweb.compose.ui.modifiers.onClick
+import com.varabyte.kobweb.compose.ui.modifiers.textDecorationLine
+import com.varabyte.kobweb.compose.ui.thenIf
+import com.varabyte.kobweb.compose.ui.thenIfNotNull
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.silk.style.CssStyle
 import com.varabyte.kobweb.silk.style.toModifier
@@ -47,7 +54,12 @@ private const val METHODS_TOP_MARGIN_EM = 1.0
  * @param modifier optional [Modifier] chained after the base styles.
  */
 @Composable
-fun KotlinCodeSnippet(modifier: Modifier = Modifier) {
+fun KotlinCodeSnippet(
+    onCurrentlyBuildingClick: () -> Unit = {},
+    onWritingClick: () -> Unit = {},
+    onHireClick: () -> Unit = {},
+    modifier: Modifier = Modifier,
+) {
     val tokens = LocalPortfolioTokens.current
 
     val finalModifier = KotlinCodeSnippetStyle
@@ -115,21 +127,21 @@ fun KotlinCodeSnippet(modifier: Modifier = Modifier) {
         }
         Line { Text(text = ")") }
         Line(topMarginEm = METHODS_TOP_MARGIN_EM) {
-            Dim(text = "// try one of the methods \u2192")
+            Dim(text = "// try one of the methods ->")
         }
-        Line {
+        Line(onClick = onCurrentlyBuildingClick) {
             Var(text = "rafael")
             Text(text = ".")
             Kw(text = "currentlyBuilding")
             Text(text = "()")
         }
-        Line {
+        Line(onClick = onWritingClick) {
             Var(text = "rafael")
             Text(text = ".")
             Kw(text = "writing")
             Text(text = "()")
         }
-        Line {
+        Line(onClick = onHireClick) {
             Var(text = "rafael")
             Text(text = ".")
             Kw(text = "hire")
@@ -140,13 +152,22 @@ fun KotlinCodeSnippet(modifier: Modifier = Modifier) {
 
 /** A single code line. Matches the handoff's `<div>` per-row structure. */
 @Composable
-private fun Line(topMarginEm: Double = 0.0, content: @Composable () -> Unit) {
-    val lineModifier = if (topMarginEm > 0.0) {
-        Modifier.margin(top = topMarginEm.em)
-    } else {
-        Modifier
-    }
-    Div(attrs = lineModifier.toAttrs()) {
+private fun Line(
+    topMarginEm: Double = 0.0,
+    onClick: (() -> Unit)? = null,
+    content: @Composable () -> Unit,
+) {
+    Div(
+        attrs = Modifier
+            .thenIf(topMarginEm > 0.0) { Modifier.margin(top = topMarginEm.em) }
+            .thenIfNotNull(onClick) {
+                Modifier
+                    .onClick { it() }
+                    .textDecorationLine(TextDecorationLine.Underline)
+                    .cursor(Cursor.Pointer)
+            }
+            .toAttrs(),
+    ) {
         content()
     }
 }

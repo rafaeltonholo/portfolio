@@ -83,12 +83,18 @@ private const val META_TEXT = "// signature.kt"
  *   to a no-op so the organism can be previewed without wiring.
  * @param onDownloadCvClick invoked when the secondary CTA is pressed. Defaults
  *   to a no-op for the same reason.
+ * @param onCurrentlyBuildingClick invoked when the "Currently Building" CTA is pressed.
+ * @param onWritingClick invoked when the "Writing" CTA is pressed.
+ * @param onHireClick invoked when the "Hire Me" CTA is pressed.
  */
 @Composable
 fun HeroEditorial(
     modifier: Modifier = Modifier,
     onFeaturedWorkClick: () -> Unit = {},
     onDownloadCvClick: () -> Unit = {},
+    onCurrentlyBuildingClick: () -> Unit = {},
+    onWritingClick: () -> Unit = {},
+    onHireClick: () -> Unit = {},
 ) {
     val finalModifier = HeroEditorialSectionStyle
         .toModifier()
@@ -101,7 +107,11 @@ fun HeroEditorial(
                     onFeaturedWorkClick = onFeaturedWorkClick,
                     onDownloadCvClick = onDownloadCvClick,
                 )
-                KotlinCodeSnippet()
+                KotlinCodeSnippet(
+                    onCurrentlyBuildingClick = onCurrentlyBuildingClick,
+                    onWritingClick = onWritingClick,
+                    onHireClick = onHireClick,
+                )
             }
         }
     }
