@@ -17,6 +17,7 @@ private const val SERIF_LEAD_SIZE_REM = 1.25 // 20px
 private const val SERIF_BODY_SIZE_REM = 1.0625 // 17px
 private const val META_LABEL_SIZE_REM = 0.75 // 12px
 private const val META_SMALL_SIZE_REM = 0.6875 // 11px
+private const val META_PLAIN_SIZE_REM = 0.75 // 12px
 private const val CHIP_SIZE_REM = 0.6875 // 11px
 private const val CODE_SIZE_REM = 0.8125 // 13px
 
@@ -55,6 +56,7 @@ private const val META_SMALL_LETTER_SPACING_EM = 0.06
  * | [serifBody]  | `.prose p` serif variant               | 1.0625rem  | 400    | 1.6         | -              |
  * | [metaLabel]  | `.meta`, `.num`                        | 0.75rem    | 500    | 1.4         | 0.02em + uppercase |
  * | [metaSmall]  | `.meta` small variants                 | 0.6875rem  | 500    | 1.4         | 0.06em + uppercase |
+ * | [metaPlain]  | long mono eyebrows (>20ch)             | 0.75rem    | 500    | 1.4         | - (natural case)  |
  * | [chip]       | `.chip`                                | 0.6875rem  | 500    | 1.4         | -              |
  * | [code]       | `.term`, inline code                   | 0.8125rem  | 400    | 1.6         | -              |
  */
@@ -142,6 +144,21 @@ object Typography {
         lineHeight = META_LINE_HEIGHT,
         letterSpacing = META_SMALL_LETTER_SPACING_EM.em,
         transform = TextTransform.Uppercase,
+    )
+
+    /**
+     * Long-form mono eyebrow. Same family / size / weight / line-height as
+     * [metaLabel] but with the uppercase transform and positive tracking
+     * dropped so phrases past ~20 characters stay readable (ALL-CAPS on
+     * 30+ char strings defeats word-shape recognition). Reach for this
+     * when the eyebrow is a sentence fragment (`// commercial project ·
+     * 2021 - 2022`), not a single short label (`ROLE`, `STATUS`).
+     */
+    val metaPlain: TextStyle = TextStyle(
+        family = FontFamilies.MONO,
+        size = META_PLAIN_SIZE_REM.cssRem,
+        weight = FontWeight.Medium,
+        lineHeight = META_LINE_HEIGHT,
     )
 
     val chip: TextStyle = TextStyle(

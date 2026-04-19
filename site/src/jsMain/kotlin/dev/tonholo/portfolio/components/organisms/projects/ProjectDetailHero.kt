@@ -100,19 +100,27 @@ fun ProjectDetailHero(project: Project, modifier: Modifier = Modifier) {
 }
 
 /**
- * Left column of the project hero: mono meta label (`// {kind} · {year}`) over
- * the display `h1` project name.
+ * Left column of the project hero: mono long-form eyebrow (`// {kind} ·
+ * {year}`) over the display `h1` project name.
+ *
+ * The eyebrow uses [TextSlot.MetaPlain] rather than [MetaLabel] because
+ * the full phrase runs 31-35 characters; ALL-CAPS at that length defeats
+ * word-shape recognition and reads as shouty body copy. Short-label meta
+ * (`ROLE`, `STATUS`, etc.) still uses [MetaLabel] - see
+ * [ProjectDetailHeroInfoCell] below.
  */
 @Composable
 private fun ProjectDetailHeroCopyColumn(project: Project, strings: Strings.ProjectDetail) {
     val tokens = LocalPortfolioTokens.current
 
     Div(attrs = Modifier.toAttrs()) {
-        MetaLabel(
+        Text(
             text = projectMetaText(project = project, strings = strings),
             modifier = Modifier
                 .display(DisplayStyle.Block)
                 .margin(bottom = META_MARGIN_BOTTOM_REM.cssRem),
+            slot = TextSlot.MetaPlain,
+            color = tokens.muted.muted,
         )
         H1(
             attrs = Modifier
