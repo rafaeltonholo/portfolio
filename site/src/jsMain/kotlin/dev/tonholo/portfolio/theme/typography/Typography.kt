@@ -16,7 +16,7 @@ private const val BODY_SMALL_SIZE_REM = 0.875 // 14px
 private const val SERIF_LEAD_SIZE_REM = 1.25 // 20px
 private const val SERIF_BODY_SIZE_REM = 1.0625 // 17px
 private const val META_LABEL_SIZE_REM = 0.75 // 12px
-private const val META_SMALL_SIZE_REM = 0.6875 // 11px
+private const val META_SMALL_SIZE_REM = 0.75 // 12px
 private const val META_PLAIN_SIZE_REM = 0.75 // 12px
 private const val CHIP_SIZE_REM = 0.6875 // 11px
 private const val CODE_SIZE_REM = 0.8125 // 13px
@@ -150,8 +150,8 @@ object Typography {
      * [metaLabel] but with the uppercase transform and positive tracking
      * dropped so phrases past ~20 characters stay readable (ALL-CAPS on
      * 30+ char strings defeats word-shape recognition). Reach for this
-     * when the eyebrow is a sentence fragment (`// commercial project ·
-     * 2021 - 2022`), not a single short label (`ROLE`, `STATUS`).
+     * when the eyebrow is a sentence fragment (`// commercial project` +
+     * separator + `2021 - 2022`), not a single short label (`ROLE`, `STATUS`).
      */
     val metaPlain: TextStyle = TextStyle(
         family = FontFamilies.MONO,

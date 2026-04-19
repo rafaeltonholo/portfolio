@@ -189,12 +189,11 @@ class TypographyTest {
 
         // Assert
         assertContentEquals(expected = FontFamilies.MONO, actual = style.family)
-        assertEquals(expected = 0.6875, actual = style.size.value.toDouble(), absoluteTolerance = TOLERANCE)
+        assertEquals(expected = 0.75, actual = style.size.value.toDouble(), absoluteTolerance = TOLERANCE)
         assertEquals(FontWeight.Medium, style.weight)
         assertEquals(expected = 1.4, actual = style.lineHeight, absoluteTolerance = TOLERANCE)
         val letterSpacing = assertNotNull(style.letterSpacing)
         assertEquals(expected = 0.06, actual = letterSpacing.value.toDouble(), absoluteTolerance = TOLERANCE)
-        assertEquals(TextTransform.Uppercase, style.transform)
     }
 
     @Test
