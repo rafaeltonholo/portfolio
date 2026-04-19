@@ -5,6 +5,7 @@ import com.varabyte.kobweb.compose.css.Cursor
 import com.varabyte.kobweb.compose.css.ListStyleType
 import com.varabyte.kobweb.compose.css.TextDecorationLine
 import com.varabyte.kobweb.compose.css.TextTransform
+import com.varabyte.kobweb.compose.css.UserSelect
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.graphics.Color
 import com.varabyte.kobweb.compose.ui.modifiers.alignSelf
@@ -24,6 +25,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.position
 import com.varabyte.kobweb.compose.ui.modifiers.textDecorationLine
 import com.varabyte.kobweb.compose.ui.modifiers.textTransform
 import com.varabyte.kobweb.compose.ui.modifiers.top
+import com.varabyte.kobweb.compose.ui.modifiers.userSelect
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.silk.style.CssStyle
 import com.varabyte.kobweb.silk.style.toModifier
@@ -40,6 +42,7 @@ import org.jetbrains.compose.web.dom.A
 import org.jetbrains.compose.web.dom.Aside
 import org.jetbrains.compose.web.dom.H2
 import org.jetbrains.compose.web.dom.Li
+import org.jetbrains.compose.web.dom.Span
 import org.jetbrains.compose.web.dom.Ul
 import org.jetbrains.compose.web.dom.Text as ComposeText
 
@@ -169,29 +172,45 @@ private fun TocAnchorRow(
 }
 
 /**
- * One share row: an anchor that either invokes [onClick] (for `copy link`) or
- * renders as a non-navigating placeholder for twitter / linkedin until the
- * share integration lands.
+ * One share row. Renders as a real anchor with a `javascript:void(0)` placeholder
+ * href when [onClick] is supplied (so the browser treats it as navigable for
+ * keyboard focus and screen readers) and falls back to a non-interactive
+ * `<span aria-disabled="true">` when the share target is not wired up yet
+ * (twitter / linkedin). Previously this rendered `<a href="#">` even when
+ * disabled, which scrolled the page to top on click and announced a live
+ * link to assistive tech.
  */
 @Composable
 private fun ShareAnchorRow(label: String, onClick: (() -> Unit)?, mutedColor: Color) {
     Li(attrs = Modifier.toAttrs()) {
-        val baseModifier = Modifier
-            .color(mutedColor)
-            .cursor(Cursor.Pointer)
-            .textDecorationLine(TextDecorationLine.None)
-
-        val finalModifier = if (onClick != null) {
-            baseModifier.onClick { event ->
-                event.preventDefault()
-                onClick()
+        if (onClick != null) {
+            A(
+                href = "javascript:void(0)",
+                attrs = Modifier
+                    .color(mutedColor)
+                    .cursor(Cursor.Pointer)
+                    .textDecorationLine(TextDecorationLine.None)
+                    .onClick { event ->
+                        event.preventDefault()
+                        onClick()
+                    }
+                    .toAttrs(),
+            ) {
+                ComposeText(label)
             }
         } else {
-            baseModifier
-        }
-
-        A(href = "#", attrs = finalModifier.toAttrs()) {
-            ComposeText(label)
+            Span(
+                attrs = Modifier
+                    .color(mutedColor)
+                    .cursor(Cursor.Default)
+                    .userSelect(UserSelect.None)
+                    .toAttrs {
+                        attr("aria-disabled", "true")
+                        attr("title", "Coming soon")
+                    },
+            ) {
+                ComposeText(label)
+            }
         }
     }
 }
