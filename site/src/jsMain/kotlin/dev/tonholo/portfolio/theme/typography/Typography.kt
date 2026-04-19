@@ -2,24 +2,25 @@ package dev.tonholo.portfolio.theme.typography
 
 import com.varabyte.kobweb.compose.css.FontWeight
 import com.varabyte.kobweb.compose.css.TextTransform
-import org.jetbrains.compose.web.css.cssRem
+import dev.tonholo.portfolio.theme.typography.unit.sp
 import org.jetbrains.compose.web.css.em
 
-// Size scale in cssRem (1rem == 16px). Values mirror handoff px divided by 16.
-private const val HERO_SIZE_REM = 5.375 // clamp max 86px
-private const val H1_SIZE_REM = 4.25 // clamp max 68px
-private const val H2_SIZE_REM = 1.75 // 28px
-private const val H3_DISPLAY_SIZE_REM = 1.625 // 26px
-private const val BODY_LARGE_SIZE_REM = 1.0625 // 17px
-private const val BODY_SIZE_REM = 1.0 // 16px
-private const val BODY_SMALL_SIZE_REM = 0.875 // 14px
-private const val SERIF_LEAD_SIZE_REM = 1.25 // 20px
-private const val SERIF_BODY_SIZE_REM = 1.0625 // 17px
-private const val META_LABEL_SIZE_REM = 0.75 // 12px
-private const val META_SMALL_SIZE_REM = 0.75 // 12px
-private const val META_PLAIN_SIZE_REM = 0.75 // 12px
-private const val CHIP_SIZE_REM = 0.6875 // 11px
-private const val CODE_SIZE_REM = 0.8125 // 13px
+// Size scale in `sp`; 16sp == 1rem at the site's default root font-size.
+// Values mirror the handoff px scale, with clamp maxima noted inline.
+private val HERO_SIZE = 86.sp // clamp max
+private val H1_SIZE = 68.sp // clamp max
+private val H2_SIZE = 28.sp
+private val H3_DISPLAY_SIZE = 26.sp
+private val BODY_LARGE_SIZE = 17.sp
+private val BODY_SIZE = 16.sp
+private val BODY_SMALL_SIZE = 14.sp
+private val SERIF_LEAD_SIZE = 20.sp
+private val SERIF_BODY_SIZE = 17.sp
+private val META_LABEL_SIZE = 12.sp
+private val META_SMALL_SIZE = 12.sp
+private val META_PLAIN_SIZE = 12.sp
+private val CHIP_SIZE = 11.sp
+private val CODE_SIZE = 13.sp
 
 // Line-heights are unitless per handoff CSS.
 private const val HERO_LINE_HEIGHT = 0.95
@@ -63,7 +64,7 @@ private const val META_SMALL_LETTER_SPACING_EM = 0.06
 object Typography {
     val hero: TextStyle = TextStyle(
         family = FontFamilies.DISPLAY,
-        size = HERO_SIZE_REM.cssRem,
+        size = HERO_SIZE,
         weight = FontWeight.Medium,
         lineHeight = HERO_LINE_HEIGHT,
         letterSpacing = HERO_LETTER_SPACING_EM.em,
@@ -71,7 +72,7 @@ object Typography {
 
     val h1: TextStyle = TextStyle(
         family = FontFamilies.DISPLAY,
-        size = H1_SIZE_REM.cssRem,
+        size = H1_SIZE,
         weight = FontWeight.Medium,
         lineHeight = H1_LINE_HEIGHT,
         letterSpacing = H1_LETTER_SPACING_EM.em,
@@ -79,7 +80,7 @@ object Typography {
 
     val h2: TextStyle = TextStyle(
         family = FontFamilies.DISPLAY,
-        size = H2_SIZE_REM.cssRem,
+        size = H2_SIZE,
         weight = FontWeight.Medium,
         lineHeight = H2_LINE_HEIGHT,
         letterSpacing = H2_LETTER_SPACING_EM.em,
@@ -87,7 +88,7 @@ object Typography {
 
     val h3Display: TextStyle = TextStyle(
         family = FontFamilies.DISPLAY,
-        size = H3_DISPLAY_SIZE_REM.cssRem,
+        size = H3_DISPLAY_SIZE,
         weight = FontWeight.Medium,
         lineHeight = H3_DISPLAY_LINE_HEIGHT,
         letterSpacing = H3_DISPLAY_LETTER_SPACING_EM.em,
@@ -95,42 +96,42 @@ object Typography {
 
     val bodyLarge: TextStyle = TextStyle(
         family = FontFamilies.BODY,
-        size = BODY_LARGE_SIZE_REM.cssRem,
+        size = BODY_LARGE_SIZE,
         weight = FontWeight.Normal,
         lineHeight = BODY_LINE_HEIGHT,
     )
 
     val body: TextStyle = TextStyle(
         family = FontFamilies.BODY,
-        size = BODY_SIZE_REM.cssRem,
+        size = BODY_SIZE,
         weight = FontWeight.Normal,
         lineHeight = BODY_LINE_HEIGHT,
     )
 
     val bodySmall: TextStyle = TextStyle(
         family = FontFamilies.BODY,
-        size = BODY_SMALL_SIZE_REM.cssRem,
+        size = BODY_SMALL_SIZE,
         weight = FontWeight.Normal,
         lineHeight = BODY_LINE_HEIGHT,
     )
 
     val serifLead: TextStyle = TextStyle(
         family = FontFamilies.SERIF,
-        size = SERIF_LEAD_SIZE_REM.cssRem,
+        size = SERIF_LEAD_SIZE,
         weight = FontWeight.Normal,
         lineHeight = SERIF_LEAD_LINE_HEIGHT,
     )
 
     val serifBody: TextStyle = TextStyle(
         family = FontFamilies.SERIF,
-        size = SERIF_BODY_SIZE_REM.cssRem,
+        size = SERIF_BODY_SIZE,
         weight = FontWeight.Normal,
         lineHeight = SERIF_BODY_LINE_HEIGHT,
     )
 
     val metaLabel: TextStyle = TextStyle(
         family = FontFamilies.MONO,
-        size = META_LABEL_SIZE_REM.cssRem,
+        size = META_LABEL_SIZE,
         weight = FontWeight.Medium,
         lineHeight = META_LINE_HEIGHT,
         letterSpacing = META_LABEL_LETTER_SPACING_EM.em,
@@ -139,7 +140,7 @@ object Typography {
 
     val metaSmall: TextStyle = TextStyle(
         family = FontFamilies.MONO,
-        size = META_SMALL_SIZE_REM.cssRem,
+        size = META_SMALL_SIZE,
         weight = FontWeight.Medium,
         lineHeight = META_LINE_HEIGHT,
         letterSpacing = META_SMALL_LETTER_SPACING_EM.em,
@@ -155,21 +156,21 @@ object Typography {
      */
     val metaPlain: TextStyle = TextStyle(
         family = FontFamilies.MONO,
-        size = META_PLAIN_SIZE_REM.cssRem,
+        size = META_PLAIN_SIZE,
         weight = FontWeight.Medium,
         lineHeight = META_LINE_HEIGHT,
     )
 
     val chip: TextStyle = TextStyle(
         family = FontFamilies.MONO,
-        size = CHIP_SIZE_REM.cssRem,
+        size = CHIP_SIZE,
         weight = FontWeight.Medium,
         lineHeight = META_LINE_HEIGHT,
     )
 
     val code: TextStyle = TextStyle(
         family = FontFamilies.MONO,
-        size = CODE_SIZE_REM.cssRem,
+        size = CODE_SIZE,
         weight = FontWeight.Normal,
         lineHeight = CODE_LINE_HEIGHT,
     )
