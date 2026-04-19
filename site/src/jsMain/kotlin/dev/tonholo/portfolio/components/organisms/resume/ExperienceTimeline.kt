@@ -10,14 +10,15 @@ import com.varabyte.kobweb.silk.style.toModifier
 import dev.tonholo.portfolio.components.atoms.MetaLabel
 import dev.tonholo.portfolio.components.molecules.SectionHead
 import dev.tonholo.portfolio.components.molecules.TimelineRow
+import dev.tonholo.portfolio.components.template.sectionMarker
 import dev.tonholo.portfolio.domain.model.Experience
 import dev.tonholo.portfolio.locale.LocalStrings
 import org.jetbrains.compose.web.css.DisplayStyle
 import org.jetbrains.compose.web.css.FlexDirection
 import org.jetbrains.compose.web.dom.Div
 
-// Section head ordinal prefix stays as a mono literal across locales.
-private const val SECTION_NUMBER = "// 01"
+// Ordinal for the Experience timeline; rendered as `// 01` via [sectionMarker].
+private const val SECTION_ORDINAL = 1
 
 /**
  * Stacked list of resume timeline rows. Ports the `<div class="timeline">`
@@ -44,7 +45,7 @@ fun ExperienceTimeline(experiences: List<Experience>, modifier: Modifier = Modif
 
     Div(attrs = finalModifier.toAttrs()) {
         SectionHead(
-            number = SECTION_NUMBER,
+            number = sectionMarker(ordinal = SECTION_ORDINAL),
             title = strings.sectionTitle,
             trailing = { MetaLabel(text = strings.sectionTrailing) },
         )

@@ -21,7 +21,6 @@ import com.varabyte.kobweb.compose.ui.modifiers.gridTemplateColumns
 import com.varabyte.kobweb.compose.ui.modifiers.letterSpacing
 import com.varabyte.kobweb.compose.ui.modifiers.lineHeight
 import com.varabyte.kobweb.compose.ui.modifiers.margin
-import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.compose.ui.styleModifier
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.core.PageContext
@@ -32,7 +31,6 @@ import com.varabyte.kobweb.core.init.InitRouteContext
 import com.varabyte.kobweb.core.layout.Layout
 import com.varabyte.kobweb.silk.style.CssStyle
 import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
-import com.varabyte.kobweb.silk.style.extendedBy
 import com.varabyte.kobweb.silk.style.selectors.descendants
 import com.varabyte.kobweb.silk.style.toModifier
 import com.varabyte.kobwebx.markdown.markdown
@@ -41,7 +39,7 @@ import dev.tonholo.portfolio.components.organisms.articles.ArticleTocSidebar
 import dev.tonholo.portfolio.components.organisms.articles.TocEntry
 import dev.tonholo.portfolio.navigation.Routes
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
-import dev.tonholo.portfolio.theme.layout.ShellStyle
+import dev.tonholo.portfolio.theme.layout.PageSectionShellStyle
 import dev.tonholo.portfolio.theme.typography.FontFamilies
 import dev.tonholo.portfolio.theme.typography.Typography
 import dev.tonholo.portfolio.theme.typography.apply
@@ -59,11 +57,6 @@ import org.jetbrains.compose.web.dom.P
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.asList
 import org.jetbrains.compose.web.dom.Text as ComposeText
-
-// Mirrors the handoff `--pad-y` (80px) applied to `.article-detail` so the
-// article body sits flush with the vertical rhythm used by `.resume` and
-// `.project-detail` sections.
-private const val ARTICLE_PADDING_Y_REM = 5.0
 
 // Handoff `.article-detail .body`: `grid-template-columns: 220px 1fr; gap: 64px`.
 // Below 900px (handoff) the grid collapses to a single column with a 24px gap.
@@ -172,7 +165,7 @@ fun ArticleMarkdownLayout(context: PageContext, content: @Composable () -> Unit)
     var tocEntries by remember(data.slug) { mutableStateOf<List<TocEntry>>(emptyList()) }
 
     PageLayout {
-        Div(attrs = ArticleMarkdownShellStyle.toModifier().toAttrs()) {
+        Div(attrs = PageSectionShellStyle.toModifier().toAttrs()) {
             // Handoff structure: meta row, title, and lede span the full shell
             // width above the sidebar/body grid. The two-column layout only
             // applies to the article body + TOC, not to the editorial header.
@@ -273,19 +266,6 @@ private fun retryCollectTocEntries(attempt: Int) {
 private fun copyCurrentLocation() {
     val clipboard = window.navigator.clipboard
     clipboard.writeText(window.location.href)
-}
-
-/**
- * Base `CssStyle` for the outer `<div>` wrapping the article markdown layout.
- * Extends [ShellStyle] so the wrapper inherits the max-width cap and
- * horizontal gutters, then layers the handoff `.article-detail` 5rem top/
- * bottom padding so the article column sits at the same vertical rhythm as
- * the resume and project detail pages.
- */
-val ArticleMarkdownShellStyle = ShellStyle.extendedBy {
-    base {
-        Modifier.padding(topBottom = ARTICLE_PADDING_Y_REM.cssRem)
-    }
 }
 
 /**

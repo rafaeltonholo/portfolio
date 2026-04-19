@@ -36,6 +36,7 @@ import dev.tonholo.portfolio.locale.LocalStrings
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.color.AccentMint
 import dev.tonholo.portfolio.theme.layout.ShellStyle
+import dev.tonholo.portfolio.theme.layout.SpacingVars
 import dev.tonholo.portfolio.theme.typography.FontFamilies
 import org.jetbrains.compose.web.css.AlignItems
 import org.jetbrains.compose.web.css.CSSSizeValue
@@ -53,8 +54,9 @@ import org.jetbrains.compose.web.dom.Section
 import org.jetbrains.compose.web.dom.Text as ComposeText
 
 // Outer section spacing. Handoff line 316: `paddingTop:40, paddingBottom:40`
-// overrides the default `.section` padding for this block.
-private const val SECTION_PADDING_Y_REM = 2.5 // 40px
+// overrides the default `.section` padding for this block; the small padY
+// token (2.5rem at Normal density, scaled by the active Density) keeps the
+// hiring band visually compressed relative to the other numbered sections.
 
 // Inverted block metrics from handoff lines 317-325.
 private const val BLOCK_PADDING_Y_REM = 4.0 // 64px
@@ -233,7 +235,7 @@ private fun HiringCtaActions(onEmailClick: () -> Unit, onBookingClick: () -> Uni
  */
 val HiringCtaSectionStyle = CssStyle {
     base {
-        Modifier.padding(topBottom = SECTION_PADDING_Y_REM.cssRem)
+        Modifier.padding(topBottom = SpacingVars.PadYSmall.value())
     }
 }
 

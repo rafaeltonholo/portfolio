@@ -15,11 +15,6 @@ private const val SHELL_MAX_WIDTH_REM = 80.0
 private const val SHELL_GUTTER_MOBILE_REM = 1.5
 private const val SHELL_GUTTER_DESKTOP_REM = 3.0
 
-// Handoff `.section { padding: var(--pad-y) 0; }` with --pad-y = 80px at the
-// default density. Translates to 5rem top/bottom breathing room for page-level
-// sections (About, Resume) that don't use the hero's larger rhythm.
-private const val SECTION_PADDING_Y_REM = 5.0
-
 /**
  * Page-level shell container. Caps content at 80rem (1280px) wide and centers
  * horizontally. Horizontal padding is only applied on mobile (1.5rem); from
@@ -63,12 +58,15 @@ val ChromeShellStyle = ShellStyle.extendedBy {
 
 /**
  * Page section shell: extends [ShellStyle] with the handoff `.section`
- * vertical padding (5rem top and bottom). Used by route-level pages like
- * About and Resume whose top-of-page organisms expect a hero-like top gutter
- * below the sticky nav.
+ * vertical padding. The padding tracks the active density via
+ * [SpacingVars.PadY], which [dev.tonholo.portfolio.theme.PortfolioTheme]
+ * writes from the active [SpacingScale]; a density change flows to every
+ * consumer without touching call sites. Used by route-level pages (About,
+ * Resume, project detail, article detail) and by every numbered home-page
+ * section via `NumberedSection`.
  */
 val PageSectionShellStyle = ShellStyle.extendedBy {
     base {
-        Modifier.padding(topBottom = SECTION_PADDING_Y_REM.cssRem)
+        Modifier.padding(topBottom = SpacingVars.PadY.value())
     }
 }

@@ -8,22 +8,33 @@ import dev.tonholo.portfolio.components.molecules.SectionHead
 import dev.tonholo.portfolio.theme.layout.PageSectionShellStyle
 import org.jetbrains.compose.web.dom.Section
 
-// Mono marker format used by every numbered home section (`// 00`, `// 01`,
-// ...). Centralised so organisms only supply the ordinal integer; drift
-// between `"// 1"` and `"// 01"` styles becomes impossible.
+// Mono marker format used by every numbered section (`// 00`, `// 01`, ...).
+// Centralised so organisms only supply the ordinal integer; drift between
+// `"// 1"` and `"// 01"` styles becomes impossible.
 private const val MARKER_FORMAT_WIDTH = 2
 private const val MARKER_PREFIX = "// "
 
 /**
+ * Formats an ordinal as the mono `// NN` marker used by [SectionHead] callers
+ * across the site (home numbered sections, resume timeline, about tabs).
+ * Callers that wrap their section in [NumberedSection] do not need this
+ * helper - they pass the raw ordinal. Callers that render their own section
+ * chrome but still want the zero-padded marker (e.g. `ExperienceTimeline`,
+ * which lives inside an already-shelled page) can use this helper directly.
+ */
+fun sectionMarker(ordinal: Int): String =
+    MARKER_PREFIX + ordinal.toString().padStart(MARKER_FORMAT_WIDTH, padChar = '0')
+
+/**
  * Shared layout wrapper for every numbered home-page section (`// 00` - `// 03`).
  * Renders the `<section>` element with [PageSectionShellStyle] (shell gutters
- * + 5rem vertical rhythm), a [SectionHead] carrying the ordinal marker, and
- * a content slot.
+ * + density-aware `--pad-y` vertical rhythm), a [SectionHead] carrying the
+ * ordinal marker, and a content slot.
  *
  * Using `padding` rather than `margin` means adjacent sections always get the
- * full `5rem + 5rem = 10rem` combined padding between content boxes; padding
- * never collapses, so the rhythm is deterministic regardless of the content
- * above or below.
+ * full `padY + padY` combined padding between content boxes; padding never
+ * collapses, so the rhythm is deterministic regardless of the content above
+ * or below and the Density setting drives both halves consistently.
  *
  * @param number the section ordinal; formatted into the mono marker as
  *   `"// 00"` etc.
@@ -42,13 +53,12 @@ fun NumberedSection(
     trailing: (@Composable () -> Unit)? = null,
     content: @Composable () -> Unit,
 ) {
-    val marker = MARKER_PREFIX + number.toString().padStart(MARKER_FORMAT_WIDTH, padChar = '0')
     val sectionModifier = PageSectionShellStyle
         .toModifier()
         .then(modifier)
 
     Section(attrs = sectionModifier.toAttrs()) {
-        SectionHead(number = marker, title = title, trailing = trailing)
+        SectionHead(number = sectionMarker(ordinal = number), title = title, trailing = trailing)
         content()
     }
 }

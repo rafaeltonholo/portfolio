@@ -5,6 +5,9 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import com.varabyte.kobweb.compose.ui.Modifier
+import com.varabyte.kobweb.compose.ui.modifiers.setVariable
+import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import dev.tonholo.portfolio.theme.color.AccentMint
 import dev.tonholo.portfolio.theme.color.Ink
@@ -13,8 +16,10 @@ import dev.tonholo.portfolio.theme.color.Paper
 import dev.tonholo.portfolio.theme.color.Syntax
 import dev.tonholo.portfolio.theme.layout.Density
 import dev.tonholo.portfolio.theme.layout.SpacingScale
+import dev.tonholo.portfolio.theme.layout.SpacingVars
 import dev.tonholo.portfolio.theme.typography.Typography
 import kotlinx.browser.document
+import org.jetbrains.compose.web.dom.Div
 import org.w3c.dom.HTMLElement
 
 private const val DATA_THEME_ATTR = "data-theme"
@@ -30,6 +35,9 @@ private const val DATA_ACCENT_MINT = "mint"
  * - Mirrors the theme state onto `<html>` as `data-theme="light|dark"` and
  *   `data-accent="mint"` so CSS selectors and the boot-time script in
  *   `index.html` stay consistent with the composition.
+ * - Writes the active [SpacingScale] onto [SpacingVars] via a wrapper `<div>`
+ *   so density-aware `CssStyle` blocks (e.g. `PageSectionShellStyle`) pick
+ *   up the right value without reading [LocalPortfolioTokens] at call sites.
  */
 @Composable
 fun PortfolioTheme(content: @Composable () -> Unit) {
@@ -48,8 +56,14 @@ fun PortfolioTheme(content: @Composable () -> Unit) {
         onDispose { }
     }
 
+    val spacingModifier = Modifier
+        .setVariable(SpacingVars.PadY, tokens.spacing.padY)
+        .setVariable(SpacingVars.PadYSmall, tokens.spacing.padYSmall)
+
     CompositionLocalProvider(LocalPortfolioTokens provides tokens) {
-        content()
+        Div(attrs = spacingModifier.toAttrs()) {
+            content()
+        }
     }
 }
 
