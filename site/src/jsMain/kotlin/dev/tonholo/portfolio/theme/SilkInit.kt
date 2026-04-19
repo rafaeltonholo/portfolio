@@ -3,6 +3,7 @@ package dev.tonholo.portfolio.theme
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.backgroundColor
 import com.varabyte.kobweb.compose.ui.modifiers.color
+import com.varabyte.kobweb.compose.ui.modifiers.fontSize
 import com.varabyte.kobweb.compose.ui.styleModifier
 import com.varabyte.kobweb.silk.init.InitSilk
 import com.varabyte.kobweb.silk.init.InitSilkContext
@@ -11,9 +12,11 @@ import com.varabyte.kobweb.silk.style.breakpoint.BreakpointSizes
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import dev.tonholo.portfolio.theme.color.Ink
 import dev.tonholo.portfolio.theme.color.Paper
+import dev.tonholo.portfolio.theme.typography.unit.DEFAULT_FONT_SIZE
 import org.jetbrains.compose.web.css.CSSMediaQuery
 import org.jetbrains.compose.web.css.StylePropertyValue
 import org.jetbrains.compose.web.css.cssRem
+import org.jetbrains.compose.web.css.px
 
 private const val SM_REM = 30.0
 private const val MD_REM = 45.0
@@ -40,6 +43,21 @@ fun initBreakpoints(ctx: InitSilkContext) {
         lg = LG_REM.cssRem,
         xl = XL_REM.cssRem,
     )
+}
+
+/**
+ * Anchors `1rem` to the [DEFAULT_FONT_SIZE] pixel value on the root element so
+ * every `rem`-based token (including [dev.tonholo.portfolio.theme.layout.unit.Dp]
+ * and [dev.tonholo.portfolio.theme.typography.unit.TextUnit]) converts to the
+ * intended pixel values. Without this rule we inherit the user-agent default,
+ * which users can override via browser zoom settings and shift the entire
+ * layout off the handoff grid.
+ */
+@InitSilk
+fun initRootFontSize(ctx: InitSilkContext) {
+    ctx.stylesheet.registerStyleBase("html") {
+        Modifier.fontSize(DEFAULT_FONT_SIZE.px)
+    }
 }
 
 /**
