@@ -129,6 +129,10 @@ kobweb {
             articleSlugs.forEach { slug ->
                 addExtraRoute(route = "/articles/$slug", exportPath = "articles/$slug.html")
             }
+            // Emit 404.html so GitHub Pages (and most static hosts) serve the
+            // IDE-themed recovery screen for unknown URLs. The SPA router
+            // also re-uses this content via setErrorPage for in-app nav.
+            addExtraRoute(route = "/404", exportPath = "404.html")
         }
     }
 

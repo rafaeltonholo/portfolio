@@ -179,4 +179,15 @@ object StringsEn : Strings() {
         sectionTitle = "Selected work",
         projectsSuffix = "projects",
     )
+
+    override val notFound: NotFound = NotFound(
+        title = "That path does not resolve.",
+        lead = "No file at the URL you landed on - a stale link, a typo, or " +
+            "something the last refactor moved. Pick a door below and keep going.",
+        shellCommandPrefix = "cat ",
+        recoveryHome = "-> /",
+        recoveryProjects = "-> /projects",
+        recoveryArticles = "-> /articles",
+        recoveryResume = "-> /resume",
+    )
 }

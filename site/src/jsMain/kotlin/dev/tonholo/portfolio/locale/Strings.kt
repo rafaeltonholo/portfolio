@@ -38,6 +38,7 @@ sealed class Strings {
     abstract val nowStrip: NowStrip
     abstract val uses: Uses
     abstract val selectedWork: SelectedWork
+    abstract val notFound: NotFound
 
     /** Primary navigation link labels rendered in [dev.tonholo.portfolio.components.organisms.chrome.Nav]. */
     data class Nav(
@@ -185,6 +186,17 @@ sealed class Strings {
 
     /** Copy for the [dev.tonholo.portfolio.components.organisms.home.SelectedWorkGrid] section head. */
     data class SelectedWork(val sectionTitle: String, val projectsSuffix: String)
+
+    /** Copy rendered by the IDE-themed 404 page. */
+    data class NotFound(
+        val title: String,
+        val lead: String,
+        val shellCommandPrefix: String,
+        val recoveryHome: String,
+        val recoveryProjects: String,
+        val recoveryArticles: String,
+        val recoveryResume: String,
+    )
 }
 
 /**

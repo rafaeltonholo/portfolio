@@ -54,4 +54,5 @@ object StringsPtBr : Strings() {
     override val nowStrip: NowStrip = StringsEn.nowStrip
     override val uses: Uses = StringsEn.uses
     override val selectedWork: SelectedWork = StringsEn.selectedWork
+    override val notFound: NotFound = StringsEn.notFound
 }
