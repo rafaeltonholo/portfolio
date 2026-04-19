@@ -179,9 +179,7 @@ fun ArticleMarkdownLayout(context: PageContext, content: @Composable () -> Unit)
             ArticleMetaRow(
                 date = data.date,
                 readTime = data.readTime,
-                onBack = {
-                    context.router.tryRoutingTo(pathQueryAndFragment = Routes.ARTICLES)
-                },
+                backRoute = Routes.ARTICLES,
             )
             H1(
                 attrs = ArticleMarkdownTitleStyle

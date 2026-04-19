@@ -50,8 +50,6 @@ private const val GRID_COLUMN_FR = 1
  * single column.
  *
  * @param projects the list of [Project]s to render as cards.
- * @param onProjectClick invoked with the [Project.slug] when a card is
- *   activated; route to the matching detail page.
  * @param modifier optional [Modifier] chained after the base section styles.
  * @param showSectionHead whether to render the [SectionHead] above the grid.
  *   Pass `false` on pages that already carry their own editorial header (e.g.
@@ -60,7 +58,6 @@ private const val GRID_COLUMN_FR = 1
 @Composable
 fun SelectedWorkGrid(
     projects: List<Project>,
-    onProjectClick: (slug: String) -> Unit,
     modifier: Modifier = Modifier,
     showSectionHead: Boolean = true,
 ) {
@@ -96,10 +93,7 @@ fun SelectedWorkGrid(
                     .toAttrs(),
             ) {
                 projects.forEach { project ->
-                    ProjectCardIde(
-                        project = project,
-                        onClick = onProjectClick,
-                    )
+                    ProjectCardIde(project = project)
                 }
             }
         }

@@ -25,12 +25,14 @@ import com.varabyte.kobweb.compose.ui.modifiers.lineHeight
 import com.varabyte.kobweb.compose.ui.modifiers.listStyle
 import com.varabyte.kobweb.compose.ui.modifiers.margin
 import com.varabyte.kobweb.compose.ui.modifiers.maxWidth
-import com.varabyte.kobweb.compose.ui.modifiers.onClick
 import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.compose.ui.modifiers.textDecorationLine
 import com.varabyte.kobweb.compose.ui.modifiers.textTransform
 import com.varabyte.kobweb.compose.ui.modifiers.transition
 import com.varabyte.kobweb.compose.ui.toAttrs
+import com.varabyte.kobweb.silk.components.navigation.Link
+import com.varabyte.kobweb.silk.components.navigation.UncoloredLinkVariant
+import com.varabyte.kobweb.silk.components.navigation.UndecoratedLinkVariant
 import com.varabyte.kobweb.silk.style.CssStyle
 import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.style.selectors.hover
@@ -42,6 +44,7 @@ import dev.tonholo.portfolio.locale.Strings
 import dev.tonholo.portfolio.navigation.Routes
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.color.AccentMint
+import dev.tonholo.portfolio.theme.color.Ink
 import dev.tonholo.portfolio.theme.layout.ChromeShellStyle
 import dev.tonholo.portfolio.theme.typography.FontFamilies
 import org.jetbrains.compose.web.css.CSSSizeValue
@@ -54,9 +57,8 @@ import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.em
 import org.jetbrains.compose.web.css.fr
 import org.jetbrains.compose.web.css.s
-import org.jetbrains.compose.web.dom.A
 import org.jetbrains.compose.web.dom.Div
-import org.jetbrains.compose.web.dom.H4
+import org.jetbrains.compose.web.dom.H3
 import org.jetbrains.compose.web.dom.Li
 import org.jetbrains.compose.web.dom.P
 import org.jetbrains.compose.web.dom.Span
@@ -152,24 +154,18 @@ private fun footerBorderColor(): Color {
  * a bottom bar with a top hairline. Below the `LG` breakpoint (820px) the grid
  * collapses to two columns, matching the handoff media query.
  *
- * The first column is a short tagline (hardcoded for v1). The `Pages` column
- * renders navigation buttons that route via [onNavigate]; `Work` renders plain
- * static anchors (no `href` yet); `Elsewhere` renders [SocialLink] rows with
- * external URLs.
+ * The first column is a short tagline (hardcoded for v1). The `Pages` and
+ * `Work` columns render real `<a href>` anchors via Kobweb's [Link], so
+ * middle-click, cmd-click, and "copy link address" behave like any browser
+ * anchor. `Elsewhere` renders [SocialLink] rows with external URLs.
  *
- * @param onNavigate callback invoked with a [Routes] value when the user clicks
- *   a Pages link.
  * @param modifier optional [Modifier] chained after the base styles.
  * @param versionInfo right-aligned bottom bar text, e.g.
  *   `"v4.0.0 - last deployed 3 days ago"`. Defaults to a placeholder so the
  *   build metadata can be wired up later without changing call sites.
  */
 @Composable
-fun Footer(
-    onNavigate: (route: String) -> Unit,
-    modifier: Modifier = Modifier,
-    versionInfo: String = DEFAULT_VERSION_INFO,
-) {
+fun Footer(modifier: Modifier = Modifier, versionInfo: String = DEFAULT_VERSION_INFO) {
     val tokens = LocalPortfolioTokens.current
     val strings = LocalStrings.current.footer
     val borderColor = footerBorderColor()
@@ -188,8 +184,8 @@ fun Footer(
         Div(attrs = ChromeShellStyle.toModifier().toAttrs()) {
             Div(attrs = FooterGridStyle.toModifier().toAttrs()) {
                 TaglineColumn(strings = strings)
-                PagesColumn(strings = strings, onNavigate = onNavigate)
-                WorkColumn(heading = strings.headingWork, onNavigate = onNavigate)
+                PagesColumn(strings = strings)
+                WorkColumn(heading = strings.headingWork)
                 ElsewhereColumn(heading = strings.headingElsewhere)
             }
             FooterBottom(
@@ -229,52 +225,48 @@ private fun TaglineColumn(strings: Strings.Footer) {
 }
 
 /**
- * Second column: the four primary navigation links. Each anchor routes via
- * [onNavigate] with the matching [Routes] constant.
+ * Second column: the four primary navigation links. Each anchor is a real
+ * `<a href>` via Kobweb's [Link] so browser navigation affordances work.
  */
 @Composable
-private fun PagesColumn(strings: Strings.Footer, onNavigate: (route: String) -> Unit) {
+private fun PagesColumn(strings: Strings.Footer) {
     Div(attrs = Modifier.toAttrs()) {
         ColumnHeading(text = strings.headingPages)
         Ul(attrs = FooterListStyle.toModifier().toAttrs()) {
-            FooterNavItem(label = strings.linkHome, route = Routes.HOME, onNavigate = onNavigate)
-            FooterNavItem(label = strings.linkAbout, route = Routes.ABOUT, onNavigate = onNavigate)
-            FooterNavItem(label = strings.linkArticles, route = Routes.ARTICLES, onNavigate = onNavigate)
-            FooterNavItem(label = strings.linkResume, route = Routes.RESUME, onNavigate = onNavigate)
+            FooterNavItem(label = strings.linkHome, route = Routes.HOME)
+            FooterNavItem(label = strings.linkAbout, route = Routes.ABOUT)
+            FooterNavItem(label = strings.linkArticles, route = Routes.ARTICLES)
+            FooterNavItem(label = strings.linkResume, route = Routes.RESUME)
         }
     }
 }
 
 /**
- * Third column: featured project names. Each row routes to its project
- * detail page via [onNavigate]; the seed slugs mirror the ids in
+ * Third column: featured project names. Each row renders as a real
+ * `<a href>` to its project detail page; slugs mirror the ids in
  * `StaticContent.PROJECTS`. Labels are mono technical literals and stay
  * untranslated.
  */
 @Composable
-private fun WorkColumn(heading: String, onNavigate: (route: String) -> Unit) {
+private fun WorkColumn(heading: String) {
     Div(attrs = Modifier.toAttrs()) {
         ColumnHeading(text = heading)
         Ul(attrs = FooterListStyle.toModifier().toAttrs()) {
             FooterNavItem(
                 label = WORK_PINTEREST_LABEL,
                 route = Routes.project(slug = WORK_PINTEREST_SLUG),
-                onNavigate = onNavigate,
             )
             FooterNavItem(
                 label = WORK_BLEACHER_REPORT_LABEL,
                 route = Routes.project(slug = WORK_BLEACHER_REPORT_SLUG),
-                onNavigate = onNavigate,
             )
             FooterNavItem(
                 label = WORK_SVG_TO_COMPOSE_LABEL,
                 route = Routes.project(slug = WORK_SVG_TO_COMPOSE_SLUG),
-                onNavigate = onNavigate,
             )
             FooterNavItem(
                 label = WORK_IVY_WALLET_LABEL,
                 route = Routes.project(slug = WORK_IVY_WALLET_SLUG),
-                onNavigate = onNavigate,
             )
         }
     }
@@ -315,7 +307,7 @@ private fun ElsewhereColumn(heading: String) {
 private fun ColumnHeading(text: String) {
     val tokens = LocalPortfolioTokens.current
 
-    H4(
+    H3(
         attrs = FooterHeadingStyle
             .toModifier()
             .color(tokens.ink.ink3)
@@ -326,23 +318,19 @@ private fun ColumnHeading(text: String) {
 }
 
 /**
- * Clickable nav list row. Renders as `<li><a role=link>` with `cursor:pointer`
- * so it behaves like the JSX anchor-with-onClick pattern without navigating
- * through `href`; the route is delegated to [onNavigate].
+ * Nav list row rendered as a real `<li><a href>` anchor via Kobweb's [Link].
+ * The route resolves against registered Kobweb pages; browser middle-click
+ * and cmd-click behave naturally.
  */
 @Composable
-private fun FooterNavItem(label: String, route: String, onNavigate: (route: String) -> Unit) {
+private fun FooterNavItem(label: String, route: String) {
     Li(attrs = Modifier.toAttrs()) {
-        A(
-            href = null,
-            attrs = FooterLinkStyle
+        Link(
+            path = route,
+            modifier = FooterLinkStyle
                 .toModifier()
-                .cursor(Cursor.Pointer)
-                .onClick { event ->
-                    event.preventDefault()
-                    onNavigate(route)
-                }
-                .toAttrs { attr("role", "link") },
+                .cursor(Cursor.Pointer),
+            variant = UndecoratedLinkVariant then UncoloredLinkVariant,
         ) {
             ComposeText(label)
         }
@@ -460,14 +448,17 @@ val FooterListStyle = CssStyle {
 
 /**
  * Shared `CssStyle` for footer anchors (both routed nav and static Work rows).
- * Ports `.footer a` and `.footer a:hover`: inherits color from the surrounding
- * muted palette at rest, transitions to the theme accent on hover. Color is
- * applied on `base` and `hover` here rather than inline so the CssStyle can
- * own the transition.
+ * Ports `.footer a` / `.footer a:hover`: rests on the `ink-2` token so links
+ * read as copy rather than chrome, and transitions to the theme accent on
+ * hover. The explicit base color overrides the Silk `Link` variant defaults
+ * so visited links do not drift to browser purple.
  */
 val FooterLinkStyle = CssStyle {
     base {
+        val isDark = colorMode == ColorMode.DARK
+        val ink = if (isDark) Ink.dark else Ink.light
         Modifier
+            .color(ink.ink2)
             .textDecorationLine(TextDecorationLine.None)
             .cursor(Cursor.Pointer)
             .transition(

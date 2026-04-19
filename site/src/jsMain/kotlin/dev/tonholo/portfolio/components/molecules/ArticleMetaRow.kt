@@ -12,19 +12,21 @@ import com.varabyte.kobweb.compose.ui.modifiers.fontFamily
 import com.varabyte.kobweb.compose.ui.modifiers.fontSize
 import com.varabyte.kobweb.compose.ui.modifiers.gap
 import com.varabyte.kobweb.compose.ui.modifiers.margin
-import com.varabyte.kobweb.compose.ui.modifiers.onClick
 import com.varabyte.kobweb.compose.ui.modifiers.textDecorationLine
 import com.varabyte.kobweb.compose.ui.toAttrs
+import com.varabyte.kobweb.silk.components.navigation.Link
+import com.varabyte.kobweb.silk.components.navigation.UncoloredLinkVariant
+import com.varabyte.kobweb.silk.components.navigation.UndecoratedLinkVariant
 import com.varabyte.kobweb.silk.style.CssStyle
 import com.varabyte.kobweb.silk.style.toModifier
 import dev.tonholo.portfolio.components.atoms.PhosphorIcon
 import dev.tonholo.portfolio.locale.LocalStrings
+import dev.tonholo.portfolio.navigation.Routes
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.typography.FontFamilies
 import org.jetbrains.compose.web.css.AlignItems
 import org.jetbrains.compose.web.css.DisplayStyle
 import org.jetbrains.compose.web.css.cssRem
-import org.jetbrains.compose.web.dom.A
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Span
 import org.jetbrains.compose.web.dom.Text as ComposeText
@@ -48,25 +50,26 @@ private const val SEPARATOR = "\u00B7" // middle dot (U+00B7)
  * flex row in the mono font at 12px, muted color, 20px gap between
  * segments, and 24px bottom margin.
  *
- * The first segment is an accent-colored "articles" link prefixed with a
- * Phosphor `arrow-left` glyph; subsequent segments are separated by middle
- * dots and carry the date, read time, and author attribution (e.g.
- * `· dec 20, 2025`, `· 4 min read`, `· by rafael`).
+ * The first segment is a real `<a href>` anchor (via Kobweb's [Link])
+ * prefixed with a Phosphor `arrow-left` glyph that routes back to the
+ * articles index; subsequent segments are separated by middle dots and
+ * carry the date, read time, and author attribution
+ * (e.g. `· dec 20, 2025`, `· 4 min read`, `· by rafael`).
  *
  * @param date human-readable publish date, e.g. `"dec 20, 2025"`.
  * @param readTime estimated read duration, e.g. `"4 min"`; the component
  *   appends the `"read"` suffix when rendering.
- * @param onBack invoked when the back-to-articles anchor is clicked; use
- *   this to route back to the articles index.
- * @param author byline to render after `by`; defaults to `"rafael"`.
  * @param modifier optional [Modifier] chained after the base styles.
+ * @param backRoute destination path for the back link; defaults to the
+ *   articles index.
+ * @param author byline to render after `by`; defaults to `"rafael"`.
  */
 @Composable
 fun ArticleMetaRow(
     date: String,
     readTime: String,
-    onBack: () -> Unit,
     modifier: Modifier = Modifier,
+    backRoute: String = Routes.ARTICLES,
     author: String = DEFAULT_AUTHOR,
 ) {
     val tokens = LocalPortfolioTokens.current
@@ -78,20 +81,16 @@ fun ArticleMetaRow(
         .then(modifier)
 
     Div(attrs = finalModifier.toAttrs()) {
-        A(
-            href = "#",
-            attrs = Modifier
+        Link(
+            path = backRoute,
+            modifier = Modifier
                 .color(tokens.accent.accent)
                 .cursor(Cursor.Pointer)
                 .display(DisplayStyle.LegacyInlineFlex)
                 .alignItems(AlignItems.Center)
                 .gap(BACK_ICON_GAP_REM.cssRem)
-                .textDecorationLine(TextDecorationLine.None)
-                .onClick { event ->
-                    event.preventDefault()
-                    onBack()
-                }
-                .toAttrs(),
+                .textDecorationLine(TextDecorationLine.None),
+            variant = UndecoratedLinkVariant then UncoloredLinkVariant,
         ) {
             PhosphorIcon(
                 name = BACK_ICON_NAME,

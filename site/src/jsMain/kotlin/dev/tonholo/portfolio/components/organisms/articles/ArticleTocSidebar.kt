@@ -38,7 +38,7 @@ import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.em
 import org.jetbrains.compose.web.dom.A
 import org.jetbrains.compose.web.dom.Aside
-import org.jetbrains.compose.web.dom.H5
+import org.jetbrains.compose.web.dom.H2
 import org.jetbrains.compose.web.dom.Li
 import org.jetbrains.compose.web.dom.Ul
 import org.jetbrains.compose.web.dom.Text as ComposeText
@@ -197,15 +197,18 @@ private fun ShareAnchorRow(label: String, onClick: (() -> Unit)?, mutedColor: Co
 }
 
 /**
- * One mono `<h5>` used by both the contents and share sections. [marginTopRem]
- * is set inline so the first heading can collapse its top margin while the
+ * Mono sidebar heading used by both the contents and share sections.
+ * Rendered as an `<h2>` - the sidebar is a peer section to the article body
+ * under the page `<h1>`. Visual weight is kept small via font-size; the
+ * semantic level is what screen readers consume. [marginTopRem] is set
+ * inline so the first heading can collapse its top margin while the
  * second heading reproduces the handoff's `marginTop: 32px` inline style.
  */
 @Composable
 private fun SidebarHeading(text: String, marginTopRem: Double) {
     val tokens = LocalPortfolioTokens.current
 
-    H5(
+    H2(
         attrs = Modifier
             .fontFamily(*FontFamilies.MONO)
             .fontSize(HEADING_FONT_SIZE_REM.cssRem)

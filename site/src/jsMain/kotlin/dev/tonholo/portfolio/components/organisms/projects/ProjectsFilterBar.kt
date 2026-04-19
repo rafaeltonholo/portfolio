@@ -7,7 +7,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.gap
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.silk.style.CssStyle
 import com.varabyte.kobweb.silk.style.toModifier
-import dev.tonholo.portfolio.components.molecules.NavLink
+import dev.tonholo.portfolio.components.molecules.NavLinkButton
 import dev.tonholo.portfolio.locale.LocalStrings
 import dev.tonholo.portfolio.locale.Strings
 import org.jetbrains.compose.web.css.DisplayStyle
@@ -55,7 +55,7 @@ fun ProjectsFilterBar(
 
     Div(attrs = finalModifier.toAttrs()) {
         ProjectsFilter.entries.forEach { filter ->
-            NavLink(
+            NavLinkButton(
                 label = filter.labelFor(strings = strings),
                 active = filter == current,
                 onClick = { onSelect(filter) },

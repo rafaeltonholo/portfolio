@@ -23,12 +23,14 @@ import com.varabyte.kobweb.compose.ui.modifiers.letterSpacing
 import com.varabyte.kobweb.compose.ui.modifiers.lineHeight
 import com.varabyte.kobweb.compose.ui.modifiers.margin
 import com.varabyte.kobweb.compose.ui.modifiers.maxWidth
-import com.varabyte.kobweb.compose.ui.modifiers.onClick
 import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.compose.ui.modifiers.textTransform
 import com.varabyte.kobweb.compose.ui.modifiers.transition
 import com.varabyte.kobweb.compose.ui.modifiers.translateY
 import com.varabyte.kobweb.compose.ui.toAttrs
+import com.varabyte.kobweb.silk.components.navigation.Link
+import com.varabyte.kobweb.silk.components.navigation.UncoloredLinkVariant
+import com.varabyte.kobweb.silk.components.navigation.UndecoratedLinkVariant
 import com.varabyte.kobweb.silk.style.CssStyle
 import com.varabyte.kobweb.silk.style.selectors.hover
 import com.varabyte.kobweb.silk.style.toModifier
@@ -40,6 +42,7 @@ import dev.tonholo.portfolio.components.molecules.StatSize
 import dev.tonholo.portfolio.domain.model.Project
 import dev.tonholo.portfolio.domain.model.ProjectKind
 import dev.tonholo.portfolio.extensions.toKebabCase
+import dev.tonholo.portfolio.navigation.Routes
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.color.Paper
 import dev.tonholo.portfolio.theme.typography.FontFamilies
@@ -119,33 +122,26 @@ private const val ARROW_GAP_REM = 0.375 // 6px between label and arrow glyph
  * title, a body paragraph, a 3-column stats grid, and a footer that pairs a
  * mono stack line with a mono `read case study ->` CTA.
  *
- * The whole card is clickable; `onClick` receives the project [Project.slug]
- * so parents can route to the matching detail page.
+ * The whole card is a real `<a href>` anchor via Kobweb's [Link] pointing at
+ * the project's detail page, so middle-click / cmd-click / copy-link-address
+ * work the way a browser user expects.
  *
  * @param project the [Project] to render.
- * @param onClick invoked with [Project.slug] when the card is activated.
  * @param modifier optional [Modifier] chained after the base styles.
  */
 @Composable
-fun ProjectCardIde(
-    project: Project,
-    onClick: (slug: String) -> Unit,
-    modifier: Modifier = Modifier,
-) {
+fun ProjectCardIde(project: Project, modifier: Modifier = Modifier) {
     val tokens = LocalPortfolioTokens.current
 
     val cardModifier = ProjectCardIdeStyle
         .toModifier()
         .backgroundColor(tokens.paper.paper)
-        .onClick { onClick(project.slug) }
         .then(modifier)
 
-    Div(
-        attrs = cardModifier.toAttrs {
-            attr("role", "button")
-            attr("tabindex", "0")
-            attr("aria-label", "${project.name} - ${CTA_LABEL}")
-        },
+    Link(
+        path = Routes.project(slug = project.slug),
+        modifier = cardModifier,
+        variant = UndecoratedLinkVariant then UncoloredLinkVariant,
     ) {
         ProjectCardHead(project = project)
         ProjectCardBody(project = project)

@@ -24,11 +24,13 @@ import com.varabyte.kobweb.compose.ui.modifiers.letterSpacing
 import com.varabyte.kobweb.compose.ui.modifiers.lineHeight
 import com.varabyte.kobweb.compose.ui.modifiers.margin
 import com.varabyte.kobweb.compose.ui.modifiers.maxWidth
-import com.varabyte.kobweb.compose.ui.modifiers.onClick
 import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.compose.ui.modifiers.textTransform
 import com.varabyte.kobweb.compose.ui.modifiers.transition
 import com.varabyte.kobweb.compose.ui.toAttrs
+import com.varabyte.kobweb.silk.components.navigation.Link
+import com.varabyte.kobweb.silk.components.navigation.UncoloredLinkVariant
+import com.varabyte.kobweb.silk.components.navigation.UndecoratedLinkVariant
 import com.varabyte.kobweb.silk.style.CssStyle
 import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.style.selectors.hover
@@ -41,6 +43,7 @@ import dev.tonholo.portfolio.domain.model.Article
 import dev.tonholo.portfolio.domain.model.ArticleStatus
 import dev.tonholo.portfolio.locale.LocalStrings
 import dev.tonholo.portfolio.locale.Strings
+import dev.tonholo.portfolio.navigation.Routes
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.PortfolioTokens
 import dev.tonholo.portfolio.theme.color.Paper
@@ -56,7 +59,7 @@ import org.jetbrains.compose.web.css.em
 import org.jetbrains.compose.web.css.fr
 import org.jetbrains.compose.web.css.s
 import org.jetbrains.compose.web.dom.Div
-import org.jetbrains.compose.web.dom.H3
+import org.jetbrains.compose.web.dom.H2
 import org.jetbrains.compose.web.dom.P
 import org.jetbrains.compose.web.dom.Span
 import org.jetbrains.compose.web.dom.Text as ComposeText
@@ -127,19 +130,15 @@ private fun articleRowBorderColor(): Color {
  * the mono read-time estimate.
  *
  * Below [Breakpoint.LG] the grid collapses to a single column so date, title,
- * tags, and read-time stack. The entire row is clickable; pressing an item
- * fires [onArticleClick] with the underlying [Article.slug].
+ * tags, and read-time stack. Each row is a real `<a href>` anchor via
+ * Kobweb's [Link], so middle-click / cmd-click / "copy link address" behave
+ * like any browser anchor.
  *
  * @param articles the list of [Article]s to render; order is preserved.
- * @param onArticleClick invoked with [Article.slug] when a row is activated.
  * @param modifier optional [Modifier] chained after the base styles.
  */
 @Composable
-fun ArticleList(
-    articles: List<Article>,
-    onArticleClick: (slug: String) -> Unit,
-    modifier: Modifier = Modifier,
-) {
+fun ArticleList(articles: List<Article>, modifier: Modifier = Modifier) {
     val strings = LocalStrings.current.articlesList
 
     val finalModifier = ArticleListStyle
@@ -152,19 +151,13 @@ fun ArticleList(
                 article = article,
                 isLast = index == articles.lastIndex,
                 strings = strings,
-                onClick = onArticleClick,
             )
         }
     }
 }
 
 @Composable
-private fun ArticleRow(
-    article: Article,
-    isLast: Boolean,
-    strings: Strings.ArticlesList,
-    onClick: (slug: String) -> Unit,
-) {
+private fun ArticleRow(article: Article, isLast: Boolean, strings: Strings.ArticlesList) {
     val tokens = LocalPortfolioTokens.current
     val borderColor = articleRowBorderColor()
 
@@ -182,14 +175,11 @@ private fun ArticleRow(
             color = borderColor,
         )
     }
-    rowModifier = rowModifier.onClick { onClick(article.slug) }
 
-    Div(
-        attrs = rowModifier.toAttrs {
-            attr("role", "button")
-            attr("tabindex", "0")
-            attr("aria-label", article.title)
-        },
+    Link(
+        path = Routes.article(slug = article.slug),
+        modifier = rowModifier,
+        variant = UndecoratedLinkVariant then UncoloredLinkVariant,
     ) {
         ArticleDateCell(article = article, strings = strings, tokens = tokens)
         ArticleMainCell(article = article, tokens = tokens)
@@ -232,7 +222,7 @@ private fun ArticleDateCell(
 @Composable
 private fun ArticleMainCell(article: Article, tokens: PortfolioTokens) {
     Div(attrs = Modifier.toAttrs()) {
-        H3(
+        H2(
             attrs = ArticleTitleStyle
                 .toModifier()
                 .color(tokens.ink.ink)
@@ -317,8 +307,8 @@ val ArticleRowStyle = CssStyle {
             .alignItems(AlignItems.Start)
             .cursor(Cursor.Pointer)
             .transition(
-                Transition.group(
-                    properties = listOf("background-color", "padding"),
+                Transition.of(
+                    property = "background-color",
                     duration = ROW_TRANSITION_DURATION_S.s,
                 ),
             )

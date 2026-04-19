@@ -135,16 +135,16 @@ private fun navLinksFor(nav: Strings.Nav): List<NavLinkEntry> = listOf(
  * pointer hover re-expands it, and the pointer-leave collapses it again
  * (matching `.nav-meta.collapsed:hover` in the handoff CSS).
  *
- * Routing is delegated to the caller through [onNavigate]; the caller is
- * expected to forward the target route to `PageContext.router.tryRoutingTo`.
+ * Navigation links render as real `<a href>` anchors (via Kobweb's `Link`)
+ * so middle-click, cmd-click, and "copy link address" behave like any
+ * browser anchor. SPA routing is handled by `Link` itself.
  *
  * @param currentRoute fully-qualified current path (e.g. `/`, `/about`) used
  *   to flag the active [NavLink].
- * @param onNavigate invoked with the [Routes] constant the user clicked.
  * @param modifier optional [Modifier] chained after the base [NavStyle].
  */
 @Composable
-fun Nav(currentRoute: String, onNavigate: (route: String) -> Unit, modifier: Modifier = Modifier) {
+fun Nav(currentRoute: String, modifier: Modifier = Modifier) {
     val themeState = LocalThemeState.current
     val localeState = LocalLocaleState.current
     val strings = LocalStrings.current
@@ -156,10 +156,9 @@ fun Nav(currentRoute: String, onNavigate: (route: String) -> Unit, modifier: Mod
 
     WebNav(attrs = finalModifier.toAttrs()) {
         Div(attrs = NavInnerStyle.toModifier().toAttrs()) {
-            BrandMark(onClick = { onNavigate(Routes.HOME) })
+            BrandMark()
             NavLinksCluster(
                 currentRoute = currentRoute,
-                onNavigate = onNavigate,
                 links = navLinksFor(nav = strings.nav),
             )
             StatusBadge(text = strings.statusBadge.text)
@@ -178,17 +177,13 @@ fun Nav(currentRoute: String, onNavigate: (route: String) -> Unit, modifier: Mod
 }
 
 @Composable
-private fun NavLinksCluster(
-    currentRoute: String,
-    onNavigate: (String) -> Unit,
-    links: List<NavLinkEntry>,
-) {
+private fun NavLinksCluster(currentRoute: String, links: List<NavLinkEntry>) {
     Div(attrs = NavLinksStyle.toModifier().toAttrs()) {
         links.forEach { entry ->
             NavLink(
                 label = entry.label,
+                route = entry.route,
                 active = currentRoute == entry.route,
-                onClick = { onNavigate(entry.route) },
             )
         }
     }
@@ -318,6 +313,10 @@ val NavMetaStyle = CssStyle {
     base {
         val isDark = colorMode == ColorMode.DARK
         val textColor = if (isDark) Muted.dark.muted else Muted.light.muted
+        // Only animate `gap` and `border-color`: `padding-left` is left to
+        // snap so the sticky nav does not thrash layout on scroll during
+        // the collapse transition. `gap` is cheap because the badge is a
+        // tiny flex row; `border-color` is composited.
         Modifier
             .display(DisplayStyle.Flex)
             .alignItems(AlignItems.Center)
@@ -327,7 +326,7 @@ val NavMetaStyle = CssStyle {
             .cursor(Cursor.Default)
             .transition(
                 Transition.group(
-                    properties = listOf("gap", "padding-left", "border-color"),
+                    properties = listOf("gap", "border-color"),
                     duration = NAV_META_LAYOUT_TRANSITION_S.s,
                 ),
             )
@@ -335,8 +334,10 @@ val NavMetaStyle = CssStyle {
 }
 
 /**
- * Base `CssStyle` for `.nav-meta__text`. Keeps the text on one line and clips
- * the overflow so the animated `max-width` collapses cleanly.
+ * Base `CssStyle` for `.nav-meta__text`. Keeps the text on one line and
+ * clips the overflow so the intrinsic `max-width` collapse snaps without
+ * layout animation; the fade is driven by a compositor-only `opacity`
+ * transition so the sticky nav does not thrash layout on unrelated pages.
  */
 val NavMetaTextStyle = CssStyle {
     base {
@@ -344,10 +345,6 @@ val NavMetaTextStyle = CssStyle {
             .overflow(Overflow.Hidden)
             .whiteSpace(WhiteSpace.NoWrap)
             .transition(
-                Transition.of(
-                    property = "max-width",
-                    duration = NAV_META_LAYOUT_TRANSITION_S.s,
-                ),
                 Transition.of(
                     property = "opacity",
                     duration = NAV_META_OPACITY_TRANSITION_S.s,

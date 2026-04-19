@@ -133,11 +133,9 @@ fun DynamicProjectPage() {
 
     if (project == null) {
         ProjectLayout(
+            backRoute = Routes.PROJECTS,
             nextProjectName = null,
-            onBack = {
-                pageContext.router.tryRoutingTo(pathQueryAndFragment = Routes.HOME)
-            },
-            onNext = {},
+            nextRoute = null,
         ) {
             Text(strings.notFoundCopy)
         }
@@ -145,24 +143,11 @@ fun DynamicProjectPage() {
     }
 
     ProjectLayout(
+        backRoute = Routes.PROJECTS,
         nextProjectName = nextProject?.name,
-        onBack = {
-            pageContext.router.tryRoutingTo(pathQueryAndFragment = Routes.HOME)
-        },
-        onNext = {
-            nextProject?.let { target ->
-                pageContext.router.tryRoutingTo(
-                    pathQueryAndFragment = Routes.project(slug = target.slug),
-                )
-            }
-        },
+        nextRoute = nextProject?.let { Routes.project(slug = it.slug) },
     ) {
-        ProjectBreadcrumb(
-            projectName = project.name,
-            onBack = {
-                pageContext.router.tryRoutingTo(pathQueryAndFragment = Routes.PROJECTS)
-            },
-        )
+        ProjectBreadcrumb(projectName = project.name)
         ProjectDetailHero(project = project)
         Placeholder(
             aspectRatio = AspectRatio.Hero16x9,

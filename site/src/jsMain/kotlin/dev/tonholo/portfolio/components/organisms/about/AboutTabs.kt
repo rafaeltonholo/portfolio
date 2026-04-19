@@ -51,7 +51,7 @@ import org.jetbrains.compose.web.css.fr
 import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.css.s
 import org.jetbrains.compose.web.dom.Div
-import org.jetbrains.compose.web.dom.H3
+import org.jetbrains.compose.web.dom.H2
 import org.jetbrains.compose.web.dom.P
 import org.jetbrains.compose.web.dom.Span
 import org.jetbrains.compose.web.dom.Button as WebButton
@@ -426,7 +426,7 @@ private fun ProseParagraph(text: String, isFirst: Boolean, tokens: PortfolioToke
 @Composable
 private fun ProseHeading(text: String, tokens: PortfolioTokens, collapseTop: Boolean = false) {
     val topMargin = if (collapseTop) 0.em else PROSE_H3_MARGIN_TOP_EM.em
-    H3(
+    H2(
         attrs = AboutProseHeadingStyle
             .toModifier()
             .margin(top = topMargin, bottom = PROSE_H3_MARGIN_BOTTOM_EM.em)

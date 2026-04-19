@@ -22,23 +22,23 @@ private const val PROJECT_PADDING_Y_REM = 5.0
  * strip is rendered after the content so the sticky footer sits within the
  * same capped container as the article body.
  *
- * When [nextProjectName] is `null` the `next: {project}` slot in
- * [PrevNextNav] is hidden, matching the behaviour for the final project in
- * the series.
+ * When [nextProjectName] / [nextRoute] is `null` the `next: {project}` slot
+ * in [PrevNextNav] is hidden, matching the behaviour for the final project
+ * in the series. Back / next links are real `<a href>` anchors.
  *
+ * @param backRoute destination path for the back link in [PrevNextNav].
  * @param nextProjectName the human-readable name of the next project, or
  *   `null` to hide the right slot of [PrevNextNav].
- * @param onBack invoked when the back link is clicked.
- * @param onNext invoked when the next link is clicked. Only attached when
- *   [nextProjectName] is non-null.
+ * @param nextRoute destination path for the next link; pass `null` alongside
+ *   [nextProjectName] for the final project in the series.
  * @param modifier optional [Modifier] applied to the wrapper `<div>`.
  * @param content the project body rendered inside the shell.
  */
 @Composable
 fun ProjectLayout(
+    backRoute: String,
     nextProjectName: String?,
-    onBack: () -> Unit,
-    onNext: () -> Unit,
+    nextRoute: String?,
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit,
 ) {
@@ -46,9 +46,9 @@ fun ProjectLayout(
         Div(attrs = ProjectLayoutStyle.toModifier().then(modifier).toAttrs()) {
             content()
             PrevNextNav(
+                backRoute = backRoute,
                 nextProjectName = nextProjectName,
-                onBack = onBack,
-                onNext = onNext,
+                nextRoute = nextRoute,
             )
         }
     }

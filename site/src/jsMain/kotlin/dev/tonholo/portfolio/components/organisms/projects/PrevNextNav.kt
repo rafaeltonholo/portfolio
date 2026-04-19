@@ -14,9 +14,11 @@ import com.varabyte.kobweb.compose.ui.modifiers.fontSize
 import com.varabyte.kobweb.compose.ui.modifiers.gap
 import com.varabyte.kobweb.compose.ui.modifiers.justifyContent
 import com.varabyte.kobweb.compose.ui.modifiers.margin
-import com.varabyte.kobweb.compose.ui.modifiers.onClick
 import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.compose.ui.toAttrs
+import com.varabyte.kobweb.silk.components.navigation.Link
+import com.varabyte.kobweb.silk.components.navigation.UncoloredLinkVariant
+import com.varabyte.kobweb.silk.components.navigation.UndecoratedLinkVariant
 import com.varabyte.kobweb.silk.style.CssStyle
 import com.varabyte.kobweb.silk.style.toModifier
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
@@ -30,7 +32,6 @@ import org.jetbrains.compose.web.css.DisplayStyle
 import org.jetbrains.compose.web.css.JustifyContent
 import org.jetbrains.compose.web.css.LineStyle
 import org.jetbrains.compose.web.css.cssRem
-import org.jetbrains.compose.web.dom.A
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Text as ComposeText
 
@@ -56,23 +57,25 @@ private const val ICON_ARROW_RIGHT = "arrow-right"
  * JSX (lines 183-186 of `pages2.jsx`): a flex row separated by a 1px top
  * hairline, with a muted `back to work` link on the left and an accent
  * `next: {ProjectName}` link on the right. The right slot is hidden entirely
- * when [nextProjectName] is `null` (last project in the series).
+ * when [nextProjectName] / [nextRoute] is `null` (last project in the series).
  *
- * Arrows use [PhosphorIcon]: `arrow-left` on the back link and `arrow-right`
- * on the next link.
+ * Both links render as real `<a href>` anchors via Kobweb's [Link] so
+ * middle-click / cmd-click / "copy link address" work as expected. Arrows
+ * use [PhosphorIcon]: `arrow-left` on the back link and `arrow-right` on
+ * the next link.
  *
- * @param nextProjectName the human-readable name of the next project. Pass
+ * @param backRoute destination path used as the back link's `href`.
+ * @param nextProjectName the human-readable name of the next project, or
  *   `null` to hide the right slot for the final project in the series.
- * @param onBack invoked when the back link is clicked.
- * @param onNext invoked when the next link is clicked. Only attached when
- *   [nextProjectName] is non-null.
+ * @param nextRoute destination path used as the next link's `href`; when
+ *   `null` the right slot is hidden.
  * @param modifier optional [Modifier] chained after the base styles.
  */
 @Composable
 fun PrevNextNav(
+    backRoute: String,
     nextProjectName: String?,
-    onBack: () -> Unit,
-    onNext: () -> Unit,
+    nextRoute: String?,
     modifier: Modifier = Modifier,
 ) {
     val tokens = LocalPortfolioTokens.current
@@ -88,32 +91,28 @@ fun PrevNextNav(
         .then(modifier)
 
     Div(attrs = finalModifier.toAttrs()) {
-        BackLink(onBack = onBack)
-        if (nextProjectName != null) {
-            NextLink(projectName = nextProjectName, onNext = onNext)
+        BackLink(route = backRoute)
+        if (nextProjectName != null && nextRoute != null) {
+            NextLink(projectName = nextProjectName, route = nextRoute)
         }
     }
 }
 
 /**
- * Back link: muted mono row that reads `← back to work`. Uses an anchor
- * without an `href` because route changes flow through [onBack].
+ * Back link: muted mono row that reads `← back to work`, rendered as a real
+ * `<a href>` anchor via Kobweb's [Link].
  */
 @Composable
-private fun BackLink(onBack: () -> Unit) {
+private fun BackLink(route: String) {
     val tokens = LocalPortfolioTokens.current
     val strings = LocalStrings.current.prevNext
 
-    A(
-        href = null,
-        attrs = PrevNextLinkStyle
+    Link(
+        path = route,
+        modifier = PrevNextLinkStyle
             .toModifier()
-            .color(tokens.muted.muted)
-            .onClick { event ->
-                event.preventDefault()
-                onBack()
-            }
-            .toAttrs { attr("role", "link") },
+            .color(tokens.muted.muted),
+        variant = UndecoratedLinkVariant then UncoloredLinkVariant,
     ) {
         PhosphorIcon(name = ICON_ARROW_LEFT)
         ComposeText(strings.back)
@@ -121,24 +120,20 @@ private fun BackLink(onBack: () -> Unit) {
 }
 
 /**
- * Next link: accent mono row that reads `next: {projectName} →`. Uses an
- * anchor without an `href` because route changes flow through [onNext].
+ * Next link: accent mono row that reads `next: {projectName} →`, rendered
+ * as a real `<a href>` anchor via Kobweb's [Link].
  */
 @Composable
-private fun NextLink(projectName: String, onNext: () -> Unit) {
+private fun NextLink(projectName: String, route: String) {
     val tokens = LocalPortfolioTokens.current
     val strings = LocalStrings.current.prevNext
 
-    A(
-        href = null,
-        attrs = PrevNextLinkStyle
+    Link(
+        path = route,
+        modifier = PrevNextLinkStyle
             .toModifier()
-            .color(tokens.accent.accent)
-            .onClick { event ->
-                event.preventDefault()
-                onNext()
-            }
-            .toAttrs { attr("role", "link") },
+            .color(tokens.accent.accent),
+        variant = UndecoratedLinkVariant then UncoloredLinkVariant,
     ) {
         ComposeText(strings.nextPrefix + projectName)
         PhosphorIcon(name = ICON_ARROW_RIGHT)

@@ -56,15 +56,10 @@ fun PageLayout(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
         }
     }
 
-    Nav(
-        currentRoute = currentRoute,
-        onNavigate = { route -> pageContext.router.tryRoutingTo(pathQueryAndFragment = route) },
-    )
+    Nav(currentRoute = currentRoute)
     TagElement<HTMLElement>(tagName = "main", applyAttrs = modifier.toAttrs()) {
         content()
     }
-    Footer(
-        onNavigate = { route -> pageContext.router.tryRoutingTo(pathQueryAndFragment = route) },
-    )
+    Footer()
     LanguageToast(visible = toastVisible)
 }

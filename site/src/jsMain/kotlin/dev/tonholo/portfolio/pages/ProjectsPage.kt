@@ -12,17 +12,16 @@ import com.varabyte.kobweb.compose.ui.modifiers.margin
 import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.core.Page
-import com.varabyte.kobweb.core.rememberPageContext
 import com.varabyte.kobweb.silk.style.toModifier
 import dev.tonholo.portfolio.components.atoms.MetaLabel
 import dev.tonholo.portfolio.components.atoms.MetaLabelVariant
+import dev.tonholo.portfolio.components.atoms.VisuallyHiddenStyle
 import dev.tonholo.portfolio.components.layouts.PageLayout
 import dev.tonholo.portfolio.components.organisms.home.SelectedWorkGrid
 import dev.tonholo.portfolio.components.organisms.projects.ProjectsFilter
 import dev.tonholo.portfolio.components.organisms.projects.ProjectsFilterBar
 import dev.tonholo.portfolio.domain.model.ProjectKind
 import dev.tonholo.portfolio.locale.LocalStrings
-import dev.tonholo.portfolio.navigation.Routes
 import dev.tonholo.portfolio.state.StaticContent
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.layout.ShellStyle
@@ -32,6 +31,7 @@ import org.jetbrains.compose.web.css.DisplayStyle
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.H1
+import org.jetbrains.compose.web.dom.H2
 import org.jetbrains.compose.web.dom.Text as ComposeText
 
 // Mono eyebrow is a technical path literal and stays untranslated.
@@ -56,7 +56,6 @@ private const val TITLE_MARGIN_BOTTOM_REM = 2.0
 @Composable
 @Suppress("ModifierMissing")
 fun ProjectsPage() {
-    val router = rememberPageContext().router
     var filter by remember { mutableStateOf(value = ProjectsFilter.All) }
     val filtered = when (filter) {
         ProjectsFilter.All -> StaticContent.PROJECTS
@@ -67,13 +66,13 @@ fun ProjectsPage() {
     PageLayout {
         Div(attrs = ShellStyle.toModifier().toAttrs()) {
             ProjectsPageHeader(current = filter, onSelect = { filter = it })
-            SelectedWorkGrid(
-                projects = filtered,
-                onProjectClick = { slug ->
-                    router.tryRoutingTo(pathQueryAndFragment = Routes.project(slug = slug))
-                },
-                showSectionHead = false,
-            )
+            // Visually-hidden section heading: the card grid below is a peer
+            // section to the "Work." page title. Keeps the document outline
+            // h1 -> h2 -> h3 (footer) without adding visible chrome.
+            H2(attrs = VisuallyHiddenStyle.toModifier().toAttrs()) {
+                ComposeText("Selected projects")
+            }
+            SelectedWorkGrid(projects = filtered, showSectionHead = false)
         }
     }
 }

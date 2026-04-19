@@ -39,7 +39,7 @@ import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.em
 import org.jetbrains.compose.web.css.fr
 import org.jetbrains.compose.web.dom.Div
-import org.jetbrains.compose.web.dom.H4
+import org.jetbrains.compose.web.dom.H3
 import org.jetbrains.compose.web.dom.Li
 import org.jetbrains.compose.web.dom.Ul
 import org.jetbrains.compose.web.dom.Text as ComposeText
@@ -149,7 +149,7 @@ private fun SkillsColumn(heading: String, content: @Composable () -> Unit) {
     val tokens = LocalPortfolioTokens.current
 
     Div(attrs = Modifier.toAttrs()) {
-        H4(
+        H3(
             attrs = SkillsColumnHeadingStyle
                 .toModifier()
                 .color(tokens.ink.ink3)
