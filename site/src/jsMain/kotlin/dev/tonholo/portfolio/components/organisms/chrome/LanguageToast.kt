@@ -6,22 +6,16 @@ import com.varabyte.kobweb.compose.css.BoxShadow
 import com.varabyte.kobweb.compose.css.FontWeight
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.graphics.Color
-import com.varabyte.kobweb.compose.ui.modifiers.alignItems
 import com.varabyte.kobweb.compose.ui.modifiers.animation
 import com.varabyte.kobweb.compose.ui.modifiers.backgroundColor
 import com.varabyte.kobweb.compose.ui.modifiers.border
-import com.varabyte.kobweb.compose.ui.modifiers.borderLeft
 import com.varabyte.kobweb.compose.ui.modifiers.borderRadius
 import com.varabyte.kobweb.compose.ui.modifiers.bottom
 import com.varabyte.kobweb.compose.ui.modifiers.boxShadow
 import com.varabyte.kobweb.compose.ui.modifiers.color
-import com.varabyte.kobweb.compose.ui.modifiers.display
-import com.varabyte.kobweb.compose.ui.modifiers.flexShrink
 import com.varabyte.kobweb.compose.ui.modifiers.fontFamily
 import com.varabyte.kobweb.compose.ui.modifiers.fontSize
 import com.varabyte.kobweb.compose.ui.modifiers.fontWeight
-import com.varabyte.kobweb.compose.ui.modifiers.gap
-import com.varabyte.kobweb.compose.ui.modifiers.height
 import com.varabyte.kobweb.compose.ui.modifiers.margin
 import com.varabyte.kobweb.compose.ui.modifiers.maxWidth
 import com.varabyte.kobweb.compose.ui.modifiers.opacity
@@ -30,21 +24,16 @@ import com.varabyte.kobweb.compose.ui.modifiers.position
 import com.varabyte.kobweb.compose.ui.modifiers.right
 import com.varabyte.kobweb.compose.ui.modifiers.role
 import com.varabyte.kobweb.compose.ui.modifiers.translateY
-import com.varabyte.kobweb.compose.ui.modifiers.width
 import com.varabyte.kobweb.compose.ui.modifiers.zIndex
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.silk.style.CssStyle
 import com.varabyte.kobweb.silk.style.animation.Keyframes
 import com.varabyte.kobweb.silk.style.animation.toAnimation
 import com.varabyte.kobweb.silk.style.toModifier
-import dev.tonholo.portfolio.components.atoms.Dot
-import dev.tonholo.portfolio.components.atoms.DotVariant
 import dev.tonholo.portfolio.locale.LocalStrings
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.typography.FontFamilies
-import org.jetbrains.compose.web.css.AlignItems
 import org.jetbrains.compose.web.css.AnimationTimingFunction
-import org.jetbrains.compose.web.css.DisplayStyle
 import org.jetbrains.compose.web.css.LineStyle
 import org.jetbrains.compose.web.css.Position
 import org.jetbrains.compose.web.css.cssRem
@@ -56,21 +45,16 @@ import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Span
 import org.jetbrains.compose.web.dom.Text as ComposeText
 
-// `.lang-toast` geometry (from handoff `styles.css`).
+// `.lang-toast` geometry (from handoff `styles.css`, distilled so the card is
+// a single uniform surface - no more accent side-stripe).
 private const val TOAST_OFFSET_REM = 1.5 // 24px
 private const val TOAST_PADDING_Y_REM = 0.75 // 12px
 private const val TOAST_PADDING_X_REM = 1.0 // 16px
-private const val TOAST_GAP_REM = 0.625 // 10px
 private const val TOAST_RADIUS_REM = 0.125 // 2px
 private const val TOAST_BORDER_WIDTH_REM = 0.0625 // 1px
-private const val TOAST_ACCENT_BORDER_WIDTH_REM = 0.125 // 2px
 private const val TOAST_FONT_SIZE_REM = 0.75 // 12px
 private const val TOAST_MAX_WIDTH_REM = 20.0 // 320px
 private const val TOAST_Z_INDEX = 100
-
-// `.lang-toast__dot` overrides sitting on top of the base `.dot`.
-private const val TOAST_DOT_SIZE_REM = 0.375 // 6px
-private const val TOAST_DOT_MARGIN_TOP_REM = 0.375 // 6px
 
 // Secondary note (`<div style={{fontSize:11, opacity:0.55, marginTop:2}}>`).
 private const val TOAST_NOTE_FONT_SIZE_REM = 0.6875 // 11px
@@ -106,15 +90,20 @@ private val ToastShadowColor: Color = Color.rgba(
 
 /**
  * Transient status banner shown when the user switches the site to pt-BR.
- * Maps to `.lang-toast` in the handoff `styles.css`: a fixed-position bottom-
- * right card with a 2px accent border on the left, a small pulsing [Dot], a
- * bold `pt-BR` label followed by a dim localized note, and a smaller muted
- * secondary line. The outer element carries `role="status"` so assistive
- * technology announces the language change without stealing focus.
+ * Fixed-position bottom-right card with a uniform 1px paper-3 border: the
+ * bold `pt-BR` code renders in the accent color so the locale change is the
+ * one thing that draws the eye. Secondary copy (primary phrase, muted
+ * note) carries the surrounding context.
  *
- * The composable is fully controlled: the caller (typically `AppEntry`) owns
- * the 3.6s visibility timer and simply toggles [visible]. When [visible] is
- * `false`, nothing renders.
+ * The earlier build paired a 2px accent `border-left` with a pulsing dot;
+ * both were removed because the side-stripe is a recognized AI-dashboard
+ * tell and the dot duplicated signal the bold accent-colored label already
+ * carries. `role="status"` stays so assistive tech announces the switch
+ * without stealing focus.
+ *
+ * The composable is fully controlled: the caller (typically `AppEntry`)
+ * owns the 3.6s visibility timer and simply toggles [visible]. When
+ * [visible] is `false`, nothing renders.
  *
  * @param modifier optional [Modifier] chained after the base styles.
  * @param visible whether the toast should be rendered right now. The caller
@@ -136,52 +125,42 @@ fun LanguageToast(visible: Boolean, modifier: Modifier = Modifier) {
             style = LineStyle.Solid,
             color = tokens.paper.paper3,
         )
-        .borderLeft(
-            width = TOAST_ACCENT_BORDER_WIDTH_REM.cssRem,
-            style = LineStyle.Solid,
-            color = tokens.accent.accent,
-        )
         .color(tokens.ink.ink2)
         .role("status")
         .then(modifier)
 
     Div(attrs = finalModifier.toAttrs()) {
-        Dot(
-            modifier = LanguageToastDotStyle.toModifier(),
-            variant = DotVariant.Pulsing,
-        )
-        Div {
-            B(
-                attrs = Modifier
-                    .fontWeight(FontWeight.Bold)
-                    .toAttrs(),
-            ) {
-                ComposeText(PT_BR_LABEL)
-            }
-            Span(
-                attrs = Modifier
-                    .opacity(TOAST_SUFFIX_OPACITY)
-                    .toAttrs(),
-            ) {
-                ComposeText(strings.primary)
-            }
-            Div(
-                attrs = LanguageToastNoteStyle
-                    .toModifier()
-                    .toAttrs(),
-            ) {
-                ComposeText(strings.secondary)
-            }
+        B(
+            attrs = Modifier
+                .fontWeight(FontWeight.Bold)
+                .color(tokens.accent.accent)
+                .toAttrs(),
+        ) {
+            ComposeText(PT_BR_LABEL)
+        }
+        Span(
+            attrs = Modifier
+                .opacity(TOAST_SUFFIX_OPACITY)
+                .toAttrs(),
+        ) {
+            ComposeText(strings.primary)
+        }
+        Div(
+            attrs = LanguageToastNoteStyle
+                .toModifier()
+                .toAttrs(),
+        ) {
+            ComposeText(strings.secondary)
         }
     }
 }
 
 /**
- * Base `CssStyle` for [LanguageToast]. Ports `.lang-toast` geometry from the
- * handoff: a fixed bottom-right card with paper background, 12px x 16px
- * padding, 2px radius, mono 12px body copy, and the 8px x 24px ambient drop
- * shadow. Background, border colors, and text color are applied inline by
- * the composable so they stay token-aware across color modes.
+ * Base `CssStyle` for [LanguageToast]. Fixed bottom-right card with paper
+ * background, 12px x 16px padding, 2px radius, mono 12px body copy, and the
+ * 8px x 24px ambient drop shadow. Background, border color, and text color
+ * are applied inline by the composable so they stay token-aware across
+ * color modes.
  */
 val LanguageToastStyle = CssStyle {
     base {
@@ -191,9 +170,6 @@ val LanguageToastStyle = CssStyle {
             .right(TOAST_OFFSET_REM.cssRem)
             .zIndex(TOAST_Z_INDEX)
             .maxWidth(TOAST_MAX_WIDTH_REM.cssRem)
-            .display(DisplayStyle.Flex)
-            .alignItems(AlignItems.FlexStart)
-            .gap(TOAST_GAP_REM.cssRem)
             .padding(
                 topBottom = TOAST_PADDING_Y_REM.cssRem,
                 leftRight = TOAST_PADDING_X_REM.cssRem,
@@ -216,22 +192,6 @@ val LanguageToastStyle = CssStyle {
                     iterationCount = AnimationIterationCount.of(TOAST_ANIMATION_ITERATIONS),
                 ),
             )
-    }
-}
-
-/**
- * Base `CssStyle` for `.lang-toast__dot`. Overrides the default [Dot] size
- * (7px -> 6px), nudges the dot down 6px so it optically aligns with the
- * first line of bold body text, and prevents the flex parent from squishing
- * it when the copy wraps.
- */
-val LanguageToastDotStyle = CssStyle {
-    base {
-        Modifier
-            .width(TOAST_DOT_SIZE_REM.cssRem)
-            .height(TOAST_DOT_SIZE_REM.cssRem)
-            .margin(top = TOAST_DOT_MARGIN_TOP_REM.cssRem)
-            .flexShrink(0)
     }
 }
 
