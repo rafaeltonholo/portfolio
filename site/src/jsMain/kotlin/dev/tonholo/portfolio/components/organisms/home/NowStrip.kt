@@ -315,7 +315,7 @@ private const val HOBBY_COOKING_BODY = "ragu, most Sundays"
 private const val HOBBY_TEA_LABEL = "tea"
 private const val HOBBY_TEA_BODY = "loose-leaf sencha, mornings"
 private const val HOBBY_RUNNING_LABEL = "running"
-private const val HOBBY_RUNNING_BODY = "Ottawa river path"
+private const val HOBBY_RUNNING_BODY = "Karney Lake Dam path"
 private const val HOBBY_READING_LABEL = "reading"
 private const val HOBBY_READING_TITLE = "Designing Data-Intensive Applications"
 
