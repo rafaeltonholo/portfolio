@@ -14,7 +14,9 @@ import com.varabyte.kobweb.compose.ui.modifiers.display
 import com.varabyte.kobweb.compose.ui.modifiers.height
 import com.varabyte.kobweb.compose.ui.modifiers.justifyContent
 import com.varabyte.kobweb.compose.ui.modifiers.onClick
+import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.compose.ui.modifiers.width
+import com.varabyte.kobweb.compose.ui.styleModifier
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.silk.style.CssStyle
 import com.varabyte.kobweb.silk.style.selectors.hover
@@ -30,7 +32,8 @@ import org.jetbrains.compose.web.css.LineStyle
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.dom.Button as WebButton
 
-private const val ICON_BUTTON_SIZE_REM = 2.0 // 32px
+private const val ICON_BUTTON_SIZE_REM = 2.0 // 32px visible square
+private const val ICON_BUTTON_HIT_PADDING_REM = 0.375 // 6px -> 44x44 hit box
 private const val ICON_BUTTON_BORDER_RADIUS_REM = 0.25 // 4px
 
 private val TransparentColor: Color = Color.rgba(r = 0, g = 0, b = 0, a = 0f)
@@ -78,14 +81,23 @@ fun IconButton(
 }
 
 /**
- * Base `CssStyle` for [IconButton]. Ports `.icon-btn` exactly: 32x32 square,
- * transparent fill, no border, radius 4px, hover swaps to `paper-2 / ink`.
+ * Base `CssStyle` for [IconButton]. Ports `.icon-btn` from the handoff with
+ * a WCAG 2.5.5 accommodation: the visible square stays 32x32 (matching the
+ * editorial chrome), but 6px padding extends the hit box to 44x44 so mobile
+ * taps meet the minimum target size. `background-clip: content-box` keeps
+ * the hover fill inside the original 32x32 footprint even though the
+ * clickable area is larger.
  */
 val IconButtonStyle = CssStyle {
     base {
         Modifier
             .width(ICON_BUTTON_SIZE_REM.cssRem)
             .height(ICON_BUTTON_SIZE_REM.cssRem)
+            .padding(ICON_BUTTON_HIT_PADDING_REM.cssRem)
+            .styleModifier {
+                property("box-sizing", "content-box")
+                property("background-clip", "content-box")
+            }
             .display(DisplayStyle.LegacyInlineFlex)
             .alignItems(AlignItems.Center)
             .justifyContent(JustifyContent.Center)
