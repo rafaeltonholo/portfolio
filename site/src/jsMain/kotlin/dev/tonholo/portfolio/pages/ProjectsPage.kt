@@ -17,7 +17,7 @@ import dev.tonholo.portfolio.components.atoms.MetaLabel
 import dev.tonholo.portfolio.components.atoms.MetaLabelVariant
 import dev.tonholo.portfolio.components.atoms.VisuallyHiddenStyle
 import dev.tonholo.portfolio.components.layouts.PageLayout
-import dev.tonholo.portfolio.components.organisms.home.SelectedWorkGrid
+import dev.tonholo.portfolio.components.organisms.home.ProjectsGrid
 import dev.tonholo.portfolio.components.organisms.projects.ProjectsFilter
 import dev.tonholo.portfolio.components.organisms.projects.ProjectsFilterBar
 import dev.tonholo.portfolio.domain.model.ProjectKind
@@ -72,7 +72,7 @@ fun ProjectsPage() {
             H2(attrs = VisuallyHiddenStyle.toModifier().toAttrs()) {
                 ComposeText("Selected projects")
             }
-            SelectedWorkGrid(projects = filtered, showSectionHead = false)
+            ProjectsGrid(projects = filtered)
         }
     }
 }

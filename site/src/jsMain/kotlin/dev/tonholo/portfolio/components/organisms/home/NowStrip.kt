@@ -23,14 +23,13 @@ import com.varabyte.kobweb.silk.style.CssStyle
 import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.style.toModifier
 import dev.tonholo.portfolio.components.atoms.MetaLabel
-import dev.tonholo.portfolio.components.molecules.SectionHead
+import dev.tonholo.portfolio.components.template.NumberedSection
 import dev.tonholo.portfolio.domain.model.Article
 import dev.tonholo.portfolio.domain.model.ArticleStatus
 import dev.tonholo.portfolio.locale.LocalStrings
 import dev.tonholo.portfolio.locale.Strings
 import dev.tonholo.portfolio.state.StaticContent
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
-import dev.tonholo.portfolio.theme.layout.ShellStyle
 import dev.tonholo.portfolio.theme.typography.FontFamilies
 import dev.tonholo.portfolio.theme.typography.Typography
 import dev.tonholo.portfolio.theme.typography.apply
@@ -45,13 +44,12 @@ import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.H3
 import org.jetbrains.compose.web.dom.Li
 import org.jetbrains.compose.web.dom.P
-import org.jetbrains.compose.web.dom.Section
 import org.jetbrains.compose.web.dom.Span
 import org.jetbrains.compose.web.dom.Ul
 import org.jetbrains.compose.web.dom.Text as ComposeText
 
-// Ordinal prefix is a mono literal and stays stable across locales.
-private const val SECTION_NUMBER = "// 01"
+// Ordinal for the Currently strip: renders as `// 01`.
+private const val SECTION_ORDINAL = 1
 
 // Grid layout per handoff: `grid-template-columns: 1.4fr 1fr 1fr; gap: 48px`.
 private const val NOW_GRID_WIDE_FR = 1.4
@@ -105,22 +103,19 @@ fun NowStrip(modifier: Modifier = Modifier) {
     val recentArticles = StaticContent.ARTICLES.take(WRITING_ARTICLES_TAKE)
     val strings = LocalStrings.current.nowStrip
 
-    val sectionModifier = NowStripStyle
-        .toModifier()
-        .then(modifier)
-
-    Section(attrs = sectionModifier.toAttrs()) {
-        Div(attrs = ShellStyle.toModifier().toAttrs()) {
-            SectionHead(number = SECTION_NUMBER, title = strings.sectionTitle)
-            Div(attrs = NowGridStyle.toModifier().toAttrs()) {
-                WorkingOnColumn(
-                    title = workingEntry?.title ?: DEFAULT_WORKING_TITLE,
-                    body = workingEntry?.body ?: DEFAULT_WORKING_BODY,
-                    strings = strings,
-                )
-                WritingColumn(articles = recentArticles, strings = strings)
-                OffTheClockColumn(strings = strings)
-            }
+    NumberedSection(
+        number = SECTION_ORDINAL,
+        title = strings.sectionTitle,
+        modifier = modifier,
+    ) {
+        Div(attrs = NowGridStyle.toModifier().toAttrs()) {
+            WorkingOnColumn(
+                title = workingEntry?.title ?: DEFAULT_WORKING_TITLE,
+                body = workingEntry?.body ?: DEFAULT_WORKING_BODY,
+                strings = strings,
+            )
+            WritingColumn(articles = recentArticles, strings = strings)
+            OffTheClockColumn(strings = strings)
         }
     }
 }
@@ -323,13 +318,6 @@ private const val HOBBY_RUNNING_LABEL = "running"
 private const val HOBBY_RUNNING_BODY = "Ottawa river path"
 private const val HOBBY_READING_LABEL = "reading"
 private const val HOBBY_READING_TITLE = "Designing Data-Intensive Applications"
-
-/**
- * Base `CssStyle` for the outer `<section>` wrapping the whole strip. Kept
- * empty at the base level so the inner [ShellStyle] owns the horizontal
- * gutters; callers can chain extra spacing via [Modifier].
- */
-val NowStripStyle = CssStyle {}
 
 /**
  * Base `CssStyle` for `.now-grid`. Single column at the base width; switches

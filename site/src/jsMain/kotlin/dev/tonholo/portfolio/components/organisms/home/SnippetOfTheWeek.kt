@@ -14,16 +14,15 @@ import com.varabyte.kobweb.compose.ui.modifiers.gridTemplateColumns
 import com.varabyte.kobweb.compose.ui.modifiers.lineHeight
 import com.varabyte.kobweb.compose.ui.modifiers.margin
 import com.varabyte.kobweb.compose.ui.modifiers.maxWidth
-import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.silk.style.CssStyle
 import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.style.toModifier
 import dev.tonholo.portfolio.components.atoms.MetaLabel
-import dev.tonholo.portfolio.components.molecules.SectionHead
+import dev.tonholo.portfolio.components.template.NumberedSection
 import dev.tonholo.portfolio.locale.LocalStrings
+import dev.tonholo.portfolio.locale.Strings
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
-import dev.tonholo.portfolio.theme.layout.ShellStyle
 import dev.tonholo.portfolio.theme.typography.FontFamilies
 import dev.tonholo.portfolio.theme.typography.Typography
 import dev.tonholo.portfolio.theme.typography.apply
@@ -37,16 +36,10 @@ import org.jetbrains.compose.web.css.fr
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.H3
 import org.jetbrains.compose.web.dom.P
-import org.jetbrains.compose.web.dom.Section
 import org.jetbrains.compose.web.dom.Text as ComposeText
 
-// Outer `<section class="section shell">`: vertical padding keyed off `--pad-y`
-// (80px base, per handoff `.section { padding: var(--pad-y) 0; }`).
-private const val SECTION_PADDING_Y_REM = 5.0
-
-// Ordinal prefix + week/year stamp are mono technical literals and stay
-// stable across locales.
-private const val SECTION_NUMBER = "// 02"
+// Ordinal for the Snippet of the week section: renders as `// 02`.
+private const val SECTION_ORDINAL = 2
 private const val SECTION_TRAILING_LABEL = "week 15 \u00B7 2026"
 
 // Two-column grid (handoff line 202): `1fr 1.3fr`, 48px gap, align-items start.
@@ -97,36 +90,27 @@ private const val META_EDITED_ROW = "// last edited 2 days ago"
 fun SnippetOfTheWeek(modifier: Modifier = Modifier) {
     val strings = LocalStrings.current.snippet
 
-    val sectionModifier = SnippetOfTheWeekSectionStyle
-        .toModifier()
-        .then(modifier)
-
-    Section(attrs = sectionModifier.toAttrs()) {
-        Div(attrs = ShellStyle.toModifier().toAttrs()) {
-            SectionHead(
-                number = SECTION_NUMBER,
-                title = strings.sectionTitle,
-                trailing = {
-                    MetaLabel(text = SECTION_TRAILING_LABEL)
-                },
-            )
-            Div(attrs = SnippetGridStyle.toModifier().toAttrs()) {
-                CopyColumn()
-                TerminalSnippet(lines = DEBOUNCED_CLICKABLE_LINES)
-            }
+    NumberedSection(
+        number = SECTION_ORDINAL,
+        title = strings.sectionTitle,
+        modifier = modifier,
+        trailing = { MetaLabel(text = SECTION_TRAILING_LABEL) },
+    ) {
+        Div(attrs = SnippetGridStyle.toModifier().toAttrs()) {
+            CopyColumn(strings = strings)
+            TerminalSnippet(lines = DEBOUNCED_CLICKABLE_LINES)
         }
     }
 }
 
 /**
  * Left column of [SnippetOfTheWeek]: display-font title, serif body, and a
- * two-row mono meta block (file name and "last edited" line). All copy is
- * ported verbatim from the handoff JSX (lines 203-213).
+ * two-row mono meta block (file name and "last edited" line). Copy for the
+ * title + body is passed in so the parent hoists the [LocalStrings] read.
  */
 @Composable
-private fun CopyColumn() {
+private fun CopyColumn(strings: Strings.Snippet) {
     val tokens = LocalPortfolioTokens.current
-    val strings = LocalStrings.current.snippet
 
     Div(attrs = Modifier.toAttrs()) {
         H3(
@@ -257,16 +241,6 @@ private val DEBOUNCED_CLICKABLE_LINES: List<TerminalLine> = listOf(
         ),
     ),
 )
-
-/**
- * Base `CssStyle` for the `<section>` wrapper. Mirrors the handoff `.section`
- * rule: vertical padding keyed off `--pad-y` (80px at the default density).
- */
-val SnippetOfTheWeekSectionStyle = CssStyle {
-    base {
-        Modifier.padding(topBottom = SECTION_PADDING_Y_REM.cssRem)
-    }
-}
 
 /**
  * Base `CssStyle` for the two-column grid wrapping the copy column and the

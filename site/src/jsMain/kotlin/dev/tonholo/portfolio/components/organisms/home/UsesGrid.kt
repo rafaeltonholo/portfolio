@@ -20,12 +20,11 @@ import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.style.toModifier
 import dev.tonholo.portfolio.components.atoms.MetaLabel
 import dev.tonholo.portfolio.components.atoms.MetaLabelVariant
-import dev.tonholo.portfolio.components.molecules.SectionHead
+import dev.tonholo.portfolio.components.template.NumberedSection
 import dev.tonholo.portfolio.domain.model.UseCategory
 import dev.tonholo.portfolio.locale.LocalStrings
 import dev.tonholo.portfolio.state.StaticContent
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
-import dev.tonholo.portfolio.theme.layout.ShellStyle
 import dev.tonholo.portfolio.theme.typography.FontFamilies
 import org.jetbrains.compose.web.css.DisplayStyle
 import org.jetbrains.compose.web.css.FlexDirection
@@ -33,17 +32,11 @@ import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.fr
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Li
-import org.jetbrains.compose.web.dom.Section
 import org.jetbrains.compose.web.dom.Ul
 import org.jetbrains.compose.web.dom.Text as ComposeText
 
-// Outer `<section class="section shell">`: vertical padding uses `--pad-y`
-// (80px base) per handoff `.section { padding: var(--pad-y) 0; }`.
-private const val SECTION_PADDING_Y_REM = 5.0
-
-// Ordinal prefix stays as a mono literal across locales; the title + trailing
-// link come from [LocalStrings.uses].
-private const val SECTION_NUMBER = "// 03"
+// Ordinal for the Uses section: renders as `// 03`.
+private const val SECTION_ORDINAL = 3
 
 // Grid: 4 equal columns, 32px gap (handoff line 239). Collapses to 2 cols
 // below LG (820px) and 1 col below MD (720px).
@@ -84,26 +77,20 @@ fun UsesGrid(modifier: Modifier = Modifier) {
     val categories = StaticContent.USES
     val strings = LocalStrings.current.uses
 
-    val sectionModifier = UsesSectionStyle
-        .toModifier()
-        .then(modifier)
-
-    Section(attrs = sectionModifier.toAttrs()) {
-        Div(attrs = ShellStyle.toModifier().toAttrs()) {
-            SectionHead(
-                number = SECTION_NUMBER,
-                title = strings.sectionTitle,
-                trailing = {
-                    MetaLabel(
-                        text = strings.sectionTrailingLabel,
-                        variant = MetaLabelVariant.Accent,
-                    )
-                },
+    NumberedSection(
+        number = SECTION_ORDINAL,
+        title = strings.sectionTitle,
+        modifier = modifier,
+        trailing = {
+            MetaLabel(
+                text = strings.sectionTrailingLabel,
+                variant = MetaLabelVariant.Accent,
             )
-            Div(attrs = UsesGridStyle.toModifier().toAttrs()) {
-                categories.forEach { category ->
-                    UsesColumn(category = category)
-                }
+        },
+    ) {
+        Div(attrs = UsesGridStyle.toModifier().toAttrs()) {
+            categories.forEach { category ->
+                UsesColumn(category = category)
             }
         }
     }
@@ -136,17 +123,6 @@ private fun UsesColumn(category: UseCategory) {
                 }
             }
         }
-    }
-}
-
-/**
- * Base `CssStyle` for the `<section>` wrapper. Ports `.section` from the
- * handoff: vertical padding keyed off the `--pad-y` token (80px at the
- * default density).
- */
-val UsesSectionStyle = CssStyle {
-    base {
-        Modifier.padding(topBottom = SECTION_PADDING_Y_REM.cssRem)
     }
 }
 
