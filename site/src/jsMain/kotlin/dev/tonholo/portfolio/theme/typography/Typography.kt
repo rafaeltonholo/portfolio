@@ -143,7 +143,6 @@ object Typography {
         weight = FontWeight.Medium,
         lineHeight = META_LINE_HEIGHT,
         letterSpacing = META_SMALL_LETTER_SPACING_EM.em,
-        transform = TextTransform.Uppercase,
     )
 
     /**
