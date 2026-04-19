@@ -10,6 +10,7 @@ import dev.tonholo.portfolio.theme.color.AccentMint
 import dev.tonholo.portfolio.theme.color.Ink
 import dev.tonholo.portfolio.theme.color.Muted
 import dev.tonholo.portfolio.theme.color.Paper
+import dev.tonholo.portfolio.theme.color.Syntax
 import dev.tonholo.portfolio.theme.layout.Density
 import dev.tonholo.portfolio.theme.layout.SpacingScale
 import dev.tonholo.portfolio.theme.typography.Typography
@@ -35,16 +36,7 @@ fun PortfolioTheme(content: @Composable () -> Unit) {
     val colorMode by ColorMode.currentState
     val isDark = colorMode.isDark
 
-    val tokens = remember(isDark) {
-        PortfolioTokens(
-            ink = if (isDark) Ink.dark else Ink.light,
-            paper = if (isDark) Paper.dark else Paper.light,
-            muted = if (isDark) Muted.dark else Muted.light,
-            accent = if (isDark) AccentMint.dark else AccentMint.light,
-            spacing = SpacingScale.from(density = Density.Compact),
-            typography = Typography,
-        )
-    }
+    val tokens = remember(isDark) { tokensFor(isDark = isDark) }
 
     DisposableEffect(isDark) {
         val root = document.documentElement as? HTMLElement
@@ -60,3 +52,18 @@ fun PortfolioTheme(content: @Composable () -> Unit) {
         content()
     }
 }
+
+/**
+ * Resolves the full [PortfolioTokens] bundle for the active color mode. Kept
+ * as a non-composable helper so [PortfolioTheme] stays under the detekt
+ * cognitive-complexity limit as the token surface grows.
+ */
+private fun tokensFor(isDark: Boolean): PortfolioTokens = PortfolioTokens(
+    ink = if (isDark) Ink.dark else Ink.light,
+    paper = if (isDark) Paper.dark else Paper.light,
+    muted = if (isDark) Muted.dark else Muted.light,
+    accent = if (isDark) AccentMint.dark else AccentMint.light,
+    syntax = if (isDark) Syntax.dark else Syntax.light,
+    spacing = SpacingScale.from(density = Density.Compact),
+    typography = Typography,
+)

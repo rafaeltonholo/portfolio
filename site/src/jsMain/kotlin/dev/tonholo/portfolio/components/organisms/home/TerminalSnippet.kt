@@ -19,6 +19,7 @@ import com.varabyte.kobweb.silk.style.CssStyle
 import com.varabyte.kobweb.silk.style.toModifier
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
+import dev.tonholo.portfolio.theme.color.SyntaxScale
 import dev.tonholo.portfolio.theme.typography.FontFamilies
 import org.jetbrains.compose.web.css.LineStyle
 import org.jetbrains.compose.web.css.cssRem
@@ -37,14 +38,6 @@ private const val TERM_BORDER_RADIUS_REM = 0.25 // 4px
 private const val TERM_PADDING_Y_REM = 1.25 // 20px
 private const val TERM_PADDING_X_REM = 1.5 // 24px
 private const val TERM_BORDER_WIDTH_REM = 0.0625 // 1px
-
-// Token color hex values. Handoff `.term-kw` / `.term-str` / `.term-num`
-// (styles.css lines 403-407). Light and dark variants differ for kw and str.
-private const val TERM_KW_LIGHT = 0xB99CF7
-private const val TERM_KW_DARK = 0x8B5CF6
-private const val TERM_STR_LIGHT = 0xA3D9A5
-private const val TERM_STR_DARK = 0x3D8A4D
-private const val TERM_NUM_HEX = 0xF2C078
 
 /**
  * One rendered line inside a [TerminalSnippet]. The [number] is the 1-indexed
@@ -126,7 +119,7 @@ fun TerminalSnippet(lines: List<TerminalLine>, modifier: Modifier = Modifier) {
             applyAttrs = null,
         ) {
             lines.forEachIndexed { index, line ->
-                TerminalLineRow(line = line, isDark = isDark)
+                TerminalLineRow(line = line)
                 if (index != lines.lastIndex) {
                     ComposeText("\n")
                 }
@@ -138,10 +131,12 @@ fun TerminalSnippet(lines: List<TerminalLine>, modifier: Modifier = Modifier) {
 /**
  * Emits a single [TerminalLine]: the gutter number (dim) followed by each
  * [TerminalToken] rendered in a color-keyed `<span>`. Kept small and private
- * so the public [TerminalSnippet] stays a pure assembly function.
+ * so the public [TerminalSnippet] stays a pure assembly function. Reads the
+ * syntax swatch from [LocalPortfolioTokens] so the palette follows
+ * [ColorMode] without the caller having to thread `isDark` down.
  */
 @Composable
-private fun TerminalLineRow(line: TerminalLine, isDark: Boolean) {
+private fun TerminalLineRow(line: TerminalLine) {
     val tokens = LocalPortfolioTokens.current
 
     Span(
@@ -152,7 +147,11 @@ private fun TerminalLineRow(line: TerminalLine, isDark: Boolean) {
         ComposeText(formatGutter(line.number))
     }
     line.tokens.forEach { token ->
-        val color = tokenColor(kind = token.kind, isDark = isDark, dimColor = tokens.muted.muted2)
+        val color = tokenColor(
+            kind = token.kind,
+            syntax = tokens.syntax,
+            dimColor = tokens.muted.muted2,
+        )
         if (color != null) {
             Span(
                 attrs = Modifier.color(color).toAttrs(),
@@ -170,18 +169,22 @@ private fun TerminalLineRow(line: TerminalLine, isDark: Boolean) {
  * [TerminalTokenKind.Plain] so the caller can skip wrapping the text in a
  * `<span>` and let it inherit the terminal's base color.
  *
+ * The keyword / string / number hues come from [SyntaxScale]; the caller
+ * passes the already-resolved swatch so this helper stays pure. Light and
+ * dark page modes each provide a palette tuned for the inverted terminal
+ * card surface.
+ *
  * @param kind the token color axis.
- * @param isDark whether the active color mode is dark; swaps kw and str hues.
- * @param dimColor the `MutedScale.muted2` color used for [TerminalTokenKind.Dim];
- *   forwarded by the caller so this helper stays a plain function.
+ * @param syntax the [SyntaxScale] for the active color mode.
+ * @param dimColor the `MutedScale.muted2` color used for [TerminalTokenKind.Dim].
  */
-private fun tokenColor(kind: TerminalTokenKind, isDark: Boolean, dimColor: Color): Color? =
+private fun tokenColor(kind: TerminalTokenKind, syntax: SyntaxScale, dimColor: Color): Color? =
     when (kind) {
         TerminalTokenKind.Plain -> null
         TerminalTokenKind.Dim -> dimColor
-        TerminalTokenKind.Keyword -> Color.rgb(if (isDark) TERM_KW_DARK else TERM_KW_LIGHT)
-        TerminalTokenKind.Number -> Color.rgb(TERM_NUM_HEX)
-        TerminalTokenKind.String -> Color.rgb(if (isDark) TERM_STR_DARK else TERM_STR_LIGHT)
+        TerminalTokenKind.Keyword -> syntax.keyword
+        TerminalTokenKind.Number -> syntax.number
+        TerminalTokenKind.String -> syntax.string
     }
 
 // Fixed gutter width of three columns: `  1 `, ` 12 `, `123 `. Matches the

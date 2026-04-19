@@ -5,6 +5,7 @@ import dev.tonholo.portfolio.theme.color.AccentSwatch
 import dev.tonholo.portfolio.theme.color.InkScale
 import dev.tonholo.portfolio.theme.color.MutedScale
 import dev.tonholo.portfolio.theme.color.PaperScale
+import dev.tonholo.portfolio.theme.color.SyntaxScale
 import dev.tonholo.portfolio.theme.layout.SpacingScale
 import dev.tonholo.portfolio.theme.typography.Typography
 
@@ -20,6 +21,7 @@ data class PortfolioTokens(
     val paper: PaperScale,
     val muted: MutedScale,
     val accent: AccentSwatch,
+    val syntax: SyntaxScale,
     val spacing: SpacingScale,
     val typography: Typography,
 )

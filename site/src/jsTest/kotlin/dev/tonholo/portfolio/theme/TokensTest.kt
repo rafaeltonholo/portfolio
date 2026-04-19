@@ -5,6 +5,7 @@ import dev.tonholo.portfolio.theme.color.AccentMint
 import dev.tonholo.portfolio.theme.color.Ink
 import dev.tonholo.portfolio.theme.color.Muted
 import dev.tonholo.portfolio.theme.color.Paper
+import dev.tonholo.portfolio.theme.color.Syntax
 import dev.tonholo.portfolio.theme.layout.Density
 import dev.tonholo.portfolio.theme.layout.SpacingScale
 import kotlin.test.Test
@@ -100,6 +101,28 @@ class TokensTest {
         assertEquals(Color.rgb(0x7DD198), swatch.accent)
         assertEquals(Color.rgb(0x1D4028), swatch.accentSoft)
         assertEquals(Color.rgb(0x051A0C), swatch.accentInk)
+    }
+
+    @Test
+    fun `given Syntax light, when color values are read, then they match handoff term palette`() {
+        // Arrange / Act
+        val scale = Syntax.light
+
+        // Assert - light-mode page -> dark terminal card -> lighter hues.
+        assertEquals(Color.rgb(0xB99CF7), scale.keyword)
+        assertEquals(Color.rgb(0xA3D9A5), scale.string)
+        assertEquals(Color.rgb(0xF2C078), scale.number)
+    }
+
+    @Test
+    fun `given Syntax dark, when color values are read, then they match handoff term palette`() {
+        // Arrange / Act
+        val scale = Syntax.dark
+
+        // Assert - dark-mode page -> paper-2 terminal card -> darker hues.
+        assertEquals(Color.rgb(0x8B5CF6), scale.keyword)
+        assertEquals(Color.rgb(0x3D8A4D), scale.string)
+        assertEquals(Color.rgb(0xF2C078), scale.number)
     }
 
     @Test
