@@ -49,8 +49,9 @@ private const val GRID_COL_FR = 1.0
 private const val META_MARGIN_BOTTOM_REM = 1.25 // 20px
 private const val TITLE_MARGIN_BOTTOM_REM = 1.75 // 28px
 
-// Handoff lede paragraph: serif, 20px size, 1.55 line-height, 48ch cap,
-// `ink-2` color.
+// Handoff lede paragraph: body sans (Geist), 20px size, 1.55 line-height,
+// 48ch cap, `ink-2` color. The earlier build used `FontFamilies.SERIF` which
+// drifted from the handoff's Geist intro treatment.
 private const val LEDE_SIZE_REM = 1.25 // 20px
 private const val LEDE_LINE_HEIGHT = 1.55
 private const val LEDE_MAX_WIDTH_CH = 48.0
@@ -171,13 +172,13 @@ val AboutHeaderTitleEmphasisStyle = CssStyle {
 
 /**
  * Base `CssStyle` for the lede paragraph. Ports the inline styles on the
- * handoff `<p>`: serif family, 20px size, 1.55 line-height, 48ch cap. Color
- * is applied inline by the composable from the `ink-2` token.
+ * handoff `<p>`: body sans (Geist) family, 20px size, 1.55 line-height, 48ch
+ * cap. Color is applied inline by the composable from the `ink-2` token.
  */
 val AboutHeaderLedeStyle = CssStyle {
     base {
         Modifier
-            .fontFamily(*FontFamilies.SERIF)
+            .fontFamily(*FontFamilies.BODY)
             .fontSize(LEDE_SIZE_REM.cssRem)
             .lineHeight(LEDE_LINE_HEIGHT)
             .margin(topBottom = 0.cssRem)
