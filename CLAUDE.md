@@ -72,3 +72,36 @@ Icons use Phosphor Icons via `@phosphor-icons/web@2.1.2` CDN, wrapped by
 ## Module CLAUDE.md Files
 
 - [site/CLAUDE.md](site/CLAUDE.md)
+
+## Design Context
+
+See [`.impeccable.md`](.impeccable.md) for full context.
+
+### Users
+
+Mixed audience: senior engineers / peers evaluating craft, plus hiring
+managers and recruiters scanning for role fit. Desktop-first, must hold up on
+mobile (links shared in Slack/DMs).
+
+### Brand Personality
+
+Three words: **precise, opinionated, handmade**. Trust, curiosity, respect
+for craft - not delight or playfulness.
+
+### Aesthetic Direction
+
+IDE / technical craft: JetBrains Mono as display voice, Fraunces serif for
+long-form prose, Geist sans for body UI. Mint accent used rarely as the
+single 10% color. Both light and dark modes are first-class (auto from OS).
+
+Anti-references: generic dev portfolio template, AI-cyan-on-dark SaaS,
+corporate agency site, over-animated showcase.
+
+### Design Principles
+
+1. Earn every element - no decorative filler.
+2. Type does the heavy lifting - size and weight contrast before color.
+3. One accent, used rarely - mint is punctuation, not wallpaper.
+4. Content dictates layout - projects, articles, resume each get a shape
+   that fits the content.
+5. Motion only where it means something - no scroll reveals, no parallax.
