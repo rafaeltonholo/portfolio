@@ -6,6 +6,7 @@ import com.varabyte.kobweb.compose.css.ListStyleType
 import com.varabyte.kobweb.compose.css.TextTransform
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.graphics.Color
+import com.varabyte.kobweb.compose.ui.modifiers.alignItems
 import com.varabyte.kobweb.compose.ui.modifiers.borderTop
 import com.varabyte.kobweb.compose.ui.modifiers.color
 import com.varabyte.kobweb.compose.ui.modifiers.display
@@ -26,12 +27,14 @@ import com.varabyte.kobweb.silk.style.CssStyle
 import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.style.toModifier
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
+import dev.tonholo.portfolio.components.atoms.MetaSeparator
 import dev.tonholo.portfolio.components.molecules.TagList
 import dev.tonholo.portfolio.domain.model.Education
 import dev.tonholo.portfolio.domain.model.SkillBucket
 import dev.tonholo.portfolio.locale.LocalStrings
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.typography.FontFamilies
+import org.jetbrains.compose.web.css.AlignItems
 import org.jetbrains.compose.web.css.DisplayStyle
 import org.jetbrains.compose.web.css.FlexDirection
 import org.jetbrains.compose.web.css.LineStyle
@@ -72,6 +75,9 @@ private const val EDUCATION_TITLE_FONT_SIZE_REM = 0.9375 // 15px
 private const val EDUCATION_TITLE_MARGIN_TOP_REM = 0.125 // 2px breathing room
 private const val EDUCATION_SUBTITLE_FONT_SIZE_REM = 0.6875 // 11px
 private const val EDUCATION_SUBTITLE_LINE_HEIGHT = 1.4
+
+// Inline gap between the institution / year segments and the centered separator dot.
+private const val EDUCATION_SUBTITLE_GAP_REM = 0.375 // 6px
 
 /**
  * Returns the hairline border color for the `.resume-skills` top rule. Light
@@ -187,9 +193,14 @@ private fun EducationList(entries: List<Education>) {
                     attrs = SkillsEducationSubtitleStyle
                         .toModifier()
                         .color(tokens.muted.muted)
+                        .display(DisplayStyle.Flex)
+                        .alignItems(AlignItems.Center)
+                        .gap(EDUCATION_SUBTITLE_GAP_REM.cssRem)
                         .toAttrs(),
                 ) {
-                    ComposeText("${entry.institution} \u00B7 ${entry.year}")
+                    ComposeText(entry.institution)
+                    MetaSeparator()
+                    ComposeText(entry.year)
                 }
             }
         }

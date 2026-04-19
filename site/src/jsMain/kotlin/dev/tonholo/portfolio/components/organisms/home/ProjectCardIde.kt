@@ -36,6 +36,7 @@ import com.varabyte.kobweb.silk.style.selectors.hover
 import com.varabyte.kobweb.silk.style.toModifier
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import dev.tonholo.portfolio.components.atoms.ArrowStyle
+import dev.tonholo.portfolio.components.atoms.MetaSeparator
 import dev.tonholo.portfolio.components.atoms.PhosphorIcon
 import dev.tonholo.portfolio.components.molecules.StatBlock
 import dev.tonholo.portfolio.components.molecules.StatSize
@@ -108,11 +109,14 @@ private const val KIND_COMMERCIAL_LABEL = "COMMERCIAL"
 private const val KIND_OPEN_SOURCE_LABEL = "OPEN SOURCE"
 private const val FILENAME_PREFIX = "- "
 private const val FILENAME_EXTENSION = ".kt"
-private const val STACK_SEPARATOR = " \u00B7 " // " · " - middle dot
 private const val CTA_LABEL = "read case study"
 
 private const val ARROW_ICON_NAME = "arrow-right"
 private const val ARROW_GAP_REM = 0.375 // 6px between label and arrow glyph
+
+// Inline gap between stack tokens and the centered separator dots in the
+// card footer.
+private const val STACK_ROW_GAP_REM = 0.375 // 6px
 
 /**
  * Home "Selected work" card rendered in the IDE-block style. Ports the
@@ -229,9 +233,17 @@ private fun ProjectCardFoot(project: Project) {
         Span(
             attrs = Modifier
                 .color(tokens.muted.muted)
+                .display(DisplayStyle.LegacyInlineFlex)
+                .alignItems(AlignItems.Center)
+                .gap(STACK_ROW_GAP_REM.cssRem)
                 .toAttrs(),
         ) {
-            ComposeText(project.stack.joinToString(separator = STACK_SEPARATOR))
+            project.stack.forEachIndexed { index, item ->
+                if (index > 0) {
+                    MetaSeparator()
+                }
+                Span(attrs = Modifier.toAttrs()) { ComposeText(item) }
+            }
         }
         Span(
             attrs = ProjectCardCtaStyle

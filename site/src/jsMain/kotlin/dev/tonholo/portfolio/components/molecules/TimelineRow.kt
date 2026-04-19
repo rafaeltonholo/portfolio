@@ -30,6 +30,7 @@ import com.varabyte.kobweb.silk.style.CssStyle
 import com.varabyte.kobweb.silk.style.selectors.before
 import com.varabyte.kobweb.silk.style.toModifier
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
+import dev.tonholo.portfolio.components.atoms.MetaSeparator
 import dev.tonholo.portfolio.domain.model.Experience
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.typography.FontFamilies
@@ -60,10 +61,13 @@ private const val ROW_GAP_REM = 2.0 // 32px
 private const val ROW_PADDING_Y_REM = 1.75 // 28px
 private const val ROW_BORDER_WIDTH_REM = 0.0625 // 1px at 1rem=16px
 
-// Left column: date (12px mono, muted) over duration (11px mono, muted-2 prefixed with "· ").
+// Left column: date (12px mono, muted) over duration (11px mono, muted-2 prefixed with a [MetaSeparator] dot).
 private const val DATE_SIZE_REM = 0.75 // 12px
 private const val DURATION_SIZE_REM = 0.6875 // 11px
 private const val META_LINE_HEIGHT = 1.4
+
+// Inline gap between the bullet dot and the duration text.
+private const val DURATION_ROW_GAP_REM = 0.375 // 6px
 
 // Right column: role (18px display medium) + company subtitle (13px, muted).
 // Line-height is held at >=1.3 so the 18px display type keeps enough leading
@@ -154,15 +158,17 @@ fun TimelineRow(experience: Experience, modifier: Modifier = Modifier, last: Boo
             }
             Span(
                 attrs = Modifier
-                    .display(DisplayStyle.Block)
+                    .display(DisplayStyle.Flex)
+                    .alignItems(AlignItems.Center)
+                    .gap(DURATION_ROW_GAP_REM.cssRem)
                     .fontFamily(*FontFamilies.MONO)
                     .fontSize(DURATION_SIZE_REM.cssRem)
                     .lineHeight(META_LINE_HEIGHT)
                     .color(tokens.muted.muted2)
                     .toAttrs(),
             ) {
-                // Handoff prefixes the duration copy with a middle-dot + space.
-                ComposeText("\u00B7 ${experience.duration}")
+                MetaSeparator(color = tokens.muted.muted2)
+                ComposeText(experience.duration)
             }
         }
 

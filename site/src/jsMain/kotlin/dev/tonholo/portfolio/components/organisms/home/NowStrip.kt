@@ -5,6 +5,7 @@ import com.varabyte.kobweb.compose.css.FontStyle
 import com.varabyte.kobweb.compose.css.FontWeight
 import com.varabyte.kobweb.compose.css.ListStyleType
 import com.varabyte.kobweb.compose.ui.Modifier
+import com.varabyte.kobweb.compose.ui.modifiers.alignItems
 import com.varabyte.kobweb.compose.ui.modifiers.color
 import com.varabyte.kobweb.compose.ui.modifiers.display
 import com.varabyte.kobweb.compose.ui.modifiers.flexDirection
@@ -23,6 +24,7 @@ import com.varabyte.kobweb.silk.style.CssStyle
 import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.style.toModifier
 import dev.tonholo.portfolio.components.atoms.MetaLabel
+import dev.tonholo.portfolio.components.atoms.MetaSeparator
 import dev.tonholo.portfolio.components.template.NumberedSection
 import dev.tonholo.portfolio.domain.model.Article
 import dev.tonholo.portfolio.domain.model.ArticleStatus
@@ -33,6 +35,7 @@ import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.typography.FontFamilies
 import dev.tonholo.portfolio.theme.typography.Typography
 import dev.tonholo.portfolio.theme.typography.apply
+import org.jetbrains.compose.web.css.AlignItems
 import org.jetbrains.compose.web.css.CSSSizeValue
 import org.jetbrains.compose.web.css.CSSUnit
 import org.jetbrains.compose.web.css.DisplayStyle
@@ -65,6 +68,10 @@ private const val BODY_MAX_WIDTH_CH = 48.0
 // Writing list: gap between article entries; small-date uses metaSmall.
 private const val WRITING_LIST_GAP_REM = 0.875 // 14px
 private const val WRITING_TITLE_SIZE_REM = 1.0 // 16px
+
+// Inline gap inside the meta line between the status label, the separator
+// dot, and the short date.
+private const val WRITING_META_GAP_REM = 0.375 // 6px
 
 // Off-the-clock list: gap between hobby rows; body copy.
 private const val HOBBY_LIST_GAP_REM = 0.625 // 10px
@@ -203,16 +210,20 @@ private fun WritingEntry(article: Article, strings: Strings.NowStrip) {
         ArticleStatus.Published -> strings.statusPublished
     }
     val shortDate = article.date.substringBefore(delimiter = ',')
-    val metaText = "$statusLabel $STATUS_SEPARATOR $shortDate"
 
     Li(attrs = Modifier.toAttrs()) {
         Div(
             attrs = Modifier
                 .apply(Typography.metaSmall)
                 .color(tokens.muted.muted)
+                .display(DisplayStyle.LegacyInlineFlex)
+                .alignItems(AlignItems.Center)
+                .gap(WRITING_META_GAP_REM.cssRem)
                 .toAttrs(),
         ) {
-            ComposeText(metaText)
+            Span(attrs = Modifier.toAttrs()) { ComposeText(statusLabel) }
+            MetaSeparator()
+            Span(attrs = Modifier.toAttrs()) { ComposeText(shortDate) }
         }
         Div(
             attrs = Modifier
@@ -303,9 +314,6 @@ private fun HobbyReadingRow() {
         }
     }
 }
-
-// Middle-dot separator used in the writing meta row ("draft · dec 20").
-private const val STATUS_SEPARATOR = "\u00B7"
 
 // Hobby copy ported verbatim from the handoff JSX; the `NowStripEntry` shape
 // cannot express this structure, so the content is inline.

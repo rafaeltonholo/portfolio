@@ -44,6 +44,7 @@ import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import dev.tonholo.portfolio.components.atoms.Dot
 import dev.tonholo.portfolio.components.atoms.DotVariant
 import dev.tonholo.portfolio.components.atoms.IconButton
+import dev.tonholo.portfolio.components.atoms.MetaSeparator
 import dev.tonholo.portfolio.components.atoms.PhosphorIcon
 import dev.tonholo.portfolio.components.molecules.BrandMark
 import dev.tonholo.portfolio.components.molecules.LanguageSwitch
@@ -96,6 +97,9 @@ private const val NAV_META_PADDING_LEFT_EXPANDED_REM = 1.0 // 16px
 private const val NAV_META_PADDING_LEFT_COLLAPSED_REM = 0.875 // 14px
 private const val NAV_META_BORDER_WIDTH_REM = 0.0625 // 1px
 private const val NAV_META_TEXT_MAX_WIDTH_REM = 15.0 // 240px
+
+// Inline gap between the status / presence labels and the centered separator dot.
+private const val NAV_META_INLINE_GAP_REM = 0.375 // 6px
 
 // Transition durations mirror `.nav-meta` and `.nav-meta__text` from the handoff.
 private const val NAV_META_LAYOUT_TRANSITION_S = 0.28
@@ -161,7 +165,10 @@ fun Nav(currentRoute: String, modifier: Modifier = Modifier) {
                 currentRoute = currentRoute,
                 links = navLinksFor(nav = strings.nav),
             )
-            StatusBadge(text = strings.statusBadge.text)
+            StatusBadge(
+                statusLabel = strings.statusBadge.statusLabel,
+                presenceLabel = strings.statusBadge.presenceLabel,
+            )
             LanguageSwitch(current = localeState.current, onSwitch = { localeState.set(it) })
             IconButton(
                 modifier = Modifier.title(
@@ -190,7 +197,7 @@ private fun NavLinksCluster(currentRoute: String, links: List<NavLinkEntry>) {
 }
 
 @Composable
-private fun StatusBadge(text: String) {
+private fun StatusBadge(statusLabel: String, presenceLabel: String) {
     val tokens = LocalPortfolioTokens.current
     var collapsed by remember { mutableStateOf(value = false) }
 
@@ -220,7 +227,7 @@ private fun StatusBadge(text: String) {
         )
         .onMouseEnter { collapsed = false }
         .onMouseLeave { collapsed = true }
-        .title(text)
+        .title("$statusLabel $presenceLabel")
 
     Div(attrs = badgeModifier.toAttrs()) {
         Dot(variant = DotVariant.Static, color = tokens.muted.muted2)
@@ -229,9 +236,14 @@ private fun StatusBadge(text: String) {
                 .toModifier()
                 .maxWidth(textMaxWidth)
                 .opacity(value = textOpacity)
+                .display(DisplayStyle.LegacyInlineFlex)
+                .alignItems(AlignItems.Center)
+                .gap(NAV_META_INLINE_GAP_REM.cssRem)
                 .toAttrs(),
         ) {
-            ComposeText(text)
+            ComposeText(statusLabel)
+            MetaSeparator(color = tokens.muted.muted2)
+            ComposeText(presenceLabel)
         }
     }
 }

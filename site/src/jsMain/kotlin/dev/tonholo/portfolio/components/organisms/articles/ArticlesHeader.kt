@@ -17,6 +17,7 @@ import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.style.toModifier
 import dev.tonholo.portfolio.components.atoms.MetaLabel
 import dev.tonholo.portfolio.components.atoms.MetaLabelVariant
+import dev.tonholo.portfolio.components.atoms.MetaSeparator
 import dev.tonholo.portfolio.locale.LocalStrings
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.typography.FontFamilies
@@ -53,7 +54,9 @@ private const val META_COPY_SIZE_REM = 0.8125 // 13px
 
 // Mono eyebrow is a technical path literal and stays untranslated.
 private const val META_TEXT = "// articles/"
-private const val SEPARATOR = " \u00B7 " // " · " middle dot
+
+// Inline gap between the summary segments and the centered separator dots.
+private const val SUMMARY_GAP_REM = 0.5 // 8px
 
 /**
  * Hero header for the Articles list page. Ports `.articles-hdr` from the
@@ -102,9 +105,11 @@ fun ArticlesHeader(articleCount: Int, modifier: Modifier = Modifier) {
                 .color(tokens.muted.muted)
                 .toAttrs(),
         ) {
-            ComposeText(
-                "$articleCount ${strings.postsSuffix}$SEPARATOR${strings.rssCopy}$SEPARATOR${strings.subscribersCopy}",
-            )
+            ComposeText("$articleCount ${strings.postsSuffix}")
+            MetaSeparator()
+            ComposeText(strings.rssCopy)
+            MetaSeparator()
+            ComposeText(strings.subscribersCopy)
         }
     }
 }
@@ -148,6 +153,9 @@ val ArticlesHeaderStyle = CssStyle {
 val ArticlesHeaderSummaryStyle = CssStyle {
     base {
         Modifier
+            .display(DisplayStyle.Flex)
+            .alignItems(AlignItems.Center)
+            .gap(SUMMARY_GAP_REM.cssRem)
             .fontFamily(*FontFamilies.MONO)
             .fontSize(META_COPY_SIZE_REM.cssRem)
             .margin(topBottom = 0.cssRem)

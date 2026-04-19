@@ -9,6 +9,7 @@ import com.varabyte.kobweb.compose.css.TextTransform
 import com.varabyte.kobweb.compose.css.Transition
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.graphics.Color
+import com.varabyte.kobweb.compose.ui.modifiers.alignItems
 import com.varabyte.kobweb.compose.ui.modifiers.borderTop
 import com.varabyte.kobweb.compose.ui.modifiers.color
 import com.varabyte.kobweb.compose.ui.modifiers.cursor
@@ -38,6 +39,7 @@ import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.style.selectors.hover
 import com.varabyte.kobweb.silk.style.toModifier
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
+import dev.tonholo.portfolio.components.atoms.MetaSeparator
 import dev.tonholo.portfolio.components.molecules.SocialLink
 import dev.tonholo.portfolio.locale.LocalStrings
 import dev.tonholo.portfolio.locale.Strings
@@ -47,6 +49,7 @@ import dev.tonholo.portfolio.theme.color.AccentMint
 import dev.tonholo.portfolio.theme.color.Ink
 import dev.tonholo.portfolio.theme.layout.ChromeShellStyle
 import dev.tonholo.portfolio.theme.typography.FontFamilies
+import org.jetbrains.compose.web.css.AlignItems
 import org.jetbrains.compose.web.css.CSSSizeValue
 import org.jetbrains.compose.web.css.CSSUnit
 import org.jetbrains.compose.web.css.DisplayStyle
@@ -106,6 +109,9 @@ private const val FOOTER_LINK_TRANSITION_DURATION_S = 0.18
 // Handoff `.footer-bottom`:
 //   flex row, space-between, padding-top 24px, 1px top border.
 private const val FOOTER_BOTTOM_PADDING_TOP_REM = 1.5 // 24px
+
+// Inline gap between the copyright segments and the centered separator dots.
+private const val FOOTER_BOTTOM_LEFT_GAP_REM = 0.5 // 8px
 
 // Work column entries stay as mono technical literals (product / project
 // names), not user-facing copy that needs translation. Slug values match
@@ -189,7 +195,7 @@ fun Footer(modifier: Modifier = Modifier, versionInfo: String = DEFAULT_VERSION_
                 ElsewhereColumn(heading = strings.headingElsewhere)
             }
             FooterBottom(
-                leftCopy = strings.bottomLeftCopy,
+                leftSegments = strings.bottomLeftSegments,
                 versionInfo = versionInfo,
                 borderColor = borderColor,
             )
@@ -342,7 +348,7 @@ private fun FooterNavItem(label: String, route: String) {
  * color as the outer footer border).
  */
 @Composable
-private fun FooterBottom(leftCopy: String, versionInfo: String, borderColor: Color) {
+private fun FooterBottom(leftSegments: List<String>, versionInfo: String, borderColor: Color) {
     Div(
         attrs = FooterBottomStyle
             .toModifier()
@@ -353,8 +359,19 @@ private fun FooterBottom(leftCopy: String, versionInfo: String, borderColor: Col
             )
             .toAttrs(),
     ) {
-        Span(attrs = Modifier.toAttrs()) {
-            ComposeText(leftCopy)
+        Span(
+            attrs = Modifier
+                .display(DisplayStyle.LegacyInlineFlex)
+                .alignItems(AlignItems.Center)
+                .gap(FOOTER_BOTTOM_LEFT_GAP_REM.cssRem)
+                .toAttrs(),
+        ) {
+            leftSegments.forEachIndexed { index, segment ->
+                if (index > 0) {
+                    MetaSeparator()
+                }
+                Span(attrs = Modifier.toAttrs()) { ComposeText(segment) }
+            }
         }
         Span(attrs = Modifier.toAttrs()) {
             ComposeText(versionInfo)

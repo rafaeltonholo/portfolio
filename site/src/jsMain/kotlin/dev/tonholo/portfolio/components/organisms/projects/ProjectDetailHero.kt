@@ -17,6 +17,7 @@ import com.varabyte.kobweb.silk.style.toModifier
 import dev.tonholo.portfolio.components.atoms.Dot
 import dev.tonholo.portfolio.components.atoms.DotVariant
 import dev.tonholo.portfolio.components.atoms.MetaLabel
+import dev.tonholo.portfolio.components.atoms.MetaSeparator
 import dev.tonholo.portfolio.components.atoms.Text
 import dev.tonholo.portfolio.components.atoms.TextSlot
 import dev.tonholo.portfolio.domain.model.Project
@@ -65,14 +66,16 @@ private const val INFO_LABEL_MARGIN_BOTTOM_REM = 0.375 // 6px
 // the Nav status badge spacing.
 private const val STATUS_ROW_GAP_REM = 0.5 // 8px
 
-private const val META_SEPARATOR = " \u00B7 "
 private const val META_PREFIX = "// "
 private const val STACK_SEPARATOR = ", "
+
+// Inline gap between the eyebrow segments and the centered separator dot.
+private const val META_ROW_GAP_REM = 0.375 // 6px
 
 /**
  * Project detail hero organism. Maps to `.project-hero` in the handoff CSS
  * (`ProjectPage` JSX, `styles.css` lines 1179-1208): a two-column split with
- * a mono meta eyebrow (`// {kind} · {year}`) above the display `h1` on the
+ * a mono meta eyebrow (`// {kind}` then a [MetaSeparator] dot then `{year}`) above the display `h1` on the
  * left, and a `.project-info` 2x2 grid of Role / Timeline / Stack / Status
  * label-value pairs on the right.
  *
@@ -100,8 +103,8 @@ fun ProjectDetailHero(project: Project, modifier: Modifier = Modifier) {
 }
 
 /**
- * Left column of the project hero: mono long-form eyebrow (`// {kind} ·
- * {year}`) over the display `h1` project name.
+ * Left column of the project hero: mono long-form eyebrow (`// {kind}` then
+ * a [MetaSeparator] dot then `{year}`) over the display `h1` project name.
  *
  * The eyebrow uses [TextSlot.MetaPlain] rather than [MetaLabel] because
  * the full phrase runs 31-35 characters; ALL-CAPS at that length defeats
@@ -112,16 +115,29 @@ fun ProjectDetailHero(project: Project, modifier: Modifier = Modifier) {
 @Composable
 private fun ProjectDetailHeroCopyColumn(project: Project, strings: Strings.ProjectDetail) {
     val tokens = LocalPortfolioTokens.current
+    val kindLabel = projectKindLabel(project = project, strings = strings)
 
     Div(attrs = Modifier.toAttrs()) {
-        Text(
-            text = projectMetaText(project = project, strings = strings),
-            modifier = Modifier
-                .display(DisplayStyle.Block)
-                .margin(bottom = META_MARGIN_BOTTOM_REM.cssRem),
-            slot = TextSlot.MetaPlain,
-            color = tokens.muted.muted,
-        )
+        Div(
+            attrs = Modifier
+                .display(DisplayStyle.LegacyInlineFlex)
+                .alignItems(AlignItems.Center)
+                .gap(META_ROW_GAP_REM.cssRem)
+                .margin(bottom = META_MARGIN_BOTTOM_REM.cssRem)
+                .toAttrs(),
+        ) {
+            Text(
+                text = "$META_PREFIX$kindLabel",
+                slot = TextSlot.MetaPlain,
+                color = tokens.muted.muted,
+            )
+            MetaSeparator()
+            Text(
+                text = project.year,
+                slot = TextSlot.MetaPlain,
+                color = tokens.muted.muted,
+            )
+        }
         H1(
             attrs = Modifier
                 .apply(Typography.h1)
@@ -211,14 +227,12 @@ private fun ProjectDetailHeroStatusCell(strings: Strings.ProjectDetail) {
     }
 }
 
-/** Builds the eyebrow copy: `"// commercial project · 2021-2022"`. */
-private fun projectMetaText(project: Project, strings: Strings.ProjectDetail): String {
-    val kindLabel = when (project.kind) {
+/** Resolves the localized kind label rendered in the eyebrow. */
+private fun projectKindLabel(project: Project, strings: Strings.ProjectDetail): String =
+    when (project.kind) {
         ProjectKind.Commercial -> strings.commercialKind
         ProjectKind.OpenSource -> strings.openSourceKind
     }
-    return META_PREFIX + kindLabel + META_SEPARATOR + project.year
-}
 
 // ---------------------------------------------------------------------------
 // Styles

@@ -19,6 +19,7 @@ import com.varabyte.kobweb.silk.style.CssStyle
 import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.style.toModifier
 import dev.tonholo.portfolio.components.atoms.MetaLabel
+import dev.tonholo.portfolio.components.atoms.MetaSeparator
 import dev.tonholo.portfolio.components.template.NumberedSection
 import dev.tonholo.portfolio.locale.LocalStrings
 import dev.tonholo.portfolio.locale.Strings
@@ -36,11 +37,16 @@ import org.jetbrains.compose.web.css.fr
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.H3
 import org.jetbrains.compose.web.dom.P
+import org.jetbrains.compose.web.dom.Span
 import org.jetbrains.compose.web.dom.Text as ComposeText
 
 // Ordinal for the Snippet of the week section: renders as `// 02`.
 private const val SECTION_ORDINAL = 2
-private const val SECTION_TRAILING_LABEL = "week 15 \u00B7 2026"
+private const val SECTION_TRAILING_WEEK = "week 15"
+private const val SECTION_TRAILING_YEAR = "2026"
+
+// Inline gap between the trailing label segments and the centered separator dot.
+private const val SECTION_TRAILING_GAP_REM = 0.375 // 6px
 
 // Two-column grid (handoff line 202): `1fr 1.3fr`, 48px gap, align-items start.
 // Collapses to 1 column below LG per the breakpoint convention used in this
@@ -69,8 +75,12 @@ private const val META_ROW_GAP_REM = 0.25 // 4px
 
 // Mono meta rows stay as technical literals (file path, last-edited line);
 // the editorial title and body are sourced from [LocalStrings].
-private const val META_FILE_ROW = "// debounced-click.kt \u00B7 542 B"
+private const val META_FILE_NAME = "// debounced-click.kt"
+private const val META_FILE_SIZE = "542 B"
 private const val META_EDITED_ROW = "// last edited 2 days ago"
+
+// Inline gap between the file-row segments and the centered separator dot.
+private const val META_FILE_ROW_GAP_REM = 0.375 // 6px
 
 /**
  * Home page organism: the "Snippet of the week" block. Ports the `Snippet`
@@ -94,7 +104,19 @@ fun SnippetOfTheWeek(modifier: Modifier = Modifier) {
         number = SECTION_ORDINAL,
         title = strings.sectionTitle,
         modifier = modifier,
-        trailing = { MetaLabel(text = SECTION_TRAILING_LABEL) },
+        trailing = {
+            Span(
+                attrs = Modifier
+                    .display(DisplayStyle.LegacyInlineFlex)
+                    .alignItems(AlignItems.Center)
+                    .gap(SECTION_TRAILING_GAP_REM.cssRem)
+                    .toAttrs(),
+            ) {
+                MetaLabel(text = SECTION_TRAILING_WEEK)
+                MetaSeparator()
+                MetaLabel(text = SECTION_TRAILING_YEAR)
+            }
+        },
     ) {
         Div(attrs = SnippetGridStyle.toModifier().toAttrs()) {
             CopyColumn(strings = strings)
@@ -134,7 +156,7 @@ private fun CopyColumn(strings: Strings.Snippet) {
             ComposeText(strings.copyBody)
         }
         Div(attrs = MetaRowsStyle.toModifier().toAttrs()) {
-            MetaRow(text = META_FILE_ROW, color = tokens.muted.muted)
+            FileMetaRow(color = tokens.muted.muted)
             MetaRow(text = META_EDITED_ROW, color = tokens.muted.muted)
         }
     }
@@ -155,6 +177,28 @@ private fun MetaRow(text: String, color: Color) {
             .toAttrs(),
     ) {
         ComposeText(text)
+    }
+}
+
+/**
+ * File-name meta row that pairs the snippet path with its byte size around a
+ * [MetaSeparator] dot, replacing the prior literal middle-dot glyph.
+ */
+@Composable
+private fun FileMetaRow(color: Color) {
+    Div(
+        attrs = Modifier
+            .display(DisplayStyle.Flex)
+            .alignItems(AlignItems.Center)
+            .gap(META_FILE_ROW_GAP_REM.cssRem)
+            .fontFamily(*FontFamilies.MONO)
+            .fontSize(META_ROW_FONT_SIZE_REM.cssRem)
+            .color(color)
+            .toAttrs(),
+    ) {
+        ComposeText(META_FILE_NAME)
+        MetaSeparator(color = color)
+        ComposeText(META_FILE_SIZE)
     }
 }
 

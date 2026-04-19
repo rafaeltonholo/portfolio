@@ -1,8 +1,8 @@
 package dev.tonholo.portfolio.components.organisms.home
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import com.varabyte.kobweb.compose.ui.Modifier
+import com.varabyte.kobweb.compose.ui.modifiers.alignItems
 import com.varabyte.kobweb.compose.ui.modifiers.backgroundColor
 import com.varabyte.kobweb.compose.ui.modifiers.display
 import com.varabyte.kobweb.compose.ui.modifiers.gap
@@ -13,19 +13,24 @@ import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.style.toModifier
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import dev.tonholo.portfolio.components.atoms.MetaLabel
+import dev.tonholo.portfolio.components.atoms.MetaSeparator
 import dev.tonholo.portfolio.components.template.NumberedSection
 import dev.tonholo.portfolio.domain.model.Project
 import dev.tonholo.portfolio.locale.LocalStrings
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
+import org.jetbrains.compose.web.css.AlignItems
 import org.jetbrains.compose.web.css.DisplayStyle
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.fr
 import org.jetbrains.compose.web.dom.Div
+import org.jetbrains.compose.web.dom.Span
 
 // Ordinal for the Selected Work section: renders as `// 00`.
 private const val SECTION_ORDINAL = 0
 private const val META_YEAR_SPAN = "2021 - present"
-private const val META_SEPARATOR = " \u00B7 " // " · " middle dot
+
+// Inline gap between the trailing meta segments and the centered separator dot.
+private const val TRAILING_META_GAP_REM = 0.375 // 6px
 
 // Grid spec per handoff CSS: `.projects-grid { display: grid; gap: 1px;
 // background: var(--paper-3); }`. The 1px gap doubles as a hairline separator
@@ -51,15 +56,24 @@ private const val GRID_COLUMN_FR = 1
 @Composable
 fun SelectedWorkGrid(projects: List<Project>, modifier: Modifier = Modifier) {
     val strings = LocalStrings.current.selectedWork
-    val trailingMeta = remember(projects.size, strings.projectsSuffix) {
-        "${projects.size} ${strings.projectsSuffix}$META_SEPARATOR$META_YEAR_SPAN"
-    }
 
     NumberedSection(
         number = SECTION_ORDINAL,
         title = strings.sectionTitle,
         modifier = modifier,
-        trailing = { MetaLabel(text = trailingMeta) },
+        trailing = {
+            Span(
+                attrs = Modifier
+                    .display(DisplayStyle.LegacyInlineFlex)
+                    .alignItems(AlignItems.Center)
+                    .gap(TRAILING_META_GAP_REM.cssRem)
+                    .toAttrs(),
+            ) {
+                MetaLabel(text = "${projects.size} ${strings.projectsSuffix}")
+                MetaSeparator()
+                MetaLabel(text = META_YEAR_SPAN)
+            }
+        },
     ) {
         ProjectsGrid(projects = projects)
     }

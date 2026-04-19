@@ -14,7 +14,8 @@ object StringsEn : Strings() {
     )
 
     override val statusBadge: StatusBadge = StatusBadge(
-        text = "not looking \u00B7 happy @ Mozilla",
+        statusLabel = "not looking",
+        presenceLabel = "happy @ Mozilla",
     )
 
     override val themeToggle: ThemeToggle = ThemeToggle(
@@ -34,8 +35,11 @@ object StringsEn : Strings() {
         linkAbout = "About",
         linkArticles = "Articles",
         linkResume = "Resume",
-        bottomLeftCopy = "\u00A9 2026 \u00B7 Built with Kotlin + Compose HTML \u00B7 " +
+        bottomLeftSegments = listOf(
+            "\u00A9 2026",
+            "Built with Kotlin + Compose HTML",
             "Designed in the terminal",
+        ),
     )
 
     override val languageToast: LanguageToast = LanguageToast(

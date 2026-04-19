@@ -49,8 +49,12 @@ sealed class Strings {
         val resume: String,
     )
 
-    /** Copy used by the nav status pill. */
-    data class StatusBadge(val text: String)
+    /**
+     * Copy used by the nav status pill. The badge renders [statusLabel] and
+     * [presenceLabel] on either side of a [dev.tonholo.portfolio.components.atoms.MetaSeparator]
+     * dot, so each segment ships as its own translated string.
+     */
+    data class StatusBadge(val statusLabel: String, val presenceLabel: String)
 
     /** Copy used by the theme-toggle [dev.tonholo.portfolio.components.atoms.IconButton]. */
     data class ThemeToggle(val ariaLabel: String, val titleToLight: String, val titleToDark: String)
@@ -66,7 +70,7 @@ sealed class Strings {
         val linkAbout: String,
         val linkArticles: String,
         val linkResume: String,
-        val bottomLeftCopy: String,
+        val bottomLeftSegments: List<String>,
     )
 
     /** Copy shown in the transient pt-BR [dev.tonholo.portfolio.components.organisms.chrome.LanguageToast]. */

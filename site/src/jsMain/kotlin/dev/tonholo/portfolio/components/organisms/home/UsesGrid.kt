@@ -3,6 +3,7 @@ package dev.tonholo.portfolio.components.organisms.home
 import androidx.compose.runtime.Composable
 import com.varabyte.kobweb.compose.css.ListStyleType
 import com.varabyte.kobweb.compose.ui.Modifier
+import com.varabyte.kobweb.compose.ui.modifiers.alignItems
 import com.varabyte.kobweb.compose.ui.modifiers.color
 import com.varabyte.kobweb.compose.ui.modifiers.display
 import com.varabyte.kobweb.compose.ui.modifiers.flexDirection
@@ -20,12 +21,14 @@ import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.style.toModifier
 import dev.tonholo.portfolio.components.atoms.MetaLabel
 import dev.tonholo.portfolio.components.atoms.MetaLabelVariant
+import dev.tonholo.portfolio.components.atoms.MetaSeparator
 import dev.tonholo.portfolio.components.template.NumberedSection
 import dev.tonholo.portfolio.domain.model.UseCategory
 import dev.tonholo.portfolio.locale.LocalStrings
 import dev.tonholo.portfolio.state.StaticContent
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.typography.FontFamilies
+import org.jetbrains.compose.web.css.AlignItems
 import org.jetbrains.compose.web.css.DisplayStyle
 import org.jetbrains.compose.web.css.FlexDirection
 import org.jetbrains.compose.web.css.cssRem
@@ -51,8 +54,8 @@ private const val LIST_GAP_REM = 0.5 // 8px
 private const val LIST_FONT_SIZE_REM = 0.8125 // 13px
 private const val LIST_LINE_HEIGHT = 1.5
 
-// Middle-dot prefix (U+00B7) per handoff line 249: `<li>· {it}</li>`.
-private const val BULLET_PREFIX = "\u00B7 "
+// Inline gap between the bullet dot and the item text.
+private const val LIST_ITEM_GAP_REM = 0.5 // 8px
 
 // Slash prefix before category name, per handoff line 247: `/editor`, `/hardware`, ...
 private const val CATEGORY_NAME_PREFIX = "/"
@@ -118,8 +121,15 @@ private fun UsesColumn(category: UseCategory) {
                 .toAttrs(),
         ) {
             category.items.forEach { item ->
-                Li(attrs = Modifier.toAttrs()) {
-                    ComposeText("$BULLET_PREFIX$item")
+                Li(
+                    attrs = Modifier
+                        .display(DisplayStyle.Flex)
+                        .alignItems(AlignItems.Center)
+                        .gap(LIST_ITEM_GAP_REM.cssRem)
+                        .toAttrs(),
+                ) {
+                    MetaSeparator()
+                    ComposeText(item)
                 }
             }
         }
