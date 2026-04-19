@@ -13,9 +13,10 @@ import com.varabyte.kobweb.compose.ui.modifiers.display
 import com.varabyte.kobweb.compose.ui.modifiers.fontFamily
 import com.varabyte.kobweb.compose.ui.modifiers.fontSize
 import com.varabyte.kobweb.compose.ui.modifiers.fontWeight
-import com.varabyte.kobweb.compose.ui.modifiers.gap
 import com.varabyte.kobweb.compose.ui.modifiers.height
 import com.varabyte.kobweb.compose.ui.modifiers.letterSpacing
+import com.varabyte.kobweb.compose.ui.modifiers.margin
+import com.varabyte.kobweb.compose.ui.modifiers.setVariable
 import com.varabyte.kobweb.compose.ui.modifiers.textDecorationLine
 import com.varabyte.kobweb.compose.ui.modifiers.width
 import com.varabyte.kobweb.compose.ui.toAttrs
@@ -25,7 +26,9 @@ import com.varabyte.kobweb.silk.components.navigation.UndecoratedLinkVariant
 import com.varabyte.kobweb.silk.style.CssStyle
 import com.varabyte.kobweb.silk.style.toModifier
 import dev.tonholo.portfolio.components.atoms.Dot
+import dev.tonholo.portfolio.components.atoms.DotStyle
 import dev.tonholo.portfolio.components.atoms.DotVariant
+import dev.tonholo.portfolio.components.atoms.DotVars
 import dev.tonholo.portfolio.navigation.Routes
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.typography.FontFamilies
@@ -33,6 +36,7 @@ import org.jetbrains.compose.web.css.AlignItems
 import org.jetbrains.compose.web.css.DisplayStyle
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.em
+import org.jetbrains.compose.web.css.percent
 import org.jetbrains.compose.web.dom.Span
 import org.jetbrains.compose.web.dom.Text as ComposeText
 
@@ -72,10 +76,7 @@ fun BrandMark(modifier: Modifier = Modifier, route: String = Routes.HOME) {
         variant = UndecoratedLinkVariant then UncoloredLinkVariant,
     ) {
         Dot(
-            modifier = Modifier
-                .width(BRAND_DOT_SIZE_REM.cssRem)
-                .height(BRAND_DOT_SIZE_REM.cssRem)
-                .borderRadius(BRAND_DOT_RADIUS_REM.cssRem),
+            modifier = BrandMarkDotStyle.toModifier(),
             variant = DotVariant.Static,
         )
         ComposeText(BRAND_NAME)
@@ -101,12 +102,20 @@ val BrandMarkStyle = CssStyle {
         Modifier
             .display(DisplayStyle.Flex)
             .alignItems(AlignItems.Center)
-            .gap(BRAND_GAP_REM.cssRem)
             .fontFamily(*FontFamilies.MONO)
             .fontSize(BRAND_FONT_SIZE_REM.cssRem)
             .fontWeight(FontWeight.SemiBold)
             .letterSpacing(BRAND_LETTER_SPACING_EM.em)
             .textDecorationLine(TextDecorationLine.None)
             .cursor(Cursor.Pointer)
+    }
+}
+
+val BrandMarkDotStyle = CssStyle {
+    base {
+        Modifier
+            .setVariable(DotVars.Size, BRAND_DOT_SIZE_REM.cssRem)
+            .setVariable(DotVars.BorderRadius, BRAND_DOT_RADIUS_REM.cssRem)
+            .margin(right = BRAND_GAP_REM.cssRem)
     }
 }

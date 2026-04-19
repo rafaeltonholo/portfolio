@@ -2,16 +2,17 @@ package dev.tonholo.portfolio.components.atoms
 
 import androidx.compose.runtime.Composable
 import com.varabyte.kobweb.compose.css.AnimationIterationCount
+import com.varabyte.kobweb.compose.css.CSSLengthOrPercentageNumericValue
+import com.varabyte.kobweb.compose.css.StyleVariable
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.graphics.Color
 import com.varabyte.kobweb.compose.ui.modifiers.animation
 import com.varabyte.kobweb.compose.ui.modifiers.backgroundColor
 import com.varabyte.kobweb.compose.ui.modifiers.borderRadius
 import com.varabyte.kobweb.compose.ui.modifiers.display
-import com.varabyte.kobweb.compose.ui.modifiers.height
 import com.varabyte.kobweb.compose.ui.modifiers.opacity
 import com.varabyte.kobweb.compose.ui.modifiers.scale
-import com.varabyte.kobweb.compose.ui.modifiers.width
+import com.varabyte.kobweb.compose.ui.modifiers.size
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.silk.style.CssStyle
 import com.varabyte.kobweb.silk.style.animation.Keyframes
@@ -19,6 +20,8 @@ import com.varabyte.kobweb.silk.style.animation.toAnimation
 import com.varabyte.kobweb.silk.style.toModifier
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import org.jetbrains.compose.web.css.AnimationTimingFunction
+import org.jetbrains.compose.web.css.CSSSizeValue
+import org.jetbrains.compose.web.css.CSSUnit
 import org.jetbrains.compose.web.css.DisplayStyle
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.percent
@@ -95,10 +98,14 @@ val DotStyle = CssStyle {
     base {
         Modifier
             .display(DisplayStyle.InlineBlock)
-            .width(DOT_SIZE_REM.cssRem)
-            .height(DOT_SIZE_REM.cssRem)
-            .borderRadius(DOT_RADIUS_PERCENT.percent)
+            .size(DotVars.Size.value(DOT_SIZE_REM.cssRem))
+            .borderRadius(DotVars.BorderRadius.value(DOT_RADIUS_PERCENT.percent))
     }
+}
+
+object DotVars {
+    val Size by StyleVariable<CSSSizeValue<CSSUnit.rem>>()
+    val BorderRadius by StyleVariable<CSSLengthOrPercentageNumericValue>()
 }
 
 /**
