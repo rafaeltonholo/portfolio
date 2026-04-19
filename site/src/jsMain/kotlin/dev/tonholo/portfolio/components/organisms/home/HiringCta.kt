@@ -34,6 +34,7 @@ import dev.tonholo.portfolio.components.atoms.ButtonVariant
 import dev.tonholo.portfolio.components.atoms.PhosphorIcon
 import dev.tonholo.portfolio.locale.LocalStrings
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
+import dev.tonholo.portfolio.theme.color.AccentMint
 import dev.tonholo.portfolio.theme.layout.ShellStyle
 import dev.tonholo.portfolio.theme.typography.FontFamilies
 import org.jetbrains.compose.web.css.AlignItems
@@ -157,7 +158,6 @@ private fun HiringCtaBlock(onEmailClick: () -> Unit, onBookingClick: () -> Unit)
  */
 @Composable
 private fun HiringCtaCopy() {
-    val tokens = LocalPortfolioTokens.current
     val strings = LocalStrings.current.hiringCta
 
     Div(attrs = Modifier.toAttrs()) {
@@ -167,7 +167,10 @@ private fun HiringCtaCopy() {
                 .fontSize(META_FONT_SIZE_REM.cssRem)
                 .letterSpacing(META_LETTER_SPACING_EM.em)
                 .textTransform(TextTransform.Uppercase)
-                .color(tokens.accent.accent)
+                // The CTA block paints a fixed ink surface regardless of
+                // theme, so we pin to the dark-swatch mint (~10:1 contrast)
+                // rather than the ambient light-mode accent (fails 4.5:1).
+                .color(AccentMint.dark.accent)
                 .margin(bottom = META_MARGIN_BOTTOM_REM.cssRem)
                 .toAttrs(),
         ) {

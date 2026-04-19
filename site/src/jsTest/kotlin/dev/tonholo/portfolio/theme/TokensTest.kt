@@ -79,12 +79,14 @@ class TokensTest {
     }
 
     @Test
-    fun `given AccentMint light, when color values are read, then they match handoff CSS`() {
+    fun `given AccentMint light, when color values are read, then they meet WCAG AA on paper`() {
         // Arrange / Act
         val swatch = AccentMint.light
 
-        // Assert
-        assertEquals(Color.rgb(0x3D8A54), swatch.accent)
+        // Assert - accent is darkened from the handoff #3D8A54 to pass 4.5:1
+        // on paper; the soft and ink pairings keep the handoff values so the
+        // filled-chip treatment still matches.
+        assertEquals(Color.rgb(0x2F7A45), swatch.accent)
         assertEquals(Color.rgb(0xC8E5CF), swatch.accentSoft)
         assertEquals(Color.rgb(0xF2F7F4), swatch.accentInk)
     }
