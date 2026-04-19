@@ -7,14 +7,17 @@ import com.varabyte.kobweb.compose.css.TextDecorationLine
 import com.varabyte.kobweb.compose.css.Transition
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.graphics.Color
+import com.varabyte.kobweb.compose.ui.modifiers.alignItems
 import com.varabyte.kobweb.compose.ui.modifiers.backgroundColor
 import com.varabyte.kobweb.compose.ui.modifiers.border
 import com.varabyte.kobweb.compose.ui.modifiers.borderRadius
 import com.varabyte.kobweb.compose.ui.modifiers.color
 import com.varabyte.kobweb.compose.ui.modifiers.cursor
+import com.varabyte.kobweb.compose.ui.modifiers.display
 import com.varabyte.kobweb.compose.ui.modifiers.fontFamily
 import com.varabyte.kobweb.compose.ui.modifiers.fontSize
 import com.varabyte.kobweb.compose.ui.modifiers.fontWeight
+import com.varabyte.kobweb.compose.ui.modifiers.minHeight
 import com.varabyte.kobweb.compose.ui.modifiers.onClick
 import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.compose.ui.modifiers.textDecorationLine
@@ -31,7 +34,11 @@ import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.color.Ink
 import dev.tonholo.portfolio.theme.color.Paper
 import dev.tonholo.portfolio.theme.typography.FontFamilies
+import org.jetbrains.compose.web.css.AlignItems
+import org.jetbrains.compose.web.css.CSSMediaQuery
+import org.jetbrains.compose.web.css.DisplayStyle
 import org.jetbrains.compose.web.css.LineStyle
+import org.jetbrains.compose.web.css.StylePropertyValue
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.s
 import org.jetbrains.compose.web.dom.Span
@@ -43,6 +50,11 @@ private const val NAV_LINK_PADDING_Y_REM = 0.375 // 6px
 private const val NAV_LINK_PADDING_X_REM = 0.75 // 12px
 private const val NAV_LINK_BORDER_RADIUS_REM = 0.25 // 4px
 private const val NAV_LINK_TRANSITION_DURATION_S = 0.18
+
+// Touch target floor on pointer-coarse devices (phones, tablets). 44 / 16 = 2.75rem.
+// WCAG 2.5.5 asks for 44x44; desktop/mouse users keep the compact editorial
+// chrome because they can click pixel-precise.
+private const val NAV_LINK_TOUCH_MIN_HEIGHT_REM = 2.75 // 44px
 
 private const val ACTIVE_PREFIX = "> "
 
@@ -149,6 +161,11 @@ private fun NavLinkContent(label: String, active: Boolean, accentColor: Color) {
  * token-aware for the active/inactive split; the hover state resolves
  * static paper/ink palettes through [colorMode] so the hover background
  * lightens consistently on both themes.
+ *
+ * On `@media (pointer: coarse)` (phones and tablets where the primary input
+ * is touch) the hit area grows to a 44px minimum height with the label
+ * vertically centered. Desktop/mouse users keep the compact editorial
+ * chrome because pixel-precise pointing does not need the WCAG 2.5.5 floor.
  */
 val NavLinkStyle = CssStyle {
     base {
@@ -178,5 +195,16 @@ val NavLinkStyle = CssStyle {
         Modifier
             .backgroundColor(paper.paper2)
             .color(ink.ink)
+    }
+    cssRule(
+        mediaQuery = CSSMediaQuery.MediaFeature(
+            name = "pointer",
+            value = StylePropertyValue(value = "coarse"),
+        ),
+    ) {
+        Modifier
+            .minHeight(NAV_LINK_TOUCH_MIN_HEIGHT_REM.cssRem)
+            .display(DisplayStyle.LegacyInlineFlex)
+            .alignItems(AlignItems.Center)
     }
 }
