@@ -20,6 +20,7 @@ import dev.tonholo.portfolio.components.atoms.MetaLabelVariant
 import dev.tonholo.portfolio.components.atoms.PhosphorIcon
 import dev.tonholo.portfolio.locale.LocalStrings
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
+import dev.tonholo.portfolio.theme.layout.unit.dp
 import dev.tonholo.portfolio.theme.typography.Typography
 import dev.tonholo.portfolio.theme.typography.apply
 import org.jetbrains.compose.web.css.AlignItems
@@ -40,15 +41,15 @@ import org.jetbrains.compose.web.dom.Text as ComposeText
 //   align-items: end; margin-bottom: 64px;
 // Below the handoff `@media (max-width: 900px)` the grid collapses to a single
 // column; we use `Breakpoint.LG` (900px) to match the rest of the redesign.
-private const val HEAD_GRID_GAP_REM = 2.0 // 32px
-private const val HEAD_GRID_MARGIN_BOTTOM_REM = 4.0 // 64px
+private val HEAD_GRID_GAP = 32.dp
+private val HEAD_GRID_MARGIN_BOTTOM = 64.dp
 private const val HEAD_GRID_COPY_FR = 1
 
 // Copy-column spacing.
 //   `.meta` + inline `style={{marginBottom:16}}` on the mono header.
 //   `.resume-head p` pushes 16px down from the h1 via `margin-top: 16px`.
-private const val META_MARGIN_BOTTOM_REM = 1.0 // 16px
-private const val PARAGRAPH_MARGIN_TOP_REM = 1.0 // 16px
+private val META_MARGIN_BOTTOM = 16.dp
+private val PARAGRAPH_MARGIN_TOP = 16.dp
 
 // Handoff `.resume-head p` serif paragraph cap.
 private const val PARAGRAPH_MAX_WIDTH_CH = 50.0
@@ -103,7 +104,7 @@ private fun ResumeHeaderCopyColumn() {
             variant = MetaLabelVariant.Accent,
             modifier = Modifier
                 .display(DisplayStyle.Block)
-                .margin(bottom = META_MARGIN_BOTTOM_REM.cssRem),
+                .margin(bottom = META_MARGIN_BOTTOM),
         )
         H1(
             attrs = Modifier
@@ -140,9 +141,9 @@ val ResumeHeaderStyle = CssStyle {
         Modifier
             .display(DisplayStyle.Grid)
             .gridTemplateColumns { size(HEAD_GRID_COPY_FR.fr) }
-            .gap(HEAD_GRID_GAP_REM.cssRem)
+            .gap(HEAD_GRID_GAP)
             .alignItems(AlignItems.Start)
-            .margin(bottom = HEAD_GRID_MARGIN_BOTTOM_REM.cssRem)
+            .margin(bottom = HEAD_GRID_MARGIN_BOTTOM)
     }
     Breakpoint.LG {
         Modifier
@@ -164,6 +165,6 @@ val ResumeHeaderParagraphStyle = CssStyle {
         Modifier
             .apply(Typography.serifLead)
             .maxWidth(PARAGRAPH_MAX_WIDTH_CH.unsafeCast<CSSSizeValue<CSSUnit.ch>>())
-            .margin(top = PARAGRAPH_MARGIN_TOP_REM.cssRem, bottom = 0.cssRem)
+            .margin(top = PARAGRAPH_MARGIN_TOP, bottom = 0.cssRem)
     }
 }

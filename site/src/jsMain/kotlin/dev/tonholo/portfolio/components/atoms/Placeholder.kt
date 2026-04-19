@@ -28,20 +28,20 @@ import com.varabyte.kobweb.silk.style.toModifier
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.color.Paper
+import dev.tonholo.portfolio.theme.layout.unit.dp
 import dev.tonholo.portfolio.theme.typography.FontFamilies
 import org.jetbrains.compose.web.css.AlignItems
 import org.jetbrains.compose.web.css.DisplayStyle
 import org.jetbrains.compose.web.css.JustifyContent
 import org.jetbrains.compose.web.css.Position
-import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Span
 import org.jetbrains.compose.web.dom.Text as ComposeText
 
-private const val LABEL_PADDING_Y_REM = 0.25 // 4px
-private const val LABEL_PADDING_X_REM = 0.625 // 10px
-private const val LABEL_RADIUS_REM = 0.125 // 2px
+private val LABEL_PADDING_Y = 4.dp
+private val LABEL_PADDING_X = 10.dp
+private val LABEL_RADIUS = 2.dp
 private const val LABEL_Z_INDEX = 1
 private const val PATTERN_OPACITY = 0.4
 private const val PATTERN_STOP_PERCENT = "25%"
@@ -50,7 +50,7 @@ private const val PATTERN_TILE_PX = "12px"
 // Handoff `.ph` CSS: mono family at 11px, no uppercase transform. Chip
 // typography in the project theme forces uppercase, which does not match,
 // so the placeholder sets these directly.
-private const val PLACEHOLDER_FONT_SIZE_REM = 0.6875 // 11px
+private val PLACEHOLDER_FONT_SIZE = 11.dp
 
 /**
  * Aspect-ratio-aware placeholder block. Maps to `.ph` in the handoff CSS:
@@ -81,7 +81,7 @@ fun Placeholder(aspectRatio: AspectRatio, label: String, modifier: Modifier = Mo
     val finalModifier = PlaceholderStyle
         .toModifier()
         .fontFamily(*FontFamilies.MONO)
-        .fontSize(PLACEHOLDER_FONT_SIZE_REM.cssRem)
+        .fontSize(PLACEHOLDER_FONT_SIZE)
         .backgroundColor(tokens.paper.paper2)
         .color(tokens.muted.muted2)
         .aspectRatio(width = aspectRatio.widthRatio, height = aspectRatio.heightRatio)
@@ -164,7 +164,7 @@ val PlaceholderLabelStyle = CssStyle {
         Modifier
             .position(Position.Relative)
             .zIndex(LABEL_Z_INDEX)
-            .padding(topBottom = LABEL_PADDING_Y_REM.cssRem, leftRight = LABEL_PADDING_X_REM.cssRem)
-            .borderRadius(LABEL_RADIUS_REM.cssRem)
+            .padding(topBottom = LABEL_PADDING_Y, leftRight = LABEL_PADDING_X)
+            .borderRadius(LABEL_RADIUS)
     }
 }

@@ -20,11 +20,11 @@ import com.varabyte.kobweb.silk.style.toModifier
 import dev.tonholo.portfolio.components.atoms.Dot
 import dev.tonholo.portfolio.components.atoms.DotVariant
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
+import dev.tonholo.portfolio.theme.layout.unit.dp
 import dev.tonholo.portfolio.theme.typography.FontFamilies
 import org.jetbrains.compose.web.css.AlignItems
 import org.jetbrains.compose.web.css.DisplayStyle
 import org.jetbrains.compose.web.css.LineStyle
-import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Span
 import org.jetbrains.compose.web.dom.Text as ComposeText
@@ -37,17 +37,17 @@ private const val DOT_COLOR_AMBER = 0xD7A75F
 private const val DOT_COLOR_GREEN = 0x7DD198
 
 // Terminal header dots are bigger than the nav-status dot (7px → 10px).
-private const val DOT_SIZE_REM = 0.625 // 10px at 1rem=16px
+private val DOT_SIZE = 10.dp
 
 // `.hero-c__term-head` layout.
-private const val HEADER_GAP_REM = 0.625 // 10px
-private const val HEADER_PADDING_BOTTOM_REM = 0.875 // 14px
-private const val HEADER_MARGIN_BOTTOM_REM = 1.0 // 16px
-private const val HEADER_BORDER_WIDTH_REM = 0.0625 // 1px
+private val HEADER_GAP = 10.dp
+private val HEADER_PADDING_BOTTOM = 14.dp
+private val HEADER_MARGIN_BOTTOM = 16.dp
+private val HEADER_BORDER_WIDTH = 1.dp
 
 // `.hero-c__term-head .title` typography.
-private const val TITLE_MARGIN_LEFT_REM = 0.75 // 12px
-private const val TITLE_FONT_SIZE_REM = 0.75 // 12px
+private val TITLE_MARGIN_LEFT = 12.dp
+private val TITLE_FONT_SIZE = 12.dp
 
 // Border color mirrors `border-bottom: 1px solid #33312d` in the handoff CSS.
 private const val HEADER_BORDER_COLOR = 0x33312D
@@ -74,8 +74,8 @@ fun TermWindowHeader(modifier: Modifier = Modifier, title: String = DEFAULT_TERM
 
     Div(attrs = finalModifier.toAttrs()) {
         val dotModifier = Modifier
-            .width(DOT_SIZE_REM.cssRem)
-            .height(DOT_SIZE_REM.cssRem)
+            .width(DOT_SIZE)
+            .height(DOT_SIZE)
         Dot(
             modifier = dotModifier,
             variant = DotVariant.Static,
@@ -93,9 +93,9 @@ fun TermWindowHeader(modifier: Modifier = Modifier, title: String = DEFAULT_TERM
         )
         Span(
             attrs = Modifier
-                .margin(left = TITLE_MARGIN_LEFT_REM.cssRem)
+                .margin(left = TITLE_MARGIN_LEFT)
                 .fontFamily(*FontFamilies.MONO)
-                .fontSize(TITLE_FONT_SIZE_REM.cssRem)
+                .fontSize(TITLE_FONT_SIZE)
                 .color(tokens.muted.muted2)
                 .toAttrs(),
         ) {
@@ -114,11 +114,11 @@ val TermWindowHeaderStyle = CssStyle {
         Modifier
             .display(DisplayStyle.Flex)
             .alignItems(AlignItems.Center)
-            .gap(HEADER_GAP_REM.cssRem)
-            .padding(bottom = HEADER_PADDING_BOTTOM_REM.cssRem)
-            .margin(bottom = HEADER_MARGIN_BOTTOM_REM.cssRem)
+            .gap(HEADER_GAP)
+            .padding(bottom = HEADER_PADDING_BOTTOM)
+            .margin(bottom = HEADER_MARGIN_BOTTOM)
             .borderBottom(
-                width = HEADER_BORDER_WIDTH_REM.cssRem,
+                width = HEADER_BORDER_WIDTH,
                 style = LineStyle.Solid,
                 color = Color.rgb(HEADER_BORDER_COLOR),
             )

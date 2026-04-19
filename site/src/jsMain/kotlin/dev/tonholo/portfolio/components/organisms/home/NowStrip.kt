@@ -32,6 +32,7 @@ import dev.tonholo.portfolio.locale.LocalStrings
 import dev.tonholo.portfolio.locale.Strings
 import dev.tonholo.portfolio.state.StaticContent
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
+import dev.tonholo.portfolio.theme.layout.unit.dp
 import dev.tonholo.portfolio.theme.typography.FontFamilies
 import dev.tonholo.portfolio.theme.typography.Typography
 import dev.tonholo.portfolio.theme.typography.apply
@@ -57,28 +58,28 @@ private const val SECTION_ORDINAL = 1
 // Grid layout per handoff: `grid-template-columns: 1.4fr 1fr 1fr; gap: 48px`.
 private const val NOW_GRID_WIDE_FR = 1.4
 private const val NOW_GRID_NARROW_FR = 1
-private const val NOW_GRID_GAP_REM = 3.0 // 48px
+private val NOW_GRID_GAP = 48.dp
 
 // Spacing between the mono meta label and the column content.
-private const val META_MARGIN_BOTTOM_REM = 0.75 // 12px
+private val META_MARGIN_BOTTOM = 12.dp
 
 // Working column: body copy width capped to 48ch.
 private const val BODY_MAX_WIDTH_CH = 48.0
 
 // Writing list: gap between article entries; small-date uses metaSmall.
-private const val WRITING_LIST_GAP_REM = 0.875 // 14px
-private const val WRITING_TITLE_SIZE_REM = 1.0 // 16px
+private val WRITING_LIST_GAP = 14.dp
+private val WRITING_TITLE_SIZE = 16.dp
 
 // Inline gap inside the meta line between the status label, the separator
 // dot, and the short date.
-private const val WRITING_META_GAP_REM = 0.375 // 6px
+private val WRITING_META_GAP = 6.dp
 
 // Off-the-clock list: gap between hobby rows; body copy.
-private const val HOBBY_LIST_GAP_REM = 0.625 // 10px
+private val HOBBY_LIST_GAP = 10.dp
 private const val WRITING_ARTICLES_TAKE = 3
 
 // Title spacing under the meta label in the working column.
-private const val WORKING_TITLE_MARGIN_BOTTOM_REM = 0.75 // 12px
+private val WORKING_TITLE_MARGIN_BOTTOM = 12.dp
 
 /**
  * Home organism: the three-column "Currently" strip. Ports the `NowStrip`
@@ -149,7 +150,7 @@ private fun WorkingOnColumn(title: String, body: String, strings: Strings.NowStr
             text = strings.labelWorkingOn,
             modifier = Modifier
                 .display(DisplayStyle.Block)
-                .margin(bottom = META_MARGIN_BOTTOM_REM.cssRem),
+                .margin(bottom = META_MARGIN_BOTTOM),
         )
         H3(
             attrs = Modifier
@@ -157,7 +158,7 @@ private fun WorkingOnColumn(title: String, body: String, strings: Strings.NowStr
                 .color(tokens.ink.ink)
                 .margin(
                     top = 0.cssRem,
-                    bottom = WORKING_TITLE_MARGIN_BOTTOM_REM.cssRem,
+                    bottom = WORKING_TITLE_MARGIN_BOTTOM,
                 )
                 .toAttrs(),
         ) {
@@ -188,7 +189,7 @@ private fun WritingColumn(articles: List<Article>, strings: Strings.NowStrip) {
             text = strings.labelWriting,
             modifier = Modifier
                 .display(DisplayStyle.Block)
-                .margin(bottom = META_MARGIN_BOTTOM_REM.cssRem),
+                .margin(bottom = META_MARGIN_BOTTOM),
         )
         Ul(attrs = WritingListStyle.toModifier().toAttrs()) {
             articles.forEach { article ->
@@ -218,7 +219,7 @@ private fun WritingEntry(article: Article, strings: Strings.NowStrip) {
                 .color(tokens.muted.muted)
                 .display(DisplayStyle.LegacyInlineFlex)
                 .alignItems(AlignItems.Center)
-                .gap(WRITING_META_GAP_REM.cssRem)
+                .gap(WRITING_META_GAP)
                 .toAttrs(),
         ) {
             Span(attrs = Modifier.toAttrs()) { ComposeText(statusLabel) }
@@ -228,7 +229,7 @@ private fun WritingEntry(article: Article, strings: Strings.NowStrip) {
         Div(
             attrs = Modifier
                 .fontFamily(*FontFamilies.DISPLAY)
-                .fontSize(WRITING_TITLE_SIZE_REM.cssRem)
+                .fontSize(WRITING_TITLE_SIZE)
                 .fontWeight(FontWeight.Medium)
                 .color(tokens.ink.ink)
                 .toAttrs(),
@@ -251,7 +252,7 @@ private fun OffTheClockColumn(strings: Strings.NowStrip) {
             text = strings.labelOffTheClock,
             modifier = Modifier
                 .display(DisplayStyle.Block)
-                .margin(bottom = META_MARGIN_BOTTOM_REM.cssRem),
+                .margin(bottom = META_MARGIN_BOTTOM),
         )
         Ul(
             attrs = HobbyListStyle
@@ -339,7 +340,7 @@ val NowGridStyle = CssStyle {
             .gridTemplateColumns {
                 size(NOW_GRID_NARROW_FR.fr)
             }
-            .gap(NOW_GRID_GAP_REM.cssRem)
+            .gap(NOW_GRID_GAP)
     }
     Breakpoint.LG {
         Modifier.gridTemplateColumns {
@@ -363,7 +364,7 @@ val WritingListStyle = CssStyle {
             .padding(0.cssRem)
             .display(DisplayStyle.Flex)
             .flexDirection(FlexDirection.Column)
-            .gap(WRITING_LIST_GAP_REM.cssRem)
+            .gap(WRITING_LIST_GAP)
     }
 }
 
@@ -380,6 +381,6 @@ val HobbyListStyle = CssStyle {
             .padding(0.cssRem)
             .display(DisplayStyle.Flex)
             .flexDirection(FlexDirection.Column)
-            .gap(HOBBY_LIST_GAP_REM.cssRem)
+            .gap(HOBBY_LIST_GAP)
     }
 }

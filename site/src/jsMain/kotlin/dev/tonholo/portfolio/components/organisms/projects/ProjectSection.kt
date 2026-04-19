@@ -27,6 +27,7 @@ import com.varabyte.kobweb.silk.style.toModifier
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.PortfolioTokens
+import dev.tonholo.portfolio.theme.layout.unit.dp
 import dev.tonholo.portfolio.theme.typography.FontFamilies
 import dev.tonholo.portfolio.theme.typography.Typography
 import dev.tonholo.portfolio.theme.typography.apply
@@ -47,34 +48,34 @@ import org.jetbrains.compose.web.dom.Text as ComposeText
 // fluid right column (`1fr`), 64px gap, 48px top/bottom padding, and a 1px
 // `--paper-3` (light) / `--paper-2` (dark) top border. Below 900px
 // (`Breakpoint.LG`) collapses to a single column with a 16px gap.
-private const val SECTION_LABEL_COL_REM = 13.75 // 220px at 1rem=16px
+private val SECTION_LABEL_COL = 220.dp
 private const val SECTION_CONTENT_COL_FR = 1.0
-private const val SECTION_GAP_DESKTOP_REM = 4.0 // 64px
-private const val SECTION_GAP_MOBILE_REM = 1.0 // 16px
-private const val SECTION_PADDING_Y_REM = 3.0 // 48px
-private const val SECTION_BORDER_WIDTH_REM = 0.0625 // 1px
+private val SECTION_GAP_DESKTOP = 64.dp
+private val SECTION_GAP_MOBILE = 16.dp
+private val SECTION_PADDING_Y = 48.dp
+private val SECTION_BORDER_WIDTH = 1.dp
 
 // Handoff `.project-section .lbl`: mono 11px uppercase with 0.08em tracking,
 // muted color, sticky with `top: 100px` so it trails the nav chrome while the
 // content scrolls past.
-private const val LABEL_FONT_SIZE_REM = 0.6875 // 11px
+private val LABEL_FONT_SIZE = 11.dp
 private const val LABEL_LETTER_SPACING_EM = 0.08
-private const val LABEL_STICKY_TOP_REM = 6.25 // 100px
+private val LABEL_STICKY_TOP = 100.dp
 
 // Handoff `.project-section .content`: serif family at 19px / 1.6, `--ink-2`
 // color, capped at 60ch per the handoff rule. The spec asks for a 48ch cap on
 // the paragraph body inside the slot; the outer wrapper still matches the
 // handoff's 60ch to keep headings aligned with neighbouring sections.
-private const val CONTENT_BODY_SIZE_REM = 1.1875 // 19px
+private val CONTENT_BODY_SIZE = 19.dp
 private const val CONTENT_BODY_LINE_HEIGHT = 1.6
 private const val CONTENT_MAX_WIDTH_CH = 60.0
 
 // Handoff `.project-section .content h2`: 36px display, weight 500, -0.02em
 // tracking, 1.05 line-height, 24px bottom margin.
-private const val CONTENT_H2_SIZE_REM = 2.25 // 36px
+private val CONTENT_H2_SIZE = 36.dp
 private const val CONTENT_H2_LINE_HEIGHT = 1.05
 private const val CONTENT_H2_LETTER_SPACING_EM = -0.02
-private const val CONTENT_H2_MARGIN_BOTTOM_REM = 1.5 // 24px
+private val CONTENT_H2_MARGIN_BOTTOM = 24.dp
 
 // Spec: paragraph body (content slot) caps at 48ch; the wrapper owns the 60ch
 // ceiling so a caller that renders non-paragraph content (e.g., the outcomes
@@ -117,7 +118,7 @@ fun ProjectSection(
     val finalModifier = ProjectSectionStyle
         .toModifier()
         .borderTop(
-            width = SECTION_BORDER_WIDTH_REM.cssRem,
+            width = SECTION_BORDER_WIDTH,
             style = LineStyle.Solid,
             color = borderColor,
         )
@@ -181,16 +182,16 @@ val ProjectSectionStyle = CssStyle {
         Modifier
             .display(DisplayStyle.Grid)
             .gridTemplateColumns { size(SECTION_CONTENT_COL_FR.fr) }
-            .gap(SECTION_GAP_MOBILE_REM.cssRem)
-            .padding(topBottom = SECTION_PADDING_Y_REM.cssRem)
+            .gap(SECTION_GAP_MOBILE)
+            .padding(topBottom = SECTION_PADDING_Y)
     }
     Breakpoint.LG {
         Modifier
             .gridTemplateColumns {
-                size(SECTION_LABEL_COL_REM.cssRem)
+                size(SECTION_LABEL_COL)
                 size(SECTION_CONTENT_COL_FR.fr)
             }
-            .gap(SECTION_GAP_DESKTOP_REM.cssRem)
+            .gap(SECTION_GAP_DESKTOP)
     }
 }
 
@@ -204,11 +205,11 @@ val ProjectSectionLabelStyle = CssStyle {
     base {
         Modifier
             .fontFamily(*FontFamilies.MONO)
-            .fontSize(LABEL_FONT_SIZE_REM.cssRem)
+            .fontSize(LABEL_FONT_SIZE)
             .letterSpacing(LABEL_LETTER_SPACING_EM.em)
             .textTransform(TextTransform.Uppercase)
             .position(Position.Sticky)
-            .top(LABEL_STICKY_TOP_REM.cssRem)
+            .top(LABEL_STICKY_TOP)
             .alignSelf(AlignSelf.Start)
     }
 }
@@ -221,7 +222,7 @@ val ProjectSectionContentStyle = CssStyle {
     base {
         Modifier
             .fontFamily(*FontFamilies.SERIF)
-            .fontSize(CONTENT_BODY_SIZE_REM.cssRem)
+            .fontSize(CONTENT_BODY_SIZE)
             .lineHeight(CONTENT_BODY_LINE_HEIGHT)
             .maxWidth(CONTENT_MAX_WIDTH_CH.unsafeCast<CSSSizeValue<CSSUnit.ch>>())
     }
@@ -237,10 +238,10 @@ val ProjectSectionTitleStyle = CssStyle {
     base {
         Modifier
             .apply(Typography.h2)
-            .fontSize(CONTENT_H2_SIZE_REM.cssRem)
+            .fontSize(CONTENT_H2_SIZE)
             .lineHeight(CONTENT_H2_LINE_HEIGHT)
             .letterSpacing(CONTENT_H2_LETTER_SPACING_EM.em)
-            .margin(top = 0.cssRem, bottom = CONTENT_H2_MARGIN_BOTTOM_REM.cssRem)
+            .margin(top = 0.cssRem, bottom = CONTENT_H2_MARGIN_BOTTOM)
     }
 }
 

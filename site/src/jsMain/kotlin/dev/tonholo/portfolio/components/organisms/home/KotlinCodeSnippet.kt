@@ -20,8 +20,8 @@ import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.silk.style.CssStyle
 import com.varabyte.kobweb.silk.style.toModifier
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
+import dev.tonholo.portfolio.theme.layout.unit.dp
 import dev.tonholo.portfolio.theme.typography.FontFamilies
-import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.em
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Span
@@ -29,7 +29,7 @@ import org.jetbrains.compose.web.dom.Text as ComposeText
 
 // Handoff `.hero-a__code` block. Mono font, 15px / line-height 2, ink-2 body.
 // Tokens: `.c-kw` accent + 600, `.c-var` ink + 500, `.c-str` ink-3, `.c-dim` muted.
-private const val CODE_FONT_SIZE_REM = 0.9375 // 15px
+private val CODE_FONT_SIZE = 15.dp
 private const val CODE_LINE_HEIGHT = 2.0
 
 // Non-breaking spaces that preserve the exact indentation shown in the handoff.
@@ -243,7 +243,7 @@ val KotlinCodeSnippetStyle = CssStyle {
     base {
         Modifier
             .fontFamily(*FontFamilies.MONO)
-            .fontSize(CODE_FONT_SIZE_REM.cssRem)
+            .fontSize(CODE_FONT_SIZE)
             .lineHeight(CODE_LINE_HEIGHT)
     }
 }

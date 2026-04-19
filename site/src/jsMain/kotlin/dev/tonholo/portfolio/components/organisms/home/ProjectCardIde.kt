@@ -46,6 +46,7 @@ import dev.tonholo.portfolio.extensions.toKebabCase
 import dev.tonholo.portfolio.navigation.Routes
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.color.Paper
+import dev.tonholo.portfolio.theme.layout.unit.dp
 import dev.tonholo.portfolio.theme.typography.FontFamilies
 import org.jetbrains.compose.web.css.AlignItems
 import org.jetbrains.compose.web.css.CSSSizeValue
@@ -53,7 +54,6 @@ import org.jetbrains.compose.web.css.CSSUnit
 import org.jetbrains.compose.web.css.DisplayStyle
 import org.jetbrains.compose.web.css.JustifyContent
 import org.jetbrains.compose.web.css.LineStyle
-import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.em
 import org.jetbrains.compose.web.css.fr
 import org.jetbrains.compose.web.css.s
@@ -62,47 +62,48 @@ import org.jetbrains.compose.web.dom.Span
 import org.jetbrains.compose.web.dom.Text as ComposeText
 
 // Head spec: `.proj-head { padding: 14px 24px; background: var(--paper-2); ... }`.
-private const val HEAD_PADDING_Y_REM = 0.875 // 14px
-private const val HEAD_PADDING_X_REM = 1.5 // 24px
-private const val HEAD_GAP_REM = 0.75 // 12px
-private const val HEAD_FONT_SIZE_REM = 0.75 // 12px
+private val HEAD_PADDING_Y = 14.dp
+private val HEAD_PADDING_X = 24.dp
+private val HEAD_GAP = 12.dp
+private val HEAD_FONT_SIZE = 12.dp
 
 // Tag spec: `.proj-head .tag { padding: 3px 8px; border-radius: 2px; font-size: 10px; }`.
-private const val TAG_PADDING_Y_REM = 0.1875 // 3px
-private const val TAG_PADDING_X_REM = 0.5 // 8px
-private const val TAG_BORDER_RADIUS_REM = 0.125 // 2px
-private const val TAG_FONT_SIZE_REM = 0.625 // 10px
+private val TAG_PADDING_Y = 3.dp
+private val TAG_PADDING_X = 8.dp
+private val TAG_BORDER_RADIUS = 2.dp
+private val TAG_FONT_SIZE = 10.dp
 
 // Body spec: `.proj-body { padding: 32px 24px; }`.
-private const val BODY_PADDING_Y_REM = 2.0 // 32px
-private const val BODY_PADDING_X_REM = 1.5 // 24px
+private val BODY_PADDING_Y = 32.dp
+private val BODY_PADDING_X = 24.dp
 
 // Title spec: `.proj-title { font-size: 32px; font-weight: 500; letter-spacing: -0.02em; margin-bottom: 10px; }`.
-private const val TITLE_FONT_SIZE_REM = 2.0 // 32px
+private val TITLE_FONT_SIZE = 32.dp
 private const val TITLE_LETTER_SPACING_EM = -0.02
-private const val TITLE_MARGIN_BOTTOM_REM = 0.625 // 10px
+private val TITLE_MARGIN_BOTTOM = 10.dp
 
 // Description spec: `.proj-desc { font-size: 14px; line-height: 1.55; max-width: 48ch; margin-bottom: 24px; }`.
-private const val DESC_FONT_SIZE_REM = 0.875 // 14px
+private val DESC_FONT_SIZE = 14.dp
 private const val DESC_LINE_HEIGHT = 1.55
 private const val DESC_MAX_WIDTH_CH = 48.0
-private const val DESC_MARGIN_BOTTOM_REM = 1.5 // 24px
+private val DESC_MARGIN_BOTTOM = 24.dp
 
 // Stats grid spec: `.proj-stats { display: flex; gap: 32px; margin-bottom: 20px; }`.
 // We ship a 3-column grid per the task spec to keep the stat cells aligned.
-private const val STATS_GAP_REM = 2.0 // 32px
-private const val STATS_MARGIN_BOTTOM_REM = 1.25 // 20px
+private val STATS_GAP = 32.dp
+private val STATS_MARGIN_BOTTOM = 20.dp
 private const val STATS_COLUMNS_FR = 1
 private const val STATS_COLUMN_COUNT = 3
 
 // Foot spec: `.proj-foot { padding-top: 20px; border-top: 1px solid var(--paper-3); font-size: 12px; }`.
-private const val FOOT_PADDING_TOP_REM = 1.25 // 20px
-private const val FOOT_BORDER_WIDTH_REM = 0.0625 // 1px hairline
-private const val FOOT_FONT_SIZE_REM = 0.75 // 12px
+private val FOOT_PADDING_TOP = 20.dp
+private val FOOT_BORDER_WIDTH = 1.dp
+private val FOOT_FONT_SIZE = 12.dp
 
 // Hover motion spec: `.proj-card:hover .arrow { transform: translateX(4px); }` is owned by the
 // `Arrow` atom; the card additionally lifts by -2px per the task spec.
-private const val CARD_HOVER_LIFT_REM = -0.125 // -2px
+private const val CARD_HOVER_LIFT_PX = -2
+private val CARD_HOVER_LIFT = CARD_HOVER_LIFT_PX.dp
 private const val CARD_TRANSITION_DURATION_S = 0.2
 
 private const val KIND_COMMERCIAL_LABEL = "COMMERCIAL"
@@ -112,11 +113,11 @@ private const val FILENAME_EXTENSION = ".kt"
 private const val CTA_LABEL = "read case study"
 
 private const val ARROW_ICON_NAME = "arrow-right"
-private const val ARROW_GAP_REM = 0.375 // 6px between label and arrow glyph
+private val ARROW_GAP = 6.dp
 
 // Inline gap between stack tokens and the centered separator dots in the
 // card footer.
-private const val STACK_ROW_GAP_REM = 0.375 // 6px
+private val STACK_ROW_GAP = 6.dp
 
 /**
  * Home "Selected work" card rendered in the IDE-block style. Ports the
@@ -224,7 +225,7 @@ private fun ProjectCardFoot(project: Project) {
         attrs = ProjectCardFootStyle
             .toModifier()
             .borderTop(
-                width = FOOT_BORDER_WIDTH_REM.cssRem,
+                width = FOOT_BORDER_WIDTH,
                 style = LineStyle.Solid,
                 color = tokens.paper.paper3,
             )
@@ -235,7 +236,7 @@ private fun ProjectCardFoot(project: Project) {
                 .color(tokens.muted.muted)
                 .display(DisplayStyle.LegacyInlineFlex)
                 .alignItems(AlignItems.Center)
-                .gap(STACK_ROW_GAP_REM.cssRem)
+                .gap(STACK_ROW_GAP)
                 .toAttrs(),
         ) {
             project.stack.forEachIndexed { index, item ->
@@ -256,7 +257,7 @@ private fun ProjectCardFoot(project: Project) {
                 name = ARROW_ICON_NAME,
                 modifier = ArrowStyle
                     .toModifier()
-                    .margin(left = ARROW_GAP_REM.cssRem),
+                    .margin(left = ARROW_GAP),
             )
         }
     }
@@ -285,7 +286,7 @@ val ProjectCardIdeStyle = CssStyle {
         val paper = if (colorMode == ColorMode.DARK) Paper.dark else Paper.light
         Modifier
             .backgroundColor(paper.paper2)
-            .translateY(CARD_HOVER_LIFT_REM.cssRem)
+            .translateY(CARD_HOVER_LIFT)
     }
 }
 
@@ -301,13 +302,13 @@ val ProjectCardHeadStyle = CssStyle {
             .display(DisplayStyle.Flex)
             .alignItems(AlignItems.Center)
             .justifyContent(JustifyContent.SpaceBetween)
-            .gap(HEAD_GAP_REM.cssRem)
+            .gap(HEAD_GAP)
             .padding(
-                topBottom = HEAD_PADDING_Y_REM.cssRem,
-                leftRight = HEAD_PADDING_X_REM.cssRem,
+                topBottom = HEAD_PADDING_Y,
+                leftRight = HEAD_PADDING_X,
             )
             .fontFamily(*FontFamilies.MONO)
-            .fontSize(HEAD_FONT_SIZE_REM.cssRem)
+            .fontSize(HEAD_FONT_SIZE)
     }
 }
 
@@ -323,11 +324,11 @@ val ProjectCardTagStyle = CssStyle {
             .display(DisplayStyle.LegacyInlineFlex)
             .alignItems(AlignItems.Center)
             .padding(
-                topBottom = TAG_PADDING_Y_REM.cssRem,
-                leftRight = TAG_PADDING_X_REM.cssRem,
+                topBottom = TAG_PADDING_Y,
+                leftRight = TAG_PADDING_X,
             )
-            .borderRadius(TAG_BORDER_RADIUS_REM.cssRem)
-            .fontSize(TAG_FONT_SIZE_REM.cssRem)
+            .borderRadius(TAG_BORDER_RADIUS)
+            .fontSize(TAG_FONT_SIZE)
             .fontWeight(FontWeight.SemiBold)
     }
 }
@@ -339,8 +340,8 @@ val ProjectCardBodyStyle = CssStyle {
     base {
         Modifier
             .padding(
-                topBottom = BODY_PADDING_Y_REM.cssRem,
-                leftRight = BODY_PADDING_X_REM.cssRem,
+                topBottom = BODY_PADDING_Y,
+                leftRight = BODY_PADDING_X,
             )
     }
 }
@@ -354,10 +355,10 @@ val ProjectCardTitleStyle = CssStyle {
     base {
         Modifier
             .fontFamily(*FontFamilies.DISPLAY)
-            .fontSize(TITLE_FONT_SIZE_REM.cssRem)
+            .fontSize(TITLE_FONT_SIZE)
             .fontWeight(FontWeight.Medium)
             .letterSpacing(TITLE_LETTER_SPACING_EM.em)
-            .margin(bottom = TITLE_MARGIN_BOTTOM_REM.cssRem)
+            .margin(bottom = TITLE_MARGIN_BOTTOM)
     }
 }
 
@@ -370,10 +371,10 @@ val ProjectCardDescStyle = CssStyle {
     base {
         Modifier
             .fontFamily(*FontFamilies.BODY)
-            .fontSize(DESC_FONT_SIZE_REM.cssRem)
+            .fontSize(DESC_FONT_SIZE)
             .lineHeight(DESC_LINE_HEIGHT)
             .maxWidth(DESC_MAX_WIDTH_CH.unsafeCast<CSSSizeValue<CSSUnit.ch>>())
-            .margin(bottom = DESC_MARGIN_BOTTOM_REM.cssRem)
+            .margin(bottom = DESC_MARGIN_BOTTOM)
     }
 }
 
@@ -390,8 +391,8 @@ val ProjectCardStatsStyle = CssStyle {
             .gridTemplateColumns {
                 repeat(STATS_COLUMN_COUNT) { size(STATS_COLUMNS_FR.fr) }
             }
-            .gap(STATS_GAP_REM.cssRem)
-            .margin(bottom = STATS_MARGIN_BOTTOM_REM.cssRem)
+            .gap(STATS_GAP)
+            .margin(bottom = STATS_MARGIN_BOTTOM)
     }
 }
 
@@ -407,9 +408,9 @@ val ProjectCardFootStyle = CssStyle {
             .display(DisplayStyle.Flex)
             .alignItems(AlignItems.Center)
             .justifyContent(JustifyContent.SpaceBetween)
-            .padding(top = FOOT_PADDING_TOP_REM.cssRem)
+            .padding(top = FOOT_PADDING_TOP)
             .fontFamily(*FontFamilies.MONO)
-            .fontSize(FOOT_FONT_SIZE_REM.cssRem)
+            .fontSize(FOOT_FONT_SIZE)
     }
 }
 

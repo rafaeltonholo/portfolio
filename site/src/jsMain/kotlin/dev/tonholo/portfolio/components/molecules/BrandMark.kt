@@ -27,22 +27,22 @@ import dev.tonholo.portfolio.components.atoms.DotVariant
 import dev.tonholo.portfolio.components.atoms.DotVars
 import dev.tonholo.portfolio.navigation.Routes
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
+import dev.tonholo.portfolio.theme.layout.unit.dp
 import dev.tonholo.portfolio.theme.typography.FontFamilies
 import org.jetbrains.compose.web.css.AlignItems
 import org.jetbrains.compose.web.css.DisplayStyle
-import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.em
 import org.jetbrains.compose.web.dom.Span
 import org.jetbrains.compose.web.dom.Text as ComposeText
 
-private const val BRAND_GAP_REM = 0.625 // 10px between dot and wordmark
-private const val BRAND_FONT_SIZE_REM = 0.875 // 14px
+private val BRAND_GAP = 10.dp
+private val BRAND_FONT_SIZE = 14.dp
 private const val BRAND_LETTER_SPACING_EM = -0.01
 
 // `.brand-dot` is a 10x10 square with a 2px radius; it reuses the [Dot]
 // atom for the accent fill but overrides geometry via a trailing modifier.
-private const val BRAND_DOT_SIZE_REM = 0.625 // 10px
-private const val BRAND_DOT_RADIUS_REM = 0.125 // 2px
+private val BRAND_DOT_SIZE = 10.dp
+private val BRAND_DOT_RADIUS = 2.dp
 
 private const val BRAND_NAME = "rafael"
 private const val BRAND_PATH = ".tonholo.dev"
@@ -98,7 +98,7 @@ val BrandMarkStyle = CssStyle {
             .display(DisplayStyle.Flex)
             .alignItems(AlignItems.Center)
             .fontFamily(*FontFamilies.MONO)
-            .fontSize(BRAND_FONT_SIZE_REM.cssRem)
+            .fontSize(BRAND_FONT_SIZE)
             .fontWeight(FontWeight.SemiBold)
             .letterSpacing(BRAND_LETTER_SPACING_EM.em)
             .textDecorationLine(TextDecorationLine.None)
@@ -109,8 +109,8 @@ val BrandMarkStyle = CssStyle {
 val BrandMarkDotStyle = CssStyle {
     base {
         Modifier
-            .setVariable(DotVars.Size, BRAND_DOT_SIZE_REM.cssRem)
-            .setVariable(DotVars.BorderRadius, BRAND_DOT_RADIUS_REM.cssRem)
-            .margin(right = BRAND_GAP_REM.cssRem)
+            .setVariable(DotVars.Size, BRAND_DOT_SIZE)
+            .setVariable(DotVars.BorderRadius, BRAND_DOT_RADIUS)
+            .margin(right = BRAND_GAP)
     }
 }

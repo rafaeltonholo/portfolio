@@ -24,6 +24,7 @@ import dev.tonholo.portfolio.components.atoms.MetaLabelVariant
 import dev.tonholo.portfolio.components.atoms.Placeholder
 import dev.tonholo.portfolio.locale.LocalStrings
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
+import dev.tonholo.portfolio.theme.layout.unit.dp
 import dev.tonholo.portfolio.theme.typography.FontFamilies
 import dev.tonholo.portfolio.theme.typography.Typography
 import dev.tonholo.portfolio.theme.typography.apply
@@ -40,19 +41,19 @@ import org.jetbrains.compose.web.dom.Text as ComposeText
 // Handoff `.about-hdr`: two-column grid, `1.2fr 1fr`, 64px gap, items aligned
 // to the start. Collapses to a single column below 900px (Silk's
 // `Breakpoint.LG`) matching the `@media (max-width: 900px)` rule.
-private const val GRID_GAP_REM = 4.0 // 64px
+private val GRID_GAP = 64.dp
 private const val GRID_WIDE_FR = 1.2
 private const val GRID_NARROW_FR = 1.0
 private const val GRID_COL_FR = 1.0
 
 // Handoff inline styles on the copy column.
-private const val META_MARGIN_BOTTOM_REM = 1.25 // 20px
-private const val TITLE_MARGIN_BOTTOM_REM = 1.75 // 28px
+private val META_MARGIN_BOTTOM = 20.dp
+private val TITLE_MARGIN_BOTTOM = 28.dp
 
 // Handoff lede paragraph: body sans (Geist), 20px size, 1.55 line-height,
 // 48ch cap, `ink-2` color. The earlier build used `FontFamilies.SERIF` which
 // drifted from the handoff's Geist intro treatment.
-private const val LEDE_SIZE_REM = 1.25 // 20px
+private val LEDE_SIZE = 20.dp
 private const val LEDE_LINE_HEIGHT = 1.55
 private const val LEDE_MAX_WIDTH_CH = 48.0
 
@@ -102,13 +103,13 @@ private fun AboutHeaderCopyColumn() {
             variant = MetaLabelVariant.Accent,
             modifier = Modifier
                 .display(DisplayStyle.Block)
-                .margin(bottom = META_MARGIN_BOTTOM_REM.cssRem),
+                .margin(bottom = META_MARGIN_BOTTOM),
         )
         H1(
             attrs = Modifier
                 .apply(Typography.h1)
                 .color(tokens.ink.ink)
-                .margin(top = 0.cssRem, bottom = TITLE_MARGIN_BOTTOM_REM.cssRem)
+                .margin(top = 0.cssRem, bottom = TITLE_MARGIN_BOTTOM)
                 .toAttrs(),
         ) {
             ComposeText(strings.titlePrefix)
@@ -147,7 +148,7 @@ val AboutHeaderStyle = CssStyle {
         Modifier
             .display(DisplayStyle.Grid)
             .gridTemplateColumns { size(GRID_COL_FR.fr) }
-            .gap(GRID_GAP_REM.cssRem)
+            .gap(GRID_GAP)
             .alignItems(AlignItems.Start)
     }
     Breakpoint.LG {
@@ -179,7 +180,7 @@ val AboutHeaderLedeStyle = CssStyle {
     base {
         Modifier
             .fontFamily(*FontFamilies.BODY)
-            .fontSize(LEDE_SIZE_REM.cssRem)
+            .fontSize(LEDE_SIZE)
             .lineHeight(LEDE_LINE_HEIGHT)
             .margin(topBottom = 0.cssRem)
             .styleModifier { property("max-width", "${LEDE_MAX_WIDTH_CH}ch") }

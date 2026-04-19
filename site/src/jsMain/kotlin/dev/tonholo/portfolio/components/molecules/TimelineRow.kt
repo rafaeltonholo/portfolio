@@ -33,6 +33,7 @@ import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import dev.tonholo.portfolio.components.atoms.MetaSeparator
 import dev.tonholo.portfolio.domain.model.Experience
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
+import dev.tonholo.portfolio.theme.layout.unit.dp
 import dev.tonholo.portfolio.theme.typography.FontFamilies
 import org.jetbrains.compose.web.css.AlignItems
 import org.jetbrains.compose.web.css.CSSSizeValue
@@ -57,34 +58,34 @@ private const val GRID_ROLE_COL_FR = 1
 private const val GRID_BODY_COL_FR = 2
 
 // Outer row: 32px gap, 28px top/bottom padding, 1px hairline borders.
-private const val ROW_GAP_REM = 2.0 // 32px
-private const val ROW_PADDING_Y_REM = 1.75 // 28px
-private const val ROW_BORDER_WIDTH_REM = 0.0625 // 1px at 1rem=16px
+private val ROW_GAP = 32.dp
+private val ROW_PADDING_Y = 28.dp
+private val ROW_BORDER_WIDTH = 1.dp
 
 // Left column: date (12px mono, muted) over duration (11px mono, muted-2 prefixed with a [MetaSeparator] dot).
-private const val DATE_SIZE_REM = 0.75 // 12px
-private const val DURATION_SIZE_REM = 0.6875 // 11px
+private val DATE_SIZE = 12.dp
+private val DURATION_SIZE = 11.dp
 private const val META_LINE_HEIGHT = 1.4
 
 // Inline gap between the bullet dot and the duration text.
-private const val DURATION_ROW_GAP_REM = 0.375 // 6px
+private val DURATION_ROW_GAP = 6.dp
 
 // Right column: role (18px display medium) + company subtitle (13px, muted).
 // Line-height is held at >=1.3 so the 18px display type keeps enough leading
 // for multi-line role titles (e.g. "Senior Software Engineer, Mobile").
-private const val ROLE_SIZE_REM = 1.125 // 18px
+private val ROLE_SIZE = 18.dp
 private const val ROLE_LINE_HEIGHT = 1.35
 private const val ROLE_LETTER_SPACING_EM = -0.01
-private const val COMPANY_SIZE_REM = 0.8125 // 13px
-private const val COMPANY_MARGIN_TOP_REM = 0.125 // 2px
+private val COMPANY_SIZE = 13.dp
+private val COMPANY_MARGIN_TOP = 2.dp
 
 // Body copy + bullets.
-private const val BODY_SIZE_REM = 0.875 // 14px
+private val BODY_SIZE = 14.dp
 private const val BODY_LINE_HEIGHT = 1.6
 private const val BODY_MAX_WIDTH_CH = 68.0
-private const val BULLETS_MARGIN_TOP_REM = 0.5 // 8px
-private const val BULLETS_GAP_REM = 0.375 // 6px
-private const val BULLET_PADDING_LEFT_REM = 1.125 // 18px
+private val BULLETS_MARGIN_TOP = 8.dp
+private val BULLETS_GAP = 6.dp
+private val BULLET_PADDING_LEFT = 18.dp
 
 // Bullet glyph for `::before`. Handoff used an em dash; project rule requires
 // regular dash, so we render a hyphen instead.
@@ -129,13 +130,13 @@ fun TimelineRow(experience: Experience, modifier: Modifier = Modifier, last: Boo
     var finalModifier = TimelineRowStyle
         .toModifier()
         .borderTop(
-            width = ROW_BORDER_WIDTH_REM.cssRem,
+            width = ROW_BORDER_WIDTH,
             style = LineStyle.Solid,
             color = borderColor,
         )
     if (last) {
         finalModifier = finalModifier.borderBottom(
-            width = ROW_BORDER_WIDTH_REM.cssRem,
+            width = ROW_BORDER_WIDTH,
             style = LineStyle.Solid,
             color = borderColor,
         )
@@ -149,7 +150,7 @@ fun TimelineRow(experience: Experience, modifier: Modifier = Modifier, last: Boo
                 attrs = Modifier
                     .display(DisplayStyle.Block)
                     .fontFamily(*FontFamilies.MONO)
-                    .fontSize(DATE_SIZE_REM.cssRem)
+                    .fontSize(DATE_SIZE)
                     .lineHeight(META_LINE_HEIGHT)
                     .color(tokens.muted.muted)
                     .toAttrs(),
@@ -160,9 +161,9 @@ fun TimelineRow(experience: Experience, modifier: Modifier = Modifier, last: Boo
                 attrs = Modifier
                     .display(DisplayStyle.Flex)
                     .alignItems(AlignItems.Center)
-                    .gap(DURATION_ROW_GAP_REM.cssRem)
+                    .gap(DURATION_ROW_GAP)
                     .fontFamily(*FontFamilies.MONO)
-                    .fontSize(DURATION_SIZE_REM.cssRem)
+                    .fontSize(DURATION_SIZE)
                     .lineHeight(META_LINE_HEIGHT)
                     .color(tokens.muted.muted2)
                     .toAttrs(),
@@ -179,7 +180,7 @@ fun TimelineRow(experience: Experience, modifier: Modifier = Modifier, last: Boo
         Div(
             attrs = Modifier
                 .fontFamily(*FontFamilies.DISPLAY)
-                .fontSize(ROLE_SIZE_REM.cssRem)
+                .fontSize(ROLE_SIZE)
                 .fontWeight(FontWeight.Medium)
                 .lineHeight(ROLE_LINE_HEIGHT)
                 .letterSpacing(ROLE_LETTER_SPACING_EM.em)
@@ -191,9 +192,9 @@ fun TimelineRow(experience: Experience, modifier: Modifier = Modifier, last: Boo
                 attrs = Modifier
                     .display(DisplayStyle.Block)
                     .fontFamily(*FontFamilies.BODY)
-                    .fontSize(COMPANY_SIZE_REM.cssRem)
+                    .fontSize(COMPANY_SIZE)
                     .fontWeight(FontWeight.Normal)
-                    .margin(top = COMPANY_MARGIN_TOP_REM.cssRem)
+                    .margin(top = COMPANY_MARGIN_TOP)
                     .color(tokens.muted.muted)
                     .toAttrs(),
             ) {
@@ -206,7 +207,7 @@ fun TimelineRow(experience: Experience, modifier: Modifier = Modifier, last: Boo
             attrs = TimelineBodyStyle
                 .toModifier()
                 .fontFamily(*FontFamilies.BODY)
-                .fontSize(BODY_SIZE_REM.cssRem)
+                .fontSize(BODY_SIZE)
                 .lineHeight(BODY_LINE_HEIGHT)
                 .maxWidth(BODY_MAX_WIDTH_CH.unsafeCast<CSSSizeValue<CSSUnit.ch>>())
                 .color(tokens.ink.ink2)
@@ -252,8 +253,8 @@ val TimelineRowStyle = CssStyle {
                 size(GRID_ROLE_COL_FR.fr)
                 size(GRID_BODY_COL_FR.fr)
             }
-            .gap(ROW_GAP_REM.cssRem)
-            .padding(topBottom = ROW_PADDING_Y_REM.cssRem)
+            .gap(ROW_GAP)
+            .padding(topBottom = ROW_PADDING_Y)
             .alignItems(AlignItems.Start)
     }
 }
@@ -275,8 +276,8 @@ val TimelineBulletsStyle = CssStyle {
             .listStyle(type = ListStyleType.None)
             .display(DisplayStyle.Flex)
             .flexDirection(FlexDirection.Column)
-            .gap(BULLETS_GAP_REM.cssRem)
-            .margin(top = BULLETS_MARGIN_TOP_REM.cssRem)
+            .gap(BULLETS_GAP)
+            .margin(top = BULLETS_MARGIN_TOP)
             .padding(left = 0.cssRem)
     }
 }
@@ -291,7 +292,7 @@ val TimelineBulletItemStyle = CssStyle {
     base {
         Modifier
             .position(Position.Relative)
-            .padding(left = BULLET_PADDING_LEFT_REM.cssRem)
+            .padding(left = BULLET_PADDING_LEFT)
     }
 
     before {

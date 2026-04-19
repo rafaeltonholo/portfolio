@@ -32,6 +32,7 @@ import dev.tonholo.portfolio.locale.LocalStrings
 import dev.tonholo.portfolio.navigation.Routes
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.layout.ShellStyle
+import dev.tonholo.portfolio.theme.layout.unit.dp
 import dev.tonholo.portfolio.theme.typography.FontFamilies
 import dev.tonholo.portfolio.theme.typography.Typography
 import dev.tonholo.portfolio.theme.typography.apply
@@ -51,19 +52,19 @@ import org.jetbrains.compose.web.dom.Span
 import org.jetbrains.compose.web.dom.Ul
 import org.jetbrains.compose.web.dom.Text as ComposeText
 
-private const val SHELL_PADDING_TOP_REM = 5.0 // 80px
-private const val SHELL_PADDING_BOTTOM_REM = 5.0 // 80px
-private const val ERROR_META_BOTTOM_REM = 1.5 // 24px
-private const val TITLE_MARGIN_BOTTOM_REM = 1.0 // 16px
-private const val LEAD_FONT_SIZE_REM = 1.25 // 20px
+private val SHELL_PADDING_TOP = 80.dp
+private val SHELL_PADDING_BOTTOM = 80.dp
+private val ERROR_META_BOTTOM = 24.dp
+private val TITLE_MARGIN_BOTTOM = 16.dp
+private val LEAD_FONT_SIZE = 20.dp
 private const val LEAD_LINE_HEIGHT = 1.55
 private const val LEAD_MAX_WIDTH_CH = 60.0
-private const val LEAD_MARGIN_BOTTOM_REM = 2.5 // 40px
-private const val SHELL_COMMAND_FONT_SIZE_REM = 0.875 // 14px
-private const val SHELL_COMMAND_GAP_REM = 0.5 // 8px
-private const val SHELL_COMMAND_MARGIN_BOTTOM_REM = 1.5 // 24px
-private const val RECOVERY_LABEL_MARGIN_BOTTOM_REM = 0.75 // 12px
-private const val RECOVERY_LIST_GAP_REM = 0.5 // 8px
+private val LEAD_MARGIN_BOTTOM = 40.dp
+private val SHELL_COMMAND_FONT_SIZE = 14.dp
+private val SHELL_COMMAND_GAP = 8.dp
+private val SHELL_COMMAND_MARGIN_BOTTOM = 24.dp
+private val RECOVERY_LABEL_MARGIN_BOTTOM = 12.dp
+private val RECOVERY_LIST_GAP = 8.dp
 private const val RECOVERY_LINK_LETTER_SPACING_EM = -0.005
 
 private const val META_LABEL = "// error"
@@ -101,8 +102,8 @@ fun NotFoundContent() {
         attrs = ShellStyle
             .toModifier()
             .padding(
-                top = SHELL_PADDING_TOP_REM.cssRem,
-                bottom = SHELL_PADDING_BOTTOM_REM.cssRem,
+                top = SHELL_PADDING_TOP,
+                bottom = SHELL_PADDING_BOTTOM,
             )
             .toAttrs(),
     ) {
@@ -111,7 +112,7 @@ fun NotFoundContent() {
             variant = MetaLabelVariant.Accent,
             modifier = Modifier
                 .display(DisplayStyle.Block)
-                .margin(bottom = ERROR_META_BOTTOM_REM.cssRem),
+                .margin(bottom = ERROR_META_BOTTOM),
         )
         H1(
             attrs = NotFoundTitleStyle
@@ -158,7 +159,7 @@ fun NotFoundContent() {
             text = RECOVERY_LABEL,
             modifier = Modifier
                 .display(DisplayStyle.Block)
-                .margin(bottom = RECOVERY_LABEL_MARGIN_BOTTOM_REM.cssRem),
+                .margin(bottom = RECOVERY_LABEL_MARGIN_BOTTOM),
         )
         Ul(attrs = NotFoundRecoveryListStyle.toModifier().toAttrs()) {
             recoveryTargets.forEach { target ->
@@ -185,7 +186,7 @@ fun NotFoundContent() {
 val NotFoundTitleStyle = CssStyle {
     base {
         Modifier
-            .margin(top = 0.cssRem, bottom = TITLE_MARGIN_BOTTOM_REM.cssRem)
+            .margin(top = 0.cssRem, bottom = TITLE_MARGIN_BOTTOM)
             .letterSpacing(RECOVERY_LINK_LETTER_SPACING_EM.em)
     }
 }
@@ -198,10 +199,10 @@ val NotFoundLeadStyle = CssStyle {
     base {
         Modifier
             .fontFamily(*FontFamilies.BODY)
-            .fontSize(LEAD_FONT_SIZE_REM.cssRem)
+            .fontSize(LEAD_FONT_SIZE)
             .lineHeight(LEAD_LINE_HEIGHT)
             .maxWidth(LEAD_MAX_WIDTH_CH.unsafeCast<CSSSizeValue<CSSUnit.ch>>())
-            .margin(top = 0.cssRem, bottom = LEAD_MARGIN_BOTTOM_REM.cssRem)
+            .margin(top = 0.cssRem, bottom = LEAD_MARGIN_BOTTOM)
     }
 }
 
@@ -212,10 +213,10 @@ val NotFoundShellLineStyle = CssStyle {
     base {
         Modifier
             .display(DisplayStyle.Flex)
-            .gap(SHELL_COMMAND_GAP_REM.cssRem)
+            .gap(SHELL_COMMAND_GAP)
             .fontFamily(*FontFamilies.MONO)
-            .fontSize(SHELL_COMMAND_FONT_SIZE_REM.cssRem)
-            .margin(bottom = SHELL_COMMAND_MARGIN_BOTTOM_REM.cssRem)
+            .fontSize(SHELL_COMMAND_FONT_SIZE)
+            .margin(bottom = SHELL_COMMAND_MARGIN_BOTTOM)
     }
 }
 
@@ -229,7 +230,7 @@ val NotFoundRecoveryListStyle = CssStyle {
             .listStyle(type = ListStyleType.None)
             .display(DisplayStyle.Flex)
             .flexDirection(FlexDirection.Column)
-            .gap(RECOVERY_LIST_GAP_REM.cssRem)
+            .gap(RECOVERY_LIST_GAP)
             .padding(left = 0.cssRem)
             .margin(topBottom = 0.cssRem)
     }
@@ -244,7 +245,7 @@ val NotFoundRecoveryLinkStyle = CssStyle {
     base {
         Modifier
             .fontFamily(*FontFamilies.MONO)
-            .fontSize(SHELL_COMMAND_FONT_SIZE_REM.cssRem)
+            .fontSize(SHELL_COMMAND_FONT_SIZE)
             .textDecorationLine(TextDecorationLine.None)
     }
 }

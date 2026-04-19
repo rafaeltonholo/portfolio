@@ -16,20 +16,20 @@ import com.varabyte.kobweb.silk.style.CssStyle
 import com.varabyte.kobweb.silk.style.toModifier
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.PortfolioTokens
+import dev.tonholo.portfolio.theme.layout.unit.dp
 import dev.tonholo.portfolio.theme.typography.Typography
 import dev.tonholo.portfolio.theme.typography.apply
 import org.jetbrains.compose.web.css.AlignItems
 import org.jetbrains.compose.web.css.DisplayStyle
 import org.jetbrains.compose.web.css.LineStyle
-import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.dom.Span
 import org.jetbrains.compose.web.dom.Text as ComposeText
 
-private const val CHIP_BORDER_RADIUS_REM = 0.125 // 2px at 1rem=16px
-private const val CHIP_PADDING_Y_REM = 0.25 // 4px
-private const val CHIP_PADDING_X_REM = 0.625 // 10px
-private const val CHIP_GAP_REM = 0.375 // 6px
-private const val CHIP_BORDER_WIDTH_REM = 0.0625 // 1px at 1rem=16px
+private val CHIP_BORDER_RADIUS = 2.dp
+private val CHIP_PADDING_Y = 4.dp
+private val CHIP_PADDING_X = 10.dp
+private val CHIP_GAP = 6.dp
+private val CHIP_BORDER_WIDTH = 1.dp
 
 /**
  * Inline-flex pill tag, mono uppercase typography with a hairline border.
@@ -52,7 +52,7 @@ fun Chip(text: String, modifier: Modifier = Modifier, variant: ChipVariant = Chi
         .backgroundColor(background)
         .color(foreground)
         .border(
-            width = CHIP_BORDER_WIDTH_REM.cssRem,
+            width = CHIP_BORDER_WIDTH,
             style = LineStyle.Solid,
             color = tokens.paper.paper3,
         )
@@ -95,8 +95,8 @@ val ChipStyle = CssStyle {
         Modifier
             .display(DisplayStyle.LegacyInlineFlex)
             .alignItems(AlignItems.Center)
-            .gap(CHIP_GAP_REM.cssRem)
-            .padding(topBottom = CHIP_PADDING_Y_REM.cssRem, leftRight = CHIP_PADDING_X_REM.cssRem)
-            .borderRadius(CHIP_BORDER_RADIUS_REM.cssRem)
+            .gap(CHIP_GAP)
+            .padding(topBottom = CHIP_PADDING_Y, leftRight = CHIP_PADDING_X)
+            .borderRadius(CHIP_BORDER_RADIUS)
     }
 }

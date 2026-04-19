@@ -25,6 +25,7 @@ import dev.tonholo.portfolio.domain.model.ProjectKind
 import dev.tonholo.portfolio.locale.LocalStrings
 import dev.tonholo.portfolio.locale.Strings
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
+import dev.tonholo.portfolio.theme.layout.unit.dp
 import dev.tonholo.portfolio.theme.typography.FontFamilies
 import dev.tonholo.portfolio.theme.typography.Typography
 import dev.tonholo.portfolio.theme.typography.apply
@@ -40,37 +41,37 @@ import org.jetbrains.compose.web.dom.Text as ComposeText
 // the end (baseline) so the meta + title and info grid share a bottom line.
 // Below 900px (`Breakpoint.LG` in Silk) the grid collapses to a single column
 // with a 32px gap, matching the `@media (max-width: 900px)` rule.
-private const val HERO_GRID_GAP_DESKTOP_REM = 4.0 // 64px
-private const val HERO_GRID_GAP_MOBILE_REM = 2.0 // 32px
+private val HERO_GRID_GAP_DESKTOP = 64.dp
+private val HERO_GRID_GAP_MOBILE = 32.dp
 private const val HERO_GRID_COL_FR = 1.0
-private const val HERO_MARGIN_BOTTOM_REM = 4.0 // 64px
+private val HERO_MARGIN_BOTTOM = 64.dp
 
 // Meta label row sits 12px above the display `h1`, matching the handoff inline
 // `style={{marginBottom:12}}` on the top `.meta` element.
-private const val META_MARGIN_BOTTOM_REM = 0.75 // 12px
+private val META_MARGIN_BOTTOM = 12.dp
 
 // Handoff `.project-info`: mono family at 13px, 2-column grid, 24px row gap,
 // 32px column gap.
-private const val INFO_FONT_SIZE_REM = 0.8125 // 13px
-private const val INFO_ROW_GAP_REM = 1.5 // 24px
-private const val INFO_COL_GAP_REM = 2.0 // 32px
+private val INFO_FONT_SIZE = 13.dp
+private val INFO_ROW_GAP = 24.dp
+private val INFO_COL_GAP = 32.dp
 private const val INFO_COL_FR = 1.0
 
 // Handoff `.project-info .label`: 11px mono uppercase, 0.08em tracking; we
 // route that typography through [MetaLabel], which supplies family/size via
 // [Typography.metaSmall]. Labels sit 6px above each value per the handoff rule.
-private const val INFO_LABEL_MARGIN_BOTTOM_REM = 0.375 // 6px
+private val INFO_LABEL_MARGIN_BOTTOM = 6.dp
 
 // Handoff `Status` value: `● shipped to production`. Unicode bullet is replaced
 // with a [Dot] atom. 8px gap keeps the swatch clear of the label copy, mirroring
 // the Nav status badge spacing.
-private const val STATUS_ROW_GAP_REM = 0.5 // 8px
+private val STATUS_ROW_GAP = 8.dp
 
 private const val META_PREFIX = "// "
 private const val STACK_SEPARATOR = ", "
 
 // Inline gap between the eyebrow segments and the centered separator dot.
-private const val META_ROW_GAP_REM = 0.375 // 6px
+private val META_ROW_GAP = 6.dp
 
 /**
  * Project detail hero organism. Maps to `.project-hero` in the handoff CSS
@@ -122,8 +123,8 @@ private fun ProjectDetailHeroCopyColumn(project: Project, strings: Strings.Proje
             attrs = Modifier
                 .display(DisplayStyle.LegacyInlineFlex)
                 .alignItems(AlignItems.Center)
-                .gap(META_ROW_GAP_REM.cssRem)
-                .margin(bottom = META_MARGIN_BOTTOM_REM.cssRem)
+                .gap(META_ROW_GAP)
+                .margin(bottom = META_MARGIN_BOTTOM)
                 .toAttrs(),
         ) {
             Text(
@@ -184,7 +185,7 @@ private fun ProjectDetailHeroInfoCell(label: String, value: String) {
             text = label,
             modifier = Modifier
                 .display(DisplayStyle.Block)
-                .margin(bottom = INFO_LABEL_MARGIN_BOTTOM_REM.cssRem),
+                .margin(bottom = INFO_LABEL_MARGIN_BOTTOM),
         )
         Text(
             text = value,
@@ -209,7 +210,7 @@ private fun ProjectDetailHeroStatusCell(strings: Strings.ProjectDetail) {
             text = strings.labelStatus,
             modifier = Modifier
                 .display(DisplayStyle.Block)
-                .margin(bottom = INFO_LABEL_MARGIN_BOTTOM_REM.cssRem),
+                .margin(bottom = INFO_LABEL_MARGIN_BOTTOM),
         )
         Div(
             attrs = ProjectDetailHeroStatusRowStyle
@@ -250,9 +251,9 @@ val ProjectDetailHeroStyle = CssStyle {
         Modifier
             .display(DisplayStyle.Grid)
             .gridTemplateColumns { size(HERO_GRID_COL_FR.fr) }
-            .gap(HERO_GRID_GAP_MOBILE_REM.cssRem)
+            .gap(HERO_GRID_GAP_MOBILE)
             .alignItems(AlignItems.Start)
-            .margin(bottom = HERO_MARGIN_BOTTOM_REM.cssRem)
+            .margin(bottom = HERO_MARGIN_BOTTOM)
     }
     Breakpoint.LG {
         Modifier
@@ -260,7 +261,7 @@ val ProjectDetailHeroStyle = CssStyle {
                 size(HERO_GRID_COL_FR.fr)
                 size(HERO_GRID_COL_FR.fr)
             }
-            .gap(HERO_GRID_GAP_DESKTOP_REM.cssRem)
+            .gap(HERO_GRID_GAP_DESKTOP)
             .alignItems(AlignItems.End)
     }
 }
@@ -279,9 +280,9 @@ val ProjectDetailHeroInfoStyle = CssStyle {
                 size(INFO_COL_FR.fr)
                 size(INFO_COL_FR.fr)
             }
-            .gap(rowGap = INFO_ROW_GAP_REM.cssRem, columnGap = INFO_COL_GAP_REM.cssRem)
+            .gap(rowGap = INFO_ROW_GAP, columnGap = INFO_COL_GAP)
             .fontFamily(*FontFamilies.MONO)
-            .fontSize(INFO_FONT_SIZE_REM.cssRem)
+            .fontSize(INFO_FONT_SIZE)
     }
 }
 
@@ -295,6 +296,6 @@ val ProjectDetailHeroStatusRowStyle = CssStyle {
         Modifier
             .display(DisplayStyle.LegacyInlineFlex)
             .alignItems(AlignItems.Center)
-            .gap(STATUS_ROW_GAP_REM.cssRem)
+            .gap(STATUS_ROW_GAP)
     }
 }

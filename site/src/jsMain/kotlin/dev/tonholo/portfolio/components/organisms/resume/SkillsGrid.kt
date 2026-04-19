@@ -33,6 +33,7 @@ import dev.tonholo.portfolio.domain.model.Education
 import dev.tonholo.portfolio.domain.model.SkillBucket
 import dev.tonholo.portfolio.locale.LocalStrings
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
+import dev.tonholo.portfolio.theme.layout.unit.dp
 import dev.tonholo.portfolio.theme.typography.FontFamilies
 import org.jetbrains.compose.web.css.AlignItems
 import org.jetbrains.compose.web.css.DisplayStyle
@@ -51,33 +52,33 @@ import org.jetbrains.compose.web.dom.Text as ComposeText
 // top padding, 1px top hairline border. Below `@media (max-width: 820px)`
 // collapses to a single column with a 32px gap; we use `Breakpoint.LG` to
 // match the rest of the redesign.
-private const val GRID_GAP_DESKTOP_REM = 3.0 // 48px
-private const val GRID_GAP_MOBILE_REM = 2.0 // 32px
-private const val GRID_MARGIN_TOP_REM = 5.0 // 80px
-private const val GRID_PADDING_TOP_REM = 3.0 // 48px
-private const val GRID_BORDER_WIDTH_REM = 0.0625 // 1px at 1rem=16px
+private val GRID_GAP_DESKTOP = 48.dp
+private val GRID_GAP_MOBILE = 32.dp
+private val GRID_MARGIN_TOP = 80.dp
+private val GRID_PADDING_TOP = 48.dp
+private val GRID_BORDER_WIDTH = 1.dp
 private const val GRID_COLUMN_FR = 1
 
 // `.skills-col h4`: mono, 11px / 600, uppercase with +0.08em tracking, ink-3,
 // 16px bottom margin.
-private const val HEADING_FONT_SIZE_REM = 0.6875 // 11px
+private val HEADING_FONT_SIZE = 11.dp
 private const val HEADING_LETTER_SPACING_EM = 0.08
-private const val HEADING_MARGIN_BOTTOM_REM = 1.0 // 16px
+private val HEADING_MARGIN_BOTTOM = 16.dp
 
 // Education `<ul>` inline styles on `pages2.jsx` line 64: list-style none,
 // flex column, 12px gap.
-private const val EDUCATION_LIST_GAP_REM = 0.75 // 12px
+private val EDUCATION_LIST_GAP = 12.dp
 
 // Education entry typography per `pages2.jsx` lines 66-67. Titles use the
 // display family at 15px / 500 / ink. Subtitles use the mono family at 11px /
 // muted.
-private const val EDUCATION_TITLE_FONT_SIZE_REM = 0.9375 // 15px
-private const val EDUCATION_TITLE_MARGIN_TOP_REM = 0.125 // 2px breathing room
-private const val EDUCATION_SUBTITLE_FONT_SIZE_REM = 0.6875 // 11px
+private val EDUCATION_TITLE_FONT_SIZE = 15.dp
+private val EDUCATION_TITLE_MARGIN_TOP = 2.dp
+private val EDUCATION_SUBTITLE_FONT_SIZE = 11.dp
 private const val EDUCATION_SUBTITLE_LINE_HEIGHT = 1.4
 
 // Inline gap between the institution / year segments and the centered separator dot.
-private const val EDUCATION_SUBTITLE_GAP_REM = 0.375 // 6px
+private val EDUCATION_SUBTITLE_GAP = 6.dp
 
 /**
  * Returns the hairline border color for the `.resume-skills` top rule. Light
@@ -126,7 +127,7 @@ fun SkillsGrid(
     val finalModifier = SkillsGridStyle
         .toModifier()
         .borderTop(
-            width = GRID_BORDER_WIDTH_REM.cssRem,
+            width = GRID_BORDER_WIDTH,
             style = LineStyle.Solid,
             color = borderColor,
         )
@@ -195,7 +196,7 @@ private fun EducationList(entries: List<Education>) {
                         .color(tokens.muted.muted)
                         .display(DisplayStyle.Flex)
                         .alignItems(AlignItems.Center)
-                        .gap(EDUCATION_SUBTITLE_GAP_REM.cssRem)
+                        .gap(EDUCATION_SUBTITLE_GAP)
                         .toAttrs(),
                 ) {
                     ComposeText(entry.institution)
@@ -220,14 +221,14 @@ val SkillsGridStyle = CssStyle {
         Modifier
             .display(DisplayStyle.Grid)
             .gridTemplateColumns { size(GRID_COLUMN_FR.fr) }
-            .gap(GRID_GAP_MOBILE_REM.cssRem)
-            .margin(top = GRID_MARGIN_TOP_REM.cssRem)
-            .padding(top = GRID_PADDING_TOP_REM.cssRem)
+            .gap(GRID_GAP_MOBILE)
+            .margin(top = GRID_MARGIN_TOP)
+            .padding(top = GRID_PADDING_TOP)
     }
     Breakpoint.LG {
         Modifier
             .gridTemplateColumns { repeat(count = 3) { size(GRID_COLUMN_FR.fr) } }
-            .gap(GRID_GAP_DESKTOP_REM.cssRem)
+            .gap(GRID_GAP_DESKTOP)
     }
 }
 
@@ -240,11 +241,11 @@ val SkillsColumnHeadingStyle = CssStyle {
     base {
         Modifier
             .fontFamily(*FontFamilies.MONO)
-            .fontSize(HEADING_FONT_SIZE_REM.cssRem)
+            .fontSize(HEADING_FONT_SIZE)
             .fontWeight(FontWeight.SemiBold)
             .letterSpacing(HEADING_LETTER_SPACING_EM.em)
             .textTransform(TextTransform.Uppercase)
-            .margin(top = 0.cssRem, bottom = HEADING_MARGIN_BOTTOM_REM.cssRem)
+            .margin(top = 0.cssRem, bottom = HEADING_MARGIN_BOTTOM)
     }
 }
 
@@ -260,7 +261,7 @@ val SkillsEducationListStyle = CssStyle {
             .listStyle(type = ListStyleType.None)
             .display(DisplayStyle.Flex)
             .flexDirection(FlexDirection.Column)
-            .gap(EDUCATION_LIST_GAP_REM.cssRem)
+            .gap(EDUCATION_LIST_GAP)
             .padding(0.cssRem)
             .margin(topBottom = 0.cssRem)
     }
@@ -275,9 +276,9 @@ val SkillsEducationTitleStyle = CssStyle {
     base {
         Modifier
             .fontFamily(*FontFamilies.DISPLAY)
-            .fontSize(EDUCATION_TITLE_FONT_SIZE_REM.cssRem)
+            .fontSize(EDUCATION_TITLE_FONT_SIZE)
             .fontWeight(FontWeight.Medium)
-            .margin(top = EDUCATION_TITLE_MARGIN_TOP_REM.cssRem, bottom = 0.cssRem)
+            .margin(top = EDUCATION_TITLE_MARGIN_TOP, bottom = 0.cssRem)
     }
 }
 
@@ -290,7 +291,7 @@ val SkillsEducationSubtitleStyle = CssStyle {
     base {
         Modifier
             .fontFamily(*FontFamilies.MONO)
-            .fontSize(EDUCATION_SUBTITLE_FONT_SIZE_REM.cssRem)
+            .fontSize(EDUCATION_SUBTITLE_FONT_SIZE)
             .fontWeight(FontWeight.Normal)
             .lineHeight(EDUCATION_SUBTITLE_LINE_HEIGHT)
             .margin(topBottom = 0.cssRem)

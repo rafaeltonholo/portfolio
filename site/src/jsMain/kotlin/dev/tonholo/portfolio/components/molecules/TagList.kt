@@ -9,12 +9,12 @@ import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.silk.style.CssStyle
 import com.varabyte.kobweb.silk.style.toModifier
 import dev.tonholo.portfolio.components.atoms.Chip
+import dev.tonholo.portfolio.theme.layout.unit.dp
 import org.jetbrains.compose.web.css.DisplayStyle
 import org.jetbrains.compose.web.css.FlexWrap
-import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.dom.Div
 
-private const val TAG_LIST_GAP_REM = 0.25 // 4px at 1rem=16px
+private val TAG_LIST_GAP = 4.dp
 
 /**
  * Horizontal wrapping row of [Chip] atoms. Maps to `.chip` usage inside
@@ -52,6 +52,6 @@ val TagListStyle = CssStyle {
         Modifier
             .display(DisplayStyle.Flex)
             .flexWrap(FlexWrap.Wrap)
-            .gap(TAG_LIST_GAP_REM.cssRem)
+            .gap(TAG_LIST_GAP)
     }
 }

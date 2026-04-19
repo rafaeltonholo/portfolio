@@ -27,12 +27,12 @@ import dev.tonholo.portfolio.components.molecules.TickerEntry
 import dev.tonholo.portfolio.state.StaticContent
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.layout.ShellStyle
+import dev.tonholo.portfolio.theme.layout.unit.dp
 import dev.tonholo.portfolio.theme.typography.FontFamilies
 import org.jetbrains.compose.web.css.AlignItems
 import org.jetbrains.compose.web.css.DisplayStyle
 import org.jetbrains.compose.web.css.FlexWrap
 import org.jetbrains.compose.web.css.LineStyle
-import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.percent
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Span
@@ -41,11 +41,11 @@ import org.jetbrains.compose.web.dom.Span
 // `display: flex; gap: 40px; font-size: 12px; color: var(--ink-3)`.
 // Separator dot: `width: 4px; height: 4px; border-radius: 50%;
 // background: var(--muted-2)`.
-private const val STRIP_PADDING_REM = 0.875 // 14px
-private const val ROW_GAP_REM = 2.5 // 40px
-private const val ROW_FONT_SIZE_REM = 0.75 // 12px
-private const val BORDER_WIDTH_REM = 0.0625 // 1px hairline
-private const val DOT_SIZE_REM = 0.25 // 4px
+private val STRIP_PADDING = 14.dp
+private val ROW_GAP = 40.dp
+private val ROW_FONT_SIZE = 12.dp
+private val BORDER_WIDTH = 1.dp
+private val DOT_SIZE = 4.dp
 private const val DOT_RADIUS_PERCENT = 50.0
 
 /**
@@ -85,12 +85,12 @@ fun Ticker(modifier: Modifier = Modifier) {
     val stripModifier = TickerStyle
         .toModifier()
         .borderTop(
-            width = BORDER_WIDTH_REM.cssRem,
+            width = BORDER_WIDTH,
             style = LineStyle.Solid,
             color = borderColor,
         )
         .borderBottom(
-            width = BORDER_WIDTH_REM.cssRem,
+            width = BORDER_WIDTH,
             style = LineStyle.Solid,
             color = borderColor,
         )
@@ -127,7 +127,7 @@ fun Ticker(modifier: Modifier = Modifier) {
 val TickerStyle = CssStyle {
     base {
         Modifier
-            .padding(topBottom = STRIP_PADDING_REM.cssRem)
+            .padding(topBottom = STRIP_PADDING)
             .overflow(Overflow.Hidden)
     }
 }
@@ -143,9 +143,9 @@ val TickerTrackStyle = CssStyle {
             .display(DisplayStyle.Flex)
             .flexWrap(FlexWrap.Wrap)
             .alignItems(AlignItems.Center)
-            .gap(ROW_GAP_REM.cssRem)
+            .gap(ROW_GAP)
             .fontFamily(*FontFamilies.MONO)
-            .fontSize(ROW_FONT_SIZE_REM.cssRem)
+            .fontSize(ROW_FONT_SIZE)
     }
 }
 
@@ -158,8 +158,8 @@ val TickerDotStyle = CssStyle {
     base {
         Modifier
             .display(DisplayStyle.InlineBlock)
-            .width(DOT_SIZE_REM.cssRem)
-            .height(DOT_SIZE_REM.cssRem)
+            .width(DOT_SIZE)
+            .height(DOT_SIZE)
             .borderRadius(DOT_RADIUS_PERCENT.percent)
     }
 }

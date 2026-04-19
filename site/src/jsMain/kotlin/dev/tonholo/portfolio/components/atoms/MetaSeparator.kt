@@ -6,9 +6,9 @@ import com.varabyte.kobweb.compose.ui.graphics.Color
 import com.varabyte.kobweb.compose.ui.modifiers.flexShrink
 import com.varabyte.kobweb.compose.ui.modifiers.setVariable
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
-import org.jetbrains.compose.web.css.cssRem
+import dev.tonholo.portfolio.theme.layout.unit.dp
 
-private const val META_DOT_SIZE_REM = 0.1875 // 3px at 1rem=16px
+private val META_DOT_SIZE = 3.dp
 
 /**
  * Tiny static [Dot] sized to read as inline punctuation. Used as a separator
@@ -25,7 +25,7 @@ fun MetaSeparator(modifier: Modifier = Modifier, color: Color? = null) {
         variant = DotVariant.Static,
         color = color ?: tokens.muted.muted,
         modifier = Modifier
-            .setVariable(DotVars.Size, META_DOT_SIZE_REM.cssRem)
+            .setVariable(DotVars.Size, META_DOT_SIZE)
             .flexShrink(0)
             .then(modifier),
     )

@@ -48,6 +48,7 @@ import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.color.AccentMint
 import dev.tonholo.portfolio.theme.color.Ink
 import dev.tonholo.portfolio.theme.layout.ChromeShellStyle
+import dev.tonholo.portfolio.theme.layout.unit.dp
 import dev.tonholo.portfolio.theme.typography.FontFamilies
 import org.jetbrains.compose.web.css.AlignItems
 import org.jetbrains.compose.web.css.CSSSizeValue
@@ -74,33 +75,33 @@ import org.jetbrains.compose.web.dom.Text as ComposeText
 //   border-top 1px paper-3 (paper-2 dark), padding 48px 0 36px, margin-top 80px,
 //   mono family, 12px, muted color.
 // ---------------------------------------------------------------------------
-private const val FOOTER_BORDER_WIDTH_REM = 0.0625 // 1px
-private const val FOOTER_PADDING_TOP_REM = 3.0 // 48px
-private const val FOOTER_PADDING_BOTTOM_REM = 2.25 // 36px
-private const val FOOTER_MARGIN_TOP_REM = 5.0 // 80px
-private const val FOOTER_FONT_SIZE_REM = 0.75 // 12px
+private val FOOTER_BORDER_WIDTH = 1.dp
+private val FOOTER_PADDING_TOP = 48.dp
+private val FOOTER_PADDING_BOTTOM = 36.dp
+private val FOOTER_MARGIN_TOP = 80.dp
+private val FOOTER_FONT_SIZE = 12.dp
 
 // Handoff `.footer-grid`:
 //   grid 1.4fr 1fr 1fr 1fr, gap 48px, margin-bottom 48px; 2 cols below 820px.
 private const val FOOTER_GRID_TAGLINE_FR = 1.4
 private const val FOOTER_GRID_COL_FR = 1
-private const val FOOTER_GRID_GAP_REM = 3.0 // 48px
-private const val FOOTER_GRID_MARGIN_BOTTOM_REM = 3.0 // 48px
+private val FOOTER_GRID_GAP = 48.dp
+private val FOOTER_GRID_MARGIN_BOTTOM = 48.dp
 
 // Handoff `.footer h4`:
 //   mono 11px / 600 / 0.08em / uppercase, color ink-3, margin-bottom 14px.
-private const val FOOTER_HEADING_FONT_SIZE_REM = 0.6875 // 11px
+private val FOOTER_HEADING_FONT_SIZE = 11.dp
 private const val FOOTER_HEADING_LETTER_SPACING_EM = 0.08
-private const val FOOTER_HEADING_MARGIN_BOTTOM_REM = 0.875 // 14px
+private val FOOTER_HEADING_MARGIN_BOTTOM = 14.dp
 
 // Handoff tagline `p` in first column: 13px / 1.55 / body family / ink-3 / 34ch.
-private const val FOOTER_TAGLINE_FONT_SIZE_REM = 0.8125 // 13px
+private val FOOTER_TAGLINE_FONT_SIZE = 13.dp
 private const val FOOTER_TAGLINE_LINE_HEIGHT = 1.55
 private const val FOOTER_TAGLINE_MAX_WIDTH_CH = 34.0
 
 // Handoff `.footer ul`:
 //   list-style none, flex column, gap 8px.
-private const val FOOTER_LIST_GAP_REM = 0.5 // 8px
+private val FOOTER_LIST_GAP = 8.dp
 
 // Handoff `.footer a`:
 //   color ink-2, transition color 0.18s; hover → accent.
@@ -108,10 +109,10 @@ private const val FOOTER_LINK_TRANSITION_DURATION_S = 0.18
 
 // Handoff `.footer-bottom`:
 //   flex row, space-between, padding-top 24px, 1px top border.
-private const val FOOTER_BOTTOM_PADDING_TOP_REM = 1.5 // 24px
+private val FOOTER_BOTTOM_PADDING_TOP = 24.dp
 
 // Inline gap between the copyright segments and the centered separator dots.
-private const val FOOTER_BOTTOM_LEFT_GAP_REM = 0.5 // 8px
+private val FOOTER_BOTTOM_LEFT_GAP = 8.dp
 
 // Work column entries stay as mono technical literals (product / project
 // names), not user-facing copy that needs translation. Slug values match
@@ -180,7 +181,7 @@ fun Footer(modifier: Modifier = Modifier, versionInfo: String = DEFAULT_VERSION_
         .toModifier()
         .color(tokens.muted.muted)
         .borderTop(
-            width = FOOTER_BORDER_WIDTH_REM.cssRem,
+            width = FOOTER_BORDER_WIDTH,
             style = LineStyle.Solid,
             color = borderColor,
         )
@@ -217,7 +218,7 @@ private fun TaglineColumn(strings: Strings.Footer) {
             attrs = Modifier
                 .margin(topBottom = 0.cssRem)
                 .fontFamily(*FontFamilies.BODY)
-                .fontSize(FOOTER_TAGLINE_FONT_SIZE_REM.cssRem)
+                .fontSize(FOOTER_TAGLINE_FONT_SIZE)
                 .lineHeight(FOOTER_TAGLINE_LINE_HEIGHT)
                 .color(tokens.ink.ink3)
                 .maxWidth(
@@ -353,7 +354,7 @@ private fun FooterBottom(leftSegments: List<String>, versionInfo: String, border
         attrs = FooterBottomStyle
             .toModifier()
             .borderTop(
-                width = FOOTER_BORDER_WIDTH_REM.cssRem,
+                width = FOOTER_BORDER_WIDTH,
                 style = LineStyle.Solid,
                 color = borderColor,
             )
@@ -363,7 +364,7 @@ private fun FooterBottom(leftSegments: List<String>, versionInfo: String, border
             attrs = Modifier
                 .display(DisplayStyle.LegacyInlineFlex)
                 .alignItems(AlignItems.Center)
-                .gap(FOOTER_BOTTOM_LEFT_GAP_REM.cssRem)
+                .gap(FOOTER_BOTTOM_LEFT_GAP)
                 .toAttrs(),
         ) {
             leftSegments.forEachIndexed { index, segment ->
@@ -392,13 +393,13 @@ private fun FooterBottom(leftSegments: List<String>, versionInfo: String, border
 val FooterStyle = CssStyle {
     base {
         Modifier
-            .margin(top = FOOTER_MARGIN_TOP_REM.cssRem)
+            .margin(top = FOOTER_MARGIN_TOP)
             .padding(
-                top = FOOTER_PADDING_TOP_REM.cssRem,
-                bottom = FOOTER_PADDING_BOTTOM_REM.cssRem,
+                top = FOOTER_PADDING_TOP,
+                bottom = FOOTER_PADDING_BOTTOM,
             )
             .fontFamily(*FontFamilies.MONO)
-            .fontSize(FOOTER_FONT_SIZE_REM.cssRem)
+            .fontSize(FOOTER_FONT_SIZE)
     }
 }
 
@@ -415,8 +416,8 @@ val FooterGridStyle = CssStyle {
                 size(FOOTER_GRID_COL_FR.fr)
                 size(FOOTER_GRID_COL_FR.fr)
             }
-            .gap(FOOTER_GRID_GAP_REM.cssRem)
-            .margin(bottom = FOOTER_GRID_MARGIN_BOTTOM_REM.cssRem)
+            .gap(FOOTER_GRID_GAP)
+            .margin(bottom = FOOTER_GRID_MARGIN_BOTTOM)
     }
     Breakpoint.LG {
         Modifier.gridTemplateColumns {
@@ -436,13 +437,13 @@ val FooterHeadingStyle = CssStyle {
     base {
         Modifier
             .fontFamily(*FontFamilies.MONO)
-            .fontSize(FOOTER_HEADING_FONT_SIZE_REM.cssRem)
+            .fontSize(FOOTER_HEADING_FONT_SIZE)
             .fontWeight(FontWeight.SemiBold)
             .letterSpacing(FOOTER_HEADING_LETTER_SPACING_EM.em)
             .textTransform(TextTransform.Uppercase)
             .margin(
                 top = 0.cssRem,
-                bottom = FOOTER_HEADING_MARGIN_BOTTOM_REM.cssRem,
+                bottom = FOOTER_HEADING_MARGIN_BOTTOM,
             )
     }
 }
@@ -457,7 +458,7 @@ val FooterListStyle = CssStyle {
             .listStyle(type = ListStyleType.None)
             .display(DisplayStyle.Flex)
             .flexDirection(FlexDirection.Column)
-            .gap(FOOTER_LIST_GAP_REM.cssRem)
+            .gap(FOOTER_LIST_GAP)
             .margin(topBottom = 0.cssRem)
             .padding(left = 0.cssRem)
     }
@@ -501,7 +502,7 @@ val FooterBottomStyle = CssStyle {
         Modifier
             .display(DisplayStyle.Flex)
             .justifyContent(JustifyContent.SpaceBetween)
-            .padding(top = FOOTER_BOTTOM_PADDING_TOP_REM.cssRem)
+            .padding(top = FOOTER_BOTTOM_PADDING_TOP)
     }
 }
 

@@ -13,12 +13,12 @@ import com.varabyte.kobweb.silk.style.CssStyle
 import com.varabyte.kobweb.silk.style.toModifier
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
+import dev.tonholo.portfolio.theme.layout.unit.dp
 import org.jetbrains.compose.web.css.AlignSelf
-import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.dom.Div
 
-private const val DIVIDER_HEIGHT_REM = 0.0625 // 1px at 1rem=16px
-private const val DIVIDER_MARGIN_Y_REM = 3.0 // 48px
+private val DIVIDER_HEIGHT = 1.dp
+private val DIVIDER_MARGIN_Y = 48.dp
 
 /**
  * Thin horizontal rule. Maps to `.divider` / `.rule` from the handoff CSS:
@@ -38,7 +38,7 @@ fun Divider(modifier: Modifier = Modifier, variant: DividerVariant = DividerVari
 
     val variantModifier = when (variant) {
         DividerVariant.Horizontal -> {
-            Modifier.margin(topBottom = DIVIDER_MARGIN_Y_REM.cssRem)
+            Modifier.margin(topBottom = DIVIDER_MARGIN_Y)
         }
 
         DividerVariant.Flex1 -> {
@@ -76,6 +76,6 @@ enum class DividerVariant {
  */
 val DividerStyle = CssStyle {
     base {
-        Modifier.height(DIVIDER_HEIGHT_REM.cssRem)
+        Modifier.height(DIVIDER_HEIGHT)
     }
 }

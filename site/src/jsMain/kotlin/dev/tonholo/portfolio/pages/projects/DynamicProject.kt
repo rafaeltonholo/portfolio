@@ -22,7 +22,7 @@ import dev.tonholo.portfolio.locale.LocalStrings
 import dev.tonholo.portfolio.locale.Strings
 import dev.tonholo.portfolio.navigation.Routes
 import dev.tonholo.portfolio.state.StaticContent
-import org.jetbrains.compose.web.css.cssRem
+import dev.tonholo.portfolio.theme.layout.unit.dp
 import org.jetbrains.compose.web.dom.B
 import org.jetbrains.compose.web.dom.Em
 import org.jetbrains.compose.web.dom.P
@@ -33,8 +33,8 @@ private const val PINTEREST_SLUG = "pinterest"
 
 // `.project-cover` in the handoff CSS: 4px radius, 64px bottom margin above
 // the first case-study section. Aspect ratio comes from the Placeholder atom.
-private const val COVER_RADIUS_REM = 0.25 // 4px
-private const val COVER_MARGIN_BOTTOM_REM = 4.0 // 64px
+private val COVER_RADIUS = 4.dp
+private val COVER_MARGIN_BOTTOM = 64.dp
 
 // Pinterest-only section labels that do not live on the shared Strings surface.
 // The generic / context and / outcomes labels come from [Strings.ProjectDetail].
@@ -153,8 +153,8 @@ fun DynamicProjectPage() {
             aspectRatio = AspectRatio.Hero16x9,
             label = strings.coverPlaceholderLabel,
             modifier = Modifier
-                .borderRadius(COVER_RADIUS_REM.cssRem)
-                .margin(bottom = COVER_MARGIN_BOTTOM_REM.cssRem),
+                .borderRadius(COVER_RADIUS)
+                .margin(bottom = COVER_MARGIN_BOTTOM),
         )
         if (slug == PINTEREST_SLUG) {
             PinterestCaseStudy(strings = strings)

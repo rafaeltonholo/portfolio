@@ -15,10 +15,10 @@ import com.varabyte.kobweb.silk.style.CssStyle
 import com.varabyte.kobweb.silk.style.toModifier
 import dev.tonholo.portfolio.domain.model.TickerItem
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
+import dev.tonholo.portfolio.theme.layout.unit.dp
 import dev.tonholo.portfolio.theme.typography.FontFamilies
 import org.jetbrains.compose.web.css.AlignItems
 import org.jetbrains.compose.web.css.DisplayStyle
-import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.dom.B
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Span
@@ -26,8 +26,8 @@ import org.jetbrains.compose.web.dom.Text as ComposeText
 
 // Typography is inline in the handoff JSX (`Ticker` component): mono font,
 // 12px body with 10px gap between label and value.
-private const val FONT_SIZE_REM = 0.75 // 12px
-private const val INNER_GAP_REM = 0.625 // 10px
+private val FONT_SIZE = 12.dp
+private val INNER_GAP = 10.dp
 
 // Handoff separator between label and value: " - " (regular hyphen, not em dash).
 private const val LABEL_VALUE_SEPARATOR = " - "
@@ -68,8 +68,8 @@ val TickerEntryStyle = CssStyle {
         Modifier
             .display(DisplayStyle.LegacyInlineFlex)
             .alignItems(AlignItems.Center)
-            .gap(INNER_GAP_REM.cssRem)
+            .gap(INNER_GAP)
             .fontFamily(*FontFamilies.MONO)
-            .fontSize(FONT_SIZE_REM.cssRem)
+            .fontSize(FONT_SIZE)
     }
 }

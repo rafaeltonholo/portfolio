@@ -20,6 +20,7 @@ import com.varabyte.kobweb.silk.style.toModifier
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.color.SyntaxScale
+import dev.tonholo.portfolio.theme.layout.unit.dp
 import dev.tonholo.portfolio.theme.typography.FontFamilies
 import org.jetbrains.compose.web.css.LineStyle
 import org.jetbrains.compose.web.css.cssRem
@@ -32,12 +33,12 @@ import org.jetbrains.compose.web.dom.Text as ComposeText
 //   font-family mono, font-size 13px, background --ink, color --paper-2,
 //   border-radius 4px, padding 20px 24px, line-height 1.7, overflow hidden.
 // Dark mode swaps: background --paper-2, color --ink, border 1px --paper-3.
-private const val TERM_FONT_SIZE_REM = 0.8125 // 13px
+private val TERM_FONT_SIZE = 13.dp
 private const val TERM_LINE_HEIGHT = 1.7
-private const val TERM_BORDER_RADIUS_REM = 0.25 // 4px
-private const val TERM_PADDING_Y_REM = 1.25 // 20px
-private const val TERM_PADDING_X_REM = 1.5 // 24px
-private const val TERM_BORDER_WIDTH_REM = 0.0625 // 1px
+private val TERM_BORDER_RADIUS = 4.dp
+private val TERM_PADDING_Y = 20.dp
+private val TERM_PADDING_X = 24.dp
+private val TERM_BORDER_WIDTH = 1.dp
 
 /**
  * One rendered line inside a [TerminalSnippet]. The [number] is the 1-indexed
@@ -102,7 +103,7 @@ fun TerminalSnippet(lines: List<TerminalLine>, modifier: Modifier = Modifier) {
 
     if (isDark) {
         preModifier = preModifier.border(
-            width = TERM_BORDER_WIDTH_REM.cssRem,
+            width = TERM_BORDER_WIDTH,
             style = LineStyle.Solid,
             color = tokens.paper.paper3,
         )
@@ -205,12 +206,12 @@ val TerminalSnippetStyle = CssStyle {
     base {
         Modifier
             .fontFamily(*FontFamilies.MONO)
-            .fontSize(TERM_FONT_SIZE_REM.cssRem)
+            .fontSize(TERM_FONT_SIZE)
             .lineHeight(TERM_LINE_HEIGHT)
-            .borderRadius(TERM_BORDER_RADIUS_REM.cssRem)
+            .borderRadius(TERM_BORDER_RADIUS)
             .padding(
-                topBottom = TERM_PADDING_Y_REM.cssRem,
-                leftRight = TERM_PADDING_X_REM.cssRem,
+                topBottom = TERM_PADDING_Y,
+                leftRight = TERM_PADDING_X,
             )
             .margin(topBottom = 0.cssRem)
             .overflow(Overflow.Hidden)

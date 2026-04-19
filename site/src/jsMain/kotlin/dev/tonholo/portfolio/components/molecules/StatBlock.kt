@@ -19,29 +19,29 @@ import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.silk.style.CssStyle
 import com.varabyte.kobweb.silk.style.toModifier
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
+import dev.tonholo.portfolio.theme.layout.unit.dp
 import dev.tonholo.portfolio.theme.typography.FontFamilies
 import org.jetbrains.compose.web.css.CSSSizeValue
 import org.jetbrains.compose.web.css.CSSUnit
 import org.jetbrains.compose.web.css.DisplayStyle
-import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.em
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Span
 import org.jetbrains.compose.web.dom.Text as ComposeText
 
 // Small variant (`.proj-stat` inside an IDE card).
-private const val SMALL_NUM_SIZE_REM = 1.5 // 24px
-private const val SMALL_LABEL_SIZE_REM = 0.625 // 10px
-private const val SMALL_LABEL_MARGIN_TOP_REM = 0.375 // 6px
+private val SMALL_NUM_SIZE = 24.dp
+private val SMALL_LABEL_SIZE = 10.dp
+private val SMALL_LABEL_MARGIN_TOP = 6.dp
 private const val SMALL_LABEL_LETTER_SPACING_EM = 0.08
 
 // Large variant (`.outcome-cell` in an outcomes grid).
-private const val LARGE_CELL_PADDING_Y_REM = 1.5 // 24px
-private const val LARGE_CELL_PADDING_X_REM = 1.25 // 20px
-private const val LARGE_NUM_SIZE_REM = 2.75 // 44px
-private const val LARGE_NUM_MARGIN_BOTTOM_REM = 0.5 // 8px
+private val LARGE_CELL_PADDING_Y = 24.dp
+private val LARGE_CELL_PADDING_X = 20.dp
+private val LARGE_NUM_SIZE = 44.dp
+private val LARGE_NUM_MARGIN_BOTTOM = 8.dp
 private const val LARGE_NUM_LETTER_SPACING_EM = -0.03
-private const val LARGE_LABEL_SIZE_REM = 0.8125 // 13px
+private val LARGE_LABEL_SIZE = 13.dp
 private const val LARGE_LABEL_MAX_WIDTH_CH = 22.0
 private const val LARGE_LABEL_LINE_HEIGHT = 1.45
 
@@ -85,8 +85,8 @@ fun StatBlock(
             StatBlockLargeStyle
                 .toModifier()
                 .padding(
-                    topBottom = LARGE_CELL_PADDING_Y_REM.cssRem,
-                    leftRight = LARGE_CELL_PADDING_X_REM.cssRem,
+                    topBottom = LARGE_CELL_PADDING_Y,
+                    leftRight = LARGE_CELL_PADDING_X,
                 )
     }.then(modifier)
 
@@ -96,7 +96,7 @@ fun StatBlock(
                 Modifier
                     .display(DisplayStyle.Block)
                     .fontFamily(*FontFamilies.MONO)
-                    .fontSize(SMALL_NUM_SIZE_REM.cssRem)
+                    .fontSize(SMALL_NUM_SIZE)
                     .fontWeight(FontWeight.SemiBold)
                     .lineHeight(NUM_LINE_HEIGHT_UNITLESS)
                     .color(tokens.accent.accent)
@@ -105,11 +105,11 @@ fun StatBlock(
                 Modifier
                     .display(DisplayStyle.Block)
                     .fontFamily(*FontFamilies.DISPLAY)
-                    .fontSize(LARGE_NUM_SIZE_REM.cssRem)
+                    .fontSize(LARGE_NUM_SIZE)
                     .fontWeight(FontWeight.Medium)
                     .lineHeight(NUM_LINE_HEIGHT_UNITLESS)
                     .letterSpacing(LARGE_NUM_LETTER_SPACING_EM.em)
-                    .margin(bottom = LARGE_NUM_MARGIN_BOTTOM_REM.cssRem)
+                    .margin(bottom = LARGE_NUM_MARGIN_BOTTOM)
                     .color(tokens.accent.accent)
         }
         Span(attrs = numberModifier.toAttrs()) {
@@ -121,8 +121,8 @@ fun StatBlock(
                 Modifier
                     .display(DisplayStyle.Block)
                     .fontFamily(*FontFamilies.MONO)
-                    .fontSize(SMALL_LABEL_SIZE_REM.cssRem)
-                    .margin(top = SMALL_LABEL_MARGIN_TOP_REM.cssRem)
+                    .fontSize(SMALL_LABEL_SIZE)
+                    .margin(top = SMALL_LABEL_MARGIN_TOP)
                     .letterSpacing(SMALL_LABEL_LETTER_SPACING_EM.em)
                     .textTransform(TextTransform.Uppercase)
                     .color(tokens.muted.muted)
@@ -131,7 +131,7 @@ fun StatBlock(
                 Modifier
                     .display(DisplayStyle.Block)
                     .fontFamily(*FontFamilies.BODY)
-                    .fontSize(LARGE_LABEL_SIZE_REM.cssRem)
+                    .fontSize(LARGE_LABEL_SIZE)
                     .lineHeight(LARGE_LABEL_LINE_HEIGHT)
                     .maxWidth(LARGE_LABEL_MAX_WIDTH_CH.unsafeCast<CSSSizeValue<CSSUnit.ch>>())
                     .color(tokens.ink.ink2)

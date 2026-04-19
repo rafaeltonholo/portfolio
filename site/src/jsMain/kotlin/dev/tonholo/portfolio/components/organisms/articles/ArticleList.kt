@@ -47,6 +47,7 @@ import dev.tonholo.portfolio.navigation.Routes
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.PortfolioTokens
 import dev.tonholo.portfolio.theme.color.Paper
+import dev.tonholo.portfolio.theme.layout.unit.dp
 import dev.tonholo.portfolio.theme.typography.FontFamilies
 import org.jetbrains.compose.web.css.AlignItems
 import org.jetbrains.compose.web.css.CSSSizeValue
@@ -74,36 +75,36 @@ private const val ROW_TAGS_COL_REM = 16.0
 private const val ROW_READ_COL_REM = 5.0
 
 // Row chrome: 32px grid gap, 24px top/bottom padding, 1px hairline borders.
-private const val ROW_GAP_REM = 2.0 // 32px
-private const val ROW_PADDING_Y_REM = 1.5 // 24px
+private val ROW_GAP = 32.dp
+private val ROW_PADDING_Y = 24.dp
 private const val ROW_PADDING_X_REM = 0.0 // hover adds inline padding
-private const val ROW_HOVER_PADDING_X_REM = 1.0 // 16px
-private const val ROW_BORDER_WIDTH_REM = 0.0625 // 1px at 1rem=16px
+private val ROW_HOVER_PADDING_X = 16.dp
+private val ROW_BORDER_WIDTH = 1.dp
 private const val ROW_TRANSITION_DURATION_S = 0.18
 
 // Column 1: date (12px mono muted) over accent draft status (10px mono accent).
-private const val DATE_SIZE_REM = 0.75 // 12px
-private const val DATE_COL_PADDING_TOP_REM = 0.375 // 6px
-private const val STATUS_MARGIN_TOP_REM = 0.25 // 4px
-private const val STATUS_SIZE_REM = 0.625 // 10px
+private val DATE_SIZE = 12.dp
+private val DATE_COL_PADDING_TOP = 6.dp
+private val STATUS_MARGIN_TOP = 4.dp
+private val STATUS_SIZE = 10.dp
 private const val STATUS_LETTER_SPACING_EM = 0.08
-private const val STATUS_ICON_SIZE_REM = 0.5 // 8px
+private val STATUS_ICON_SIZE = 8.dp
 
 // Column 2: title (24px display medium) over body copy (14px body ink-3).
-private const val TITLE_SIZE_REM = 1.5 // 24px
+private val TITLE_SIZE = 24.dp
 private const val TITLE_LINE_HEIGHT = 1.2
 private const val TITLE_LETTER_SPACING_EM = -0.02
-private const val TITLE_MARGIN_BOTTOM_REM = 0.5 // 8px
-private const val DESC_SIZE_REM = 0.875 // 14px
+private val TITLE_MARGIN_BOTTOM = 8.dp
+private val DESC_SIZE = 14.dp
 private const val DESC_LINE_HEIGHT = 1.55
 private const val DESC_MAX_WIDTH_CH = 60.0
 
 // Column 3: tags row aligns to the row baseline.
-private const val TAGS_COL_PADDING_TOP_REM = 0.375 // 6px
+private val TAGS_COL_PADDING_TOP = 6.dp
 
 // Column 4: read-time (12px mono muted). Text aligns right on desktop; left on mobile.
-private const val READ_SIZE_REM = 0.75 // 12px
-private const val READ_COL_PADDING_TOP_REM = 0.375 // 6px
+private val READ_SIZE = 12.dp
+private val READ_COL_PADDING_TOP = 6.dp
 
 private const val TAG_PREFIX = "#"
 
@@ -164,13 +165,13 @@ private fun ArticleRow(article: Article, isLast: Boolean, strings: Strings.Artic
     var rowModifier = ArticleRowStyle
         .toModifier()
         .borderTop(
-            width = ROW_BORDER_WIDTH_REM.cssRem,
+            width = ROW_BORDER_WIDTH,
             style = LineStyle.Solid,
             color = borderColor,
         )
     if (isLast) {
         rowModifier = rowModifier.borderBottom(
-            width = ROW_BORDER_WIDTH_REM.cssRem,
+            width = ROW_BORDER_WIDTH,
             style = LineStyle.Solid,
             color = borderColor,
         )
@@ -211,7 +212,7 @@ private fun ArticleDateCell(
                 PhosphorIcon(
                     name = "circle",
                     weight = PhosphorWeight.Fill,
-                    size = STATUS_ICON_SIZE_REM.cssRem,
+                    size = STATUS_ICON_SIZE,
                 )
                 ComposeText(" ${article.status.labelFor(strings = strings)}")
             }
@@ -299,9 +300,9 @@ val ArticleRowStyle = CssStyle {
             .gridTemplateColumns {
                 size(ROW_MAIN_COL_FR.fr)
             }
-            .gap(ROW_GAP_REM.cssRem)
+            .gap(ROW_GAP)
             .padding(
-                topBottom = ROW_PADDING_Y_REM.cssRem,
+                topBottom = ROW_PADDING_Y,
                 leftRight = ROW_PADDING_X_REM.cssRem,
             )
             .alignItems(AlignItems.Start)
@@ -327,8 +328,8 @@ val ArticleRowStyle = CssStyle {
         Modifier
             .backgroundColor(paper.paper2)
             .padding(
-                topBottom = ROW_PADDING_Y_REM.cssRem,
-                leftRight = ROW_HOVER_PADDING_X_REM.cssRem,
+                topBottom = ROW_PADDING_Y,
+                leftRight = ROW_HOVER_PADDING_X,
             )
     }
 }
@@ -342,8 +343,8 @@ val ArticleDateCellStyle = CssStyle {
     base {
         Modifier
             .fontFamily(*FontFamilies.MONO)
-            .fontSize(DATE_SIZE_REM.cssRem)
-            .padding(top = DATE_COL_PADDING_TOP_REM.cssRem)
+            .fontSize(DATE_SIZE)
+            .padding(top = DATE_COL_PADDING_TOP)
     }
 }
 
@@ -357,10 +358,10 @@ val ArticleStatusStyle = CssStyle {
     base {
         Modifier
             .fontFamily(*FontFamilies.MONO)
-            .fontSize(STATUS_SIZE_REM.cssRem)
+            .fontSize(STATUS_SIZE)
             .letterSpacing(STATUS_LETTER_SPACING_EM.em)
             .textTransform(TextTransform.Uppercase)
-            .margin(top = STATUS_MARGIN_TOP_REM.cssRem)
+            .margin(top = STATUS_MARGIN_TOP)
     }
 }
 
@@ -374,11 +375,11 @@ val ArticleTitleStyle = CssStyle {
     base {
         Modifier
             .fontFamily(*FontFamilies.DISPLAY)
-            .fontSize(TITLE_SIZE_REM.cssRem)
+            .fontSize(TITLE_SIZE)
             .fontWeight(FontWeight.Medium)
             .lineHeight(TITLE_LINE_HEIGHT)
             .letterSpacing(TITLE_LETTER_SPACING_EM.em)
-            .margin(top = 0.cssRem, bottom = TITLE_MARGIN_BOTTOM_REM.cssRem)
+            .margin(top = 0.cssRem, bottom = TITLE_MARGIN_BOTTOM)
     }
 }
 
@@ -391,7 +392,7 @@ val ArticleDescStyle = CssStyle {
     base {
         Modifier
             .fontFamily(*FontFamilies.BODY)
-            .fontSize(DESC_SIZE_REM.cssRem)
+            .fontSize(DESC_SIZE)
             .lineHeight(DESC_LINE_HEIGHT)
             .maxWidth(DESC_MAX_WIDTH_CH.unsafeCast<CSSSizeValue<CSSUnit.ch>>())
             .margin(topBottom = 0.cssRem)
@@ -405,7 +406,7 @@ val ArticleDescStyle = CssStyle {
  */
 val ArticleTagsCellStyle = CssStyle {
     base {
-        Modifier.padding(top = TAGS_COL_PADDING_TOP_REM.cssRem)
+        Modifier.padding(top = TAGS_COL_PADDING_TOP)
     }
 }
 
@@ -421,7 +422,7 @@ val ArticleReadCellStyle = CssStyle {
         Modifier
             .display(DisplayStyle.Block)
             .fontFamily(*FontFamilies.MONO)
-            .fontSize(READ_SIZE_REM.cssRem)
-            .padding(top = READ_COL_PADDING_TOP_REM.cssRem)
+            .fontSize(READ_SIZE)
+            .padding(top = READ_COL_PADDING_TOP)
     }
 }

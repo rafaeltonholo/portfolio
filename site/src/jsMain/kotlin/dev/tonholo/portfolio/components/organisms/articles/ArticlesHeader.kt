@@ -20,6 +20,7 @@ import dev.tonholo.portfolio.components.atoms.MetaLabelVariant
 import dev.tonholo.portfolio.components.atoms.MetaSeparator
 import dev.tonholo.portfolio.locale.LocalStrings
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
+import dev.tonholo.portfolio.theme.layout.unit.dp
 import dev.tonholo.portfolio.theme.typography.FontFamilies
 import dev.tonholo.portfolio.theme.typography.Typography
 import dev.tonholo.portfolio.theme.typography.apply
@@ -41,22 +42,22 @@ import org.jetbrains.compose.web.dom.Text as ComposeText
 // Density-pinned `--pad-y` = 80px * 0.72 ≈ 57.6px, `--pad-y-sm` ≈ 28.8px. The
 // rem values below approximate those for the compact density used across
 // the redesign.
-private const val HEADER_PADDING_TOP_REM = 3.6 // ~57.6px
-private const val HEADER_PADDING_BOTTOM_REM = 1.8 // ~28.8px
-private const val HEADER_GRID_GAP_REM = 2.0 // 32px
+private val HEADER_PADDING_TOP = 57.6.dp
+private val HEADER_PADDING_BOTTOM = 28.8.dp
+private val HEADER_GRID_GAP = 32.dp
 private const val HEADER_GRID_FLEX_COL_FR = 1
 
 // Handoff `.meta.meta-accent { margin-bottom: 16px }` on the accent label above the title.
-private const val META_MARGIN_BOTTOM_REM = 1.0 // 16px
+private val META_MARGIN_BOTTOM = 16.dp
 
 // Handoff `.articles-hdr p { color: var(--muted); font-family: var(--font-mono); font-size: 13px; }`.
-private const val META_COPY_SIZE_REM = 0.8125 // 13px
+private val META_COPY_SIZE = 13.dp
 
 // Mono eyebrow is a technical path literal and stays untranslated.
 private const val META_TEXT = "// articles/"
 
 // Inline gap between the summary segments and the centered separator dots.
-private const val SUMMARY_GAP_REM = 0.5 // 8px
+private val SUMMARY_GAP = 8.dp
 
 /**
  * Hero header for the Articles list page. Ports `.articles-hdr` from the
@@ -87,7 +88,7 @@ fun ArticlesHeader(articleCount: Int, modifier: Modifier = Modifier) {
                 variant = MetaLabelVariant.Accent,
                 modifier = Modifier
                     .display(DisplayStyle.Block)
-                    .margin(bottom = META_MARGIN_BOTTOM_REM.cssRem),
+                    .margin(bottom = META_MARGIN_BOTTOM),
             )
             H1(
                 attrs = Modifier
@@ -128,11 +129,11 @@ val ArticlesHeaderStyle = CssStyle {
             .gridTemplateColumns {
                 size(HEADER_GRID_FLEX_COL_FR.fr)
             }
-            .gap(HEADER_GRID_GAP_REM.cssRem)
+            .gap(HEADER_GRID_GAP)
             .alignItems(AlignItems.Start)
             .padding(
-                top = HEADER_PADDING_TOP_REM.cssRem,
-                bottom = HEADER_PADDING_BOTTOM_REM.cssRem,
+                top = HEADER_PADDING_TOP,
+                bottom = HEADER_PADDING_BOTTOM,
             )
     }
     Breakpoint.MD {
@@ -155,9 +156,9 @@ val ArticlesHeaderSummaryStyle = CssStyle {
         Modifier
             .display(DisplayStyle.Flex)
             .alignItems(AlignItems.Center)
-            .gap(SUMMARY_GAP_REM.cssRem)
+            .gap(SUMMARY_GAP)
             .fontFamily(*FontFamilies.MONO)
-            .fontSize(META_COPY_SIZE_REM.cssRem)
+            .fontSize(META_COPY_SIZE)
             .margin(topBottom = 0.cssRem)
     }
 }

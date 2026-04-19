@@ -18,9 +18,9 @@ import dev.tonholo.portfolio.components.template.NumberedSection
 import dev.tonholo.portfolio.domain.model.Project
 import dev.tonholo.portfolio.locale.LocalStrings
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
+import dev.tonholo.portfolio.theme.layout.unit.dp
 import org.jetbrains.compose.web.css.AlignItems
 import org.jetbrains.compose.web.css.DisplayStyle
-import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.fr
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Span
@@ -30,14 +30,14 @@ private const val SECTION_ORDINAL = 0
 private const val META_YEAR_SPAN = "2021 - present"
 
 // Inline gap between the trailing meta segments and the centered separator dot.
-private const val TRAILING_META_GAP_REM = 0.375 // 6px
+private val TRAILING_META_GAP = 6.dp
 
 // Grid spec per handoff CSS: `.projects-grid { display: grid; gap: 1px;
 // background: var(--paper-3); }`. The 1px gap doubles as a hairline separator
 // because the background colour fills the gutter while each card paints its
 // own `--paper` surface. `.projects-grid.two` promotes to two columns; below
 // the handoff `820px` media query the grid collapses to a single column.
-private const val GRID_GAP_REM = 0.0625 // 1px at 1rem=16px
+private val GRID_GAP = 1.dp
 private const val GRID_COLUMN_FR = 1
 
 /**
@@ -66,7 +66,7 @@ fun SelectedWorkGrid(projects: List<Project>, modifier: Modifier = Modifier) {
                 attrs = Modifier
                     .display(DisplayStyle.LegacyInlineFlex)
                     .alignItems(AlignItems.Center)
-                    .gap(TRAILING_META_GAP_REM.cssRem)
+                    .gap(TRAILING_META_GAP)
                     .toAttrs(),
             ) {
                 MetaLabel(text = "${projects.size} ${strings.projectsSuffix}")
@@ -122,7 +122,7 @@ val SelectedWorkProjectsGridStyle = CssStyle {
             .gridTemplateColumns {
                 size(GRID_COLUMN_FR.fr)
             }
-            .gap(GRID_GAP_REM.cssRem)
+            .gap(GRID_GAP)
     }
     Breakpoint.LG {
         Modifier.gridTemplateColumns {

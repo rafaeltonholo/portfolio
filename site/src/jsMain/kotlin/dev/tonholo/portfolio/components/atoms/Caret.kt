@@ -19,17 +19,17 @@ import com.varabyte.kobweb.silk.style.animation.Keyframes
 import com.varabyte.kobweb.silk.style.animation.toAnimation
 import com.varabyte.kobweb.silk.style.toModifier
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
+import dev.tonholo.portfolio.theme.layout.unit.dp
 import org.jetbrains.compose.web.css.AnimationTimingFunction
 import org.jetbrains.compose.web.css.DisplayStyle
-import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.em
 import org.jetbrains.compose.web.css.percent
 import org.jetbrains.compose.web.css.s
 import org.jetbrains.compose.web.dom.Span
 
-private const val CARET_WIDTH_REM = 0.625 // 10px at 1rem=16px
+private val CARET_WIDTH = 10.dp
 private const val CARET_HEIGHT_EM = 1.2
-private const val CARET_MARGIN_LEFT_REM = 0.125 // 2px
+private val CARET_MARGIN_LEFT = 2.dp
 private const val CARET_ANIMATION_DURATION_S = 1.05
 private const val BLINK_MID_PERCENT = 50.0
 
@@ -80,10 +80,10 @@ val CaretStyle = CssStyle {
     base {
         Modifier
             .display(DisplayStyle.InlineBlock)
-            .width(CARET_WIDTH_REM.cssRem)
+            .width(CARET_WIDTH)
             .height(CARET_HEIGHT_EM.em)
             .verticalAlign(VerticalAlign.TextBottom)
-            .marginInline { start(CARET_MARGIN_LEFT_REM.cssRem) }
+            .marginInline { start(CARET_MARGIN_LEFT) }
     }
 }
 

@@ -1,6 +1,7 @@
 package dev.tonholo.portfolio.components.atoms
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import com.varabyte.kobweb.compose.css.AnimationIterationCount
 import com.varabyte.kobweb.compose.css.CSSLengthOrPercentageNumericValue
 import com.varabyte.kobweb.compose.css.StyleVariable
@@ -19,16 +20,16 @@ import com.varabyte.kobweb.silk.style.animation.Keyframes
 import com.varabyte.kobweb.silk.style.animation.toAnimation
 import com.varabyte.kobweb.silk.style.toModifier
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
+import dev.tonholo.portfolio.theme.layout.unit.dp
 import org.jetbrains.compose.web.css.AnimationTimingFunction
 import org.jetbrains.compose.web.css.CSSSizeValue
 import org.jetbrains.compose.web.css.CSSUnit
 import org.jetbrains.compose.web.css.DisplayStyle
-import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.percent
 import org.jetbrains.compose.web.css.s
 import org.jetbrains.compose.web.dom.Span
 
-private const val DOT_SIZE_REM = 0.4375 // 7px at 1rem=16px
+private val DOT_SIZE = 7.dp
 private const val DOT_RADIUS_PERCENT = 50.0
 private const val DOT_ANIMATION_DURATION_S = 2.0
 private const val PULSE_DIM_OPACITY = 0.6
@@ -98,7 +99,7 @@ val DotStyle = CssStyle {
     base {
         Modifier
             .display(DisplayStyle.InlineBlock)
-            .size(DotVars.Size.value(DOT_SIZE_REM.cssRem))
+            .size(DotVars.Size.value(DOT_SIZE))
             .borderRadius(DotVars.BorderRadius.value(DOT_RADIUS_PERCENT.percent))
     }
 }

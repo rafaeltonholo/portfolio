@@ -23,6 +23,7 @@ import dev.tonholo.portfolio.components.atoms.PhosphorIcon
 import dev.tonholo.portfolio.locale.LocalStrings
 import dev.tonholo.portfolio.navigation.Routes
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
+import dev.tonholo.portfolio.theme.layout.unit.dp
 import dev.tonholo.portfolio.theme.typography.FontFamilies
 import org.jetbrains.compose.web.css.AlignItems
 import org.jetbrains.compose.web.css.DisplayStyle
@@ -31,9 +32,9 @@ import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Span
 import org.jetbrains.compose.web.dom.Text as ComposeText
 
-private const val BREADCRUMB_FONT_SIZE_REM = 0.75 // 12px
-private const val BREADCRUMB_SEPARATOR_GAP_REM = 0.75 // 12px around each separator
-private const val BREADCRUMB_MARGIN_BOTTOM_REM = 2.0 // 32px
+private val BREADCRUMB_FONT_SIZE = 12.dp
+private val BREADCRUMB_SEPARATOR_GAP = 12.dp
+private val BREADCRUMB_MARGIN_BOTTOM = 32.dp
 private const val BACK_ICON_NAME = "arrow-left"
 private const val BACK_ICON_SIZE_REM = 0.875
 private const val BACK_ICON_GAP_REM = 0.25
@@ -78,7 +79,7 @@ fun ProjectBreadcrumb(projectName: String, modifier: Modifier = Modifier) {
         }
         Span(
             attrs = Modifier
-                .margin(leftRight = BREADCRUMB_SEPARATOR_GAP_REM.cssRem)
+                .margin(leftRight = BREADCRUMB_SEPARATOR_GAP)
                 .toAttrs(),
         ) {
             ComposeText("/")
@@ -88,7 +89,7 @@ fun ProjectBreadcrumb(projectName: String, modifier: Modifier = Modifier) {
         }
         Span(
             attrs = Modifier
-                .margin(leftRight = BREADCRUMB_SEPARATOR_GAP_REM.cssRem)
+                .margin(leftRight = BREADCRUMB_SEPARATOR_GAP)
                 .toAttrs(),
         ) {
             ComposeText("/")
@@ -110,7 +111,7 @@ val ProjectBreadcrumbStyle = CssStyle {
             .display(DisplayStyle.LegacyInlineFlex)
             .alignItems(AlignItems.Center)
             .fontFamily(*FontFamilies.MONO)
-            .fontSize(BREADCRUMB_FONT_SIZE_REM.cssRem)
-            .margin(bottom = BREADCRUMB_MARGIN_BOTTOM_REM.cssRem)
+            .fontSize(BREADCRUMB_FONT_SIZE)
+            .margin(bottom = BREADCRUMB_MARGIN_BOTTOM)
     }
 }

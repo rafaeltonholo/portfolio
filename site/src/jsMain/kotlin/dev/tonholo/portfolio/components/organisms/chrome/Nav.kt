@@ -58,6 +58,7 @@ import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.color.Muted
 import dev.tonholo.portfolio.theme.color.Paper
 import dev.tonholo.portfolio.theme.layout.ChromeShellStyle
+import dev.tonholo.portfolio.theme.layout.unit.dp
 import dev.tonholo.portfolio.theme.typography.FontFamilies
 import kotlinx.coroutines.delay
 import org.jetbrains.compose.web.css.AlignItems
@@ -74,11 +75,11 @@ import org.jetbrains.compose.web.dom.Nav as WebNav
 import org.jetbrains.compose.web.dom.Text as ComposeText
 
 // `.nav-inner` layout geometry.
-private const val NAV_INNER_PADDING_Y_REM = 1.0 // 16px
-private const val NAV_INNER_GAP_REM = 2.0 // 32px
+private val NAV_INNER_PADDING_Y = 16.dp
+private val NAV_INNER_GAP = 32.dp
 
 // `.nav` bottom hairline width.
-private const val NAV_BORDER_WIDTH_REM = 0.0625 // 1px
+private val NAV_BORDER_WIDTH = 1.dp
 
 // Handoff `.nav` chrome: sticky at top, on top of body content, paints a
 // translucent paper surface with a subtle backdrop blur so long-form pages
@@ -88,18 +89,18 @@ private const val NAV_BACKDROP_FILTER = "saturate(140%) blur(12px)"
 private const val NAV_BACKGROUND_PAPER_PERCENT = "92%"
 
 // `.nav-links` cluster.
-private const val NAV_LINKS_GAP_REM = 0.25 // 4px
+private val NAV_LINKS_GAP = 4.dp
 
 // `.nav-meta` layout.
-private const val NAV_META_FONT_SIZE_REM = 0.75 // 12px
-private const val NAV_META_GAP_EXPANDED_REM = 1.0 // 16px
-private const val NAV_META_PADDING_LEFT_EXPANDED_REM = 1.0 // 16px
-private const val NAV_META_PADDING_LEFT_COLLAPSED_REM = 0.875 // 14px
-private const val NAV_META_BORDER_WIDTH_REM = 0.0625 // 1px
-private const val NAV_META_TEXT_MAX_WIDTH_REM = 15.0 // 240px
+private val NAV_META_FONT_SIZE = 12.dp
+private val NAV_META_GAP_EXPANDED = 16.dp
+private val NAV_META_PADDING_LEFT_EXPANDED = 16.dp
+private val NAV_META_PADDING_LEFT_COLLAPSED = 14.dp
+private val NAV_META_BORDER_WIDTH = 1.dp
+private val NAV_META_TEXT_MAX_WIDTH = 240.dp
 
 // Inline gap between the status / presence labels and the centered separator dot.
-private const val NAV_META_INLINE_GAP_REM = 0.375 // 6px
+private val NAV_META_INLINE_GAP = 6.dp
 
 // Transition durations mirror `.nav-meta` and `.nav-meta__text` from the handoff.
 private const val NAV_META_LAYOUT_TRANSITION_S = 0.28
@@ -206,14 +207,14 @@ private fun StatusBadge(statusLabel: String, presenceLabel: String) {
         collapsed = true
     }
 
-    val gap = if (collapsed) 0.cssRem else NAV_META_GAP_EXPANDED_REM.cssRem
+    val gap = if (collapsed) 0.cssRem else NAV_META_GAP_EXPANDED
     val paddingLeft = if (collapsed) {
-        NAV_META_PADDING_LEFT_COLLAPSED_REM.cssRem
+        NAV_META_PADDING_LEFT_COLLAPSED
     } else {
-        NAV_META_PADDING_LEFT_EXPANDED_REM.cssRem
+        NAV_META_PADDING_LEFT_EXPANDED
     }
     val borderColor = if (collapsed) TransparentColor else tokens.paper.paper3
-    val textMaxWidth = if (collapsed) 0.cssRem else NAV_META_TEXT_MAX_WIDTH_REM.cssRem
+    val textMaxWidth = if (collapsed) 0.cssRem else NAV_META_TEXT_MAX_WIDTH
     val textOpacity = if (collapsed) 0.0 else 1.0
 
     val badgeModifier = NavMetaStyle
@@ -221,7 +222,7 @@ private fun StatusBadge(statusLabel: String, presenceLabel: String) {
         .gap(gap)
         .padding(left = paddingLeft)
         .borderLeft(
-            width = NAV_META_BORDER_WIDTH_REM.cssRem,
+            width = NAV_META_BORDER_WIDTH,
             style = LineStyle.Solid,
             color = borderColor,
         )
@@ -238,7 +239,7 @@ private fun StatusBadge(statusLabel: String, presenceLabel: String) {
                 .opacity(value = textOpacity)
                 .display(DisplayStyle.LegacyInlineFlex)
                 .alignItems(AlignItems.Center)
-                .gap(NAV_META_INLINE_GAP_REM.cssRem)
+                .gap(NAV_META_INLINE_GAP)
                 .toAttrs(),
         ) {
             ComposeText(statusLabel)
@@ -274,7 +275,7 @@ val NavStyle = CssStyle {
                 property("-webkit-backdrop-filter", NAV_BACKDROP_FILTER)
             }
             .borderBottom(
-                width = NAV_BORDER_WIDTH_REM.cssRem,
+                width = NAV_BORDER_WIDTH,
                 style = LineStyle.Solid,
                 color = borderColor,
             )
@@ -293,10 +294,10 @@ val NavInnerStyle = ChromeShellStyle.extendedBy {
         Modifier
             .display(DisplayStyle.Flex)
             .alignItems(AlignItems.Center)
-            .gap(NAV_INNER_GAP_REM.cssRem)
+            .gap(NAV_INNER_GAP)
             .styleModifier {
-                property("padding-top", "${NAV_INNER_PADDING_Y_REM}rem")
-                property("padding-bottom", "${NAV_INNER_PADDING_Y_REM}rem")
+                property("padding-top", "${NAV_INNER_PADDING_Y}rem")
+                property("padding-bottom", "${NAV_INNER_PADDING_Y}rem")
             }
     }
 }
@@ -309,7 +310,7 @@ val NavLinksStyle = CssStyle {
     base {
         Modifier
             .display(DisplayStyle.Flex)
-            .gap(NAV_LINKS_GAP_REM.cssRem)
+            .gap(NAV_LINKS_GAP)
             .margin(left = auto.unsafeCast<CSSLengthOrPercentageNumericValue>())
     }
 }
@@ -340,7 +341,7 @@ val NavMetaStyle = CssStyle {
             .display(DisplayStyle.Flex)
             .alignItems(AlignItems.Center)
             .fontFamily(*FontFamilies.MONO)
-            .fontSize(NAV_META_FONT_SIZE_REM.cssRem)
+            .fontSize(NAV_META_FONT_SIZE)
             .color(textColor)
             .cursor(Cursor.Default)
             .transition(

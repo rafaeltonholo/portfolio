@@ -24,6 +24,7 @@ import dev.tonholo.portfolio.components.atoms.PhosphorIcon
 import dev.tonholo.portfolio.locale.LocalStrings
 import dev.tonholo.portfolio.navigation.Routes
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
+import dev.tonholo.portfolio.theme.layout.unit.dp
 import dev.tonholo.portfolio.theme.typography.FontFamilies
 import org.jetbrains.compose.web.css.AlignItems
 import org.jetbrains.compose.web.css.DisplayStyle
@@ -32,9 +33,9 @@ import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Span
 import org.jetbrains.compose.web.dom.Text as ComposeText
 
-private const val META_ROW_FONT_SIZE_REM = 0.75 // 12px
-private const val META_ROW_GAP_REM = 1.25 // 20px between inline segments
-private const val META_ROW_MARGIN_BOTTOM_REM = 1.5 // 24px
+private val META_ROW_FONT_SIZE = 12.dp
+private val META_ROW_GAP = 20.dp
+private val META_ROW_MARGIN_BOTTOM = 24.dp
 
 // Byline default is the author's first name; keeping it here as a constant
 // avoids threading identity through an i18n surface that describes formatting,
@@ -45,7 +46,7 @@ private const val BACK_ICON_SIZE_REM = 0.875
 private const val BACK_ICON_GAP_REM = 0.25
 
 // Inline gap between the bullet dot and the text inside each meta segment.
-private const val META_SEGMENT_GAP_REM = 0.375 // 6px
+private val META_SEGMENT_GAP = 6.dp
 
 /**
  * Inline meta row rendered at the top of an article detail page. Ports
@@ -119,9 +120,9 @@ val ArticleMetaRowStyle = CssStyle {
             .display(DisplayStyle.Flex)
             .alignItems(AlignItems.Center)
             .fontFamily(*FontFamilies.MONO)
-            .fontSize(META_ROW_FONT_SIZE_REM.cssRem)
-            .gap(META_ROW_GAP_REM.cssRem)
-            .margin(bottom = META_ROW_MARGIN_BOTTOM_REM.cssRem)
+            .fontSize(META_ROW_FONT_SIZE)
+            .gap(META_ROW_GAP)
+            .margin(bottom = META_ROW_MARGIN_BOTTOM)
     }
 }
 
@@ -136,7 +137,7 @@ private fun ArticleMetaSegment(content: @Composable () -> Unit) {
         attrs = Modifier
             .display(DisplayStyle.LegacyInlineFlex)
             .alignItems(AlignItems.Center)
-            .gap(META_SEGMENT_GAP_REM.cssRem)
+            .gap(META_SEGMENT_GAP)
             .toAttrs(),
     ) {
         MetaSeparator()

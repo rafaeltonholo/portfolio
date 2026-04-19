@@ -34,11 +34,11 @@ import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import dev.tonholo.portfolio.locale.Locale
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.color.Ink
+import dev.tonholo.portfolio.theme.layout.unit.dp
 import dev.tonholo.portfolio.theme.typography.FontFamilies
 import org.jetbrains.compose.web.css.AlignItems
 import org.jetbrains.compose.web.css.DisplayStyle
 import org.jetbrains.compose.web.css.LineStyle
-import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.em
 import org.jetbrains.compose.web.css.s
 import org.jetbrains.compose.web.dom.Div
@@ -47,13 +47,13 @@ import org.jetbrains.compose.web.dom.Button as WebButton
 import org.jetbrains.compose.web.dom.Text as ComposeText
 
 // `.lang-switch` geometry (from handoff styles.css).
-private const val LANG_SWITCH_FONT_SIZE_REM = 0.75 // 12px
-private const val LANG_SWITCH_GAP_REM = 0.25 // 4px
+private val LANG_SWITCH_FONT_SIZE = 12.dp
+private val LANG_SWITCH_GAP = 4.dp
 
 // `.lang-opt` geometry.
-private const val LANG_OPT_PADDING_Y_REM = 0.375 // 6px
-private const val LANG_OPT_PADDING_X_REM = 0.25 // 4px
-private const val LANG_OPT_RADIUS_REM = 0.125 // 2px
+private val LANG_OPT_PADDING_Y = 6.dp
+private val LANG_OPT_PADDING_X = 4.dp
+private val LANG_OPT_RADIUS = 2.dp
 private const val LANG_OPT_LETTER_SPACING_EM = 0.02
 private const val LANG_OPT_TRANSITION_DURATION_S = 0.15
 
@@ -183,9 +183,9 @@ val LanguageSwitchStyle = CssStyle {
         Modifier
             .display(DisplayStyle.LegacyInlineFlex)
             .alignItems(AlignItems.Center)
-            .gap(LANG_SWITCH_GAP_REM.cssRem)
+            .gap(LANG_SWITCH_GAP)
             .fontFamily(*FontFamilies.MONO)
-            .fontSize(LANG_SWITCH_FONT_SIZE_REM.cssRem)
+            .fontSize(LANG_SWITCH_FONT_SIZE)
             .color(ink.ink3)
     }
 }
@@ -205,15 +205,15 @@ val LanguageOptionStyle = CssStyle {
             .backgroundColor(TransparentColor)
             .border(style = LineStyle.None)
             .padding(
-                topBottom = LANG_OPT_PADDING_Y_REM.cssRem,
-                leftRight = LANG_OPT_PADDING_X_REM.cssRem,
+                topBottom = LANG_OPT_PADDING_Y,
+                leftRight = LANG_OPT_PADDING_X,
             )
             .cursor(Cursor.Pointer)
             .color(ink.ink3)
             .fontFamily(*FontFamilies.MONO)
-            .fontSize(LANG_SWITCH_FONT_SIZE_REM.cssRem)
+            .fontSize(LANG_SWITCH_FONT_SIZE)
             .letterSpacing(LANG_OPT_LETTER_SPACING_EM.em)
-            .borderRadius(LANG_OPT_RADIUS_REM.cssRem)
+            .borderRadius(LANG_OPT_RADIUS)
             .transition(
                 Transition.of(
                     property = "color",

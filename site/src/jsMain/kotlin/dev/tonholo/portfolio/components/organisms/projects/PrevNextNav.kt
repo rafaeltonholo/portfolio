@@ -26,27 +26,27 @@ import dev.tonholo.portfolio.components.atoms.PhosphorIcon
 import dev.tonholo.portfolio.locale.LocalStrings
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.PortfolioTokens
+import dev.tonholo.portfolio.theme.layout.unit.dp
 import dev.tonholo.portfolio.theme.typography.FontFamilies
 import org.jetbrains.compose.web.css.AlignItems
 import org.jetbrains.compose.web.css.DisplayStyle
 import org.jetbrains.compose.web.css.JustifyContent
 import org.jetbrains.compose.web.css.LineStyle
-import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Text as ComposeText
 
 // Handoff inline style on the `.prev-next` container (lines 183-186 of
 // `pages2.jsx`): flex row with space-between alignment, 48px vertical padding,
 // 48px top margin, and a 1px hairline top border.
-private const val NAV_PADDING_Y_REM = 3.0 // 48px
-private const val NAV_MARGIN_TOP_REM = 3.0 // 48px
-private const val NAV_BORDER_WIDTH_REM = 0.0625 // 1px
+private val NAV_PADDING_Y = 48.dp
+private val NAV_MARGIN_TOP = 48.dp
+private val NAV_BORDER_WIDTH = 1.dp
 
 // Handoff link metrics (`.prev-next a`): mono font family at 12px. Left link
 // uses `--muted`, right link uses `--accent`. Icon + label sit on the same
 // baseline with an 8px gap.
-private const val LINK_FONT_SIZE_REM = 0.75 // 12px
-private const val LINK_GAP_REM = 0.5 // 8px
+private val LINK_FONT_SIZE = 12.dp
+private val LINK_GAP = 8.dp
 
 private const val ICON_ARROW_LEFT = "arrow-left"
 private const val ICON_ARROW_RIGHT = "arrow-right"
@@ -84,7 +84,7 @@ fun PrevNextNav(
     val finalModifier = PrevNextNavStyle
         .toModifier()
         .borderTop(
-            width = NAV_BORDER_WIDTH_REM.cssRem,
+            width = NAV_BORDER_WIDTH,
             style = LineStyle.Solid,
             color = borderColor,
         )
@@ -165,8 +165,8 @@ val PrevNextNavStyle = CssStyle {
             .display(DisplayStyle.Flex)
             .justifyContent(JustifyContent.SpaceBetween)
             .alignItems(AlignItems.Center)
-            .padding(topBottom = NAV_PADDING_Y_REM.cssRem)
-            .margin(top = NAV_MARGIN_TOP_REM.cssRem)
+            .padding(topBottom = NAV_PADDING_Y)
+            .margin(top = NAV_MARGIN_TOP)
     }
 }
 
@@ -181,9 +181,9 @@ val PrevNextLinkStyle = CssStyle {
         Modifier
             .display(DisplayStyle.LegacyInlineFlex)
             .alignItems(AlignItems.Center)
-            .gap(LINK_GAP_REM.cssRem)
+            .gap(LINK_GAP)
             .fontFamily(*FontFamilies.MONO)
-            .fontSize(LINK_FONT_SIZE_REM.cssRem)
+            .fontSize(LINK_FONT_SIZE)
             .cursor(Cursor.Pointer)
     }
 }

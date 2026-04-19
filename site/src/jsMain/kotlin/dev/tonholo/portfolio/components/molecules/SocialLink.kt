@@ -18,6 +18,7 @@ import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import dev.tonholo.portfolio.components.atoms.PhosphorIcon
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.color.AccentMint
+import dev.tonholo.portfolio.theme.layout.unit.dp
 import org.jetbrains.compose.web.css.AlignItems
 import org.jetbrains.compose.web.css.DisplayStyle
 import org.jetbrains.compose.web.css.cssRem
@@ -31,7 +32,7 @@ private const val EXTERNAL_ARROW_SIZE_REM = 0.875
 private const val EXTERNAL_TARGET = "_blank"
 private const val EXTERNAL_REL = "noopener noreferrer"
 
-private const val SOCIAL_LINK_GAP_REM = 0.375 // 6px between icon/label/arrow
+private val SOCIAL_LINK_GAP = 6.dp
 private const val SOCIAL_LINK_TRANSITION_DURATION_S = 0.18
 
 /**
@@ -120,7 +121,7 @@ val SocialLinkStyle = CssStyle {
         Modifier
             .display(DisplayStyle.LegacyInlineFlex)
             .alignItems(AlignItems.Center)
-            .gap(SOCIAL_LINK_GAP_REM.cssRem)
+            .gap(SOCIAL_LINK_GAP)
             .textDecorationLine(TextDecorationLine.None)
             .transition(
                 Transition.of(

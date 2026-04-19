@@ -24,6 +24,7 @@ import dev.tonholo.portfolio.components.template.NumberedSection
 import dev.tonholo.portfolio.locale.LocalStrings
 import dev.tonholo.portfolio.locale.Strings
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
+import dev.tonholo.portfolio.theme.layout.unit.dp
 import dev.tonholo.portfolio.theme.typography.FontFamilies
 import dev.tonholo.portfolio.theme.typography.Typography
 import dev.tonholo.portfolio.theme.typography.apply
@@ -46,32 +47,32 @@ private const val SECTION_TRAILING_WEEK = "week 15"
 private const val SECTION_TRAILING_YEAR = "2026"
 
 // Inline gap between the trailing label segments and the centered separator dot.
-private const val SECTION_TRAILING_GAP_REM = 0.375 // 6px
+private val SECTION_TRAILING_GAP = 6.dp
 
 // Two-column grid (handoff line 202): `1fr 1.3fr`, 48px gap, align-items start.
 // Collapses to 1 column below LG per the breakpoint convention used in this
 // repo (see `NowStripStyle` / `UsesGridStyle`).
 private const val GRID_COL_COPY_FR = 1.0
 private const val GRID_COL_TERM_FR = 1.3
-private const val GRID_GAP_REM = 3.0 // 48px
+private val GRID_GAP = 48.dp
 
 // Copy column typography. Handoff inline styles on `<h3>` (line 204):
 //   font-size 28px (= 1.75rem), font-weight 500, line-height 1.1,
 //   letter-spacing -0.02em, margin-bottom 16px. Size and weight come from
 //   `Typography.h2`; `line-height` is overridden inline (h2 defaults to 1.15).
 private const val TITLE_LINE_HEIGHT = 1.1
-private const val TITLE_MARGIN_BOTTOM_REM = 1.0 // 16px
+private val TITLE_MARGIN_BOTTOM = 16.dp
 
 // Body paragraph (handoff line 207): serif 17px / line-height 1.6, max-width
 // 48ch, margin-bottom 20px, color ink-2.
-private const val BODY_MARGIN_BOTTOM_REM = 1.25 // 20px
+private val BODY_MARGIN_BOTTOM = 20.dp
 private const val BODY_MAX_WIDTH_CH = 48.0
 
 // Meta row (handoff line 210): mono 12px, muted, 4px gap between rows. Copy
 // retains its handoff casing (`// debounced-click.kt`), so we cannot reuse
 // `Typography.metaLabel` (which uppercases via `text-transform`).
-private const val META_ROW_FONT_SIZE_REM = 0.75 // 12px
-private const val META_ROW_GAP_REM = 0.25 // 4px
+private val META_ROW_FONT_SIZE = 12.dp
+private val META_ROW_GAP = 4.dp
 
 // Mono meta rows stay as technical literals (file path, last-edited line);
 // the editorial title and body are sourced from [LocalStrings].
@@ -80,7 +81,7 @@ private const val META_FILE_SIZE = "542 B"
 private const val META_EDITED_ROW = "// last edited 2 days ago"
 
 // Inline gap between the file-row segments and the centered separator dot.
-private const val META_FILE_ROW_GAP_REM = 0.375 // 6px
+private val META_FILE_ROW_GAP = 6.dp
 
 /**
  * Home page organism: the "Snippet of the week" block. Ports the `Snippet`
@@ -109,7 +110,7 @@ fun SnippetOfTheWeek(modifier: Modifier = Modifier) {
                 attrs = Modifier
                     .display(DisplayStyle.LegacyInlineFlex)
                     .alignItems(AlignItems.Center)
-                    .gap(SECTION_TRAILING_GAP_REM.cssRem)
+                    .gap(SECTION_TRAILING_GAP)
                     .toAttrs(),
             ) {
                 MetaLabel(text = SECTION_TRAILING_WEEK)
@@ -140,7 +141,7 @@ private fun CopyColumn(strings: Strings.Snippet) {
                 .apply(Typography.h2)
                 .lineHeight(TITLE_LINE_HEIGHT)
                 .color(tokens.ink.ink)
-                .margin(top = 0.cssRem, bottom = TITLE_MARGIN_BOTTOM_REM.cssRem)
+                .margin(top = 0.cssRem, bottom = TITLE_MARGIN_BOTTOM)
                 .toAttrs(),
         ) {
             ComposeText(strings.copyTitle)
@@ -149,7 +150,7 @@ private fun CopyColumn(strings: Strings.Snippet) {
             attrs = Modifier
                 .apply(Typography.serifBody)
                 .color(tokens.ink.ink2)
-                .margin(top = 0.cssRem, bottom = BODY_MARGIN_BOTTOM_REM.cssRem)
+                .margin(top = 0.cssRem, bottom = BODY_MARGIN_BOTTOM)
                 .maxWidth(BODY_MAX_WIDTH_CH.unsafeCast<CSSSizeValue<CSSUnit.ch>>())
                 .toAttrs(),
         ) {
@@ -172,7 +173,7 @@ private fun MetaRow(text: String, color: Color) {
     Div(
         attrs = Modifier
             .fontFamily(*FontFamilies.MONO)
-            .fontSize(META_ROW_FONT_SIZE_REM.cssRem)
+            .fontSize(META_ROW_FONT_SIZE)
             .color(color)
             .toAttrs(),
     ) {
@@ -190,9 +191,9 @@ private fun FileMetaRow(color: Color) {
         attrs = Modifier
             .display(DisplayStyle.Flex)
             .alignItems(AlignItems.Center)
-            .gap(META_FILE_ROW_GAP_REM.cssRem)
+            .gap(META_FILE_ROW_GAP)
             .fontFamily(*FontFamilies.MONO)
-            .fontSize(META_ROW_FONT_SIZE_REM.cssRem)
+            .fontSize(META_ROW_FONT_SIZE)
             .color(color)
             .toAttrs(),
     ) {
@@ -299,7 +300,7 @@ val SnippetGridStyle = CssStyle {
             .gridTemplateColumns {
                 size(GRID_COL_COPY_FR.fr)
             }
-            .gap(GRID_GAP_REM.cssRem)
+            .gap(GRID_GAP)
             .alignItems(AlignItems.Start)
     }
     Breakpoint.LG {
@@ -320,6 +321,6 @@ val MetaRowsStyle = CssStyle {
         Modifier
             .display(DisplayStyle.Flex)
             .flexDirection(FlexDirection.Column)
-            .gap(META_ROW_GAP_REM.cssRem)
+            .gap(META_ROW_GAP)
     }
 }

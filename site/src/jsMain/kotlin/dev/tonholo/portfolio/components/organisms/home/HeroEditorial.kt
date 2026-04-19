@@ -25,6 +25,7 @@ import dev.tonholo.portfolio.components.atoms.PhosphorIcon
 import dev.tonholo.portfolio.locale.LocalStrings
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.layout.ShellStyle
+import dev.tonholo.portfolio.theme.layout.unit.dp
 import dev.tonholo.portfolio.theme.typography.Typography
 import dev.tonholo.portfolio.theme.typography.apply
 import org.jetbrains.compose.web.css.AlignItems
@@ -51,20 +52,20 @@ private const val HERO_PADDING_BOTTOM_REM = 5.0
 
 // Handoff `.hero-a`: two-column grid, 64px gap. Collapses to a single column
 // below 900px (Silk's `Breakpoint.LG`) with a 32px gap.
-private const val HERO_GRID_GAP_DESKTOP_REM = 4.0 // 64px
-private const val HERO_GRID_GAP_MOBILE_REM = 2.0 // 32px
+private val HERO_GRID_GAP_DESKTOP = 64.dp
+private val HERO_GRID_GAP_MOBILE = 32.dp
 private const val HERO_GRID_COL_FR = 1
 
 // Handoff inline styles on the meta label row and the CTA row.
-private const val META_MARGIN_BOTTOM_REM = 1.25 // 20px
-private const val TITLE_MARGIN_BOTTOM_REM = 2.0 // 32px
-private const val SUBTITLE_MARGIN_BOTTOM_REM = 2.25 // 36px
+private val META_MARGIN_BOTTOM = 20.dp
+private val TITLE_MARGIN_BOTTOM = 32.dp
+private val SUBTITLE_MARGIN_BOTTOM = 36.dp
 private const val SUBTITLE_MAX_WIDTH_CH = 44.0
-private const val CTA_ROW_GAP_REM = 0.75 // 12px
+private val CTA_ROW_GAP = 12.dp
 
 // Handoff `.hero-a__title .under`: accent-soft background + 8px horizontal
 // padding (vertical padding is 0 to keep the handoff's tight cap-height halo).
-private const val UNDER_PADDING_X_REM = 0.5 // 8px
+private val UNDER_PADDING_X = 8.dp
 
 // Mono meta eyebrow is a technical literal (file name) and stays untranslated.
 private const val META_TEXT = "// signature.kt"
@@ -132,13 +133,13 @@ private fun HeroCopyColumn(onFeaturedWorkClick: () -> Unit, onDownloadCvClick: (
             variant = MetaLabelVariant.Accent,
             modifier = Modifier
                 .display(DisplayStyle.Block)
-                .margin(bottom = META_MARGIN_BOTTOM_REM.cssRem),
+                .margin(bottom = META_MARGIN_BOTTOM),
         )
         H1(
             attrs = Modifier
                 .apply(Typography.hero)
                 .color(tokens.ink.ink)
-                .margin(top = 0.cssRem, bottom = TITLE_MARGIN_BOTTOM_REM.cssRem)
+                .margin(top = 0.cssRem, bottom = TITLE_MARGIN_BOTTOM)
                 .toAttrs(),
         ) {
             ComposeText(strings.titleLine1)
@@ -206,7 +207,7 @@ val HeroEditorialGridStyle = CssStyle {
         Modifier
             .display(DisplayStyle.Grid)
             .gridTemplateColumns { size(HERO_GRID_COL_FR.fr) }
-            .gap(HERO_GRID_GAP_MOBILE_REM.cssRem)
+            .gap(HERO_GRID_GAP_MOBILE)
             .alignItems(AlignItems.Start)
     }
     Breakpoint.LG {
@@ -215,7 +216,7 @@ val HeroEditorialGridStyle = CssStyle {
                 size(HERO_GRID_COL_FR.fr)
                 size(HERO_GRID_COL_FR.fr)
             }
-            .gap(HERO_GRID_GAP_DESKTOP_REM.cssRem)
+            .gap(HERO_GRID_GAP_DESKTOP)
     }
 }
 
@@ -229,7 +230,7 @@ val HeroEditorialGridStyle = CssStyle {
 val HeroEditorialUnderStyle = CssStyle {
     base {
         Modifier
-            .padding(topBottom = 0.cssRem, leftRight = UNDER_PADDING_X_REM.cssRem)
+            .padding(topBottom = 0.cssRem, leftRight = UNDER_PADDING_X)
             .boxDecorationBreak(BoxDecorationBreak.Clone)
     }
 }
@@ -244,7 +245,7 @@ val HeroEditorialSubtitleStyle = CssStyle {
         Modifier
             .apply(Typography.bodyLarge)
             .maxWidth(SUBTITLE_MAX_WIDTH_CH.unsafeCast<CSSSizeValue<CSSUnit.ch>>())
-            .margin(top = 0.cssRem, bottom = SUBTITLE_MARGIN_BOTTOM_REM.cssRem)
+            .margin(top = 0.cssRem, bottom = SUBTITLE_MARGIN_BOTTOM)
     }
 }
 
@@ -256,6 +257,6 @@ val HeroEditorialCtaRowStyle = CssStyle {
     base {
         Modifier
             .display(DisplayStyle.Flex)
-            .gap(CTA_ROW_GAP_REM.cssRem)
+            .gap(CTA_ROW_GAP)
     }
 }

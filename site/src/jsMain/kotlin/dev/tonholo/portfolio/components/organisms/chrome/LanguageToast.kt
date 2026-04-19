@@ -32,6 +32,7 @@ import com.varabyte.kobweb.silk.style.animation.toAnimation
 import com.varabyte.kobweb.silk.style.toModifier
 import dev.tonholo.portfolio.locale.LocalStrings
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
+import dev.tonholo.portfolio.theme.layout.unit.dp
 import dev.tonholo.portfolio.theme.typography.FontFamilies
 import org.jetbrains.compose.web.css.AnimationTimingFunction
 import org.jetbrains.compose.web.css.LineStyle
@@ -47,18 +48,18 @@ import org.jetbrains.compose.web.dom.Text as ComposeText
 
 // `.lang-toast` geometry (from handoff `styles.css`, distilled so the card is
 // a single uniform surface - no more accent side-stripe).
-private const val TOAST_OFFSET_REM = 1.5 // 24px
-private const val TOAST_PADDING_Y_REM = 0.75 // 12px
-private const val TOAST_PADDING_X_REM = 1.0 // 16px
-private const val TOAST_RADIUS_REM = 0.125 // 2px
-private const val TOAST_BORDER_WIDTH_REM = 0.0625 // 1px
-private const val TOAST_FONT_SIZE_REM = 0.75 // 12px
-private const val TOAST_MAX_WIDTH_REM = 20.0 // 320px
+private val TOAST_OFFSET = 24.dp
+private val TOAST_PADDING_Y = 12.dp
+private val TOAST_PADDING_X = 16.dp
+private val TOAST_RADIUS = 2.dp
+private val TOAST_BORDER_WIDTH = 1.dp
+private val TOAST_FONT_SIZE = 12.dp
+private val TOAST_MAX_WIDTH = 320.dp
 private const val TOAST_Z_INDEX = 100
 
 // Secondary note (`<div style={{fontSize:11, opacity:0.55, marginTop:2}}>`).
-private const val TOAST_NOTE_FONT_SIZE_REM = 0.6875 // 11px
-private const val TOAST_NOTE_MARGIN_TOP_REM = 0.125 // 2px
+private val TOAST_NOTE_FONT_SIZE = 11.dp
+private val TOAST_NOTE_MARGIN_TOP = 2.dp
 private const val TOAST_NOTE_OPACITY = 0.55
 
 // Dim suffix opacity next to the bold `pt-BR` label.
@@ -67,13 +68,13 @@ private const val TOAST_SUFFIX_OPACITY = 0.7
 // `animation: toast-in 0.24s ease-out` from the handoff.
 private const val TOAST_ANIMATION_DURATION_S = 0.24
 private const val TOAST_ANIMATION_ITERATIONS = 1
-private const val TOAST_ENTER_TRANSLATE_REM = 0.375 // 6px
+private val TOAST_ENTER_TRANSLATE = 6.dp
 private const val TOAST_ENTER_START_PERCENT = 0.0
 private const val TOAST_ENTER_END_PERCENT = 100.0
 
 // Drop shadow (`box-shadow: 0 8px 24px rgba(0,0,0,0.08)`).
-private const val TOAST_SHADOW_OFFSET_Y_REM = 0.5 // 8px
-private const val TOAST_SHADOW_BLUR_REM = 1.5 // 24px
+private val TOAST_SHADOW_OFFSET_Y = 8.dp
+private val TOAST_SHADOW_BLUR = 24.dp
 private const val TOAST_SHADOW_ALPHA = 0.08f
 private const val TOAST_SHADOW_CHANNEL = 0
 
@@ -121,7 +122,7 @@ fun LanguageToast(visible: Boolean, modifier: Modifier = Modifier) {
         .toModifier()
         .backgroundColor(tokens.paper.paper)
         .border(
-            width = TOAST_BORDER_WIDTH_REM.cssRem,
+            width = TOAST_BORDER_WIDTH,
             style = LineStyle.Solid,
             color = tokens.paper.paper3,
         )
@@ -166,22 +167,22 @@ val LanguageToastStyle = CssStyle {
     base {
         Modifier
             .position(Position.Fixed)
-            .bottom(TOAST_OFFSET_REM.cssRem)
-            .right(TOAST_OFFSET_REM.cssRem)
+            .bottom(TOAST_OFFSET)
+            .right(TOAST_OFFSET)
             .zIndex(TOAST_Z_INDEX)
-            .maxWidth(TOAST_MAX_WIDTH_REM.cssRem)
+            .maxWidth(TOAST_MAX_WIDTH)
             .padding(
-                topBottom = TOAST_PADDING_Y_REM.cssRem,
-                leftRight = TOAST_PADDING_X_REM.cssRem,
+                topBottom = TOAST_PADDING_Y,
+                leftRight = TOAST_PADDING_X,
             )
-            .borderRadius(TOAST_RADIUS_REM.cssRem)
+            .borderRadius(TOAST_RADIUS)
             .fontFamily(*FontFamilies.MONO)
-            .fontSize(TOAST_FONT_SIZE_REM.cssRem)
+            .fontSize(TOAST_FONT_SIZE)
             .boxShadow(
                 BoxShadow.of(
                     offsetX = 0.px,
-                    offsetY = TOAST_SHADOW_OFFSET_Y_REM.cssRem,
-                    blurRadius = TOAST_SHADOW_BLUR_REM.cssRem,
+                    offsetY = TOAST_SHADOW_OFFSET_Y,
+                    blurRadius = TOAST_SHADOW_BLUR,
                     color = ToastShadowColor,
                 ),
             )
@@ -203,9 +204,9 @@ val LanguageToastStyle = CssStyle {
 val LanguageToastNoteStyle = CssStyle {
     base {
         Modifier
-            .fontSize(TOAST_NOTE_FONT_SIZE_REM.cssRem)
+            .fontSize(TOAST_NOTE_FONT_SIZE)
             .opacity(TOAST_NOTE_OPACITY)
-            .margin(top = TOAST_NOTE_MARGIN_TOP_REM.cssRem)
+            .margin(top = TOAST_NOTE_MARGIN_TOP)
     }
 }
 
@@ -222,7 +223,7 @@ val LanguageToastEnterKeyframes = Keyframes {
     TOAST_ENTER_START_PERCENT.percent {
         Modifier
             .opacity(value = 0.0)
-            .translateY(TOAST_ENTER_TRANSLATE_REM.cssRem)
+            .translateY(TOAST_ENTER_TRANSLATE)
     }
     TOAST_ENTER_END_PERCENT.percent {
         Modifier

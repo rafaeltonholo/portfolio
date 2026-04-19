@@ -24,23 +24,23 @@ import com.varabyte.kobweb.silk.style.selectors.hover
 import com.varabyte.kobweb.silk.style.toModifier
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.PortfolioTokens
+import dev.tonholo.portfolio.theme.layout.unit.dp
 import dev.tonholo.portfolio.theme.typography.Typography
 import dev.tonholo.portfolio.theme.typography.apply
 import org.jetbrains.compose.web.css.AlignItems
 import org.jetbrains.compose.web.css.DisplayStyle
 import org.jetbrains.compose.web.css.LineStyle
-import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.dom.A
 import org.jetbrains.compose.web.dom.Button as WebButton
 import org.jetbrains.compose.web.dom.Text as ComposeText
 
-private const val BUTTON_BORDER_RADIUS_REM = 0.125 // 2px
-private const val BUTTON_PADDING_Y_REM = 0.625 // 10px
-private const val BUTTON_PADDING_X_REM = 1.125 // 18px
-private const val BUTTON_GAP_REM = 0.625 // 10px
-private const val BUTTON_BORDER_WIDTH_REM = 0.0625 // 1px
+private val BUTTON_BORDER_RADIUS = 2.dp
+private val BUTTON_PADDING_Y = 10.dp
+private val BUTTON_PADDING_X = 18.dp
+private val BUTTON_GAP = 10.dp
+private val BUTTON_BORDER_WIDTH = 1.dp
 private const val BUTTON_HOVER_OPACITY = 0.88
-private const val BUTTON_HOVER_LIFT_REM = -0.0625 // -1px
+private val BUTTON_HOVER_LIFT = (-1).dp
 
 private val Transparent: Color = Color.rgba(r = 0, g = 0, b = 0, a = 0f)
 
@@ -80,7 +80,7 @@ fun Button(
         .backgroundColor(background)
         .color(foreground)
         .border(
-            width = BUTTON_BORDER_WIDTH_REM.cssRem,
+            width = BUTTON_BORDER_WIDTH,
             style = LineStyle.Solid,
             color = borderColor,
         )
@@ -157,14 +157,14 @@ val ButtonStyle = CssStyle {
         Modifier
             .display(DisplayStyle.LegacyInlineFlex)
             .alignItems(AlignItems.Center)
-            .gap(BUTTON_GAP_REM.cssRem)
-            .padding(topBottom = BUTTON_PADDING_Y_REM.cssRem, leftRight = BUTTON_PADDING_X_REM.cssRem)
-            .borderRadius(BUTTON_BORDER_RADIUS_REM.cssRem)
+            .gap(BUTTON_GAP)
+            .padding(topBottom = BUTTON_PADDING_Y, leftRight = BUTTON_PADDING_X)
+            .borderRadius(BUTTON_BORDER_RADIUS)
             .cursor(Cursor.Pointer)
     }
     hover {
         Modifier
             .opacity(BUTTON_HOVER_OPACITY)
-            .translateY(BUTTON_HOVER_LIFT_REM.cssRem)
+            .translateY(BUTTON_HOVER_LIFT)
     }
 }

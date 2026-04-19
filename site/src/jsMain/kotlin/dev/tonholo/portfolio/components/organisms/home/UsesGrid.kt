@@ -27,6 +27,7 @@ import dev.tonholo.portfolio.domain.model.UseCategory
 import dev.tonholo.portfolio.locale.LocalStrings
 import dev.tonholo.portfolio.state.StaticContent
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
+import dev.tonholo.portfolio.theme.layout.unit.dp
 import dev.tonholo.portfolio.theme.typography.FontFamilies
 import org.jetbrains.compose.web.css.AlignItems
 import org.jetbrains.compose.web.css.DisplayStyle
@@ -43,19 +44,19 @@ private const val SECTION_ORDINAL = 3
 
 // Grid: 4 equal columns, 32px gap (handoff line 239). Collapses to 2 cols
 // below LG (820px) and 1 col below MD (720px).
-private const val GRID_GAP_REM = 2.0 // 32px
+private val GRID_GAP = 32.dp
 private const val GRID_COL_FR = 1
 
 // Category column: meta label + mono list.
-private const val CATEGORY_LABEL_MARGIN_BOTTOM_REM = 0.75 // 12px
+private val CATEGORY_LABEL_MARGIN_BOTTOM = 12.dp
 
 // Mono list: 8px row gap, 13px font, handoff line 248.
-private const val LIST_GAP_REM = 0.5 // 8px
-private const val LIST_FONT_SIZE_REM = 0.8125 // 13px
+private val LIST_GAP = 8.dp
+private val LIST_FONT_SIZE = 13.dp
 private const val LIST_LINE_HEIGHT = 1.5
 
 // Inline gap between the bullet dot and the item text.
-private const val LIST_ITEM_GAP_REM = 0.5 // 8px
+private val LIST_ITEM_GAP = 8.dp
 
 // Slash prefix before category name, per handoff line 247: `/editor`, `/hardware`, ...
 private const val CATEGORY_NAME_PREFIX = "/"
@@ -112,7 +113,7 @@ private fun UsesColumn(category: UseCategory) {
     Div(attrs = Modifier.toAttrs()) {
         MetaLabel(
             text = "$CATEGORY_NAME_PREFIX${category.name}",
-            modifier = Modifier.margin(bottom = CATEGORY_LABEL_MARGIN_BOTTOM_REM.cssRem),
+            modifier = Modifier.margin(bottom = CATEGORY_LABEL_MARGIN_BOTTOM),
         )
         Ul(
             attrs = UsesListStyle
@@ -125,7 +126,7 @@ private fun UsesColumn(category: UseCategory) {
                     attrs = Modifier
                         .display(DisplayStyle.Flex)
                         .alignItems(AlignItems.Center)
-                        .gap(LIST_ITEM_GAP_REM.cssRem)
+                        .gap(LIST_ITEM_GAP)
                         .toAttrs(),
                 ) {
                     MetaSeparator()
@@ -151,7 +152,7 @@ val UsesGridStyle = CssStyle {
             .gridTemplateColumns {
                 size(GRID_COL_FR.fr)
             }
-            .gap(GRID_GAP_REM.cssRem)
+            .gap(GRID_GAP)
     }
     Breakpoint.MD {
         Modifier.gridTemplateColumns {
@@ -181,11 +182,11 @@ val UsesListStyle = CssStyle {
             .listStyle(type = ListStyleType.None)
             .display(DisplayStyle.Flex)
             .flexDirection(FlexDirection.Column)
-            .gap(LIST_GAP_REM.cssRem)
+            .gap(LIST_GAP)
             .margin(topBottom = 0.cssRem)
             .padding(left = 0.cssRem)
             .fontFamily(*FontFamilies.MONO)
-            .fontSize(LIST_FONT_SIZE_REM.cssRem)
+            .fontSize(LIST_FONT_SIZE)
             .lineHeight(LIST_LINE_HEIGHT)
     }
 }

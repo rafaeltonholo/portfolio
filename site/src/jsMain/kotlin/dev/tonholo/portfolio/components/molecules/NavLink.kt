@@ -33,28 +33,28 @@ import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.color.Ink
 import dev.tonholo.portfolio.theme.color.Paper
+import dev.tonholo.portfolio.theme.layout.unit.dp
 import dev.tonholo.portfolio.theme.typography.FontFamilies
 import org.jetbrains.compose.web.css.AlignItems
 import org.jetbrains.compose.web.css.CSSMediaQuery
 import org.jetbrains.compose.web.css.DisplayStyle
 import org.jetbrains.compose.web.css.LineStyle
 import org.jetbrains.compose.web.css.StylePropertyValue
-import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.s
 import org.jetbrains.compose.web.dom.Span
 import org.jetbrains.compose.web.dom.Button as WebButton
 import org.jetbrains.compose.web.dom.Text as ComposeText
 
-private const val NAV_LINK_FONT_SIZE_REM = 0.8125 // 13px
-private const val NAV_LINK_PADDING_Y_REM = 0.375 // 6px
-private const val NAV_LINK_PADDING_X_REM = 0.75 // 12px
-private const val NAV_LINK_BORDER_RADIUS_REM = 0.25 // 4px
+private val NAV_LINK_FONT_SIZE = 13.dp
+private val NAV_LINK_PADDING_Y = 6.dp
+private val NAV_LINK_PADDING_X = 12.dp
+private val NAV_LINK_BORDER_RADIUS = 4.dp
 private const val NAV_LINK_TRANSITION_DURATION_S = 0.18
 
 // Touch target floor on pointer-coarse devices (phones, tablets). 44 / 16 = 2.75rem.
 // WCAG 2.5.5 asks for 44x44; desktop/mouse users keep the compact editorial
 // chrome because they can click pixel-precise.
-private const val NAV_LINK_TOUCH_MIN_HEIGHT_REM = 2.75 // 44px
+private val NAV_LINK_TOUCH_MIN_HEIGHT = 44.dp
 
 private const val ACTIVE_PREFIX = "> "
 
@@ -171,13 +171,13 @@ val NavLinkStyle = CssStyle {
     base {
         Modifier
             .fontFamily(*FontFamilies.MONO)
-            .fontSize(NAV_LINK_FONT_SIZE_REM.cssRem)
+            .fontSize(NAV_LINK_FONT_SIZE)
             .fontWeight(FontWeight.Normal)
             .padding(
-                topBottom = NAV_LINK_PADDING_Y_REM.cssRem,
-                leftRight = NAV_LINK_PADDING_X_REM.cssRem,
+                topBottom = NAV_LINK_PADDING_Y,
+                leftRight = NAV_LINK_PADDING_X,
             )
-            .borderRadius(NAV_LINK_BORDER_RADIUS_REM.cssRem)
+            .borderRadius(NAV_LINK_BORDER_RADIUS)
             .border(style = LineStyle.None)
             .cursor(Cursor.Pointer)
             .textDecorationLine(TextDecorationLine.None)
@@ -203,7 +203,7 @@ val NavLinkStyle = CssStyle {
         ),
     ) {
         Modifier
-            .minHeight(NAV_LINK_TOUCH_MIN_HEIGHT_REM.cssRem)
+            .minHeight(NAV_LINK_TOUCH_MIN_HEIGHT)
             .display(DisplayStyle.LegacyInlineFlex)
             .alignItems(AlignItems.Center)
     }

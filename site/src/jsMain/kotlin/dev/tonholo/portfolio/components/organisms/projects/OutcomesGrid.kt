@@ -15,8 +15,8 @@ import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import dev.tonholo.portfolio.components.molecules.StatBlock
 import dev.tonholo.portfolio.components.molecules.StatSize
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
+import dev.tonholo.portfolio.theme.layout.unit.dp
 import org.jetbrains.compose.web.css.DisplayStyle
-import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.fr
 import org.jetbrains.compose.web.dom.Div
 
@@ -25,8 +25,8 @@ import org.jetbrains.compose.web.dom.Div
 // surface so the gutter reads as a hairline separator. Vertical margin is
 // 32px above and below the grid. Below 820px (`Breakpoint.LG` in Silk) the
 // grid collapses to a single column per the `@media (max-width: 820px)` rule.
-private const val OUTCOMES_GAP_REM = 0.0625 // 1px at 1rem=16px
-private const val OUTCOMES_MARGIN_Y_REM = 2.0 // 32px
+private val OUTCOMES_GAP = 1.dp
+private val OUTCOMES_MARGIN_Y = 32.dp
 private const val OUTCOMES_COLUMN_FR = 1.0
 private const val OUTCOMES_DESKTOP_COLUMNS = 3
 
@@ -90,8 +90,8 @@ val OutcomesGridStyle = CssStyle {
         Modifier
             .display(DisplayStyle.Grid)
             .gridTemplateColumns { size(OUTCOMES_COLUMN_FR.fr) }
-            .gap(OUTCOMES_GAP_REM.cssRem)
-            .margin(topBottom = OUTCOMES_MARGIN_Y_REM.cssRem)
+            .gap(OUTCOMES_GAP)
+            .margin(topBottom = OUTCOMES_MARGIN_Y)
     }
     Breakpoint.LG {
         Modifier.gridTemplateColumns {

@@ -25,16 +25,16 @@ import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.color.Ink
 import dev.tonholo.portfolio.theme.color.Paper
+import dev.tonholo.portfolio.theme.layout.unit.dp
 import org.jetbrains.compose.web.css.AlignItems
 import org.jetbrains.compose.web.css.DisplayStyle
 import org.jetbrains.compose.web.css.JustifyContent
 import org.jetbrains.compose.web.css.LineStyle
-import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.dom.Button as WebButton
 
-private const val ICON_BUTTON_SIZE_REM = 2.0 // 32px visible square
-private const val ICON_BUTTON_HIT_PADDING_REM = 0.375 // 6px -> 44x44 hit box
-private const val ICON_BUTTON_BORDER_RADIUS_REM = 0.25 // 4px
+private val ICON_BUTTON_SIZE = 32.dp
+private val ICON_BUTTON_HIT_PADDING = 6.dp
+private val ICON_BUTTON_BORDER_RADIUS = 4.dp
 
 private val TransparentColor: Color = Color.rgba(r = 0, g = 0, b = 0, a = 0f)
 
@@ -91,9 +91,9 @@ fun IconButton(
 val IconButtonStyle = CssStyle {
     base {
         Modifier
-            .width(ICON_BUTTON_SIZE_REM.cssRem)
-            .height(ICON_BUTTON_SIZE_REM.cssRem)
-            .padding(ICON_BUTTON_HIT_PADDING_REM.cssRem)
+            .width(ICON_BUTTON_SIZE)
+            .height(ICON_BUTTON_SIZE)
+            .padding(ICON_BUTTON_HIT_PADDING)
             .styleModifier {
                 property("box-sizing", "content-box")
                 property("background-clip", "content-box")
@@ -101,7 +101,7 @@ val IconButtonStyle = CssStyle {
             .display(DisplayStyle.LegacyInlineFlex)
             .alignItems(AlignItems.Center)
             .justifyContent(JustifyContent.Center)
-            .borderRadius(ICON_BUTTON_BORDER_RADIUS_REM.cssRem)
+            .borderRadius(ICON_BUTTON_BORDER_RADIUS)
             .backgroundColor(TransparentColor)
             .border(style = LineStyle.None)
             .cursor(Cursor.Pointer)

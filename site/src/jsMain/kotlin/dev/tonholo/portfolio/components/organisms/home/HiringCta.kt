@@ -37,6 +37,7 @@ import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.color.AccentMint
 import dev.tonholo.portfolio.theme.layout.ShellStyle
 import dev.tonholo.portfolio.theme.layout.SpacingVars
+import dev.tonholo.portfolio.theme.layout.unit.dp
 import dev.tonholo.portfolio.theme.typography.FontFamilies
 import org.jetbrains.compose.web.css.AlignItems
 import org.jetbrains.compose.web.css.CSSSizeValue
@@ -59,33 +60,33 @@ import org.jetbrains.compose.web.dom.Text as ComposeText
 // hiring band visually compressed relative to the other numbered sections.
 
 // Inverted block metrics from handoff lines 317-325.
-private const val BLOCK_PADDING_Y_REM = 4.0 // 64px
-private const val BLOCK_PADDING_X_REM = 3.0 // 48px
-private const val BLOCK_BORDER_RADIUS_REM = 0.25 // 4px
-private const val BLOCK_GAP_REM = 2.0 // 32px
+private val BLOCK_PADDING_Y = 64.dp
+private val BLOCK_PADDING_X = 48.dp
+private val BLOCK_BORDER_RADIUS = 4.dp
+private val BLOCK_GAP = 32.dp
 
 // Left column: meta + display heading.
-private const val META_FONT_SIZE_REM = 0.75 // 12px
+private val META_FONT_SIZE = 12.dp
 private const val META_LETTER_SPACING_EM = 0.08
-private const val META_MARGIN_BOTTOM_REM = 0.75 // 12px
+private val META_MARGIN_BOTTOM = 12.dp
 
-private const val HEADING_CLAMP_MIN_REM = 2.0 // 32px at 16px root
+private val HEADING_CLAMP_MIN = 32.dp
 private const val HEADING_CLAMP_IDEAL_VW = 4.0 // 4vw
-private const val HEADING_CLAMP_MAX_REM = 3.25 // 52px at 16px root
+private val HEADING_CLAMP_MAX = 52.dp
 private const val HEADING_WEIGHT_FIVE_HUNDRED = 500
 private const val HEADING_LETTER_SPACING_EM = -0.025
 private const val HEADING_LINE_HEIGHT = 1.05
 private const val HEADING_MAX_WIDTH_CH = 20.0
 
 // Right column: two stacked buttons, 10px gap.
-private const val BUTTONS_GAP_REM = 0.625 // 10px
+private val BUTTONS_GAP = 10.dp
 
 // Ghost button override. Handoff line 335 sets:
 //   background: transparent; border-color: rgba(255,255,255,0.2);
 //   color: var(--paper)
 // so we override the base Ghost variant's tokens via the modifier slot.
 private const val GHOST_BORDER_ALPHA = 0.2f
-private const val GHOST_BORDER_WIDTH_REM = 0.0625 // 1px
+private val GHOST_BORDER_WIDTH = 1.dp
 private const val GHOST_BORDER_RGB = 255
 
 // Mono eyebrow is a shell-script-style technical literal and stays
@@ -166,14 +167,14 @@ private fun HiringCtaCopy() {
         Div(
             attrs = Modifier
                 .fontFamily(*FontFamilies.MONO)
-                .fontSize(META_FONT_SIZE_REM.cssRem)
+                .fontSize(META_FONT_SIZE)
                 .letterSpacing(META_LETTER_SPACING_EM.em)
                 .textTransform(TextTransform.Uppercase)
                 // The CTA block paints a fixed ink surface regardless of
                 // theme, so we pin to the dark-swatch mint (~10:1 contrast)
                 // rather than the ambient light-mode accent (fails 4.5:1).
                 .color(AccentMint.dark.accent)
-                .margin(bottom = META_MARGIN_BOTTOM_REM.cssRem)
+                .margin(bottom = META_MARGIN_BOTTOM)
                 .toAttrs(),
         ) {
             ComposeText(META_LABEL_COPY)
@@ -214,7 +215,7 @@ private fun HiringCtaActions(onEmailClick: () -> Unit, onBookingClick: () -> Uni
                 )
                 .color(tokens.paper.paper)
                 .border(
-                    width = GHOST_BORDER_WIDTH_REM.cssRem,
+                    width = GHOST_BORDER_WIDTH,
                     style = LineStyle.Solid,
                     color = Color.rgba(
                         r = GHOST_BORDER_RGB,
@@ -251,16 +252,16 @@ val HiringCtaBlockStyle = CssStyle {
     base {
         Modifier
             .padding(
-                topBottom = BLOCK_PADDING_Y_REM.cssRem,
-                leftRight = BLOCK_PADDING_X_REM.cssRem,
+                topBottom = BLOCK_PADDING_Y,
+                leftRight = BLOCK_PADDING_X,
             )
-            .borderRadius(BLOCK_BORDER_RADIUS_REM.cssRem)
+            .borderRadius(BLOCK_BORDER_RADIUS)
             .display(DisplayStyle.Grid)
             .gridTemplateColumns {
                 size(1.fr)
             }
             .alignItems(AlignItems.Center)
-            .gap(BLOCK_GAP_REM.cssRem)
+            .gap(BLOCK_GAP)
     }
     Breakpoint.LG {
         Modifier.gridTemplateColumns {
@@ -284,9 +285,9 @@ val HiringCtaHeadingStyle = CssStyle {
             .fontWeight(HEADING_WEIGHT_FIVE_HUNDRED)
             .fontSize(
                 clamp(
-                    min = HEADING_CLAMP_MIN_REM.cssRem.unsafeCast<CSSLengthNumericValue>(),
+                    min = HEADING_CLAMP_MIN.unsafeCast<CSSLengthNumericValue>(),
                     value = HEADING_CLAMP_IDEAL_VW.vw.unsafeCast<CSSLengthNumericValue>(),
-                    max = HEADING_CLAMP_MAX_REM.cssRem.unsafeCast<CSSLengthNumericValue>(),
+                    max = HEADING_CLAMP_MAX.unsafeCast<CSSLengthNumericValue>(),
                 ).unsafeCast<CSSLengthOrPercentageNumericValue>(),
             )
             .letterSpacing(HEADING_LETTER_SPACING_EM.em)
@@ -304,6 +305,6 @@ val HiringCtaActionsStyle = CssStyle {
         Modifier
             .display(DisplayStyle.Flex)
             .flexDirection(FlexDirection.Column)
-            .gap(BUTTONS_GAP_REM.cssRem)
+            .gap(BUTTONS_GAP)
     }
 }

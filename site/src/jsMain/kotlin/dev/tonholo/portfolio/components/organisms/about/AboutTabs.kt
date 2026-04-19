@@ -40,6 +40,7 @@ import dev.tonholo.portfolio.locale.Strings
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.PortfolioTokens
 import dev.tonholo.portfolio.theme.color.Paper
+import dev.tonholo.portfolio.theme.layout.unit.dp
 import dev.tonholo.portfolio.theme.typography.FontFamilies
 import org.jetbrains.compose.web.css.CSSSizeValue
 import org.jetbrains.compose.web.css.CSSUnit
@@ -48,7 +49,6 @@ import org.jetbrains.compose.web.css.LineStyle
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.em
 import org.jetbrains.compose.web.css.fr
-import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.css.s
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.H2
@@ -61,9 +61,9 @@ import org.jetbrains.compose.web.dom.Text as ComposeText
 // Tab bar. Handoff `.tabs` (styles.css): flex row, no gap, border-bottom 1px
 // `paper-3`, 40px top + 32px bottom margin.
 // ---------------------------------------------------------------------------
-private const val TABS_BAR_MARGIN_TOP_REM = 2.5 // 40px
-private const val TABS_BAR_MARGIN_BOTTOM_REM = 2.0 // 32px
-private const val TABS_BAR_BORDER_WIDTH_PX = 1.0 // 1px
+private val TABS_BAR_MARGIN_TOP = 40.dp
+private val TABS_BAR_MARGIN_BOTTOM = 32.dp
+private val TABS_BAR_BORDER_WIDTH_PX = 1.dp
 
 // ---------------------------------------------------------------------------
 // Single tab button. Handoff `.tab`: mono 13px, 14px x 22px padding, 2px
@@ -71,12 +71,12 @@ private const val TABS_BAR_BORDER_WIDTH_PX = 1.0 // 1px
 // the shared rule, 0.18s transition on color + border-color. Numeric prefix
 // (`.num`) uses muted-2 color and 8px right margin.
 // ---------------------------------------------------------------------------
-private const val TAB_FONT_SIZE_REM = 0.8125 // 13px
-private const val TAB_PADDING_Y_REM = 0.875 // 14px
-private const val TAB_PADDING_X_REM = 1.375 // 22px
-private const val TAB_BORDER_BOTTOM_WIDTH_PX = 2.0 // 2px
-private const val TAB_MARGIN_BOTTOM_PX = -1.0 // -1px so the accent line overlaps
-private const val TAB_NUM_MARGIN_RIGHT_REM = 0.5 // 8px
+private val TAB_FONT_SIZE = 13.dp
+private val TAB_PADDING_Y = 14.dp
+private val TAB_PADDING_X = 22.dp
+private val TAB_BORDER_BOTTOM_WIDTH_PX = 2.dp
+private val TAB_MARGIN_BOTTOM_PX = (-1).dp
+private val TAB_NUM_MARGIN_RIGHT = 8.dp
 private const val TAB_TRANSITION_DURATION_S = 0.18
 
 // ---------------------------------------------------------------------------
@@ -86,11 +86,11 @@ private const val TAB_TRANSITION_DURATION_S = 0.18
 // `.prose h3`: display font, 22px, weight 500, letter-spacing -0.015em, color
 // ink, margin 2em 0 0.6em.
 // ---------------------------------------------------------------------------
-private const val PROSE_FONT_SIZE_REM = 1.1875 // 19px
+private val PROSE_FONT_SIZE = 19.dp
 private const val PROSE_LINE_HEIGHT = 1.65
 private const val PROSE_MAX_WIDTH_CH = 66.0
 private const val PROSE_P_GAP_EM = 1.2
-private const val PROSE_H3_FONT_SIZE_REM = 1.375 // 22px
+private val PROSE_H3_FONT_SIZE = 22.dp
 private const val PROSE_H3_LETTER_SPACING_EM = -0.015
 private const val PROSE_H3_LINE_HEIGHT = 1.2
 private const val PROSE_H3_MARGIN_TOP_EM = 2.0
@@ -100,21 +100,21 @@ private const val PROSE_H3_MARGIN_BOTTOM_EM = 0.6
 // Now-panel `// updated` timestamp. Handoff inline: mono 13px, muted color,
 // 20px bottom margin.
 // ---------------------------------------------------------------------------
-private const val NOW_TIMESTAMP_FONT_SIZE_REM = 0.8125 // 13px
-private const val NOW_TIMESTAMP_MARGIN_BOTTOM_REM = 1.25 // 20px
+private val NOW_TIMESTAMP_FONT_SIZE = 13.dp
+private val NOW_TIMESTAMP_MARGIN_BOTTOM = 20.dp
 
 // ---------------------------------------------------------------------------
 // Hobbies panel. Handoff inline: 2-column grid at max-width 900px, 48px gap.
 // Each cell: accent meta label (`/cooking`) + serif 17px body copy.
 // ---------------------------------------------------------------------------
-private const val HOBBIES_GRID_GAP_REM = 3.0 // 48px
-private const val HOBBIES_GRID_MAX_WIDTH_REM = 56.25 // 900px
+private val HOBBIES_GRID_GAP = 48.dp
+private val HOBBIES_GRID_MAX_WIDTH = 900.dp
 private const val HOBBIES_GRID_COL_FR = 1.0
-private const val HOBBIES_META_MARGIN_BOTTOM_REM = 0.5 // 8px
+private val HOBBIES_META_MARGIN_BOTTOM = 8.dp
 private const val HOBBIES_META_LETTER_SPACING_EM = 0.08
-private const val HOBBIES_META_FONT_SIZE_REM = 0.6875 // 11px
+private val HOBBIES_META_FONT_SIZE = 11.dp
 private const val HOBBIES_META_LINE_HEIGHT = 1.4
-private const val HOBBIES_BODY_FONT_SIZE_REM = 1.0625 // 17px
+private val HOBBIES_BODY_FONT_SIZE = 17.dp
 private const val HOBBIES_BODY_LINE_HEIGHT = 1.55
 
 /**
@@ -193,7 +193,7 @@ private fun TabButton(
         .toModifier()
         .color(textColor)
         .borderBottom(
-            width = TAB_BORDER_BOTTOM_WIDTH_PX.px,
+            width = TAB_BORDER_BOTTOM_WIDTH_PX,
             style = LineStyle.Solid,
             color = borderColor,
         )
@@ -203,7 +203,7 @@ private fun TabButton(
         Span(
             attrs = Modifier
                 .color(tokens.muted.muted2)
-                .margin(right = TAB_NUM_MARGIN_RIGHT_REM.cssRem)
+                .margin(right = TAB_NUM_MARGIN_RIGHT)
                 .toAttrs(),
         ) {
             ComposeText(tab.number)
@@ -452,10 +452,10 @@ val TabsBarStyle = CssStyle {
         val ruleColor = if (isDark) Paper.dark.paper2 else Paper.light.paper3
         Modifier
             .display(DisplayStyle.Flex)
-            .borderBottom(width = TABS_BAR_BORDER_WIDTH_PX.px, style = LineStyle.Solid, color = ruleColor)
+            .borderBottom(width = TABS_BAR_BORDER_WIDTH_PX, style = LineStyle.Solid, color = ruleColor)
             .margin(
-                top = TABS_BAR_MARGIN_TOP_REM.cssRem,
-                bottom = TABS_BAR_MARGIN_BOTTOM_REM.cssRem,
+                top = TABS_BAR_MARGIN_TOP,
+                bottom = TABS_BAR_MARGIN_BOTTOM,
             )
     }
 }
@@ -470,15 +470,15 @@ val TabButtonStyle = CssStyle {
     base {
         Modifier
             .fontFamily(*FontFamilies.MONO)
-            .fontSize(TAB_FONT_SIZE_REM.cssRem)
+            .fontSize(TAB_FONT_SIZE)
             .fontWeight(FontWeight.Medium)
             .padding(
-                topBottom = TAB_PADDING_Y_REM.cssRem,
-                leftRight = TAB_PADDING_X_REM.cssRem,
+                topBottom = TAB_PADDING_Y,
+                leftRight = TAB_PADDING_X,
             )
             .backgroundColor(Transparent)
             .border(style = LineStyle.None)
-            .margin(bottom = TAB_MARGIN_BOTTOM_PX.px)
+            .margin(bottom = TAB_MARGIN_BOTTOM_PX)
             .cursor(Cursor.Pointer)
             .transition(
                 Transition.group(
@@ -497,7 +497,7 @@ val ProseStyle = CssStyle {
     base {
         Modifier
             .fontFamily(*FontFamilies.SERIF)
-            .fontSize(PROSE_FONT_SIZE_REM.cssRem)
+            .fontSize(PROSE_FONT_SIZE)
             .lineHeight(PROSE_LINE_HEIGHT)
             .maxWidth(PROSE_MAX_WIDTH_CH.unsafeCast<CSSSizeValue<CSSUnit.ch>>())
     }
@@ -512,7 +512,7 @@ val AboutProseHeadingStyle = CssStyle {
     base {
         Modifier
             .fontFamily(*FontFamilies.DISPLAY)
-            .fontSize(PROSE_H3_FONT_SIZE_REM.cssRem)
+            .fontSize(PROSE_H3_FONT_SIZE)
             .fontWeight(FontWeight.Medium)
             .lineHeight(PROSE_H3_LINE_HEIGHT)
             .letterSpacing(PROSE_H3_LETTER_SPACING_EM.em)
@@ -527,8 +527,8 @@ val NowTimestampStyle = CssStyle {
     base {
         Modifier
             .fontFamily(*FontFamilies.MONO)
-            .fontSize(NOW_TIMESTAMP_FONT_SIZE_REM.cssRem)
-            .margin(top = 0.cssRem, bottom = NOW_TIMESTAMP_MARGIN_BOTTOM_REM.cssRem)
+            .fontSize(NOW_TIMESTAMP_FONT_SIZE)
+            .margin(top = 0.cssRem, bottom = NOW_TIMESTAMP_MARGIN_BOTTOM)
     }
 }
 
@@ -542,8 +542,8 @@ val HobbiesGridStyle = CssStyle {
         Modifier
             .display(DisplayStyle.Grid)
             .gridTemplateColumns { size(HOBBIES_GRID_COL_FR.fr) }
-            .gap(HOBBIES_GRID_GAP_REM.cssRem)
-            .maxWidth(HOBBIES_GRID_MAX_WIDTH_REM.cssRem)
+            .gap(HOBBIES_GRID_GAP)
+            .maxWidth(HOBBIES_GRID_MAX_WIDTH)
     }
     Breakpoint.LG {
         Modifier.gridTemplateColumns {
@@ -562,12 +562,12 @@ val HobbiesMetaStyle = CssStyle {
     base {
         Modifier
             .fontFamily(*FontFamilies.MONO)
-            .fontSize(HOBBIES_META_FONT_SIZE_REM.cssRem)
+            .fontSize(HOBBIES_META_FONT_SIZE)
             .fontWeight(FontWeight.Medium)
             .lineHeight(HOBBIES_META_LINE_HEIGHT)
             .letterSpacing(HOBBIES_META_LETTER_SPACING_EM.em)
             .textTransform(TextTransform.Uppercase)
-            .margin(bottom = HOBBIES_META_MARGIN_BOTTOM_REM.cssRem)
+            .margin(bottom = HOBBIES_META_MARGIN_BOTTOM)
     }
 }
 
@@ -579,7 +579,7 @@ val HobbiesBodyStyle = CssStyle {
     base {
         Modifier
             .fontFamily(*FontFamilies.SERIF)
-            .fontSize(HOBBIES_BODY_FONT_SIZE_REM.cssRem)
+            .fontSize(HOBBIES_BODY_FONT_SIZE)
             .lineHeight(HOBBIES_BODY_LINE_HEIGHT)
             .margin(topBottom = 0.cssRem)
     }

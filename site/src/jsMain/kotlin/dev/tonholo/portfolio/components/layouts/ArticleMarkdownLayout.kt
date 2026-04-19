@@ -40,6 +40,7 @@ import dev.tonholo.portfolio.components.organisms.articles.TocEntry
 import dev.tonholo.portfolio.navigation.Routes
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.layout.PageSectionShellStyle
+import dev.tonholo.portfolio.theme.layout.unit.dp
 import dev.tonholo.portfolio.theme.typography.FontFamilies
 import dev.tonholo.portfolio.theme.typography.Typography
 import dev.tonholo.portfolio.theme.typography.apply
@@ -80,7 +81,7 @@ private const val LEDE_MARGIN_BOTTOM_REM = 2.5
 
 // Handoff `.prose h3` (applied to any nested heading under the article body):
 // display mono at 22px, weight 500, -0.015em tracking, margin `2em 0 0.6em`.
-private const val BODY_HEADING_SIZE_REM = 1.375 // 22px
+private val BODY_HEADING_SIZE = 22.dp
 private const val BODY_HEADING_LETTER_SPACING_EM = -0.015
 private const val BODY_HEADING_MARGIN_TOP_EM = 2.0
 private const val BODY_HEADING_MARGIN_BOTTOM_EM = 0.6
@@ -335,7 +336,7 @@ val ArticleMarkdownBodyStyle = CssStyle {
     descendants("h2", "h3") {
         Modifier
             .fontFamily(*FontFamilies.DISPLAY)
-            .fontSize(BODY_HEADING_SIZE_REM.cssRem)
+            .fontSize(BODY_HEADING_SIZE)
             .fontWeight(FontWeight.Medium)
             .letterSpacing(BODY_HEADING_LETTER_SPACING_EM.em)
             .margin(

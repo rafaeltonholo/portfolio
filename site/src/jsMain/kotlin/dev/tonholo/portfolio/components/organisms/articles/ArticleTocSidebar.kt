@@ -31,6 +31,8 @@ import com.varabyte.kobweb.silk.style.CssStyle
 import com.varabyte.kobweb.silk.style.toModifier
 import dev.tonholo.portfolio.locale.LocalStrings
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
+import dev.tonholo.portfolio.theme.layout.unit.Dp
+import dev.tonholo.portfolio.theme.layout.unit.dp
 import dev.tonholo.portfolio.theme.typography.FontFamilies
 import org.jetbrains.compose.web.css.AlignSelf
 import org.jetbrains.compose.web.css.DisplayStyle
@@ -49,22 +51,22 @@ import org.jetbrains.compose.web.dom.Text as ComposeText
 // Handoff `.article-detail .sidebar` (styles.css 1088-1103):
 //   font-family mono; font-size 11px; color muted; position sticky;
 //   top 100px; align-self start.
-private const val SIDEBAR_FONT_SIZE_REM = 0.6875 // 11px
-private const val SIDEBAR_STICKY_TOP_REM = 6.25 // 100px
+private val SIDEBAR_FONT_SIZE = 11.dp
+private val SIDEBAR_STICKY_TOP = 100.dp
 
 // Handoff `.article-detail .sidebar h5` (styles.css 1096-1099):
 //   font-size 11px; letter-spacing 0.08em; uppercase; color ink-3;
 //   margin-bottom 10px.
-private const val HEADING_FONT_SIZE_REM = 0.6875 // 11px
+private val HEADING_FONT_SIZE = 11.dp
 private const val HEADING_LETTER_SPACING_EM = 0.08
-private const val HEADING_MARGIN_BOTTOM_REM = 0.625 // 10px
+private val HEADING_MARGIN_BOTTOM = 10.dp
 
 // Handoff `.article-detail .sidebar ul` (styles.css 1100):
 //   list-style none; flex column; gap 8px.
-private const val LIST_GAP_REM = 0.5 // 8px
+private val LIST_GAP = 8.dp
 
 // Handoff inline `style={{marginTop:32}}` on the second h5 (pages1.jsx 168).
-private const val SHARE_HEADING_MARGIN_TOP_REM = 2.0 // 32px
+private val SHARE_HEADING_MARGIN_TOP = 32.dp
 
 // Numeric prefix width: "01", "02", ... with a zero pad.
 private const val ENTRY_NUMBER_PAD_LENGTH = 2
@@ -120,7 +122,7 @@ fun ArticleTocSidebar(
         .then(modifier)
 
     Aside(attrs = finalModifier.toAttrs()) {
-        SidebarHeading(text = strings.contents, marginTopRem = 0.0)
+        SidebarHeading(text = strings.contents, marginTop = 0.dp)
         Ul(attrs = SidebarListStyle.toModifier().toAttrs()) {
             contents.forEachIndexed { index, entry ->
                 TocAnchorRow(
@@ -132,7 +134,7 @@ fun ArticleTocSidebar(
                 )
             }
         }
-        SidebarHeading(text = strings.share, marginTopRem = SHARE_HEADING_MARGIN_TOP_REM)
+        SidebarHeading(text = strings.share, marginTop = SHARE_HEADING_MARGIN_TOP)
         Ul(attrs = SidebarListStyle.toModifier().toAttrs()) {
             ShareAnchorRow(label = strings.shareCopyLink, onClick = onCopyLink, mutedColor = tokens.muted.muted)
             ShareAnchorRow(label = strings.shareTwitter, onClick = null, mutedColor = tokens.muted.muted)
@@ -219,22 +221,22 @@ private fun ShareAnchorRow(label: String, onClick: (() -> Unit)?, mutedColor: Co
  * Mono sidebar heading used by both the contents and share sections.
  * Rendered as an `<h2>` - the sidebar is a peer section to the article body
  * under the page `<h1>`. Visual weight is kept small via font-size; the
- * semantic level is what screen readers consume. [marginTopRem] is set
+ * semantic level is what screen readers consume. [marginTop] is set
  * inline so the first heading can collapse its top margin while the
  * second heading reproduces the handoff's `marginTop: 32px` inline style.
  */
 @Composable
-private fun SidebarHeading(text: String, marginTopRem: Double) {
+private fun SidebarHeading(text: String, marginTop: Dp) {
     val tokens = LocalPortfolioTokens.current
 
     H2(
         attrs = Modifier
             .fontFamily(*FontFamilies.MONO)
-            .fontSize(HEADING_FONT_SIZE_REM.cssRem)
+            .fontSize(HEADING_FONT_SIZE)
             .letterSpacing(HEADING_LETTER_SPACING_EM.em)
             .textTransform(TextTransform.Uppercase)
             .color(tokens.ink.ink3)
-            .margin(top = marginTopRem.cssRem, bottom = HEADING_MARGIN_BOTTOM_REM.cssRem)
+            .margin(top = marginTop, bottom = HEADING_MARGIN_BOTTOM)
             .toAttrs(),
     ) {
         ComposeText(text)
@@ -252,9 +254,9 @@ val ArticleTocSidebarStyle = CssStyle {
     base {
         Modifier
             .fontFamily(*FontFamilies.MONO)
-            .fontSize(SIDEBAR_FONT_SIZE_REM.cssRem)
+            .fontSize(SIDEBAR_FONT_SIZE)
             .position(Position.Sticky)
-            .top(SIDEBAR_STICKY_TOP_REM.cssRem)
+            .top(SIDEBAR_STICKY_TOP)
             .alignSelf(AlignSelf.Start)
     }
 }
@@ -271,7 +273,7 @@ val SidebarListStyle = CssStyle {
             .listStyle(type = ListStyleType.None)
             .display(DisplayStyle.Flex)
             .flexDirection(FlexDirection.Column)
-            .gap(LIST_GAP_REM.cssRem)
+            .gap(LIST_GAP)
             .margin(topBottom = 0.cssRem)
             .padding(left = 0.cssRem)
     }

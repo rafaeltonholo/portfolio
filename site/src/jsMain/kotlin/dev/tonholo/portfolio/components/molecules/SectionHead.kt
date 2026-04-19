@@ -15,6 +15,7 @@ import dev.tonholo.portfolio.components.atoms.Divider
 import dev.tonholo.portfolio.components.atoms.DividerVariant
 import dev.tonholo.portfolio.components.atoms.MetaLabel
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
+import dev.tonholo.portfolio.theme.layout.unit.dp
 import dev.tonholo.portfolio.theme.typography.Typography
 import dev.tonholo.portfolio.theme.typography.apply
 import org.jetbrains.compose.web.css.AlignItems
@@ -25,9 +26,9 @@ import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.H2
 import org.jetbrains.compose.web.dom.Text as ComposeText
 
-private const val SECTION_HEAD_GAP_REM = 1.5 // 24px
+private val SECTION_HEAD_GAP = 24.dp
 private const val SECTION_HEAD_MARGIN_BOTTOM_REM = 2.25 // gap * 1.5
-private const val SECTION_HEAD_NUM_COL_REM = 4.5 // 72px numeric column
+private val SECTION_HEAD_NUM_COL = 72.dp
 private const val SECTION_HEAD_RULE_COL_FR = 1 // 1fr stretch for the rule
 
 /**
@@ -88,12 +89,12 @@ val SectionHeadStyle = CssStyle {
         Modifier
             .display(DisplayStyle.Grid)
             .gridTemplateColumns {
-                size(SECTION_HEAD_NUM_COL_REM.cssRem)
+                size(SECTION_HEAD_NUM_COL)
                 minmax(min = minContent, max = auto)
                 size(SECTION_HEAD_RULE_COL_FR.fr)
                 size(auto)
             }
-            .gap(SECTION_HEAD_GAP_REM.cssRem)
+            .gap(SECTION_HEAD_GAP)
             .alignItems(AlignItems.Baseline)
             .margin(bottom = SECTION_HEAD_MARGIN_BOTTOM_REM.cssRem)
     }
