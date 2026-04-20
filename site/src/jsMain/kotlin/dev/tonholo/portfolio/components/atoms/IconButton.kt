@@ -1,13 +1,17 @@
 package dev.tonholo.portfolio.components.atoms
 
 import androidx.compose.runtime.Composable
+import com.varabyte.kobweb.compose.css.BackgroundClip
+import com.varabyte.kobweb.compose.css.BoxSizing
 import com.varabyte.kobweb.compose.css.Cursor
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.graphics.Color
 import com.varabyte.kobweb.compose.ui.modifiers.alignItems
+import com.varabyte.kobweb.compose.ui.modifiers.background
 import com.varabyte.kobweb.compose.ui.modifiers.backgroundColor
 import com.varabyte.kobweb.compose.ui.modifiers.border
 import com.varabyte.kobweb.compose.ui.modifiers.borderRadius
+import com.varabyte.kobweb.compose.ui.modifiers.boxSizing
 import com.varabyte.kobweb.compose.ui.modifiers.color
 import com.varabyte.kobweb.compose.ui.modifiers.cursor
 import com.varabyte.kobweb.compose.ui.modifiers.display
@@ -16,7 +20,6 @@ import com.varabyte.kobweb.compose.ui.modifiers.justifyContent
 import com.varabyte.kobweb.compose.ui.modifiers.onClick
 import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.compose.ui.modifiers.width
-import com.varabyte.kobweb.compose.ui.styleModifier
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.silk.style.CssStyle
 import com.varabyte.kobweb.silk.style.selectors.hover
@@ -94,10 +97,8 @@ val IconButtonStyle = CssStyle {
             .width(ICON_BUTTON_SIZE)
             .height(ICON_BUTTON_SIZE)
             .padding(ICON_BUTTON_HIT_PADDING)
-            .styleModifier {
-                property("box-sizing", "content-box")
-                property("background-clip", "content-box")
-            }
+            .boxSizing(BoxSizing.ContentBox)
+            .background { clip(BackgroundClip.ContentBox) }
             .display(DisplayStyle.LegacyInlineFlex)
             .alignItems(AlignItems.Center)
             .justifyContent(JustifyContent.Center)

@@ -11,8 +11,9 @@ import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.compose.ui.modifiers.position
 import com.varabyte.kobweb.compose.ui.modifiers.whiteSpace
 import com.varabyte.kobweb.compose.ui.modifiers.width
-import com.varabyte.kobweb.compose.ui.styleModifier
 import com.varabyte.kobweb.silk.style.CssStyle
+import com.varabyte.kobweb.silk.theme.shapes.Rect
+import com.varabyte.kobweb.silk.theme.shapes.clip
 import org.jetbrains.compose.web.css.LineStyle
 import org.jetbrains.compose.web.css.Position
 import org.jetbrains.compose.web.css.px
@@ -37,9 +38,6 @@ val VisuallyHiddenStyle = CssStyle {
             .overflow(Overflow.Hidden)
             .border(width = 0.px, style = LineStyle.None)
             .whiteSpace(WhiteSpace.NoWrap)
-            .styleModifier {
-                property("clip", "rect(0, 0, 0, 0)")
-                property("clip-path", "inset(50%)")
-            }
+            .clip(Rect(50, 0.px))
     }
 }

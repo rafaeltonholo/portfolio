@@ -1,10 +1,15 @@
 package dev.tonholo.portfolio.components.atoms
 
 import androidx.compose.runtime.Composable
+import com.varabyte.kobweb.compose.css.BackgroundSize
 import com.varabyte.kobweb.compose.css.Overflow
+import com.varabyte.kobweb.compose.css.functions.linearGradient
 import com.varabyte.kobweb.compose.ui.Modifier
+import com.varabyte.kobweb.compose.ui.graphics.Colors
 import com.varabyte.kobweb.compose.ui.modifiers.alignItems
+import com.varabyte.kobweb.compose.ui.modifiers.ariaHidden
 import com.varabyte.kobweb.compose.ui.modifiers.aspectRatio
+import com.varabyte.kobweb.compose.ui.modifiers.background
 import com.varabyte.kobweb.compose.ui.modifiers.backgroundColor
 import com.varabyte.kobweb.compose.ui.modifiers.borderRadius
 import com.varabyte.kobweb.compose.ui.modifiers.bottom
@@ -21,7 +26,6 @@ import com.varabyte.kobweb.compose.ui.modifiers.position
 import com.varabyte.kobweb.compose.ui.modifiers.right
 import com.varabyte.kobweb.compose.ui.modifiers.top
 import com.varabyte.kobweb.compose.ui.modifiers.zIndex
-import com.varabyte.kobweb.compose.ui.styleModifier
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.silk.style.CssStyle
 import com.varabyte.kobweb.silk.style.toModifier
@@ -34,6 +38,8 @@ import org.jetbrains.compose.web.css.AlignItems
 import org.jetbrains.compose.web.css.DisplayStyle
 import org.jetbrains.compose.web.css.JustifyContent
 import org.jetbrains.compose.web.css.Position
+import org.jetbrains.compose.web.css.deg
+import org.jetbrains.compose.web.css.percent
 import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Span
@@ -44,8 +50,8 @@ private val LABEL_PADDING_X = 10.dp
 private val LABEL_RADIUS = 2.dp
 private const val LABEL_Z_INDEX = 1
 private const val PATTERN_OPACITY = 0.4
-private const val PATTERN_STOP_PERCENT = "25%"
-private const val PATTERN_TILE_PX = "12px"
+private const val PATTERN_STOP_PERCENT = 25
+private const val PATTERN_TILE = 12
 
 // Handoff `.ph` CSS: mono family at 11px, no uppercase transform. Chip
 // typography in the project theme forces uppercase, which does not match,
@@ -72,12 +78,7 @@ private val PLACEHOLDER_FONT_SIZE = 11.dp
 fun Placeholder(aspectRatio: AspectRatio, label: String, modifier: Modifier = Modifier) {
     val tokens = LocalPortfolioTokens.current
     val isDark = ColorMode.current == ColorMode.DARK
-    val stripeCssColor = (if (isDark) Paper.dark.paper3 else Paper.light.paper3).toString()
-    val patternCss = buildString {
-        append("linear-gradient(45deg, $stripeCssColor $PATTERN_STOP_PERCENT, transparent $PATTERN_STOP_PERCENT), ")
-        append("linear-gradient(-45deg, $stripeCssColor $PATTERN_STOP_PERCENT, transparent $PATTERN_STOP_PERCENT)")
-    }
-
+    val stripeCssColor = (if (isDark) Paper.dark.paper3 else Paper.light.paper3)
     val finalModifier = PlaceholderStyle
         .toModifier()
         .fontFamily(*FontFamilies.MONO)
@@ -91,11 +92,17 @@ fun Placeholder(aspectRatio: AspectRatio, label: String, modifier: Modifier = Mo
         Div(
             attrs = PlaceholderPatternStyle
                 .toModifier()
-                .styleModifier {
-                    property("background-image", patternCss)
-                    property("background-size", "$PATTERN_TILE_PX $PATTERN_TILE_PX")
+                .background {
+                    image(
+                        linearGradient(angle = 45.deg) {
+                            add(stripeCssColor, PATTERN_STOP_PERCENT.percent)
+                            add(Colors.Transparent, PATTERN_STOP_PERCENT.percent)
+                        }
+                    )
+                    size(BackgroundSize.of(PATTERN_TILE.dp, PATTERN_TILE.dp))
                 }
-                .toAttrs { attr("aria-hidden", "true") },
+                .ariaHidden(true)
+                .toAttrs(),
         )
         Span(
             attrs = PlaceholderLabelStyle

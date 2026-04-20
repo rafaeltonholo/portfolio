@@ -7,13 +7,20 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.varabyte.kobweb.compose.css.CSSLengthOrPercentageNumericValue
+import com.varabyte.kobweb.compose.css.ColorInterpolationMethod
 import com.varabyte.kobweb.compose.css.Cursor
 import com.varabyte.kobweb.compose.css.Overflow
 import com.varabyte.kobweb.compose.css.Transition
 import com.varabyte.kobweb.compose.css.WhiteSpace
+import com.varabyte.kobweb.compose.css.functions.blur
+import com.varabyte.kobweb.compose.css.functions.colorMix
+import com.varabyte.kobweb.compose.css.functions.saturate
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.graphics.Color
+import com.varabyte.kobweb.compose.ui.graphics.Colors
 import com.varabyte.kobweb.compose.ui.modifiers.alignItems
+import com.varabyte.kobweb.compose.ui.modifiers.backdropFilter
+import com.varabyte.kobweb.compose.ui.modifiers.background
 import com.varabyte.kobweb.compose.ui.modifiers.borderBottom
 import com.varabyte.kobweb.compose.ui.modifiers.borderLeft
 import com.varabyte.kobweb.compose.ui.modifiers.color
@@ -35,7 +42,6 @@ import com.varabyte.kobweb.compose.ui.modifiers.top
 import com.varabyte.kobweb.compose.ui.modifiers.transition
 import com.varabyte.kobweb.compose.ui.modifiers.whiteSpace
 import com.varabyte.kobweb.compose.ui.modifiers.zIndex
-import com.varabyte.kobweb.compose.ui.styleModifier
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.silk.style.CssStyle
 import com.varabyte.kobweb.silk.style.extendedBy
@@ -67,6 +73,7 @@ import org.jetbrains.compose.web.css.LineStyle
 import org.jetbrains.compose.web.css.Position
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.keywords.auto
+import org.jetbrains.compose.web.css.percent
 import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.css.s
 import org.jetbrains.compose.web.dom.Div
@@ -85,8 +92,6 @@ private val NAV_BORDER_WIDTH = 1.dp
 // translucent paper surface with a subtle backdrop blur so long-form pages
 // stay readable as the nav pins.
 private const val NAV_STICKY_Z_INDEX = 40
-private const val NAV_BACKDROP_FILTER = "saturate(140%) blur(12px)"
-private const val NAV_BACKGROUND_PAPER_PERCENT = "92%"
 
 // `.nav-links` cluster.
 private val NAV_LINKS_GAP = 4.dp
@@ -261,19 +266,17 @@ val NavStyle = CssStyle {
         val isDark = colorMode == ColorMode.DARK
         val paper = if (isDark) Paper.dark else Paper.light
         val borderColor = if (isDark) paper.paper2 else paper.paper3
-        val paperToken = paper.paper.toString()
+        val paperToken = paper.paper
         Modifier
             .position(Position.Sticky)
             .top(0.px)
             .zIndex(NAV_STICKY_Z_INDEX)
-            .styleModifier {
-                property(
-                    "background",
-                    "color-mix(in oklab, $paperToken $NAV_BACKGROUND_PAPER_PERCENT, transparent)",
-                )
-                property("backdrop-filter", NAV_BACKDROP_FILTER)
-                property("-webkit-backdrop-filter", NAV_BACKDROP_FILTER)
+            .background {
+                color(colorMix(ColorInterpolationMethod.Oklab, paperToken to 92.percent, Colors.Transparent))
             }
+            .backdropFilter(
+                saturate(amount = 140.percent), blur(radius = 12.dp),
+            )
             .borderBottom(
                 width = NAV_BORDER_WIDTH,
                 style = LineStyle.Solid,
@@ -295,9 +298,9 @@ val NavInnerStyle = ChromeShellStyle.extendedBy {
             .display(DisplayStyle.Flex)
             .alignItems(AlignItems.Center)
             .gap(NAV_INNER_GAP)
-            .styleModifier {
-                property("padding-top", "${NAV_INNER_PADDING_Y}rem")
-                property("padding-bottom", "${NAV_INNER_PADDING_Y}rem")
+            .padding {
+                top(NAV_INNER_PADDING_Y)
+                bottom(NAV_INNER_PADDING_Y)
             }
     }
 }

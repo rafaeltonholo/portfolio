@@ -1,21 +1,36 @@
 package dev.tonholo.portfolio.theme
 
+import com.varabyte.kobweb.compose.css.Animation
+import com.varabyte.kobweb.compose.css.AnimationIterationCount
+import com.varabyte.kobweb.compose.css.OutlineWidth
+import com.varabyte.kobweb.compose.css.ScrollBehavior
 import com.varabyte.kobweb.compose.ui.Modifier
+import com.varabyte.kobweb.compose.ui.modifiers.animation
 import com.varabyte.kobweb.compose.ui.modifiers.backgroundColor
+import com.varabyte.kobweb.compose.ui.modifiers.borderRadius
 import com.varabyte.kobweb.compose.ui.modifiers.color
 import com.varabyte.kobweb.compose.ui.modifiers.fontSize
+import com.varabyte.kobweb.compose.ui.modifiers.outline
+import com.varabyte.kobweb.compose.ui.modifiers.outlineOffset
+import com.varabyte.kobweb.compose.ui.modifiers.scrollBehavior
+import com.varabyte.kobweb.compose.ui.modifiers.setVariable
+import com.varabyte.kobweb.compose.ui.modifiers.transition
 import com.varabyte.kobweb.compose.ui.styleModifier
 import com.varabyte.kobweb.silk.init.InitSilk
 import com.varabyte.kobweb.silk.init.InitSilkContext
 import com.varabyte.kobweb.silk.init.registerStyleBase
 import com.varabyte.kobweb.silk.style.breakpoint.BreakpointSizes
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
+import dev.tonholo.portfolio.theme.color.AccentMint
 import dev.tonholo.portfolio.theme.color.Ink
 import dev.tonholo.portfolio.theme.color.Paper
+import dev.tonholo.portfolio.theme.layout.unit.dp
 import dev.tonholo.portfolio.theme.typography.unit.DEFAULT_FONT_SIZE
 import org.jetbrains.compose.web.css.CSSMediaQuery
+import org.jetbrains.compose.web.css.LineStyle
 import org.jetbrains.compose.web.css.StylePropertyValue
 import org.jetbrains.compose.web.css.cssRem
+import org.jetbrains.compose.web.css.ms
 import org.jetbrains.compose.web.css.px
 
 private const val SM_REM = 30.0
@@ -91,17 +106,6 @@ private val ColorMode.cssClass: String
         ColorMode.DARK -> "silk-dark"
     }
 
-// Focus ring hue per color mode. Light uses the darkened mint that passes
-// 4.5:1 on paper; dark uses the bright mint swatch that reads cleanly on ink.
-private const val FOCUS_RING_LIGHT = "#2F7A45"
-private const val FOCUS_RING_DARK = "#7DD198"
-
-// Single !important transition/animation override. !important is necessary
-// here because every component style defines its own `transition(...)` and
-// would otherwise win the cascade.
-private const val REDUCED_MOTION_DURATION = "0.01ms !important"
-private const val REDUCED_MOTION_ITERATION = "1 !important"
-private const val REDUCED_MOTION_SCROLL = "auto !important"
 
 /**
  * Global a11y layer applied once at Silk init.
@@ -123,20 +127,25 @@ private const val REDUCED_MOTION_SCROLL = "auto !important"
 @InitSilk
 fun initAccessibilityLayer(ctx: InitSilkContext) {
     ctx.stylesheet.registerStyleBase("html.${ColorMode.LIGHT.cssClass}") {
-        Modifier.styleModifier { property("--focus-ring", FOCUS_RING_LIGHT) }
+        Modifier
+            .setVariable(PortfolioThemeVars.FocusRing, AccentMint.light.accent)
     }
     ctx.stylesheet.registerStyleBase("html.${ColorMode.DARK.cssClass}") {
-        Modifier.styleModifier { property("--focus-ring", FOCUS_RING_DARK) }
+        Modifier
+            .setVariable(PortfolioThemeVars.FocusRing, AccentMint.dark.accent)
     }
     ctx.stylesheet.registerStyleBase(":focus") {
         Modifier.styleModifier { property("outline", "none") }
     }
     ctx.stylesheet.registerStyleBase(":focus-visible") {
-        Modifier.styleModifier {
-            property("outline", "2px solid var(--focus-ring)")
-            property("outline-offset", "2px")
-            property("border-radius", "2px")
-        }
+        Modifier
+            .outline {
+                width(OutlineWidth.of(2.dp))
+                style(LineStyle.Solid)
+                color(PortfolioThemeVars.FocusRing.value())
+            }
+            .outlineOffset(2.dp)
+            .borderRadius(2.dp)
     }
     ctx.stylesheet.registerStyle("*, *::before, *::after") {
         cssRule(
@@ -145,12 +154,16 @@ fun initAccessibilityLayer(ctx: InitSilkContext) {
                 value = StylePropertyValue(value = "reduce"),
             ),
         ) {
-            Modifier.styleModifier {
-                property("animation-duration", REDUCED_MOTION_DURATION)
-                property("animation-iteration-count", REDUCED_MOTION_ITERATION)
-                property("transition-duration", REDUCED_MOTION_DURATION)
-                property("scroll-behavior", REDUCED_MOTION_SCROLL)
-            }
+            Modifier
+                .animation(
+                    Animation.of(
+                        name = "reduced-motion",
+                        duration = 0.01.ms,
+                        iterationCount = AnimationIterationCount.of(1),
+                    )
+                )
+                .transition { duration(0.01.ms) }
+                .scrollBehavior(ScrollBehavior.Auto)
         }
     }
 }

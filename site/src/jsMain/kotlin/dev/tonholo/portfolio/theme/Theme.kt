@@ -5,7 +5,9 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import com.varabyte.kobweb.compose.css.StyleVariable
 import com.varabyte.kobweb.compose.ui.Modifier
+import com.varabyte.kobweb.compose.ui.graphics.Color
 import com.varabyte.kobweb.compose.ui.modifiers.setVariable
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
@@ -81,3 +83,7 @@ private fun tokensFor(isDark: Boolean): PortfolioTokens = PortfolioTokens(
     spacing = SpacingScale.from(density = Density.Compact),
     typography = Typography,
 )
+
+object PortfolioThemeVars {
+    val FocusRing by StyleVariable<Color>(prefix = "base-theme")
+}

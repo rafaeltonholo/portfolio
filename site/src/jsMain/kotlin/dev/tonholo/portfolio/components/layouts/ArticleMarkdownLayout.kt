@@ -21,7 +21,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.gridTemplateColumns
 import com.varabyte.kobweb.compose.ui.modifiers.letterSpacing
 import com.varabyte.kobweb.compose.ui.modifiers.lineHeight
 import com.varabyte.kobweb.compose.ui.modifiers.margin
-import com.varabyte.kobweb.compose.ui.styleModifier
+import com.varabyte.kobweb.compose.ui.modifiers.maxWidth
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.core.PageContext
 import com.varabyte.kobweb.core.data.add
@@ -48,6 +48,7 @@ import kotlinx.browser.document
 import kotlinx.browser.window
 import org.jetbrains.compose.web.css.AlignItems
 import org.jetbrains.compose.web.css.DisplayStyle
+import org.jetbrains.compose.web.css.ch
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.em
 import org.jetbrains.compose.web.css.fr
@@ -302,7 +303,7 @@ val ArticleMarkdownTitleStyle = CssStyle {
     base {
         Modifier
             .margin(top = 0.cssRem, bottom = TITLE_MARGIN_BOTTOM_REM.cssRem)
-            .styleModifier { property("max-width", "${TITLE_MAX_WIDTH_CH}ch") }
+            .maxWidth(TITLE_MAX_WIDTH_CH.ch)
     }
 }
 
@@ -319,7 +320,7 @@ val ArticleMarkdownLedeStyle = CssStyle {
             .fontSize(LEDE_SIZE_REM.cssRem)
             .lineHeight(LEDE_LINE_HEIGHT)
             .fontStyle(FontStyle.Italic)
-            .styleModifier { property("max-width", "${LEDE_MAX_WIDTH_CH}ch") }
+            .maxWidth(LEDE_MAX_WIDTH_CH.ch)
             .margin(top = 0.cssRem, bottom = LEDE_MARGIN_BOTTOM_REM.cssRem)
     }
 }
