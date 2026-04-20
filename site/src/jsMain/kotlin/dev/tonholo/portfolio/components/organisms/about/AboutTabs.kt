@@ -223,47 +223,47 @@ private fun StoryPanel(strings: Strings.About) {
     val tokens = LocalPortfolioTokens.current
     ProseContainer {
         ProseParagraph(
-            text = "Ever since I was little, I've been trying to break things open " +
-                "to see how they worked - usually my parents' computer, occasionally " +
-                "a VHS player I regret.",
+            text = "Ever since I was little, I've been fascinated with technology - " +
+                "spending hours customizing my parents' computer and trying to make it my own.",
             isFirst = true,
             tokens = tokens,
         )
         ProseParagraph(
-            text = "My first real contact with programming was at twelve, when I decided " +
-                "I wanted a private MU server for me and my cousins. I didn't know what I " +
-                "was doing. The server was unstable. The cousins were thrilled.",
+            text = "My first real contact with programming was at twelve, when I decided I " +
+                "wanted a private MU server for me and my cousins. I didn't know what I was " +
+                "doing. The server was unstable. The cousins were thrilled.",
             isFirst = false,
             tokens = tokens,
         )
         ProseHeading(text = strings.storyHeading2010, tokens = tokens)
         ProseParagraph(
-            text = "High school technical program, Java class, and the Android SDK was " +
-                "brand new. I built a barely functional TODO app. It crashed on orientation " +
-                "change. I was hooked.",
+            text = "High school technical program, first Java class, and an Android SDK " +
+                "that was still very young. I built a barely functional TODO app. It " +
+                "crashed on rotation. I was hooked.",
             isFirst = true,
             tokens = tokens,
         )
         ProseHeading(text = strings.storyHeading2015, tokens = tokens)
         ProseParagraph(
-            text = "After a few years of full-stack work, I realized I only wanted to work " +
-                "on what I could hold. Android became the focus. Kotlin landed the next year " +
-                "and never left.",
+            text = "After a few years of full-stack work - .NET in healthcare and marketing, " +
+                "then cross-platform surveys - I realized I only wanted to work on what I could " +
+                "hold. Android became the focus. Kotlin landed the next year and never left.",
             isFirst = true,
             tokens = tokens,
         )
         ProseHeading(text = strings.storyHeading2021, tokens = tokens)
         ProseParagraph(
-            text = "First time working on a codebase with millions of users and millions of " +
-                "lines. Everything I thought I knew about architecture got rearranged. Compose " +
-                "migration, dynamic features, and a 30-minute build time that became a personal " +
-                "vendetta.",
+            text = "First time working on a codebase with millions of users and nine years " +
+                "of history. A 30-minute clean build became a personal vendetta. Modularizing " +
+                "it - incrementally, without a freeze - taught me more about architecture than " +
+                "any book ever has.",
             isFirst = true,
             tokens = tokens,
         )
         ProseHeading(text = strings.storyHeadingToday, tokens = tokens)
         ProseParagraph(
-            text = "Bleacher Report, Ottawa, more Compose, more Kotlin. Writing a bit more. " +
+            text = "Thunderbird for Android at Mozilla. Kotlin-first, privacy-first, " +
+                "Compose-forward, and everything shipping in the open. Writing a bit more. " +
                 "Cooking a lot more.",
             isFirst = true,
             tokens = tokens,
@@ -285,9 +285,9 @@ private fun NowPanel(strings: Strings.About) {
         }
         ProseHeading(text = strings.nowHeadingWorking, tokens = tokens, collapseTop = true)
         ProseParagraph(
-            text = "A feature-delivery system at Bleacher Report that lets us ship entire " +
-                "sections on-demand without the usual APK bloat. Think Play Feature Delivery, " +
-                "but with sensible developer ergonomics.",
+            text = "Thunderbird for Android at Mozilla. Feature work across the flagship " +
+                "app and contributing upstream to shared mobile libraries. Open-source, " +
+                "privacy-first, and the community cares.",
             isFirst = true,
             tokens = tokens,
         )
