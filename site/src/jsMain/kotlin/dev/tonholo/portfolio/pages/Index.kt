@@ -13,6 +13,7 @@ import dev.tonholo.portfolio.components.organisms.home.SnippetOfTheWeek
 import dev.tonholo.portfolio.components.organisms.home.UsesGrid
 import dev.tonholo.portfolio.extensions.openInNewTab
 import dev.tonholo.portfolio.extensions.scrollToElementId
+import dev.tonholo.portfolio.state.LocalLocaleState
 import dev.tonholo.portfolio.state.StaticContent
 
 // Anchor IDs applied to each home section. Kept together so the hero CTAs
@@ -37,6 +38,7 @@ private const val RESUME_PDF_URL = "/docs/rafael-tonholo-resume.pdf"
 @Composable
 @Suppress("ModifierMissing")
 fun HomePage() {
+    val locale = LocalLocaleState.current.current
     PageLayout {
         HeroEditorial(
             onFeaturedWorkClick = { scrollToElementId(id = SELECTED_WORK_ID) },
@@ -46,7 +48,7 @@ fun HomePage() {
             onHireClick = { scrollToElementId(id = HIRING_CTA_ID) },
         )
         SelectedWorkGrid(
-            projects = StaticContent.PROJECTS,
+            projects = StaticContent.projectsFor(locale = locale),
             modifier = Modifier.id(SELECTED_WORK_ID),
         )
         NowStrip(

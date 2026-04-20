@@ -22,6 +22,7 @@ import dev.tonholo.portfolio.components.organisms.projects.ProjectsFilter
 import dev.tonholo.portfolio.components.organisms.projects.ProjectsFilterBar
 import dev.tonholo.portfolio.domain.model.ProjectKind
 import dev.tonholo.portfolio.locale.LocalStrings
+import dev.tonholo.portfolio.state.LocalLocaleState
 import dev.tonholo.portfolio.state.StaticContent
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.layout.ShellStyle
@@ -57,10 +58,12 @@ private const val TITLE_MARGIN_BOTTOM_REM = 2.0
 @Suppress("ModifierMissing")
 fun ProjectsPage() {
     var filter by remember { mutableStateOf(value = ProjectsFilter.All) }
+    val locale = LocalLocaleState.current.current
+    val projects = StaticContent.projectsFor(locale = locale)
     val filtered = when (filter) {
-        ProjectsFilter.All -> StaticContent.PROJECTS
-        ProjectsFilter.Commercial -> StaticContent.PROJECTS.filter { it.kind == ProjectKind.Commercial }
-        ProjectsFilter.OpenSource -> StaticContent.PROJECTS.filter { it.kind == ProjectKind.OpenSource }
+        ProjectsFilter.All -> projects
+        ProjectsFilter.Commercial -> projects.filter { it.kind == ProjectKind.Commercial }
+        ProjectsFilter.OpenSource -> projects.filter { it.kind == ProjectKind.OpenSource }
     }
 
     PageLayout {

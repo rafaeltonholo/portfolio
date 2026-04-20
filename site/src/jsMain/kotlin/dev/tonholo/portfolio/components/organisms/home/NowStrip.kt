@@ -30,6 +30,7 @@ import dev.tonholo.portfolio.domain.model.Article
 import dev.tonholo.portfolio.domain.model.ArticleStatus
 import dev.tonholo.portfolio.locale.LocalStrings
 import dev.tonholo.portfolio.locale.Strings
+import dev.tonholo.portfolio.state.LocalLocaleState
 import dev.tonholo.portfolio.state.StaticContent
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.layout.unit.dp
@@ -107,7 +108,8 @@ private val WORKING_TITLE_MARGIN_BOTTOM = 12.dp
  */
 @Composable
 fun NowStrip(modifier: Modifier = Modifier) {
-    val workingEntry = StaticContent.NOW_STRIP.firstOrNull()
+    val locale = LocalLocaleState.current.current
+    val workingEntry = StaticContent.nowStripFor(locale = locale).firstOrNull()
     val recentArticles = StaticContent.ARTICLES.take(WRITING_ARTICLES_TAKE)
     val strings = LocalStrings.current.nowStrip
 

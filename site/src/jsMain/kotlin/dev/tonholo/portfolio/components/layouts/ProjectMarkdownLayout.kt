@@ -17,6 +17,7 @@ import dev.tonholo.portfolio.components.molecules.ProjectBreadcrumb
 import dev.tonholo.portfolio.components.organisms.projects.ProjectDetailHero
 import dev.tonholo.portfolio.locale.LocalStrings
 import dev.tonholo.portfolio.navigation.Routes
+import dev.tonholo.portfolio.state.LocalLocaleState
 import dev.tonholo.portfolio.state.StaticContent
 import dev.tonholo.portfolio.theme.layout.unit.dp
 import org.jetbrains.compose.web.dom.Text
@@ -87,11 +88,13 @@ private fun String.kebab(): String {
 @Suppress("ModifierMissing")
 fun ProjectMarkdownLayout(context: PageContext, content: @Composable () -> Unit) {
     val strings = LocalStrings.current.projectDetail
+    val locale = LocalLocaleState.current.current
+    val projects = StaticContent.projectsFor(locale = locale)
     val data = context.data.get<ProjectMarkdownLayoutData>()
         ?: ProjectMarkdownLayoutData(slug = "")
-    val index = StaticContent.PROJECTS.indexOfFirst { it.slug == data.slug }
-    val project = StaticContent.PROJECTS.getOrNull(index = index)
-    val nextProject = StaticContent.PROJECTS.getOrNull(index = index + 1)
+    val index = projects.indexOfFirst { it.slug == data.slug }
+    val project = projects.getOrNull(index = index)
+    val nextProject = projects.getOrNull(index = index + 1)
 
     if (project == null) {
         ProjectLayout(

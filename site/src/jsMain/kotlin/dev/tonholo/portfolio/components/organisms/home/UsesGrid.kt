@@ -25,6 +25,7 @@ import dev.tonholo.portfolio.components.atoms.MetaSeparator
 import dev.tonholo.portfolio.components.template.NumberedSection
 import dev.tonholo.portfolio.domain.model.UseCategory
 import dev.tonholo.portfolio.locale.LocalStrings
+import dev.tonholo.portfolio.state.LocalLocaleState
 import dev.tonholo.portfolio.state.StaticContent
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.layout.unit.dp
@@ -78,7 +79,8 @@ private const val CATEGORY_NAME_PREFIX = "/"
  */
 @Composable
 fun UsesGrid(modifier: Modifier = Modifier) {
-    val categories = StaticContent.USES
+    val locale = LocalLocaleState.current.current
+    val categories = StaticContent.usesFor(locale = locale)
     val strings = LocalStrings.current.uses
 
     NumberedSection(

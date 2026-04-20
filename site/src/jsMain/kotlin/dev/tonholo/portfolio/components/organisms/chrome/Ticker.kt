@@ -24,6 +24,7 @@ import com.varabyte.kobweb.silk.style.CssStyle
 import com.varabyte.kobweb.silk.style.toModifier
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import dev.tonholo.portfolio.components.molecules.TickerEntry
+import dev.tonholo.portfolio.state.LocalLocaleState
 import dev.tonholo.portfolio.state.StaticContent
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.layout.ShellStyle
@@ -80,7 +81,8 @@ private fun tickerBorderColor(): Color {
 fun Ticker(modifier: Modifier = Modifier) {
     val tokens = LocalPortfolioTokens.current
     val borderColor = tickerBorderColor()
-    val items = StaticContent.TICKER
+    val locale = LocalLocaleState.current.current
+    val items = StaticContent.tickerFor(locale = locale)
 
     val stripModifier = TickerStyle
         .toModifier()

@@ -8,6 +8,7 @@ import dev.tonholo.portfolio.components.layouts.PageLayout
 import dev.tonholo.portfolio.components.organisms.resume.ExperienceTimeline
 import dev.tonholo.portfolio.components.organisms.resume.ResumeHeader
 import dev.tonholo.portfolio.components.organisms.resume.SkillsGrid
+import dev.tonholo.portfolio.state.LocalLocaleState
 import dev.tonholo.portfolio.state.StaticContent
 import dev.tonholo.portfolio.theme.layout.PageSectionShellStyle
 import kotlinx.browser.window
@@ -30,6 +31,7 @@ private const val RESUME_PDF_TARGET = "_blank"
 @Composable
 @Suppress("ModifierMissing")
 fun ResumePage() {
+    val locale = LocalLocaleState.current.current
     PageLayout {
         Div(attrs = PageSectionShellStyle.toModifier().toAttrs()) {
             ResumeHeader(
@@ -37,11 +39,11 @@ fun ResumePage() {
                     window.open(url = RESUME_PDF_PATH, target = RESUME_PDF_TARGET)
                 },
             )
-            ExperienceTimeline(experiences = StaticContent.EXPERIENCE)
+            ExperienceTimeline(experiences = StaticContent.experienceFor(locale = locale))
             SkillsGrid(
                 primaryStack = StaticContent.PRIMARY_STACK,
                 alsoComfortable = StaticContent.ALSO_COMFORTABLE,
-                education = StaticContent.EDUCATION,
+                education = StaticContent.educationFor(locale = locale),
             )
         }
     }

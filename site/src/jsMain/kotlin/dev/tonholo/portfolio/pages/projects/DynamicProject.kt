@@ -18,6 +18,7 @@ import dev.tonholo.portfolio.domain.model.Project
 import dev.tonholo.portfolio.locale.LocalStrings
 import dev.tonholo.portfolio.locale.Strings
 import dev.tonholo.portfolio.navigation.Routes
+import dev.tonholo.portfolio.state.LocalLocaleState
 import dev.tonholo.portfolio.state.StaticContent
 import dev.tonholo.portfolio.theme.layout.unit.dp
 import org.jetbrains.compose.web.dom.Text
@@ -48,10 +49,12 @@ private val COVER_MARGIN_BOTTOM = 64.dp
 fun DynamicProjectPage() {
     val pageContext = rememberPageContext()
     val strings = LocalStrings.current.projectDetail
+    val locale = LocalLocaleState.current.current
+    val projects = StaticContent.projectsFor(locale = locale)
     val slug = pageContext.route.params[PROJECT_SLUG_PARAM].orEmpty()
-    val index = StaticContent.PROJECTS.indexOfFirst { it.slug == slug }
-    val project = StaticContent.PROJECTS.getOrNull(index = index)
-    val nextProject = StaticContent.PROJECTS.getOrNull(index = index + 1)
+    val index = projects.indexOfFirst { it.slug == slug }
+    val project = projects.getOrNull(index = index)
+    val nextProject = projects.getOrNull(index = index + 1)
 
     if (project == null) {
         ProjectLayout(
