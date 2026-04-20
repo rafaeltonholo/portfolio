@@ -141,72 +141,83 @@ object StaticContent {
             duration = "3 yrs 1 mo",
             role = "Senior Android Engineer",
             company = "REDspace Inc. - Halifax, NS - Hybrid",
-            body = "Client-facing Android engineering across multiple large-scale products. " +
-                "Compose migrations, CD pipelines, and the careful stability work that keeps " +
-                "apps in production.",
+            body = "Designing and developing robust, maintainable, standards-compliant " +
+                "Android apps and libraries across multiple large-scale client products.",
             bullets = listOf(
-                "Owned Android delivery across two major client products",
-                "Drove a CI/CD overhaul that halved release lead-time",
-                "Mentored the mobile practice as it doubled in size",
+                "Architected high-performance, reusable Kotlin/Java code",
+                "Used profiling to fix memory and performance bottlenecks",
+                "Delivered high-quality, feature-specific software on schedule",
+                "Drove Compose migrations and CI/CD improvements",
             ),
-        ),
-        Experience(
-            date = "jul 2021 - mar 2022",
-            duration = "9 mo",
-            role = "Senior Android Engineer",
-            company = "BairesDev - Full-time",
-            body = "Contract Android work across several client engagements. MVP, CI, and " +
-                "a lot of rapid onboarding.",
-            bullets = emptyList(),
         ),
         Experience(
             date = "jul 2021 - mar 2022",
             duration = "9 mo",
             role = "Senior Android Engineer",
             company = "Pinterest - Contract - Remote",
-            body = "Platform Android. Cut build-time chaos on a 9-year-old codebase and " +
-                "stood up a modular dynamic-feature system.",
+            body = "Designed solutions, optimized and maintained frameworks that empower " +
+                "the engineering team to deliver the best possible experience at scale.",
             bullets = listOf(
-                "-65% clean build time via modularization into 30 feature modules",
-                "Led the monolith -> modular migration, incrementally, without a freeze",
-                "Shipped the first Play Feature Delivery integration on the app",
+                "Improved build speed via dynamic-feature modularization",
+                "Built a centralized dynamic-feature dependency manager",
+                "Started XML-to-Jetpack Compose migration on the app",
+                "Partnered with product engineering to ship enablers for new features",
             ),
         ),
         Experience(
             date = "oct 2019 - jul 2021",
-            duration = "1 yr 9 mo",
+            duration = "1 yr 10 mo",
             role = "Principal Software Engineer",
-            company = "Grupo Financeiro Quocredi",
-            body = "Led Android engineering for a fintech shipping to 2M+ monthly users. " +
-                "Architected the full Compose rewrite.",
-            bullets = emptyList(),
+            company = "Questrade Financial Group - Toronto, ON",
+            body = "Technical lead for a new cross-platform app built with React Native. " +
+                "Designed high-availability event-based services behind it.",
+            bullets = listOf(
+                "Built a React Native module for biometric auth + OIDC + PKCE",
+                "Designed event-based microservices on Kafka and Google Pub/Sub",
+                "Stood up a contract-driven mock service so mobile could ship in parallel",
+                "Coached the new team as it ramped on React Native",
+            ),
         ),
         Experience(
             date = "aug 2017 - oct 2019",
-            duration = "2 yrs",
+            duration = "2 yrs 2 mo",
             role = "Senior Software Engineer",
-            company = "Grupo Financeiro Quocredi",
-            body = "Full-stack work on a growing consumer lending platform. Moved the " +
-                "mobile stack from Java to Kotlin.",
-            bullets = emptyList(),
+            company = "Questrade Financial Group - Toronto, ON",
+            body = "Owned features, performance, and a full auth rewrite on Questrade's " +
+                "hybrid mobile app - shared across iOS, Android, desktop, and web.",
+            bullets = listOf(
+                "Took the hybrid app from 1.5 to 3.3 stars at 100k+ daily users",
+                "Implemented native biometric auth (Fingerprint, TouchID, FaceID)",
+                "Shipped end-to-end auth: mobile, front-end, back-end, metrics, delivery",
+                "Encrypted all credentials at rest with native-code RSA",
+            ),
         ),
         Experience(
             date = "jun 2015 - aug 2017",
-            duration = "2 yrs",
+            duration = "2 yrs 2 mo",
             role = "Mobile Analyst Developer",
-            company = "Accion",
-            body = "First full-time Android role. Learned what it meant to keep an app " +
-                "in production for years, not months.",
-            bullets = emptyList(),
+            company = "Axxiom - Belo Horizonte, BR",
+            body = "Built a native Android app from scratch for CEMIG, a Brazilian energy " +
+                "utility. Field crews used it to locate assets that needed repair.",
+            bullets = listOf(
+                "Material Design-era native Android, ground up",
+                "Integrated Google Maps for asset inspection workflows",
+                "AIDL-based inter-process communication across distributed apps",
+                "Notification center routing over Wi-Fi, mobile, or satellite links",
+            ),
         ),
         Experience(
             date = "feb 2013 - jun 2015",
-            duration = "2 yrs",
-            role = ".NET Analyst Developer",
-            company = "Pioneer Sistemas",
-            body = "Before mobile - enterprise desktop and web apps. Where I learned to " +
-                "actually read logs.",
-            bullets = emptyList(),
+            duration = "2 yrs 4 mo",
+            role = "Analyst Developer, .NET",
+            company = "Planear Sistemas - Belo Horizonte, BR",
+            body = "Full-stack .NET across healthcare and marketing. Mobile app for " +
+                "medical scheduling, treatment, and finance. Dynamic survey app for marketing.",
+            bullets = listOf(
+                "Shipped mobile + web for private clinics and public polyclinics",
+                "Built a dynamic-form engine driven by a RESTful contract",
+                "Launched a gamified social network for political campaigns",
+            ),
         ),
     )
 
