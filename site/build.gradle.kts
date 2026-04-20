@@ -48,14 +48,14 @@ fun String.splitCamelCase(): List<String> {
 fun String.camelCaseToKebabCase(): String = splitCamelCase().joinToString("-")
 
 // Dynamic-route slugs registered with the Kobweb static exporter. Project
-// slugs stay hard-coded for `@Page("/projects/{slug}")`. Article slugs are
-// discovered at configuration time by scanning the markdown source so the
-// exporter can emit one HTML file per markdown article without maintaining
-// a parallel list.
+// slugs stay hard-coded for `@Page("/projects/{slug}")`; the markdown-backed
+// project slugs (full case studies) are discovered by scanning
+// `src/jsMain/resources/markdown/projects/`. Article slugs are also scanned
+// so the exporter can emit one HTML per markdown file without maintaining a
+// parallel list.
 val projectSlugs = listOf(
     "thunderbird",
     "bleacher-report",
-    "pinterest",
     "svg-compose",
     "ivy-wallet",
 )
@@ -64,6 +64,16 @@ val articlesMarkdownDir = layout.projectDirectory
     .dir("src/jsMain/resources/markdown/articles")
 
 val articleSlugs: List<String> = articlesMarkdownDir.asFile
+    .takeIf { it.exists() }
+    ?.listFiles { file -> file.isFile && file.extension == "md" }
+    ?.map { it.nameWithoutExtension.camelCaseToKebabCase() }
+    ?.sorted()
+    .orEmpty()
+
+val projectsMarkdownDir = layout.projectDirectory
+    .dir("src/jsMain/resources/markdown/projects")
+
+val projectMarkdownSlugs: List<String> = projectsMarkdownDir.asFile
     .takeIf { it.exists() }
     ?.listFiles { file -> file.isFile && file.extension == "md" }
     ?.map { it.nameWithoutExtension.camelCaseToKebabCase() }
@@ -369,7 +379,9 @@ val generateSitemap by tasks.registering {
         "/resume" to ("monthly" to "0.7"),
     )
 
-    val extraSlugs = projectSlugs.map { "/projects/$it" } + articleSlugs.map { "/articles/$it" }
+    val extraSlugs = projectSlugs.map { "/projects/$it" } +
+        projectMarkdownSlugs.map { "/projects/$it" } +
+        articleSlugs.map { "/articles/$it" }
 
     inputs.dir(pagesDir)
     inputs.file(appPropertiesFile)
