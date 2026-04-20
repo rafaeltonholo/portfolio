@@ -78,6 +78,32 @@ fun OutcomesGrid(outcomes: List<ProjectOutcome>, modifier: Modifier = Modifier) 
 }
 
 /**
+ * Markdown-friendly wrapper for [OutcomesGrid]. Kobwebx-markdown inline blocks
+ * can only pass strings through `{{{ Composable("a", "b") }}}`, so the 3-cell
+ * outcomes grid used by every case study is exposed here as six positional
+ * string args. Callers writing Kotlin should use [OutcomesGrid] directly.
+ */
+@Composable
+fun ProjectOutcomes(
+    value1: String,
+    label1: String,
+    value2: String,
+    label2: String,
+    value3: String,
+    label3: String,
+    modifier: Modifier = Modifier,
+) {
+    OutcomesGrid(
+        outcomes = listOf(
+            ProjectOutcome(value = value1, label = label1),
+            ProjectOutcome(value = value2, label = label2),
+            ProjectOutcome(value = value3, label = label3),
+        ),
+        modifier = modifier,
+    )
+}
+
+/**
  * Base `CssStyle` for the outcomes grid. Ports `.outcomes` from the handoff:
  * a single-column grid with a 1px gap and 32px vertical margin at the base
  * (mobile-first); promotes to 3 equal columns from [Breakpoint.LG] upwards to
