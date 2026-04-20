@@ -254,7 +254,7 @@ private val PROJECTS_PT_BR: List<Project> = listOf(
         externalCta = "Estudo de caso",
     ),
     Project(
-        slug = "pinterest",
+        slug = "pinterest-pt-br",
         index = "03",
         name = "Pinterest",
         kind = ProjectKind.Commercial,
