@@ -1,50 +1,58 @@
 ---
 layout: .components.layouts.ProjectMarkdownLayout
 slug: pinterest
-title: Pinterest - Modularizing a nine-year-old codebase
-description: Incremental modularization and a centralized dynamic-feature dependency manager, delivered without a freeze, across a codebase with millions of users and nine years of history.
+title: Pinterest - Modularizing Pinterest's codebase
+description: Adopting an incremental approach and a centralized dynamic-feature dependency manager, we modularized a 9-year-old codebase with millions of users without a freeze.
 ---
 
 {{{ .components.organisms.projects.ProjectSection ("/ context", "Pinterest is 9 years of code, and it shows.")
 
-By the time I joined, the Android codebase had grown into thousands of files, dozens of teams, and the kind of build times that made developers dread clean installs. A clean build averaged 30 minutes on a high-end machine with an i9 and 64GB of memory. An incremental build, 15.
+Pinterest is a leading visual discovery engine, inspiring millions with ideas ranging from recipes to home and style inspiration.
 
-That cost compounds. Every engineer on the team was losing real hours every week, and the delivery cadence suffered. Meanwhile, the product team wanted features delivered on-demand via Google Play Feature Delivery, which added another layer of complexity to an already intricate graph.
+As the application grew over nine years, it faced significant scalability challenges, particularly with build times reaching up to **30 minutes for a clean build and 15 minutes for incremental builds** on high-end machines.
 
-}}}
-
-{{{ .components.organisms.projects.ProjectSection ("/ problem", "The module graph had become the org chart.")
-
-Every team owned their modules. Every module had subtly different conventions. Dynamic features didn't know how to find their dependencies without elaborate reflection-based lookups, which crashed at runtime whenever a feature wasn't ready yet. New work couldn't land without shuffling modules that had nothing to do with it, and that made the whole graph fragile.
+Additionally, the need to implement on-demand installable features required leveraging the **Google Play Dynamic Feature Delivery** system.
 
 }}}
 
-{{{ .components.organisms.projects.ProjectSection ("/ approach", "Smaller pieces, clearer contracts.")
+{{{ .components.organisms.projects.ProjectSection ("/ problem", "The challenges of a large and aging codebase.")
 
-We started with open communication. Product engineers, platform engineers, and the release team in the same channel, aligned on the plan so modularization never blocked feature work. That collaboration was the single most important thing we did.
+The primary issue we faced was the extensive build times. On high-end machines equipped with i9 processors and 64GB of memory, a clean build of the app could take up to 30 minutes, and even incremental builds were around 15 minutes. These prolonged build times impacted developer productivity and slowed down the release cycle. Additionally, there was a need to implement features that could be installed on demand, necessitating the integration of Google's Play Feature Delivery system, which added another layer of complexity to an already cumbersome codebase.
 
-The first technical job was boring on purpose: take inventory. We identified classes and resources with the fewest dependencies, extracted them into new modules, and only then walked up the graph toward the tightly coupled components. Small steps, continuous landing, no freeze.
-
-Then we built a centralized dynamic-feature dependency manager. A small runtime library that exposed stable Kotlin interfaces for every feature module, handled the install and load lifecycle, and let consumers depend on contracts instead of reflection. Teams stopped owning their own discovery logic. Runtime crashes from missing features went away.
-
-We also spent real time deleting things. Unused dependencies, dead code, and module-to-module edges that shouldn't have existed. Fewer edges, fewer unnecessary rebuilds, fewer surprises.
+Modularizing such a large and aging codebase without disrupting ongoing feature development was a significant challenge. The app's tightly coupled components made decoupling and refactoring difficult. We also had to ensure that the transition didn't introduce new errors or affect the stability of the app. Moreover, integrating dynamic feature modules led to application crashes when required features weren't available at runtime, mainly due to the use of reflection in dependency management.
 
 }}}
 
-{{{ .components.organisms.projects.ProjectSection ("/ outcomes", "What changed, with numbers.")
+{{{ .components.organisms.projects.ProjectSection ("/ actions", "Actions and implementation.")
 
-{{{ .components.organisms.projects.ProjectOutcomes ("-30%", "reduction in average build time", "stable", "dynamic features, no reflection crashes", "scales", "architecture ready for next 9 years") }}}
+We began by fostering open communication with all stakeholders, especially the product engineers, to ensure everyone was aligned and aware of the changes. This collaboration was crucial to minimize disruptions to ongoing development work.
 
-More important than the numbers: the dynamic-feature manager stopped being the thing engineers dreaded touching. Features got merged on the first review. The platform became a platform again.
+Adopting an **incremental approach**, we started by identifying and extracting classes and resources with the fewest dependencies into separate modules. This strategy allowed us to modularize parts of the app without causing significant ripple effects throughout the codebase. As we progressed, we tackled more complex components, carefully refactoring code to decouple tightly coupled modules.
+
+To address the application crashes caused by dynamic feature modules, we developed a **centralized dynamic-feature dependency manager**. This manager allowed features requiring dynamic modules to request them without using reflection. By leveraging Kotlin's type safety through interfaces, we eliminated many runtime errors related to not-yet-ready dynamic features or typos. This solution not only improved the application's reliability but also simplified the integration process for developers working on features that require other dynamic features.
+
+We also focused on optimizing dependencies by identifying and removing unnecessary ones and cleaning up dead code. This effort reduced module interdependencies and prevented unnecessary builds of modules that certain features shouldn't rely on.
 
 }}}
 
-{{{ .components.organisms.projects.ProjectSection ("/ learnings", "A few things I took away.")
+{{{ .components.organisms.projects.ProjectSection ("/ outcomes", "Outcomes and impact.")
 
-**Boring is good.** The version that won wasn't the clever one. It was the one that did the minimum possible, in the most obvious way, and left no room for teams to reinvent. Type-safe interfaces beat reflection every time.
+{{{ .components.organisms.projects.ProjectOutcomes ("30%", "reduction in build times", "manager", "centralized dynamic-feature dependency manager", "scalable", "improved scalability and maintainability") }}}
 
-**Incremental is everything.** We couldn't rip the graph apart and rebuild it; too much else depended on it. Every change had to ship, on its own, without breaking the hundreds of modules downstream. That constraint shaped the whole design.
+The modularization efforts led to a **30% reduction in build times**, significantly enhancing developer efficiency and productivity. Developers could now work more independently within their respective modules, reducing the overhead of dealing with the entire application during development.
 
-**Talk to the people who live in it.** Some of the most useful feedback came from engineers who had worked in the codebase for years and had a long list of papercuts. They knew where the bodies were buried, and most of our best decisions came from those conversations.
+The centralized dynamic-feature dependency manager improved the app's stability by ensuring that dynamic features were correctly loaded at runtime. This enhancement reduced crashes and provided a smoother user experience when features were installed on demand.
+
+The new modular architecture also **improved the app's scalability and maintainability**. It helped the Pinterest app for future development, making it easier to integrate additional features and adapt to new requirements.
+
+}}}
+
+{{{ .components.organisms.projects.ProjectSection ("/ learnings", "Key learnings.")
+
+This project demonstrated the importance of **strategic planning and effective communication** in large-scale development initiatives. By keeping all team members informed and involved, we were able to navigate the complexities of modularizing a live and evolving codebase.
+
+It also highlighted the value of an **incremental approach** to tackling complex problems. Breaking down the modularization process into manageable chunks made the task less overwhelming and allowed for continuous progress without significant disruptions.
+
+From a technical perspective, the experience deepened my expertise in **Kotlin and Java, modular architectures, dynamic feature modules, and dependency injection with Dagger**. It reinforced the necessity of innovative problem-solving and the willingness to rethink established methods when they no longer serve the project's needs.
 
 }}}
