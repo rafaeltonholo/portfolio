@@ -55,7 +55,6 @@ fun String.camelCaseToKebabCase(): String = splitCamelCase().joinToString("-")
 // parallel list.
 val projectSlugs = listOf(
     "thunderbird",
-    "bleacher-report",
     "svg-compose",
     "ivy-wallet",
 )

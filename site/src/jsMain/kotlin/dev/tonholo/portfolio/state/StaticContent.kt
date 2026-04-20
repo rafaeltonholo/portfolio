@@ -185,10 +185,10 @@ private val PROJECTS_EN: List<Project> = listOf(
         index = "04",
         name = "SVG to Compose",
         kind = ProjectKind.OpenSource,
-        role = "Creator",
+        role = "Maintainer",
         year = "2023 - ongoing",
-        description = "Command-line tool that converts SVG and Android Vector Drawables " +
-            "into idiomatic Jetpack Compose Icons. Drops design handoff friction to near zero.",
+        description = "A command-line tool to convert SVG or an Android Vector Drawable " +
+            "(AVG) to Jetpack Compose Icons.",
         stack = listOf("Kotlin", "CLI", "Compose"),
         stats = listOf(
             ProjectStat(value = "1.2k", label = "GitHub stars"),
@@ -202,10 +202,11 @@ private val PROJECTS_EN: List<Project> = listOf(
         index = "05",
         name = "ivy-wallet",
         kind = ProjectKind.OpenSource,
-        role = "Contributor",
+        role = "Maintainer",
         year = "2023",
-        description = "Contributed to a 100% Kotlin + Compose personal finance app used " +
-            "by 100k+ people. Focus areas: architecture refactors and stability.",
+        description = "Ivy Wallet is a free and open source money management android app. " +
+            "It's written using 100% Kotlin and Jetpack Compose. It's designed to help you " +
+            "keep track of your personal finances with ease.",
         stack = listOf("Kotlin", "Compose", "Room"),
         stats = listOf(
             ProjectStat(value = "100k+", label = "installs"),
@@ -236,7 +237,7 @@ private val PROJECTS_PT_BR: List<Project> = listOf(
         externalCta = "Ver no GitHub",
     ),
     Project(
-        slug = "bleacher-report",
+        slug = "bleacher-report-pt-br",
         index = "02",
         name = "Bleacher Report",
         kind = ProjectKind.Commercial,
@@ -276,11 +277,10 @@ private val PROJECTS_PT_BR: List<Project> = listOf(
         index = "04",
         name = "SVG to Compose",
         kind = ProjectKind.OpenSource,
-        role = "Criador",
+        role = "Mantenedor",
         year = "2023 - em andamento",
-        description = "Ferramenta de linha de comando que converte SVG e Android Vector " +
-            "Drawables em Jetpack Compose Icons idiomáticos. Reduz a fricção de handoff " +
-            "do design quase a zero.",
+        description = "Uma ferramenta command-line para converter SVG ou um Android Vector " +
+            "Drawable (AVG) para Jetpack Compose icones.",
         stack = listOf("Kotlin", "CLI", "Compose"),
         stats = listOf(
             ProjectStat(value = "1.2k", label = "estrelas no GitHub"),
@@ -294,11 +294,11 @@ private val PROJECTS_PT_BR: List<Project> = listOf(
         index = "05",
         name = "ivy-wallet",
         kind = ProjectKind.OpenSource,
-        role = "Contribuidor",
+        role = "Mantenedor",
         year = "2023",
-        description = "Contribuições em um app de finanças pessoais 100% Kotlin + Compose " +
-            "usado por mais de 100 mil pessoas. Áreas de foco: refactors de arquitetura " +
-            "e estabilidade.",
+        description = "Ivy Wallet é um aplicativo Android gerenciador de finanças grátis e " +
+            "open source. É escrito usando 100% Kotlin e Jetpack Compose. Seu objetivo é " +
+            "ajudar o usuário a manter os registros pessoais de suas finanças de maneira simples.",
         stack = listOf("Kotlin", "Compose", "Room"),
         stats = listOf(
             ProjectStat(value = "100k+", label = "instalações"),
