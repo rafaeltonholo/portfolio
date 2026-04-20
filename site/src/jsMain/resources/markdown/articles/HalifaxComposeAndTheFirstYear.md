@@ -1,5 +1,5 @@
 ---
-title: Ottawa, Compose, and the first year
+title: Halifax, Compose, and the first year
 date: jan 18, 2026
 description: A non-technical one. What it's like to move across a hemisphere mid-career.
 tags:
@@ -7,7 +7,7 @@ tags:
 readTime: 8 min
 ---
 
-A year in Ottawa, starting over. I wrote this one for the friends who asked what it actually feels like, rather than the ones who wanted to know about the job.
+A year in Halifax, starting over. I wrote this one for the friends who asked what it actually feels like, rather than the ones who wanted to know about the job.
 
 ## The small things
 
@@ -19,4 +19,4 @@ The bigger things take longer. Work remains work; the meetings run the same rega
 
 ## What I wouldn't trade
 
-The running paths along the river in every season. The moment the maple leaves turn. The first snowfall of the year, which still feels like a minor miracle. And the feeling of rebuilding a life deliberately, piece by piece, with the people who decided to come along.
+The harbourwalk in every season. The moment the maple leaves turn. The first snowfall of the year, which still feels like a minor miracle. And the feeling of rebuilding a life deliberately, piece by piece, with the people who decided to come along.

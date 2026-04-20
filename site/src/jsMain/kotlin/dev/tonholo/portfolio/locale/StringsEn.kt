@@ -61,7 +61,7 @@ object StringsEn : Strings() {
     override val about: About = About(
         titlePrefix = "The long way to ",
         titleEmphasis = "Kotlin.",
-        lede = "Brazilian, Ottawa-based, Android-focused. Started programming at 12 on a " +
+        lede = "Brazilian, Halifax-based, Android-focused. Started programming at 12 on a " +
             "MU server for my cousins. Haven't stopped since.",
         tabStory = "Story",
         tabNow = "Now",

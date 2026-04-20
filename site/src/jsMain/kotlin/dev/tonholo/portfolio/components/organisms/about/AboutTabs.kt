@@ -323,7 +323,7 @@ private val HOBBIES = listOf(
     "Coffee" to
         "V60 every morning, usually Ethiopian. I own more filters than I should admit.",
     "Running" to
-        "The Ottawa river path in every season. 10K most weeks, a half-marathon twice a year.",
+        "The Halifax harbourwalk in every season. 10K most weeks, a half-marathon twice a year.",
     "Games" to
         "Metroidvanias. Currently replaying Hollow Knight (again). Silksong, any day now.",
     "Reading" to

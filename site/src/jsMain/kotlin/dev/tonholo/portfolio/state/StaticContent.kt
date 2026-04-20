@@ -328,7 +328,7 @@ object StaticContent {
             label = "off the clock",
             title = "Ragu, most Sundays.",
             body = "Cooking slow Italian on Sundays, loose-leaf sencha in the mornings, " +
-                "and running the Ottawa river path in every season.",
+                "and running the Halifax harbourwalk in every season.",
         ),
     )
 }
