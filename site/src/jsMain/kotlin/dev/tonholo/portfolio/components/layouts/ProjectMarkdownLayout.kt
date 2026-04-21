@@ -1,6 +1,7 @@
 package dev.tonholo.portfolio.components.layouts
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.borderRadius
 import com.varabyte.kobweb.compose.ui.modifiers.margin
@@ -16,6 +17,7 @@ import dev.tonholo.portfolio.components.atoms.Placeholder
 import dev.tonholo.portfolio.components.molecules.ProjectBreadcrumb
 import dev.tonholo.portfolio.components.organisms.projects.ProjectDetailHero
 import dev.tonholo.portfolio.locale.LocalStrings
+import dev.tonholo.portfolio.locale.Locale
 import dev.tonholo.portfolio.navigation.Routes
 import dev.tonholo.portfolio.state.LocalLocaleState
 import dev.tonholo.portfolio.state.StaticContent
@@ -28,18 +30,20 @@ private val COVER_RADIUS = 4.dp
 private val COVER_MARGIN_BOTTOM = 64.dp
 
 /**
- * Route-local payload populated by [initProjectMarkdownLayout]. Only the slug
- * is lifted out of frontmatter; everything else (hero copy, stack, stats) is
- * resolved from [StaticContent.PROJECTS] so the projects index and the detail
- * page share a single source of truth.
+ * Route-local payload populated by [initProjectMarkdownLayout]. The [slug] is
+ * the canonical project slug shared across locales; [locale] is the locale
+ * resolved from the markdown frontmatter `locale` key (or the default when
+ * the key is absent) and used to keep content, chrome, and prev/next links
+ * in sync with the URL.
  */
-data class ProjectMarkdownLayoutData(val slug: String)
+data class ProjectMarkdownLayoutData(val slug: String, val locale: Locale)
 
 /**
  * `@InitRoute` hook for markdown-authored project detail pages. Reads the
- * `slug` frontmatter key so [ProjectMarkdownLayout] can look the project up in
- * [StaticContent.PROJECTS]. Falls back to the markdown file stem (kebab-cased
- * by the file path) if the frontmatter omits it.
+ * `slug` and `locale` frontmatter keys so [ProjectMarkdownLayout] can look
+ * the project up in [StaticContent] under the right locale. Falls back to
+ * the markdown file stem (kebab-cased by the file path, locale suffix
+ * stripped) when the frontmatter omits them.
  */
 @InitRoute
 fun initProjectMarkdownLayout(ctx: InitRouteContext) {
@@ -49,8 +53,17 @@ fun initProjectMarkdownLayout(ctx: InitRouteContext) {
         .substringAfterLast('/')
         .removeSuffix(".md")
         .kebab()
-    val slug = frontMatter?.get("slug")?.singleOrNull()?.takeIf { it.isNotBlank() } ?: fallbackSlug
-    ctx.data.add(ProjectMarkdownLayoutData(slug = slug))
+    val localeTag = frontMatter?.get("locale")?.singleOrNull()
+    val locale = Locale.fromTagOrDefault(tag = localeTag)
+    val langSuffix = locale.pathSegment?.let { "-$it" }.orEmpty()
+    val strippedFallbackSlug = if (langSuffix.isNotEmpty() && fallbackSlug.endsWith(langSuffix)) {
+        fallbackSlug.removeSuffix(langSuffix)
+    } else {
+        fallbackSlug
+    }
+    val slug = frontMatter?.get("slug")?.singleOrNull()?.takeIf { it.isNotBlank() }
+        ?: strippedFallbackSlug
+    ctx.data.add(ProjectMarkdownLayoutData(slug = slug, locale = locale))
 }
 
 private fun String.kebab(): String {
@@ -77,7 +90,8 @@ private fun String.kebab(): String {
  * renders the chrome shared across every case study (breadcrumb, hero, cover
  * placeholder) before handing the rest of the page off to the markdown body.
  *
- * Frontmatter requirement: `slug` matching an entry in [StaticContent.PROJECTS].
+ * Frontmatter requirement: `slug` matching an entry in [StaticContent.projectsFor];
+ * optional `locale` (BCP-47) to select the PT-BR variant of the case study.
  * Missing slugs render the shared not-found copy.
  *
  * @param context the active [PageContext]; used to look up the typed route data.
@@ -88,10 +102,15 @@ private fun String.kebab(): String {
 @Suppress("ModifierMissing")
 fun ProjectMarkdownLayout(context: PageContext, content: @Composable () -> Unit) {
     val strings = LocalStrings.current.projectDetail
-    val locale = LocalLocaleState.current.current
-    val projects = StaticContent.projectsFor(locale = locale)
     val data = context.data.get<ProjectMarkdownLayoutData>()
-        ?: ProjectMarkdownLayoutData(slug = "")
+        ?: ProjectMarkdownLayoutData(slug = "", locale = Locale.EnCa)
+    val localeState = LocalLocaleState.current
+    LaunchedEffect(data.locale) {
+        if (localeState.current != data.locale) {
+            localeState.set(data.locale)
+        }
+    }
+    val projects = StaticContent.projectsFor(locale = data.locale)
     val index = projects.indexOfFirst { it.slug == data.slug }
     val project = projects.getOrNull(index = index)
     val nextProject = projects.getOrNull(index = index + 1)
@@ -110,7 +129,7 @@ fun ProjectMarkdownLayout(context: PageContext, content: @Composable () -> Unit)
     ProjectLayout(
         backRoute = Routes.PROJECTS,
         nextProjectName = nextProject?.name,
-        nextRoute = nextProject?.let { Routes.project(slug = it.slug) },
+        nextRoute = nextProject?.let { Routes.project(slug = it.slug, locale = data.locale) },
     ) {
         ProjectBreadcrumb(projectName = project.name)
         ProjectDetailHero(project = project)

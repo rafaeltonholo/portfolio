@@ -1,6 +1,8 @@
 ---
 layout: .components.layouts.ProjectMarkdownLayout
-slug: bleacher-report-pt-br
+routeOverride: /projects/pt-br/bleacher-report
+slug: bleacher-report
+locale: pt-BR
 title: Bleacher Report - Ads centralizados e adoção do Jetpack Compose
 description: "Duas iniciativas na Bleacher Report: um gerenciador Centralizado de Anúncios que eliminou os crashes de inserção de ads e moveu a configuração de slots para o backend, e a introdução do Jetpack Compose para preparar o time para o próximo aplicativo."
 ---

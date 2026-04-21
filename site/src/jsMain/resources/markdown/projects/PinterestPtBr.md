@@ -1,6 +1,8 @@
 ---
 layout: .components.layouts.ProjectMarkdownLayout
-slug: pinterest-pt-br
+routeOverride: /projects/pt-br/pinterest
+slug: pinterest
+locale: pt-BR
 title: Pinterest - Modularizando o codebase do Pinterest
 description: Adotando uma abordagem incremental e um gerenciador central de dependências para features dinâmicas, modularizamos uma base de código com mais de 9 anos de história e milhões de usuários.
 ---

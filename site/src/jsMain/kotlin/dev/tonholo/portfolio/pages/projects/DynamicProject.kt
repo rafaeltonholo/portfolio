@@ -1,6 +1,7 @@
 package dev.tonholo.portfolio.pages.projects
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.borderRadius
 import com.varabyte.kobweb.compose.ui.modifiers.margin
@@ -16,6 +17,7 @@ import dev.tonholo.portfolio.components.organisms.projects.ProjectOutcome
 import dev.tonholo.portfolio.components.organisms.projects.ProjectSection
 import dev.tonholo.portfolio.domain.model.Project
 import dev.tonholo.portfolio.locale.LocalStrings
+import dev.tonholo.portfolio.locale.Locale
 import dev.tonholo.portfolio.locale.Strings
 import dev.tonholo.portfolio.navigation.Routes
 import dev.tonholo.portfolio.state.LocalLocaleState
@@ -32,26 +34,49 @@ private val COVER_MARGIN_BOTTOM = 64.dp
 
 /**
  * Dynamic project route "/projects/{slug}" - looks up the requested project
- * in [StaticContent.PROJECTS] and renders a case-study shell. Projects with a
- * full editorial case study (currently Pinterest) live as markdown under
+ * in [StaticContent.projectsFor] (English locale) and renders a case-study
+ * shell. Projects with a full editorial case study (e.g., Pinterest,
+ * Bleacher Report) live as markdown under
  * `src/jsMain/resources/markdown/projects/` and render through
  * [dev.tonholo.portfolio.components.layouts.ProjectMarkdownLayout]; this
  * dynamic route is the fallback that serves every other slug using the
  * project's [Project.description] plus the [OutcomesGrid] derived from
  * [Project.stats].
  *
- * The sticky [ProjectLayout] footer wires back/next navigation using the
- * project's index in the seed list.
+ * Localized variants live at literal-prefixed routes (e.g.
+ * [DynamicPtBrProjectPage] for `/projects/pt-br/{slug}`). Kobweb's route
+ * tree only accepts a single dynamic segment name per level, so each
+ * non-default locale needs its own `@Page` with a static language segment.
  */
 @Page(routeOverride = "/projects/{slug}")
 @Composable
 @Suppress("ModifierMissing")
 fun DynamicProjectPage() {
     val pageContext = rememberPageContext()
-    val strings = LocalStrings.current.projectDetail
-    val locale = LocalLocaleState.current.current
-    val projects = StaticContent.projectsFor(locale = locale)
     val slug = pageContext.route.params[PROJECT_SLUG_PARAM].orEmpty()
+    RenderDynamicProject(slug = slug, locale = Locale.EnCa)
+}
+
+/**
+ * Pt-BR dynamic project route "/projects/pt-br/{slug}". Kobweb only allows
+ * a single dynamic segment name per level, so each non-default locale needs
+ * its own page with a literal path segment. Delegates to the shared
+ * [RenderDynamicProject] body after pinning the locale to [Locale.PtBr].
+ */
+@Page(routeOverride = "/projects/pt-br/{slug}")
+@Composable
+@Suppress("ModifierMissing")
+fun DynamicPtBrProjectPage() {
+    val pageContext = rememberPageContext()
+    val slug = pageContext.route.params[PROJECT_SLUG_PARAM].orEmpty()
+    RenderDynamicProject(slug = slug, locale = Locale.PtBr)
+}
+
+@Composable
+private fun RenderDynamicProject(slug: String, locale: Locale) {
+    SyncLocaleToUrl(locale = locale)
+    val strings = LocalStrings.current.projectDetail
+    val projects = StaticContent.projectsFor(locale = locale)
     val index = projects.indexOfFirst { it.slug == slug }
     val project = projects.getOrNull(index = index)
     val nextProject = projects.getOrNull(index = index + 1)
@@ -70,7 +95,7 @@ fun DynamicProjectPage() {
     ProjectLayout(
         backRoute = Routes.PROJECTS,
         nextProjectName = nextProject?.name,
-        nextRoute = nextProject?.let { Routes.project(slug = it.slug) },
+        nextRoute = nextProject?.let { Routes.project(slug = it.slug, locale = locale) },
     ) {
         ProjectBreadcrumb(projectName = project.name)
         ProjectDetailHero(project = project)
@@ -82,6 +107,16 @@ fun DynamicProjectPage() {
                 .margin(bottom = COVER_MARGIN_BOTTOM),
         )
         DefaultProjectSections(project = project, strings = strings)
+    }
+}
+
+@Composable
+private fun SyncLocaleToUrl(locale: Locale) {
+    val localeState = LocalLocaleState.current
+    LaunchedEffect(locale) {
+        if (localeState.current != locale) {
+            localeState.set(locale)
+        }
     }
 }
 

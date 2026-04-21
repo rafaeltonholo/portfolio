@@ -47,6 +47,28 @@ fun String.splitCamelCase(): List<String> {
 
 fun String.camelCaseToKebabCase(): String = splitCamelCase().joinToString("-")
 
+/**
+ * Lower-cased URL segments of every non-default locale supported by the site.
+ * Must stay in sync with `dev.tonholo.portfolio.locale.Locale.pathSegment` for
+ * every non-null value. Used to split a kebab-cased filename slug into its
+ * canonical slug and locale (e.g., `bleacher-report-pt-br` -> `bleacher-report` + `pt-br`).
+ */
+val localizedPathSegments = listOf("pt-br")
+
+/**
+ * Splits a kebab-cased slug into (canonical, locale?). Returns (slug, null)
+ * when no known locale suffix is present.
+ */
+fun String.splitLocalizedSlug(): Pair<String, String?> {
+    for (lang in localizedPathSegments) {
+        val suffix = "-$lang"
+        if (this.endsWith(suffix)) {
+            return this.removeSuffix(suffix) to lang
+        }
+    }
+    return this to null
+}
+
 // Dynamic-route slugs registered with the Kobweb static exporter. Project
 // slugs stay hard-coded for `@Page("/projects/{slug}")`; the markdown-backed
 // project slugs (full case studies) are discovered by scanning
@@ -132,11 +154,24 @@ kobweb {
             }
         }
         export {
+            // Hardcoded dynamic project slugs (no markdown case study) are
+            // rendered by `DynamicProjectPage` (EN) and
+            // `DynamicLocalizedProjectPage` (non-default locales). Emit one
+            // extra route per locale.
             projectSlugs.forEach { slug ->
                 addExtraRoute(route = "/projects/$slug", exportPath = "projects/$slug.html")
+                localizedPathSegments.forEach { lang ->
+                    addExtraRoute(
+                        route = "/projects/$lang/$slug",
+                        exportPath = "projects/$lang/$slug.html",
+                    )
+                }
             }
-            articleSlugs.forEach { slug ->
-                addExtraRoute(route = "/articles/$slug", exportPath = "articles/$slug.html")
+            articleSlugs.forEach { kebabSlug ->
+                val (canonical, lang) = kebabSlug.splitLocalizedSlug()
+                val route = if (lang == null) "/articles/$canonical" else "/articles/$lang/$canonical"
+                val exportPath = if (lang == null) "articles/$canonical.html" else "articles/$lang/$canonical.html"
+                addExtraRoute(route = route, exportPath = exportPath)
             }
             // Emit 404.html so GitHub Pages (and most static hosts) serve the
             // IDE-themed recovery screen for unknown URLs. The SPA router
@@ -343,8 +378,8 @@ val generateBuildAnalytics by tasks.registering {
                 |package dev.tonholo.portfolio.analytics
                 |
                 |internal object BuildAnalytics {
-                |    const val UMAMI_SCRIPT_URL: String = "${scriptUrl}"
-                |    const val UMAMI_WEBSITE_ID: String = "${websiteId}"
+                |    const val UMAMI_SCRIPT_URL: String = "$scriptUrl"
+                |    const val UMAMI_WEBSITE_ID: String = "$websiteId"
                 |}
                 |
             """.trimMargin()
@@ -378,9 +413,18 @@ val generateSitemap by tasks.registering {
         "/resume" to ("monthly" to "0.7"),
     )
 
-    val extraSlugs = projectSlugs.map { "/projects/$it" } +
-        projectMarkdownSlugs.map { "/projects/$it" } +
-        articleSlugs.map { "/articles/$it" }
+    val dynamicProjectUrls = projectSlugs.flatMap { slug ->
+        listOf("/projects/$slug") + localizedPathSegments.map { lang -> "/projects/$lang/$slug" }
+    }
+    val markdownProjectUrls = projectMarkdownSlugs.map { kebabSlug ->
+        val (canonical, lang) = kebabSlug.splitLocalizedSlug()
+        if (lang == null) "/projects/$canonical" else "/projects/$lang/$canonical"
+    }
+    val articleUrls = articleSlugs.map { kebabSlug ->
+        val (canonical, lang) = kebabSlug.splitLocalizedSlug()
+        if (lang == null) "/articles/$canonical" else "/articles/$lang/$canonical"
+    }
+    val extraSlugs = dynamicProjectUrls + markdownProjectUrls + articleUrls
 
     inputs.dir(pagesDir)
     inputs.file(appPropertiesFile)
