@@ -44,6 +44,7 @@ import dev.tonholo.portfolio.domain.model.ArticleStatus
 import dev.tonholo.portfolio.locale.LocalStrings
 import dev.tonholo.portfolio.locale.Strings
 import dev.tonholo.portfolio.navigation.Routes
+import dev.tonholo.portfolio.state.LocalLocaleState
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.PortfolioTokens
 import dev.tonholo.portfolio.theme.color.Paper
@@ -160,6 +161,7 @@ fun ArticleList(articles: List<Article>, modifier: Modifier = Modifier) {
 @Composable
 private fun ArticleRow(article: Article, isLast: Boolean, strings: Strings.ArticlesList) {
     val tokens = LocalPortfolioTokens.current
+    val locale = LocalLocaleState.current.current
     val borderColor = articleRowBorderColor()
 
     var rowModifier = ArticleRowStyle
@@ -178,7 +180,7 @@ private fun ArticleRow(article: Article, isLast: Boolean, strings: Strings.Artic
     }
 
     Link(
-        path = Routes.article(slug = article.slug),
+        path = Routes.article(slug = article.slug, locale = locale),
         modifier = rowModifier,
         variant = UndecoratedLinkVariant then UncoloredLinkVariant,
     ) {

@@ -44,6 +44,7 @@ import dev.tonholo.portfolio.components.molecules.SocialLink
 import dev.tonholo.portfolio.locale.LocalStrings
 import dev.tonholo.portfolio.locale.Strings
 import dev.tonholo.portfolio.navigation.Routes
+import dev.tonholo.portfolio.state.LocalLocaleState
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.color.AccentMint
 import dev.tonholo.portfolio.theme.color.Ink
@@ -256,24 +257,25 @@ private fun PagesColumn(strings: Strings.Footer) {
  */
 @Composable
 private fun WorkColumn(heading: String) {
+    val locale = LocalLocaleState.current.current
     Div(attrs = Modifier.toAttrs()) {
         ColumnHeading(text = heading)
         Ul(attrs = FooterListStyle.toModifier().toAttrs()) {
             FooterNavItem(
                 label = WORK_PINTEREST_LABEL,
-                route = Routes.project(slug = WORK_PINTEREST_SLUG),
+                route = Routes.project(slug = WORK_PINTEREST_SLUG, locale = locale),
             )
             FooterNavItem(
                 label = WORK_BLEACHER_REPORT_LABEL,
-                route = Routes.project(slug = WORK_BLEACHER_REPORT_SLUG),
+                route = Routes.project(slug = WORK_BLEACHER_REPORT_SLUG, locale = locale),
             )
             FooterNavItem(
                 label = WORK_SVG_TO_COMPOSE_LABEL,
-                route = Routes.project(slug = WORK_SVG_TO_COMPOSE_SLUG),
+                route = Routes.project(slug = WORK_SVG_TO_COMPOSE_SLUG, locale = locale),
             )
             FooterNavItem(
                 label = WORK_IVY_WALLET_LABEL,
-                route = Routes.project(slug = WORK_IVY_WALLET_SLUG),
+                route = Routes.project(slug = WORK_IVY_WALLET_SLUG, locale = locale),
             )
         }
     }

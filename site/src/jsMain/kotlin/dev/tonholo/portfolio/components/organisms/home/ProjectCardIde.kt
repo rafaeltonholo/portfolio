@@ -44,6 +44,7 @@ import dev.tonholo.portfolio.domain.model.Project
 import dev.tonholo.portfolio.domain.model.ProjectKind
 import dev.tonholo.portfolio.extensions.toKebabCase
 import dev.tonholo.portfolio.navigation.Routes
+import dev.tonholo.portfolio.state.LocalLocaleState
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.color.Paper
 import dev.tonholo.portfolio.theme.layout.unit.dp
@@ -137,6 +138,7 @@ private val STACK_ROW_GAP = 6.dp
 @Composable
 fun ProjectCardIde(project: Project, modifier: Modifier = Modifier) {
     val tokens = LocalPortfolioTokens.current
+    val locale = LocalLocaleState.current.current
 
     val cardModifier = ProjectCardIdeStyle
         .toModifier()
@@ -144,7 +146,7 @@ fun ProjectCardIde(project: Project, modifier: Modifier = Modifier) {
         .then(modifier)
 
     Link(
-        path = Routes.project(slug = project.slug),
+        path = Routes.project(slug = project.slug, locale = locale),
         modifier = cardModifier,
         variant = UndecoratedLinkVariant then UncoloredLinkVariant,
     ) {

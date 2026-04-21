@@ -43,6 +43,8 @@ import com.varabyte.kobweb.compose.ui.modifiers.transition
 import com.varabyte.kobweb.compose.ui.modifiers.whiteSpace
 import com.varabyte.kobweb.compose.ui.modifiers.zIndex
 import com.varabyte.kobweb.compose.ui.toAttrs
+import com.varabyte.kobweb.core.PageContext
+import com.varabyte.kobweb.core.rememberPageContext
 import com.varabyte.kobweb.silk.style.CssStyle
 import com.varabyte.kobweb.silk.style.extendedBy
 import com.varabyte.kobweb.silk.style.toModifier
@@ -56,10 +58,12 @@ import dev.tonholo.portfolio.components.molecules.BrandMark
 import dev.tonholo.portfolio.components.molecules.LanguageSwitch
 import dev.tonholo.portfolio.components.molecules.NavLink
 import dev.tonholo.portfolio.locale.LocalStrings
+import dev.tonholo.portfolio.locale.Locale
 import dev.tonholo.portfolio.locale.Strings
 import dev.tonholo.portfolio.navigation.Routes
 import dev.tonholo.portfolio.state.LocalLocaleState
 import dev.tonholo.portfolio.state.LocalThemeState
+import dev.tonholo.portfolio.state.LocaleState
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.color.Muted
 import dev.tonholo.portfolio.theme.color.Paper
@@ -157,6 +161,7 @@ private fun navLinksFor(nav: Strings.Nav): List<NavLinkEntry> = listOf(
 fun Nav(currentRoute: String, modifier: Modifier = Modifier) {
     val themeState = LocalThemeState.current
     val localeState = LocalLocaleState.current
+    val pageContext = rememberPageContext()
     val strings = LocalStrings.current
     val isDark = themeState.current.isDark
 
@@ -175,7 +180,17 @@ fun Nav(currentRoute: String, modifier: Modifier = Modifier) {
                 statusLabel = strings.statusBadge.statusLabel,
                 presenceLabel = strings.statusBadge.presenceLabel,
             )
-            LanguageSwitch(current = localeState.current, onSwitch = { localeState.set(it) })
+            LanguageSwitch(
+                current = localeState.current,
+                onSwitch = { next ->
+                    switchLocale(
+                        next = next,
+                        currentRoute = currentRoute,
+                        localeState = localeState,
+                        pageContext = pageContext,
+                    )
+                },
+            )
             IconButton(
                 modifier = Modifier.title(
                     if (isDark) strings.themeToggle.titleToLight else strings.themeToggle.titleToDark,
@@ -187,6 +202,32 @@ fun Nav(currentRoute: String, modifier: Modifier = Modifier) {
             }
         }
     }
+}
+
+/**
+ * Flips [localeState] to [next] and, when the current path is an article or
+ * project detail URL, navigates to the localized equivalent so the URL and
+ * rendered content stay in sync (`/projects/pinterest` <->
+ * `/projects/pt-br/pinterest`). Falls through without navigating when the
+ * route does not have a locale-specific shape (home, lists, about, resume,
+ * 404, ...).
+ */
+private fun switchLocale(
+    next: Locale,
+    currentRoute: String,
+    localeState: LocaleState,
+    pageContext: PageContext,
+) {
+    localeState.set(next)
+    val localized = Routes.parseLocalizedSlug(currentRoute) ?: return
+    if (localized.locale == next) return
+    val target = when (localized.section) {
+        Routes.ARTICLES -> Routes.article(slug = localized.slug, locale = next)
+        Routes.PROJECTS -> Routes.project(slug = localized.slug, locale = next)
+        else -> return
+    }
+    if (target == currentRoute) return
+    pageContext.router.tryRoutingTo(pathQueryAndFragment = target)
 }
 
 @Composable
