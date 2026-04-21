@@ -63,19 +63,90 @@ object StringsEn : Strings() {
         titleEmphasis = "Kotlin.",
         lede = "Brazilian, Halifax-based, Android-focused. Started programming at 12 on a " +
             "MU server for my cousins. Haven't stopped since.",
+        portraitAlt = "Rafael Tonholo writing at his desk.",
         tabStory = "Story",
         tabNow = "Now",
         tabHobbies = "Hobbies",
         tabBeyond = "Beyond code",
+        storyIntro1 = "Ever since I was little, I've been fascinated with technology - " +
+            "spending hours customizing my parents' computer and trying to make it my own.",
+        storyIntro2 = "My first real contact with programming was at twelve, when I decided I " +
+            "wanted a private MU server for me and my cousins. I didn't know what I was " +
+            "doing. The server was unstable. The cousins were thrilled.",
+        storyHeading2010 = "2010 - first Android build",
+        storyBody2010 = "High school technical program, first Java class, and an Android SDK " +
+            "that was still very young. I built a barely functional TODO app. It " +
+            "crashed on rotation. I was hooked.",
+        storyHeading2015 = "2015 - full-time mobile",
+        storyBody2015 = "After a few years of full-stack work - .NET in healthcare and marketing, " +
+            "then cross-platform surveys - I realized I only wanted to work on what I could " +
+            "hold. Android became the focus. Kotlin landed the next year and never left.",
+        storyHeading2021 = "2021 - Pinterest",
+        storyBody2021 = "First time working on a codebase with millions of users and nine years " +
+            "of history. A 30-minute clean build became a personal vendetta. Modularizing " +
+            "it - incrementally, without a freeze - taught me more about architecture than " +
+            "any book ever has.",
+        storyHeadingToday = "Today",
+        storyBodyToday = "Thunderbird for Android at Mozilla. Kotlin-first, privacy-first, " +
+            "Compose-forward, and everything shipping in the open. Writing a bit more. " +
+            "Cooking a lot more.",
         nowUpdatedPrefix = "// updated apr 12, 2026",
         nowHeadingWorking = "Working on",
+        nowBodyWorking = "Thunderbird for Android at Mozilla. Feature work across the flagship " +
+            "app and contributing upstream to shared mobile libraries. Open-source, " +
+            "privacy-first, and the community cares.",
         nowHeadingLearning = "Learning",
+        nowBodyLearning = "Compose Multiplatform on desktop. It's rough in spots but the feeling " +
+            "of one codebase across 4 targets is genuinely exciting again.",
         nowHeadingWriting = "Writing",
+        nowBodyWriting = "Two drafts in the queue - one on Compose stability (the good, the " +
+            "painful, the \"actually fine\") and one on why I stopped fearing Gradle.",
         nowHeadingThinking = "Thinking about",
-        storyHeading2010 = "2010 - first Android build",
-        storyHeading2015 = "2015 - full-time mobile",
-        storyHeading2021 = "2021 - Pinterest",
-        storyHeadingToday = "Today",
+        nowBodyThinking = "How to share knowledge without falling into the trap of writing " +
+            "beginner content I don't enjoy writing. Also, whether to start a YouTube " +
+            "channel (probably not).",
+        hobbies = listOf(
+            About.Hobby(
+                label = "Cooking",
+                body = "Mostly Italian, slow, on Sundays. My pasta game is solid, my bread game " +
+                    "is a work in progress.",
+            ),
+            About.Hobby(
+                label = "Coffee",
+                body = "V60 every morning, usually Ethiopian. I own more filters than I should " +
+                    "admit.",
+            ),
+            About.Hobby(
+                label = "Running",
+                body = "The Halifax harbourwalk in every season. 10K most weeks, a half-marathon " +
+                    "twice a year.",
+            ),
+            About.Hobby(
+                label = "Games",
+                body = "Metroidvanias. Currently replaying Hollow Knight (again). Silksong, any " +
+                    "day now.",
+            ),
+            About.Hobby(
+                label = "Reading",
+                body = "Non-fiction tech + one novel always going in parallel. Current pair: " +
+                    "DDIA and Station Eleven.",
+            ),
+            About.Hobby(
+                label = "Travel",
+                body = "Short trips inside Canada. Long trips back home to Brazil every year or " +
+                    "two.",
+            ),
+        ),
+        beyondBody1 = "I moved from Brazil to Canada in 2022 - a small decision that became a " +
+            "huge one. Adjusting to the cold, the snow, the French, the strange Tim " +
+            "Hortons loyalty that comes with living here.",
+        beyondBody2 = "My wife is a product designer (and my first reader for anything I write). " +
+            "We met at a university lab in Belo Horizonte where she was building, of all " +
+            "things, a physical board-game prototype with Arduino. We've been making things " +
+            "together ever since.",
+        beyondBody3 = "I try to give something back to the communities I learned from - mostly " +
+            "through open source and occasional talks. If you're an early-career engineer " +
+            "and want to chat, my inbox is open.",
     )
 
     override val articlesList: ArticlesList = ArticlesList(

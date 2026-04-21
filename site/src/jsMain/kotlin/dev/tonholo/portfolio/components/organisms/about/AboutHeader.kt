@@ -2,10 +2,14 @@ package dev.tonholo.portfolio.components.organisms.about
 
 import androidx.compose.runtime.Composable
 import com.varabyte.kobweb.compose.css.FontStyle
+import com.varabyte.kobweb.compose.css.ObjectFit
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.alignItems
+import com.varabyte.kobweb.compose.ui.modifiers.aspectRatio
 import com.varabyte.kobweb.compose.ui.modifiers.color
 import com.varabyte.kobweb.compose.ui.modifiers.display
+import com.varabyte.kobweb.compose.ui.modifiers.fillMaxSize
+import com.varabyte.kobweb.compose.ui.modifiers.fillMaxWidth
 import com.varabyte.kobweb.compose.ui.modifiers.fontFamily
 import com.varabyte.kobweb.compose.ui.modifiers.fontSize
 import com.varabyte.kobweb.compose.ui.modifiers.fontStyle
@@ -14,14 +18,14 @@ import com.varabyte.kobweb.compose.ui.modifiers.gridTemplateColumns
 import com.varabyte.kobweb.compose.ui.modifiers.lineHeight
 import com.varabyte.kobweb.compose.ui.modifiers.margin
 import com.varabyte.kobweb.compose.ui.modifiers.maxWidth
+import com.varabyte.kobweb.compose.ui.modifiers.objectFit
 import com.varabyte.kobweb.compose.ui.toAttrs
+import com.varabyte.kobweb.silk.components.graphics.Image
 import com.varabyte.kobweb.silk.style.CssStyle
 import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.style.toModifier
-import dev.tonholo.portfolio.components.atoms.AspectRatio
 import dev.tonholo.portfolio.components.atoms.MetaLabel
 import dev.tonholo.portfolio.components.atoms.MetaLabelVariant
-import dev.tonholo.portfolio.components.atoms.Placeholder
 import dev.tonholo.portfolio.locale.LocalStrings
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.layout.unit.dp
@@ -61,9 +65,13 @@ private const val LEDE_MAX_WIDTH_CH = 48.0
 // Mono eyebrow label is a technical literal (file path) and stays in English.
 private const val META_TEXT = "// about.me"
 
-// Placeholder label for the portrait slot stays untranslated; it is a debug
-// caption shown only while the real asset is pending.
-private const val PORTRAIT_LABEL = "portrait - 4:5"
+// Portrait asset matches the old layout's About image; served from
+// site/src/jsMain/resources/public/images so Kobweb exposes it at /images/writing.jpg.
+private const val PORTRAIT_SRC = "/images/writing.jpg"
+
+// 4:5 ratio reserved for the portrait slot (width:height).
+private const val PORTRAIT_ASPECT_W = 4
+private const val PORTRAIT_ASPECT_H = 5
 
 /**
  * About page header organism. Maps to `.about-hdr` in the handoff CSS: a
@@ -84,7 +92,32 @@ fun AboutHeader(modifier: Modifier = Modifier) {
 
     Div(attrs = finalModifier.toAttrs()) {
         AboutHeaderCopyColumn()
-        Placeholder(aspectRatio = AspectRatio.Portrait4x5, label = PORTRAIT_LABEL)
+        AboutHeaderPortrait()
+    }
+}
+
+/**
+ * Right column: editorial portrait constrained to the 4:5 frame that the
+ * handoff reserved for the about placeholder. The outer `Div` holds the
+ * aspect ratio so the grid column keeps a predictable height, while the
+ * inner `Image` fills the frame with `object-fit: cover` to avoid
+ * distortion across breakpoints.
+ */
+@Composable
+private fun AboutHeaderPortrait() {
+    val strings = LocalStrings.current.about
+
+    Div(
+        attrs = AboutHeaderPortraitFrameStyle
+            .toModifier()
+            .aspectRatio(width = PORTRAIT_ASPECT_W, height = PORTRAIT_ASPECT_H)
+            .toAttrs(),
+    ) {
+        Image(
+            src = PORTRAIT_SRC,
+            description = strings.portraitAlt,
+            modifier = AboutHeaderPortraitImageStyle.toModifier(),
+        )
     }
 }
 
@@ -169,6 +202,31 @@ val AboutHeaderStyle = CssStyle {
 val AboutHeaderTitleEmphasisStyle = CssStyle {
     base {
         Modifier.fontStyle(FontStyle.Normal)
+    }
+}
+
+/**
+ * Outer wrapper around the portrait image. Keeps the 4:5 frame and hides any
+ * pixel overflow from the covered image so the grid column holds its shape.
+ */
+val AboutHeaderPortraitFrameStyle = CssStyle {
+    base {
+        Modifier
+            .fillMaxWidth()
+            .display(DisplayStyle.Block)
+    }
+}
+
+/**
+ * Image inside [AboutHeaderPortraitFrameStyle]: fills the 4:5 frame and uses
+ * `object-fit: cover` so the photo crops instead of stretching when the
+ * column width changes.
+ */
+val AboutHeaderPortraitImageStyle = CssStyle {
+    base {
+        Modifier
+            .fillMaxSize()
+            .objectFit(ObjectFit.Cover)
     }
 }
 

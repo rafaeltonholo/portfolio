@@ -86,25 +86,47 @@ sealed class Strings {
         val ctaSecondary: String,
     )
 
-    /** Copy used by the About page header and tab strip. */
+    /** Copy used by the About page header, tab strip, and every tab panel. */
     data class About(
         val titlePrefix: String,
         val titleEmphasis: String,
         val lede: String,
+        val portraitAlt: String,
         val tabStory: String,
         val tabNow: String,
         val tabHobbies: String,
         val tabBeyond: String,
+        val storyIntro1: String,
+        val storyIntro2: String,
+        val storyHeading2010: String,
+        val storyBody2010: String,
+        val storyHeading2015: String,
+        val storyBody2015: String,
+        val storyHeading2021: String,
+        val storyBody2021: String,
+        val storyHeadingToday: String,
+        val storyBodyToday: String,
         val nowUpdatedPrefix: String,
         val nowHeadingWorking: String,
+        val nowBodyWorking: String,
         val nowHeadingLearning: String,
+        val nowBodyLearning: String,
         val nowHeadingWriting: String,
+        val nowBodyWriting: String,
         val nowHeadingThinking: String,
-        val storyHeading2010: String,
-        val storyHeading2015: String,
-        val storyHeading2021: String,
-        val storyHeadingToday: String,
-    )
+        val nowBodyThinking: String,
+        val hobbies: List<Hobby>,
+        val beyondBody1: String,
+        val beyondBody2: String,
+        val beyondBody3: String,
+    ) {
+        /**
+         * One entry in the hobbies grid. [label] is the accent-meta prefix
+         * (for example "Cooking") and is lowercased into the `/label` slug
+         * shown above the body copy; [body] is the serif paragraph below it.
+         */
+        data class Hobby(val label: String, val body: String)
+    }
 
     /** Copy rendered at the top of the Articles index page. */
     data class ArticlesList(

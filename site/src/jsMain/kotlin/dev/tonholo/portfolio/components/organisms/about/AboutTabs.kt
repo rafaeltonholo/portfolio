@@ -168,8 +168,8 @@ fun AboutTabs(modifier: Modifier = Modifier) {
         when (selected) {
             AboutTab.Story -> StoryPanel(strings = strings)
             AboutTab.Now -> NowPanel(strings = strings)
-            AboutTab.Hobbies -> HobbiesPanel()
-            AboutTab.Beyond -> BeyondPanel()
+            AboutTab.Hobbies -> HobbiesPanel(strings = strings)
+            AboutTab.Beyond -> BeyondPanel(strings = strings)
         }
     }
 }
@@ -222,52 +222,16 @@ private val Transparent: Color = Color.rgba(r = 0, g = 0, b = 0, a = 0f)
 private fun StoryPanel(strings: Strings.About) {
     val tokens = LocalPortfolioTokens.current
     ProseContainer {
-        ProseParagraph(
-            text = "Ever since I was little, I've been fascinated with technology - " +
-                "spending hours customizing my parents' computer and trying to make it my own.",
-            isFirst = true,
-            tokens = tokens,
-        )
-        ProseParagraph(
-            text = "My first real contact with programming was at twelve, when I decided I " +
-                "wanted a private MU server for me and my cousins. I didn't know what I was " +
-                "doing. The server was unstable. The cousins were thrilled.",
-            isFirst = false,
-            tokens = tokens,
-        )
+        ProseParagraph(text = strings.storyIntro1, isFirst = true, tokens = tokens)
+        ProseParagraph(text = strings.storyIntro2, isFirst = false, tokens = tokens)
         ProseHeading(text = strings.storyHeading2010, tokens = tokens)
-        ProseParagraph(
-            text = "High school technical program, first Java class, and an Android SDK " +
-                "that was still very young. I built a barely functional TODO app. It " +
-                "crashed on rotation. I was hooked.",
-            isFirst = true,
-            tokens = tokens,
-        )
+        ProseParagraph(text = strings.storyBody2010, isFirst = true, tokens = tokens)
         ProseHeading(text = strings.storyHeading2015, tokens = tokens)
-        ProseParagraph(
-            text = "After a few years of full-stack work - .NET in healthcare and marketing, " +
-                "then cross-platform surveys - I realized I only wanted to work on what I could " +
-                "hold. Android became the focus. Kotlin landed the next year and never left.",
-            isFirst = true,
-            tokens = tokens,
-        )
+        ProseParagraph(text = strings.storyBody2015, isFirst = true, tokens = tokens)
         ProseHeading(text = strings.storyHeading2021, tokens = tokens)
-        ProseParagraph(
-            text = "First time working on a codebase with millions of users and nine years " +
-                "of history. A 30-minute clean build became a personal vendetta. Modularizing " +
-                "it - incrementally, without a freeze - taught me more about architecture than " +
-                "any book ever has.",
-            isFirst = true,
-            tokens = tokens,
-        )
+        ProseParagraph(text = strings.storyBody2021, isFirst = true, tokens = tokens)
         ProseHeading(text = strings.storyHeadingToday, tokens = tokens)
-        ProseParagraph(
-            text = "Thunderbird for Android at Mozilla. Kotlin-first, privacy-first, " +
-                "Compose-forward, and everything shipping in the open. Writing a bit more. " +
-                "Cooking a lot more.",
-            isFirst = true,
-            tokens = tokens,
-        )
+        ProseParagraph(text = strings.storyBodyToday, isFirst = true, tokens = tokens)
     }
 }
 
@@ -284,66 +248,28 @@ private fun NowPanel(strings: Strings.About) {
             ComposeText(strings.nowUpdatedPrefix)
         }
         ProseHeading(text = strings.nowHeadingWorking, tokens = tokens, collapseTop = true)
-        ProseParagraph(
-            text = "Thunderbird for Android at Mozilla. Feature work across the flagship " +
-                "app and contributing upstream to shared mobile libraries. Open-source, " +
-                "privacy-first, and the community cares.",
-            isFirst = true,
-            tokens = tokens,
-        )
+        ProseParagraph(text = strings.nowBodyWorking, isFirst = true, tokens = tokens)
         ProseHeading(text = strings.nowHeadingLearning, tokens = tokens)
-        ProseParagraph(
-            text = "Compose Multiplatform on desktop. It's rough in spots but the feeling of " +
-                "one codebase across 4 targets is genuinely exciting again.",
-            isFirst = true,
-            tokens = tokens,
-        )
+        ProseParagraph(text = strings.nowBodyLearning, isFirst = true, tokens = tokens)
         ProseHeading(text = strings.nowHeadingWriting, tokens = tokens)
-        ProseParagraph(
-            text = "Two drafts in the queue - one on Compose stability (the good, the painful, " +
-                "the \"actually fine\") and one on why I stopped fearing Gradle.",
-            isFirst = true,
-            tokens = tokens,
-        )
+        ProseParagraph(text = strings.nowBodyWriting, isFirst = true, tokens = tokens)
         ProseHeading(text = strings.nowHeadingThinking, tokens = tokens)
-        ProseParagraph(
-            text = "How to share knowledge without falling into the trap of writing beginner " +
-                "content I don't enjoy writing. Also, whether to start a YouTube channel " +
-                "(probably not).",
-            isFirst = true,
-            tokens = tokens,
-        )
+        ProseParagraph(text = strings.nowBodyThinking, isFirst = true, tokens = tokens)
     }
 }
 
-/** Hardcoded hobby entries for the hobbies panel. */
-private val HOBBIES = listOf(
-    "Cooking" to
-        "Mostly Italian, slow, on Sundays. My pasta game is solid, my bread game is a work in progress.",
-    "Coffee" to
-        "V60 every morning, usually Ethiopian. I own more filters than I should admit.",
-    "Running" to
-        "The Halifax harbourwalk in every season. 10K most weeks, a half-marathon twice a year.",
-    "Games" to
-        "Metroidvanias. Currently replaying Hollow Knight (again). Silksong, any day now.",
-    "Reading" to
-        "Non-fiction tech + one novel always going in parallel. Current pair: DDIA and Station Eleven.",
-    "Travel" to
-        "Short trips inside Canada. Long trips back home to Brazil every year or two.",
-)
-
 @Composable
-private fun HobbiesPanel() {
+private fun HobbiesPanel(strings: Strings.About) {
     val tokens = LocalPortfolioTokens.current
     Div(attrs = HobbiesGridStyle.toModifier().toAttrs()) {
-        HOBBIES.forEach { (key, body) ->
-            HobbyCell(key = key, body = body, tokens = tokens)
+        strings.hobbies.forEach { hobby ->
+            HobbyCell(hobby = hobby, tokens = tokens)
         }
     }
 }
 
 @Composable
-private fun HobbyCell(key: String, body: String, tokens: PortfolioTokens) {
+private fun HobbyCell(hobby: Strings.About.Hobby, tokens: PortfolioTokens) {
     Div(attrs = Modifier.toAttrs()) {
         Div(
             attrs = HobbiesMetaStyle
@@ -351,7 +277,7 @@ private fun HobbyCell(key: String, body: String, tokens: PortfolioTokens) {
                 .color(tokens.accent.accent)
                 .toAttrs(),
         ) {
-            ComposeText("/" + key.lowercase())
+            ComposeText("/" + hobby.label.lowercase())
         }
         P(
             attrs = HobbiesBodyStyle
@@ -359,37 +285,18 @@ private fun HobbyCell(key: String, body: String, tokens: PortfolioTokens) {
                 .color(tokens.ink.ink2)
                 .toAttrs(),
         ) {
-            ComposeText(body)
+            ComposeText(hobby.body)
         }
     }
 }
 
 @Composable
-private fun BeyondPanel() {
+private fun BeyondPanel(strings: Strings.About) {
     val tokens = LocalPortfolioTokens.current
     ProseContainer {
-        ProseParagraph(
-            text = "I moved from Brazil to Canada in 2022 - a small decision that became a " +
-                "huge one. Adjusting to the cold, the snow, the French, the strange Tim " +
-                "Hortons loyalty that comes with living here.",
-            isFirst = true,
-            tokens = tokens,
-        )
-        ProseParagraph(
-            text = "My wife is a product designer (and my first reader for anything I write). " +
-                "We met at a university lab in Belo Horizonte where she was building, of all " +
-                "things, a physical board-game prototype with Arduino. We've been making things " +
-                "together ever since.",
-            isFirst = false,
-            tokens = tokens,
-        )
-        ProseParagraph(
-            text = "I try to give something back to the communities I learned from - mostly " +
-                "through open source and occasional talks. If you're an early-career engineer " +
-                "and want to chat, my inbox is open.",
-            isFirst = false,
-            tokens = tokens,
-        )
+        ProseParagraph(text = strings.beyondBody1, isFirst = true, tokens = tokens)
+        ProseParagraph(text = strings.beyondBody2, isFirst = false, tokens = tokens)
+        ProseParagraph(text = strings.beyondBody3, isFirst = false, tokens = tokens)
     }
 }
 
