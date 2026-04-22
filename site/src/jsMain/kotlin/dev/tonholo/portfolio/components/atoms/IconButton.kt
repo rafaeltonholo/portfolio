@@ -17,6 +17,8 @@ import com.varabyte.kobweb.compose.ui.modifiers.cursor
 import com.varabyte.kobweb.compose.ui.modifiers.display
 import com.varabyte.kobweb.compose.ui.modifiers.height
 import com.varabyte.kobweb.compose.ui.modifiers.justifyContent
+import com.varabyte.kobweb.compose.ui.modifiers.minHeight
+import com.varabyte.kobweb.compose.ui.modifiers.minWidth
 import com.varabyte.kobweb.compose.ui.modifiers.onClick
 import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.compose.ui.modifiers.width
@@ -30,14 +32,19 @@ import dev.tonholo.portfolio.theme.color.Ink
 import dev.tonholo.portfolio.theme.color.Paper
 import dev.tonholo.portfolio.theme.layout.unit.dp
 import org.jetbrains.compose.web.css.AlignItems
+import org.jetbrains.compose.web.css.CSSMediaQuery
 import org.jetbrains.compose.web.css.DisplayStyle
 import org.jetbrains.compose.web.css.JustifyContent
 import org.jetbrains.compose.web.css.LineStyle
+import org.jetbrains.compose.web.css.StylePropertyValue
 import org.jetbrains.compose.web.dom.Button as WebButton
 
 private val ICON_BUTTON_SIZE = 32.dp
 private val ICON_BUTTON_HIT_PADDING = 6.dp
 private val ICON_BUTTON_BORDER_RADIUS = 4.dp
+
+// WCAG 2.5.5 touch-target floor for the outer button box on coarse pointers.
+private val ICON_BUTTON_TOUCH_MIN_SIZE = 44.dp
 
 private val TransparentColor: Color = Color.rgba(r = 0, g = 0, b = 0, a = 0f)
 
@@ -114,5 +121,15 @@ val IconButtonStyle = CssStyle {
         Modifier
             .backgroundColor(paper.paper2)
             .color(ink.ink)
+    }
+    cssRule(
+        mediaQuery = CSSMediaQuery.MediaFeature(
+            name = "pointer",
+            value = StylePropertyValue(value = "coarse"),
+        ),
+    ) {
+        Modifier
+            .minWidth(ICON_BUTTON_TOUCH_MIN_SIZE)
+            .minHeight(ICON_BUTTON_TOUCH_MIN_SIZE)
     }
 }

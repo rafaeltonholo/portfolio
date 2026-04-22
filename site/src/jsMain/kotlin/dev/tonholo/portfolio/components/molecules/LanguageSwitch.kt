@@ -19,7 +19,10 @@ import com.varabyte.kobweb.compose.ui.modifiers.fontFamily
 import com.varabyte.kobweb.compose.ui.modifiers.fontSize
 import com.varabyte.kobweb.compose.ui.modifiers.fontWeight
 import com.varabyte.kobweb.compose.ui.modifiers.gap
+import com.varabyte.kobweb.compose.ui.modifiers.justifyContent
 import com.varabyte.kobweb.compose.ui.modifiers.letterSpacing
+import com.varabyte.kobweb.compose.ui.modifiers.minHeight
+import com.varabyte.kobweb.compose.ui.modifiers.minWidth
 import com.varabyte.kobweb.compose.ui.modifiers.onClick
 import com.varabyte.kobweb.compose.ui.modifiers.opacity
 import com.varabyte.kobweb.compose.ui.modifiers.padding
@@ -37,8 +40,11 @@ import dev.tonholo.portfolio.theme.color.Ink
 import dev.tonholo.portfolio.theme.layout.unit.dp
 import dev.tonholo.portfolio.theme.typography.FontFamilies
 import org.jetbrains.compose.web.css.AlignItems
+import org.jetbrains.compose.web.css.CSSMediaQuery
 import org.jetbrains.compose.web.css.DisplayStyle
+import org.jetbrains.compose.web.css.JustifyContent
 import org.jetbrains.compose.web.css.LineStyle
+import org.jetbrains.compose.web.css.StylePropertyValue
 import org.jetbrains.compose.web.css.em
 import org.jetbrains.compose.web.css.s
 import org.jetbrains.compose.web.dom.Div
@@ -56,6 +62,9 @@ private val LANG_OPT_PADDING_X = 4.dp
 private val LANG_OPT_RADIUS = 2.dp
 private const val LANG_OPT_LETTER_SPACING_EM = 0.02
 private const val LANG_OPT_TRANSITION_DURATION_S = 0.15
+
+// WCAG 2.5.5 touch-target floor on `pointer: coarse` devices.
+private val LANG_OPT_TOUCH_MIN_SIZE = 44.dp
 
 // `.lang-opt .lang-locale` dim styling.
 private const val LANG_LOCALE_OPACITY = 0.5
@@ -227,6 +236,19 @@ val LanguageOptionStyle = CssStyle {
     }
     hover {
         Modifier.color(ink.ink)
+    }
+    cssRule(
+        mediaQuery = CSSMediaQuery.MediaFeature(
+            name = "pointer",
+            value = StylePropertyValue(value = "coarse"),
+        ),
+    ) {
+        Modifier
+            .display(DisplayStyle.LegacyInlineFlex)
+            .alignItems(AlignItems.Center)
+            .justifyContent(JustifyContent.Center)
+            .minWidth(LANG_OPT_TOUCH_MIN_SIZE)
+            .minHeight(LANG_OPT_TOUCH_MIN_SIZE)
     }
 }
 

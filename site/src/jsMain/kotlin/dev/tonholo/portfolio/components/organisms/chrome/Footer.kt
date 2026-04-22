@@ -26,6 +26,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.lineHeight
 import com.varabyte.kobweb.compose.ui.modifiers.listStyle
 import com.varabyte.kobweb.compose.ui.modifiers.margin
 import com.varabyte.kobweb.compose.ui.modifiers.maxWidth
+import com.varabyte.kobweb.compose.ui.modifiers.minHeight
 import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.compose.ui.modifiers.textDecorationLine
 import com.varabyte.kobweb.compose.ui.modifiers.textTransform
@@ -52,15 +53,18 @@ import dev.tonholo.portfolio.theme.layout.ChromeShellStyle
 import dev.tonholo.portfolio.theme.layout.unit.dp
 import dev.tonholo.portfolio.theme.typography.FontFamilies
 import org.jetbrains.compose.web.css.AlignItems
+import org.jetbrains.compose.web.css.CSSMediaQuery
 import org.jetbrains.compose.web.css.CSSSizeValue
 import org.jetbrains.compose.web.css.CSSUnit
 import org.jetbrains.compose.web.css.DisplayStyle
 import org.jetbrains.compose.web.css.FlexDirection
 import org.jetbrains.compose.web.css.JustifyContent
 import org.jetbrains.compose.web.css.LineStyle
+import org.jetbrains.compose.web.css.StylePropertyValue
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.em
 import org.jetbrains.compose.web.css.fr
+import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.css.s
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.H3
@@ -107,6 +111,11 @@ private val FOOTER_LIST_GAP = 8.dp
 // Handoff `.footer a`:
 //   color ink-2, transition color 0.18s; hover → accent.
 private const val FOOTER_LINK_TRANSITION_DURATION_S = 0.18
+
+// WCAG 2.5.5 touch-target floor applied on `pointer: coarse` devices so the
+// 16-31px inline heights grow to a comfortable tap zone.
+private val FOOTER_LINK_TOUCH_MIN_HEIGHT = 44.dp
+private val FOOTER_LINK_TOUCH_PADDING_Y = 10.dp
 
 // Handoff `.footer-bottom`:
 //   flex row, space-between, padding-top 24px, 1px top border.
@@ -415,18 +424,18 @@ val FooterGridStyle = CssStyle {
         Modifier
             .display(DisplayStyle.Grid)
             .gridTemplateColumns {
-                size(FOOTER_GRID_COL_FR.fr)
-                size(FOOTER_GRID_COL_FR.fr)
+                minmax(0.px, FOOTER_GRID_COL_FR.fr)
+                minmax(0.px, FOOTER_GRID_COL_FR.fr)
             }
             .gap(FOOTER_GRID_GAP)
             .margin(bottom = FOOTER_GRID_MARGIN_BOTTOM)
     }
     Breakpoint.LG {
         Modifier.gridTemplateColumns {
-            size(FOOTER_GRID_TAGLINE_FR.fr)
-            size(FOOTER_GRID_COL_FR.fr)
-            size(FOOTER_GRID_COL_FR.fr)
-            size(FOOTER_GRID_COL_FR.fr)
+            minmax(0.px, FOOTER_GRID_TAGLINE_FR.fr)
+            minmax(0.px, FOOTER_GRID_COL_FR.fr)
+            minmax(0.px, FOOTER_GRID_COL_FR.fr)
+            minmax(0.px, FOOTER_GRID_COL_FR.fr)
         }
     }
 }
@@ -491,6 +500,21 @@ val FooterLinkStyle = CssStyle {
     hover {
         val accent = if (colorMode == ColorMode.DARK) AccentMint.dark else AccentMint.light
         Modifier.color(accent.accent)
+    }
+    // Coarse-pointer devices (phones, tablets) grow each row to a 44px
+    // tap zone per WCAG 2.5.5; mouse pointing stays pixel-precise so
+    // desktop keeps the compact editorial rhythm.
+    cssRule(
+        mediaQuery = CSSMediaQuery.MediaFeature(
+            name = "pointer",
+            value = StylePropertyValue(value = "coarse"),
+        ),
+    ) {
+        Modifier
+            .display(DisplayStyle.LegacyInlineFlex)
+            .alignItems(AlignItems.Center)
+            .minHeight(FOOTER_LINK_TOUCH_MIN_HEIGHT)
+            .padding(topBottom = FOOTER_LINK_TOUCH_PADDING_Y)
     }
 }
 

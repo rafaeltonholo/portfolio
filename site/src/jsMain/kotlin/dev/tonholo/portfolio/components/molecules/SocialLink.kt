@@ -1,6 +1,7 @@
 package dev.tonholo.portfolio.components.molecules
 
 import androidx.compose.runtime.Composable
+import com.varabyte.kobweb.compose.css.OverflowWrap
 import com.varabyte.kobweb.compose.css.TextDecorationLine
 import com.varabyte.kobweb.compose.css.Transition
 import com.varabyte.kobweb.compose.ui.Modifier
@@ -8,6 +9,9 @@ import com.varabyte.kobweb.compose.ui.modifiers.alignItems
 import com.varabyte.kobweb.compose.ui.modifiers.color
 import com.varabyte.kobweb.compose.ui.modifiers.display
 import com.varabyte.kobweb.compose.ui.modifiers.gap
+import com.varabyte.kobweb.compose.ui.modifiers.minHeight
+import com.varabyte.kobweb.compose.ui.modifiers.overflowWrap
+import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.compose.ui.modifiers.textDecorationLine
 import com.varabyte.kobweb.compose.ui.modifiers.transition
 import com.varabyte.kobweb.compose.ui.toAttrs
@@ -20,7 +24,9 @@ import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.color.AccentMint
 import dev.tonholo.portfolio.theme.layout.unit.dp
 import org.jetbrains.compose.web.css.AlignItems
+import org.jetbrains.compose.web.css.CSSMediaQuery
 import org.jetbrains.compose.web.css.DisplayStyle
+import org.jetbrains.compose.web.css.StylePropertyValue
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.s
 import org.jetbrains.compose.web.dom.A
@@ -34,6 +40,10 @@ private const val EXTERNAL_REL = "noopener noreferrer"
 
 private val SOCIAL_LINK_GAP = 6.dp
 private const val SOCIAL_LINK_TRANSITION_DURATION_S = 0.18
+
+// WCAG 2.5.5 touch-target floor on `pointer: coarse` devices.
+private val SOCIAL_LINK_TOUCH_MIN_HEIGHT = 44.dp
+private val SOCIAL_LINK_TOUCH_PADDING_Y = 10.dp
 
 /**
  * Footer-style social link. Renders a horizontal row composed of an optional
@@ -123,6 +133,10 @@ val SocialLinkStyle = CssStyle {
             .alignItems(AlignItems.Center)
             .gap(SOCIAL_LINK_GAP)
             .textDecorationLine(TextDecorationLine.None)
+            // URLs like linkedin.com/in/rafaeltonholo have no natural break
+            // points; allow the renderer to break anywhere so the label does
+            // not push the footer column past the mobile viewport.
+            .overflowWrap(OverflowWrap.Anywhere)
             .transition(
                 Transition.of(
                     property = "color",
@@ -133,5 +147,15 @@ val SocialLinkStyle = CssStyle {
     hover {
         val accent = if (colorMode == ColorMode.DARK) AccentMint.dark else AccentMint.light
         Modifier.color(accent.accent)
+    }
+    cssRule(
+        mediaQuery = CSSMediaQuery.MediaFeature(
+            name = "pointer",
+            value = StylePropertyValue(value = "coarse"),
+        ),
+    ) {
+        Modifier
+            .minHeight(SOCIAL_LINK_TOUCH_MIN_HEIGHT)
+            .padding(topBottom = SOCIAL_LINK_TOUCH_PADDING_Y)
     }
 }
