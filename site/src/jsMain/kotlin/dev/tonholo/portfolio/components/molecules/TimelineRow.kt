@@ -27,6 +27,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.compose.ui.modifiers.position
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.silk.style.CssStyle
+import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.style.selectors.before
 import com.varabyte.kobweb.silk.style.toModifier
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
@@ -45,6 +46,7 @@ import org.jetbrains.compose.web.css.Position
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.em
 import org.jetbrains.compose.web.css.fr
+import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Li
 import org.jetbrains.compose.web.dom.Span
@@ -57,8 +59,10 @@ private const val GRID_SPACER_COL_REM = 3.75
 private const val GRID_ROLE_COL_FR = 1
 private const val GRID_BODY_COL_FR = 2
 
-// Outer row: 32px gap, 28px top/bottom padding, 1px hairline borders.
+// Outer row: 32px gap on desktop, 12px vertical gap on the stacked mobile
+// layout; 28px top/bottom padding; 1px hairline borders.
 private val ROW_GAP = 32.dp
+private val ROW_GAP_MOBILE = 12.dp
 private val ROW_PADDING_Y = 28.dp
 private val ROW_BORDER_WIDTH = 1.dp
 
@@ -244,18 +248,26 @@ fun TimelineRow(experience: Experience, modifier: Modifier = Modifier, last: Boo
  * mode.
  */
 val TimelineRowStyle = CssStyle {
+    // Mobile stacks every column vertically: date meta, role, body. The
+    // handoff's 4-column layout (180px + 60px spacer + 1fr + 2fr) cannot fit
+    // inside a phone viewport, so we collapse to a single column below MD.
     base {
         Modifier
             .display(DisplayStyle.Grid)
+            .gridTemplateColumns { minmax(0.px, 1.fr) }
+            .gap(ROW_GAP_MOBILE)
+            .padding(topBottom = ROW_PADDING_Y)
+            .alignItems(AlignItems.Start)
+    }
+    Breakpoint.MD {
+        Modifier
             .gridTemplateColumns {
                 size(GRID_DATE_COL_REM.cssRem)
                 size(GRID_SPACER_COL_REM.cssRem)
-                size(GRID_ROLE_COL_FR.fr)
-                size(GRID_BODY_COL_FR.fr)
+                minmax(0.px, GRID_ROLE_COL_FR.fr)
+                minmax(0.px, GRID_BODY_COL_FR.fr)
             }
             .gap(ROW_GAP)
-            .padding(topBottom = ROW_PADDING_Y)
-            .alignItems(AlignItems.Start)
     }
 }
 

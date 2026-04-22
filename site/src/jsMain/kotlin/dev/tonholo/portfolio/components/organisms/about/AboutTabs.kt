@@ -7,8 +7,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.varabyte.kobweb.compose.css.Cursor
 import com.varabyte.kobweb.compose.css.FontWeight
+import com.varabyte.kobweb.compose.css.Overflow
 import com.varabyte.kobweb.compose.css.TextTransform
 import com.varabyte.kobweb.compose.css.Transition
+import com.varabyte.kobweb.compose.css.WhiteSpace
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.graphics.Color
 import com.varabyte.kobweb.compose.ui.modifiers.backgroundColor
@@ -26,10 +28,13 @@ import com.varabyte.kobweb.compose.ui.modifiers.letterSpacing
 import com.varabyte.kobweb.compose.ui.modifiers.lineHeight
 import com.varabyte.kobweb.compose.ui.modifiers.margin
 import com.varabyte.kobweb.compose.ui.modifiers.maxWidth
+import com.varabyte.kobweb.compose.ui.modifiers.minWidth
 import com.varabyte.kobweb.compose.ui.modifiers.onClick
+import com.varabyte.kobweb.compose.ui.modifiers.overflow
 import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.compose.ui.modifiers.textTransform
 import com.varabyte.kobweb.compose.ui.modifiers.transition
+import com.varabyte.kobweb.compose.ui.modifiers.whiteSpace
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.silk.style.CssStyle
 import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
@@ -49,6 +54,7 @@ import org.jetbrains.compose.web.css.LineStyle
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.em
 import org.jetbrains.compose.web.css.fr
+import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.css.s
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.H2
@@ -359,6 +365,14 @@ val TabsBarStyle = CssStyle {
         val ruleColor = if (isDark) Paper.dark.paper2 else Paper.light.paper3
         Modifier
             .display(DisplayStyle.Flex)
+            // Five mono tabs do not fit a 375px viewport side-by-side; allow
+            // the bar to scroll horizontally inside itself instead of pushing
+            // the page past the viewport.
+            .minWidth(0.px)
+            .overflow {
+                x(Overflow.Auto)
+                y(Overflow.Visible)
+            }
             .borderBottom(width = TABS_BAR_BORDER_WIDTH_PX, style = LineStyle.Solid, color = ruleColor)
             .margin(
                 top = TABS_BAR_MARGIN_TOP,
@@ -387,6 +401,9 @@ val TabButtonStyle = CssStyle {
             .border(style = LineStyle.None)
             .margin(bottom = TAB_MARGIN_BOTTOM_PX)
             .cursor(Cursor.Pointer)
+            // Keep each label on a single line so the horizontal scroll inside
+            // the tabs bar works predictably on narrow viewports.
+            .whiteSpace(WhiteSpace.NoWrap)
             .transition(
                 Transition.group(
                     properties = listOf("color", "border-color"),

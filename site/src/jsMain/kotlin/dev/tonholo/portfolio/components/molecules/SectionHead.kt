@@ -5,12 +5,15 @@ import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.alignItems
 import com.varabyte.kobweb.compose.ui.modifiers.color
 import com.varabyte.kobweb.compose.ui.modifiers.display
+import com.varabyte.kobweb.compose.ui.modifiers.flexWrap
 import com.varabyte.kobweb.compose.ui.modifiers.gap
 import com.varabyte.kobweb.compose.ui.modifiers.gridTemplateColumns
 import com.varabyte.kobweb.compose.ui.modifiers.margin
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.silk.style.CssStyle
+import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.style.toModifier
+import com.varabyte.kobweb.silk.style.until
 import dev.tonholo.portfolio.components.atoms.Divider
 import dev.tonholo.portfolio.components.atoms.DividerVariant
 import dev.tonholo.portfolio.components.atoms.MetaLabel
@@ -20,6 +23,7 @@ import dev.tonholo.portfolio.theme.typography.Typography
 import dev.tonholo.portfolio.theme.typography.apply
 import org.jetbrains.compose.web.css.AlignItems
 import org.jetbrains.compose.web.css.DisplayStyle
+import org.jetbrains.compose.web.css.FlexWrap
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.fr
 import org.jetbrains.compose.web.dom.Div
@@ -67,7 +71,9 @@ fun SectionHead(
         ) {
             ComposeText(title)
         }
-        Divider(variant = DividerVariant.Flex1)
+        Div(attrs = SectionHeadRuleSlotStyle.toModifier().toAttrs()) {
+            Divider(variant = DividerVariant.Flex1)
+        }
         if (trailing != null) {
             trailing()
         } else {
@@ -85,7 +91,19 @@ fun SectionHead(
  * columns; 36px bottom margin (`gap * 1.5` in the handoff).
  */
 val SectionHeadStyle = CssStyle {
+    // On mobile the 4-column editorial grid cannot fit a trailing meta chip
+    // next to the title; fall back to a wrapping flex row so the number +
+    // title sit on their own line and the trailing chip lands below without
+    // pushing the section past the viewport.
     base {
+        Modifier
+            .display(DisplayStyle.Flex)
+            .flexWrap(FlexWrap.Wrap)
+            .alignItems(AlignItems.Baseline)
+            .gap(SECTION_HEAD_GAP)
+            .margin(bottom = SECTION_HEAD_MARGIN_BOTTOM_REM.cssRem)
+    }
+    Breakpoint.MD {
         Modifier
             .display(DisplayStyle.Grid)
             .gridTemplateColumns {
@@ -94,8 +112,19 @@ val SectionHeadStyle = CssStyle {
                 size(SECTION_HEAD_RULE_COL_FR.fr)
                 size(auto)
             }
-            .gap(SECTION_HEAD_GAP)
-            .alignItems(AlignItems.Baseline)
-            .margin(bottom = SECTION_HEAD_MARGIN_BOTTOM_REM.cssRem)
+    }
+}
+
+/**
+ * Wrapper for the stretching rule inside [SectionHead]. Hidden below MD so
+ * the wrapping flex layout does not inherit the rule's 1fr stretch (which
+ * would force the row past the viewport on mobile).
+ */
+val SectionHeadRuleSlotStyle = CssStyle {
+    base {
+        Modifier.display(DisplayStyle.Flex).alignItems(AlignItems.Center)
+    }
+    until(Breakpoint.MD) {
+        Modifier.display(DisplayStyle.None)
     }
 }

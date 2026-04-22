@@ -75,8 +75,10 @@ private const val ROW_MAIN_COL_FR = 1
 private const val ROW_TAGS_COL_REM = 16.0
 private const val ROW_READ_COL_REM = 5.0
 
-// Row chrome: 32px grid gap, 24px top/bottom padding, 1px hairline borders.
+// Row chrome: 32px grid gap at desktop, tighter 8px stack gap on mobile,
+// 24px top/bottom padding, 1px hairline borders.
 private val ROW_GAP = 32.dp
+private val ROW_GAP_MOBILE = 8.dp
 private val ROW_PADDING_Y = 24.dp
 private const val ROW_PADDING_X_REM = 0.0 // hover adds inline padding
 private val ROW_HOVER_PADDING_X = 16.dp
@@ -302,7 +304,7 @@ val ArticleRowStyle = CssStyle {
             .gridTemplateColumns {
                 size(ROW_MAIN_COL_FR.fr)
             }
-            .gap(ROW_GAP)
+            .gap(ROW_GAP_MOBILE)
             .padding(
                 topBottom = ROW_PADDING_Y,
                 leftRight = ROW_PADDING_X_REM.cssRem,
@@ -324,6 +326,7 @@ val ArticleRowStyle = CssStyle {
                 size(ROW_TAGS_COL_REM.cssRem)
                 size(ROW_READ_COL_REM.cssRem)
             }
+            .gap(ROW_GAP)
     }
     hover {
         val paper = if (colorMode == ColorMode.DARK) Paper.dark else Paper.light
