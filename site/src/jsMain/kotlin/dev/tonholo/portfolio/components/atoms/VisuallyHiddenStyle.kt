@@ -18,6 +18,10 @@ import org.jetbrains.compose.web.css.LineStyle
 import org.jetbrains.compose.web.css.Position
 import org.jetbrains.compose.web.css.px
 
+// The clip `Rect` uses an arbitrary radius that just needs to be larger than
+// the 1x1 hidden box; 50 keeps the helper legible.
+private const val VISUALLY_HIDDEN_CLIP_RADIUS = 50
+
 /**
  * Visually hides content while keeping it in the accessibility tree so screen
  * readers still announce it. Use on semantic markers (e.g. a section
@@ -38,6 +42,6 @@ val VisuallyHiddenStyle = CssStyle {
             .overflow(Overflow.Hidden)
             .border(width = 0.px, style = LineStyle.None)
             .whiteSpace(WhiteSpace.NoWrap)
-            .clip(Rect(50, 0.px))
+            .clip(Rect(VISUALLY_HIDDEN_CLIP_RADIUS, 0.px))
     }
 }

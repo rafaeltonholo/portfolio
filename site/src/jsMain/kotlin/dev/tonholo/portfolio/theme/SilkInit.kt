@@ -106,7 +106,6 @@ private val ColorMode.cssClass: String
         ColorMode.DARK -> "silk-dark"
     }
 
-
 /**
  * Global a11y layer applied once at Silk init.
  *
@@ -160,7 +159,7 @@ fun initAccessibilityLayer(ctx: InitSilkContext) {
                         name = "reduced-motion",
                         duration = 0.01.ms,
                         iterationCount = AnimationIterationCount.of(1),
-                    )
+                    ),
                 )
                 .transition { duration(0.01.ms) }
                 .scrollBehavior(ScrollBehavior.Auto)

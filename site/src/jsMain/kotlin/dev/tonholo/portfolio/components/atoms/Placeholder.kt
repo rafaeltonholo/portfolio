@@ -97,7 +97,7 @@ fun Placeholder(aspectRatio: AspectRatio, label: String, modifier: Modifier = Mo
                         linearGradient(angle = 45.deg) {
                             add(stripeCssColor, PATTERN_STOP_PERCENT.percent)
                             add(Colors.Transparent, PATTERN_STOP_PERCENT.percent)
-                        }
+                        },
                     )
                     size(BackgroundSize.of(PATTERN_TILE.dp, PATTERN_TILE.dp))
                 }
