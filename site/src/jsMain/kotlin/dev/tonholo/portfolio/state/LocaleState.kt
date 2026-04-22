@@ -1,10 +1,11 @@
 package dev.tonholo.portfolio.state
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import dev.tonholo.portfolio.extensions.readLocalStorage
 import dev.tonholo.portfolio.extensions.writeLocalStorage
 import dev.tonholo.portfolio.locale.Locale
@@ -16,11 +17,13 @@ private const val LOCALE_KEY = "rt_lang"
 /**
  * Reactive holder for the active [Locale], persisted to `localStorage`
  * under the `rt_lang` key and mirrored onto `<html lang>`.
+ *
+ * See [ThemeState] for the rationale behind the `by mutableStateOf`
+ * property-delegate shape over a backing-field + custom getter.
  */
 class LocaleState(initial: Locale) {
-    private val state: MutableState<Locale> = mutableStateOf(initial)
-
-    val current: Locale get() = state.value
+    var current: Locale by mutableStateOf(initial)
+        private set
 
     /**
      * Switches to [next], writing the BCP-47 tag to `localStorage` and
@@ -28,7 +31,7 @@ class LocaleState(initial: Locale) {
      * language hint in sync.
      */
     fun set(next: Locale) {
-        state.value = next
+        current = next
         writeLocalStorage(key = LOCALE_KEY, value = next.tag)
         (document.documentElement as? HTMLElement)?.lang = next.tag
     }
