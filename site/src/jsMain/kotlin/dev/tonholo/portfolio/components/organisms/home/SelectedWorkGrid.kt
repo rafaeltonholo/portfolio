@@ -22,6 +22,7 @@ import dev.tonholo.portfolio.theme.layout.unit.dp
 import org.jetbrains.compose.web.css.AlignItems
 import org.jetbrains.compose.web.css.DisplayStyle
 import org.jetbrains.compose.web.css.fr
+import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Span
 
@@ -120,13 +121,13 @@ val SelectedWorkProjectsGridStyle = CssStyle {
         Modifier
             .display(DisplayStyle.Grid)
             .gridTemplateColumns {
-                size(GRID_COLUMN_FR.fr)
+                minmax(0.px, GRID_COLUMN_FR.fr)
             }
             .gap(GRID_GAP)
     }
     Breakpoint.LG {
         Modifier.gridTemplateColumns {
-            repeat(2) { size(GRID_COLUMN_FR.fr) }
+            repeat(2) { minmax(0.px, GRID_COLUMN_FR.fr) }
         }
     }
 }

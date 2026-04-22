@@ -35,6 +35,7 @@ import org.jetbrains.compose.web.css.DisplayStyle
 import org.jetbrains.compose.web.css.FlexDirection
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.fr
+import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.H3
 import org.jetbrains.compose.web.dom.P
@@ -298,15 +299,15 @@ val SnippetGridStyle = CssStyle {
         Modifier
             .display(DisplayStyle.Grid)
             .gridTemplateColumns {
-                size(GRID_COL_COPY_FR.fr)
+                minmax(0.px, GRID_COL_COPY_FR.fr)
             }
             .gap(GRID_GAP)
             .alignItems(AlignItems.Start)
     }
     Breakpoint.LG {
         Modifier.gridTemplateColumns {
-            size(GRID_COL_COPY_FR.fr)
-            size(GRID_COL_TERM_FR.fr)
+            minmax(0.px, GRID_COL_COPY_FR.fr)
+            minmax(0.px, GRID_COL_TERM_FR.fr)
         }
     }
 }

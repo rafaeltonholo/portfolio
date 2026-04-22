@@ -2,6 +2,7 @@ package dev.tonholo.portfolio.components.organisms.home
 
 import androidx.compose.runtime.Composable
 import com.varabyte.kobweb.compose.css.BoxDecorationBreak
+import com.varabyte.kobweb.compose.css.OverflowWrap
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.alignItems
 import com.varabyte.kobweb.compose.ui.modifiers.backgroundColor
@@ -12,6 +13,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.gap
 import com.varabyte.kobweb.compose.ui.modifiers.gridTemplateColumns
 import com.varabyte.kobweb.compose.ui.modifiers.margin
 import com.varabyte.kobweb.compose.ui.modifiers.maxWidth
+import com.varabyte.kobweb.compose.ui.modifiers.overflowWrap
 import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.silk.style.CssStyle
@@ -34,6 +36,7 @@ import org.jetbrains.compose.web.css.CSSUnit
 import org.jetbrains.compose.web.css.DisplayStyle
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.fr
+import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.dom.Br
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.H1
@@ -206,15 +209,15 @@ val HeroEditorialGridStyle = CssStyle {
     base {
         Modifier
             .display(DisplayStyle.Grid)
-            .gridTemplateColumns { size(HERO_GRID_COL_FR.fr) }
+            .gridTemplateColumns { minmax(0.px, HERO_GRID_COL_FR.fr) }
             .gap(HERO_GRID_GAP_MOBILE)
             .alignItems(AlignItems.Start)
     }
     Breakpoint.LG {
         Modifier
             .gridTemplateColumns {
-                size(HERO_GRID_COL_FR.fr)
-                size(HERO_GRID_COL_FR.fr)
+                minmax(0.px, HERO_GRID_COL_FR.fr)
+                minmax(0.px, HERO_GRID_COL_FR.fr)
             }
             .gap(HERO_GRID_GAP_DESKTOP)
     }
@@ -232,6 +235,7 @@ val HeroEditorialUnderStyle = CssStyle {
         Modifier
             .padding(topBottom = 0.cssRem, leftRight = UNDER_PADDING_X)
             .boxDecorationBreak(BoxDecorationBreak.Clone)
+            .overflowWrap(OverflowWrap.Anywhere)
     }
 }
 

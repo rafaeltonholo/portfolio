@@ -13,6 +13,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.borderTop
 import com.varabyte.kobweb.compose.ui.modifiers.color
 import com.varabyte.kobweb.compose.ui.modifiers.cursor
 import com.varabyte.kobweb.compose.ui.modifiers.display
+import com.varabyte.kobweb.compose.ui.modifiers.flexWrap
 import com.varabyte.kobweb.compose.ui.modifiers.fontFamily
 import com.varabyte.kobweb.compose.ui.modifiers.fontSize
 import com.varabyte.kobweb.compose.ui.modifiers.fontWeight
@@ -53,6 +54,7 @@ import org.jetbrains.compose.web.css.AlignItems
 import org.jetbrains.compose.web.css.CSSSizeValue
 import org.jetbrains.compose.web.css.CSSUnit
 import org.jetbrains.compose.web.css.DisplayStyle
+import org.jetbrains.compose.web.css.FlexWrap
 import org.jetbrains.compose.web.css.JustifyContent
 import org.jetbrains.compose.web.css.LineStyle
 import org.jetbrains.compose.web.css.em
@@ -304,6 +306,7 @@ val ProjectCardHeadStyle = CssStyle {
             .display(DisplayStyle.Flex)
             .alignItems(AlignItems.Center)
             .justifyContent(JustifyContent.SpaceBetween)
+            .flexWrap(FlexWrap.Wrap)
             .gap(HEAD_GAP)
             .padding(
                 topBottom = HEAD_PADDING_Y,
@@ -410,6 +413,8 @@ val ProjectCardFootStyle = CssStyle {
             .display(DisplayStyle.Flex)
             .alignItems(AlignItems.Center)
             .justifyContent(JustifyContent.SpaceBetween)
+            .flexWrap(FlexWrap.Wrap)
+            .gap(HEAD_GAP)
             .padding(top = FOOT_PADDING_TOP)
             .fontFamily(*FontFamilies.MONO)
             .fontSize(FOOT_FONT_SIZE)

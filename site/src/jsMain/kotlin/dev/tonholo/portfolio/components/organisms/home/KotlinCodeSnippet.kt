@@ -3,6 +3,7 @@ package dev.tonholo.portfolio.components.organisms.home
 import androidx.compose.runtime.Composable
 import com.varabyte.kobweb.compose.css.Cursor
 import com.varabyte.kobweb.compose.css.FontWeight
+import com.varabyte.kobweb.compose.css.Overflow
 import com.varabyte.kobweb.compose.css.TextDecorationLine
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.color
@@ -12,7 +13,9 @@ import com.varabyte.kobweb.compose.ui.modifiers.fontSize
 import com.varabyte.kobweb.compose.ui.modifiers.fontWeight
 import com.varabyte.kobweb.compose.ui.modifiers.lineHeight
 import com.varabyte.kobweb.compose.ui.modifiers.margin
+import com.varabyte.kobweb.compose.ui.modifiers.minWidth
 import com.varabyte.kobweb.compose.ui.modifiers.onClick
+import com.varabyte.kobweb.compose.ui.modifiers.overflow
 import com.varabyte.kobweb.compose.ui.modifiers.textDecorationLine
 import com.varabyte.kobweb.compose.ui.thenIf
 import com.varabyte.kobweb.compose.ui.thenIfNotNull
@@ -23,6 +26,7 @@ import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.layout.unit.dp
 import dev.tonholo.portfolio.theme.typography.FontFamilies
 import org.jetbrains.compose.web.css.em
+import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Span
 import org.jetbrains.compose.web.dom.Text as ComposeText
@@ -245,6 +249,15 @@ val KotlinCodeSnippetStyle = CssStyle {
             .fontFamily(*FontFamilies.MONO)
             .fontSize(CODE_FONT_SIZE)
             .lineHeight(CODE_LINE_HEIGHT)
+            // Grid items default to min-width: min-content, which on mobile
+            // lets the long non-wrapping code lines expand the hero grid past
+            // the viewport. Drop the floor and allow horizontal scroll inside
+            // the snippet so the page no longer overflows.
+            .minWidth(0.px)
+            .overflow {
+                x(Overflow.Auto)
+                y(Overflow.Visible)
+            }
     }
 }
 

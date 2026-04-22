@@ -12,6 +12,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.fontFamily
 import com.varabyte.kobweb.compose.ui.modifiers.fontSize
 import com.varabyte.kobweb.compose.ui.modifiers.lineHeight
 import com.varabyte.kobweb.compose.ui.modifiers.margin
+import com.varabyte.kobweb.compose.ui.modifiers.minWidth
 import com.varabyte.kobweb.compose.ui.modifiers.overflow
 import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.compose.ui.toAttrs
@@ -24,6 +25,7 @@ import dev.tonholo.portfolio.theme.layout.unit.dp
 import dev.tonholo.portfolio.theme.typography.FontFamilies
 import org.jetbrains.compose.web.css.LineStyle
 import org.jetbrains.compose.web.css.cssRem
+import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.dom.Span
 import org.jetbrains.compose.web.dom.TagElement
 import org.w3c.dom.HTMLElement
@@ -214,6 +216,12 @@ val TerminalSnippetStyle = CssStyle {
                 leftRight = TERM_PADDING_X,
             )
             .margin(topBottom = 0.cssRem)
-            .overflow(Overflow.Hidden)
+            // Allow the card to scroll its unwrapped code lines horizontally
+            // without pushing the parent grid past the viewport on mobile.
+            .minWidth(0.px)
+            .overflow {
+                x(Overflow.Auto)
+                y(Overflow.Hidden)
+            }
     }
 }
