@@ -93,19 +93,21 @@ class StringsTest {
     }
 
     @Test
-    fun `given PtBr locale, when about group is read, then falls back to English defaults`() {
+    fun `given PtBr locale, when about group is read, then returns Portuguese translation`() {
         // Arrange
         val strings = stringsFor(locale = Locale.PtBr)
 
         // Act
         val actual = strings.about
 
-        // Assert - untranslated groups reuse the English defaults verbatim.
-        assertEquals(expected = StringsEn.about, actual = actual)
+        // Assert - every About copy key is translated; assert the instance
+        // diverges from the English defaults so a future regression that
+        // strips a translation trips this test.
+        assertEquals(expected = StringsPtBr.about, actual = actual)
     }
 
     @Test
-    fun `given PtBr locale, when statusBadge is read, then falls back to English defaults`() {
+    fun `given PtBr locale, when statusBadge is read, then returns Portuguese translation`() {
         // Arrange
         val strings = stringsFor(locale = Locale.PtBr)
 
@@ -113,18 +115,18 @@ class StringsTest {
         val actual = strings.statusBadge
 
         // Assert
-        assertEquals(expected = StringsEn.statusBadge, actual = actual)
+        assertEquals(expected = StringsPtBr.statusBadge, actual = actual)
     }
 
     @Test
-    fun `given PtBr locale, when hero titleLine1 is read, then reuses English default`() {
+    fun `given PtBr locale, when hero titleLine1 is read, then returns Portuguese translation`() {
         // Arrange
         val strings = stringsFor(locale = Locale.PtBr)
 
         // Act
         val actual = strings.hero.titleLine1
 
-        // Assert - only CTA buttons are translated on the hero for v1.
-        assertEquals(expected = StringsEn.hero.titleLine1, actual = actual)
+        // Assert
+        assertEquals(expected = StringsPtBr.hero.titleLine1, actual = actual)
     }
 }
