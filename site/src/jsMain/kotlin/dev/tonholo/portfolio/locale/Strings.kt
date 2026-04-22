@@ -47,6 +47,8 @@ sealed class Strings {
         val about: String,
         val articles: String,
         val resume: String,
+        /** Screen-reader label for the mobile drawer toggle button. */
+        val mobileMenuAriaLabel: String,
     )
 
     /**

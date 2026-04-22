@@ -11,6 +11,7 @@ object StringsEn : Strings() {
         about = "about",
         articles = "articles",
         resume = "resume",
+        mobileMenuAriaLabel = "Toggle navigation menu",
     )
 
     override val statusBadge: StatusBadge = StatusBadge(

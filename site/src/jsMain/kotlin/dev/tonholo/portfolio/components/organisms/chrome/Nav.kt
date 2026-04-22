@@ -26,6 +26,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.borderLeft
 import com.varabyte.kobweb.compose.ui.modifiers.color
 import com.varabyte.kobweb.compose.ui.modifiers.cursor
 import com.varabyte.kobweb.compose.ui.modifiers.display
+import com.varabyte.kobweb.compose.ui.modifiers.flexDirection
 import com.varabyte.kobweb.compose.ui.modifiers.fontFamily
 import com.varabyte.kobweb.compose.ui.modifiers.fontSize
 import com.varabyte.kobweb.compose.ui.modifiers.gap
@@ -46,8 +47,10 @@ import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.core.PageContext
 import com.varabyte.kobweb.core.rememberPageContext
 import com.varabyte.kobweb.silk.style.CssStyle
+import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.style.extendedBy
 import com.varabyte.kobweb.silk.style.toModifier
+import com.varabyte.kobweb.silk.style.until
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import dev.tonholo.portfolio.components.atoms.Dot
 import dev.tonholo.portfolio.components.atoms.DotVariant
@@ -73,6 +76,7 @@ import dev.tonholo.portfolio.theme.typography.FontFamilies
 import kotlinx.coroutines.delay
 import org.jetbrains.compose.web.css.AlignItems
 import org.jetbrains.compose.web.css.DisplayStyle
+import org.jetbrains.compose.web.css.FlexDirection
 import org.jetbrains.compose.web.css.LineStyle
 import org.jetbrains.compose.web.css.Position
 import org.jetbrains.compose.web.css.cssRem
@@ -122,6 +126,16 @@ private const val STATUS_AUTO_COLLAPSE_DELAY_MS = 4500L
 private const val THEME_ICON_SUN = "sun"
 private const val THEME_ICON_MOON = "moon"
 
+// Phosphor glyph names for the mobile drawer toggle.
+private const val MOBILE_MENU_ICON_OPEN = "list"
+private const val MOBILE_MENU_ICON_CLOSE = "x"
+
+// Mobile drawer spacing.
+private val MOBILE_DRAWER_PADDING_Y = 16.dp
+private val MOBILE_DRAWER_GAP = 12.dp
+private val MOBILE_DRAWER_ITEM_PADDING_Y = 10.dp
+private val MOBILE_DRAWER_ITEM_PADDING_X = 12.dp
+
 // Fully transparent color used as the collapsed-border stand-in.
 private val TransparentColor: Color = Color.rgba(r = 0, g = 0, b = 0, a = 0f)
 
@@ -163,43 +177,108 @@ fun Nav(currentRoute: String, modifier: Modifier = Modifier) {
     val localeState = LocalLocaleState.current
     val pageContext = rememberPageContext()
     val strings = LocalStrings.current
-    val isDark = themeState.current.isDark
+    var menuOpen by remember { mutableStateOf(value = false) }
 
     val finalModifier = NavStyle
         .toModifier()
         .then(modifier)
 
+    val onSwitchLocale: (Locale) -> Unit = { next ->
+        switchLocale(
+            next = next,
+            currentRoute = currentRoute,
+            localeState = localeState,
+            pageContext = pageContext,
+        )
+    }
+
     WebNav(attrs = finalModifier.toAttrs()) {
-        Div(attrs = NavInnerStyle.toModifier().toAttrs()) {
-            BrandMark()
-            NavLinksCluster(
+        NavInner(
+            currentRoute = currentRoute,
+            strings = strings,
+            currentLocale = localeState.current,
+            isDark = themeState.current.isDark,
+            menuOpen = menuOpen,
+            onSwitchLocale = onSwitchLocale,
+            onToggleTheme = { themeState.toggle() },
+            onToggleMenu = { menuOpen = !menuOpen },
+        )
+        if (menuOpen) {
+            MobileNavDrawer(
                 currentRoute = currentRoute,
                 links = navLinksFor(nav = strings.nav),
+                currentLocale = localeState.current,
+                onSwitchLocale = onSwitchLocale,
             )
-            StatusBadge(
-                statusLabel = strings.statusBadge.statusLabel,
-                presenceLabel = strings.statusBadge.presenceLabel,
+        }
+    }
+}
+
+@Composable
+private fun NavInner(
+    currentRoute: String,
+    strings: Strings,
+    currentLocale: Locale,
+    isDark: Boolean,
+    menuOpen: Boolean,
+    onSwitchLocale: (Locale) -> Unit,
+    onToggleTheme: () -> Unit,
+    onToggleMenu: () -> Unit,
+) {
+    Div(attrs = NavInnerStyle.toModifier().toAttrs()) {
+        BrandMark()
+        NavLinksCluster(
+            currentRoute = currentRoute,
+            links = navLinksFor(nav = strings.nav),
+        )
+        StatusBadge(
+            statusLabel = strings.statusBadge.statusLabel,
+            presenceLabel = strings.statusBadge.presenceLabel,
+        )
+        Div(attrs = NavLanguageSwitchStyle.toModifier().toAttrs()) {
+            LanguageSwitch(current = currentLocale, onSwitch = onSwitchLocale)
+        }
+        IconButton(
+            modifier = Modifier.title(
+                if (isDark) strings.themeToggle.titleToLight else strings.themeToggle.titleToDark,
+            ),
+            ariaLabel = strings.themeToggle.ariaLabel,
+            onClick = onToggleTheme,
+        ) {
+            PhosphorIcon(name = if (isDark) THEME_ICON_SUN else THEME_ICON_MOON)
+        }
+        IconButton(
+            modifier = NavMobileToggleStyle.toModifier(),
+            ariaLabel = strings.nav.mobileMenuAriaLabel,
+            onClick = onToggleMenu,
+        ) {
+            PhosphorIcon(
+                name = if (menuOpen) MOBILE_MENU_ICON_CLOSE else MOBILE_MENU_ICON_OPEN,
             )
-            LanguageSwitch(
-                current = localeState.current,
-                onSwitch = { next ->
-                    switchLocale(
-                        next = next,
-                        currentRoute = currentRoute,
-                        localeState = localeState,
-                        pageContext = pageContext,
-                    )
-                },
-            )
-            IconButton(
-                modifier = Modifier.title(
-                    if (isDark) strings.themeToggle.titleToLight else strings.themeToggle.titleToDark,
-                ),
-                ariaLabel = strings.themeToggle.ariaLabel,
-                onClick = { themeState.toggle() },
-            ) {
-                PhosphorIcon(name = if (isDark) THEME_ICON_SUN else THEME_ICON_MOON)
+        }
+    }
+}
+
+@Composable
+private fun MobileNavDrawer(
+    currentRoute: String,
+    links: List<NavLinkEntry>,
+    currentLocale: Locale,
+    onSwitchLocale: (Locale) -> Unit,
+) {
+    Div(attrs = MobileDrawerStyle.toModifier().toAttrs()) {
+        Div(attrs = MobileDrawerLinksStyle.toModifier().toAttrs()) {
+            links.forEach { entry ->
+                NavLink(
+                    label = entry.label,
+                    route = entry.route,
+                    active = currentRoute == entry.route,
+                    modifier = MobileDrawerItemStyle.toModifier(),
+                )
             }
+        }
+        Div(attrs = MobileDrawerFooterStyle.toModifier().toAttrs()) {
+            LanguageSwitch(current = currentLocale, onSwitch = onSwitchLocale)
         }
     }
 }
@@ -313,10 +392,17 @@ val NavStyle = CssStyle {
             .top(0.px)
             .zIndex(NAV_STICKY_Z_INDEX)
             .background {
-                color(colorMix(ColorInterpolationMethod.Oklab, paperToken to 92.percent, Colors.Transparent))
+                color(
+                    colorMix(
+                        ColorInterpolationMethod.Oklab,
+                        paperToken to 92.percent,
+                        Colors.Transparent,
+                    ),
+                )
             }
             .backdropFilter(
-                saturate(amount = 140.percent), blur(radius = 12.dp),
+                saturate(amount = 140.percent),
+                blur(radius = 12.dp),
             )
             .borderBottom(
                 width = NAV_BORDER_WIDTH,
@@ -357,6 +443,103 @@ val NavLinksStyle = CssStyle {
             .gap(NAV_LINKS_GAP)
             .margin(left = auto.unsafeCast<CSSLengthOrPercentageNumericValue>())
     }
+    // The desktop link cluster is replaced by the mobile drawer below MD.
+    until(Breakpoint.MD) {
+        Modifier.display(DisplayStyle.None)
+    }
+}
+
+/**
+ * Base `CssStyle` wrapping the inline desktop `LanguageSwitch`. Hidden on
+ * mobile where the drawer below the nav chrome renders its own copy.
+ */
+val NavLanguageSwitchStyle = CssStyle {
+    base {
+        Modifier.display(DisplayStyle.LegacyInlineFlex)
+    }
+    until(Breakpoint.MD) {
+        Modifier.display(DisplayStyle.None)
+    }
+}
+
+/**
+ * Base `CssStyle` for the mobile drawer toggle. Hidden on desktop where the
+ * inline nav links cluster owns the navigation surface.
+ */
+val NavMobileToggleStyle = CssStyle {
+    // Pushes itself and the preceding theme-toggle to the right edge since
+    // the desktop `.nav-links` cluster (which previously owned the auto
+    // margin) is hidden on this breakpoint.
+    base {
+        Modifier
+            .display(DisplayStyle.LegacyInlineFlex)
+            .margin(left = auto.unsafeCast<CSSLengthOrPercentageNumericValue>())
+    }
+    Breakpoint.MD {
+        Modifier.display(DisplayStyle.None)
+    }
+}
+
+/**
+ * Base `CssStyle` for the mobile drawer container. Stacks below the sticky
+ * nav chrome with its own vertical padding and gap; the drawer is only
+ * rendered into the DOM while the toggle is open, so this style never fires
+ * on desktop (the toggle is hidden above MD).
+ */
+val MobileDrawerStyle = ChromeShellStyle.extendedBy {
+    base {
+        Modifier
+            .display(DisplayStyle.Flex)
+            .flexDirection(FlexDirection.Column)
+            .gap(MOBILE_DRAWER_GAP)
+            .padding(topBottom = MOBILE_DRAWER_PADDING_Y)
+    }
+}
+
+/**
+ * Base `CssStyle` for the stacked list of links inside the mobile drawer.
+ * Column flex so each link is its own 44px row; gap controls the rhythm
+ * between routes.
+ */
+val MobileDrawerLinksStyle = CssStyle {
+    base {
+        Modifier
+            .display(DisplayStyle.Flex)
+            .flexDirection(FlexDirection.Column)
+            .gap(NAV_LINKS_GAP)
+    }
+}
+
+/**
+ * Per-link override applied on top of [NavLinkStyle] inside the drawer. Grows
+ * the hit box to a full-width row with 10px / 12px padding so taps land on a
+ * forgiving surface.
+ */
+val MobileDrawerItemStyle = CssStyle {
+    base {
+        Modifier
+            .padding(
+                topBottom = MOBILE_DRAWER_ITEM_PADDING_Y,
+                leftRight = MOBILE_DRAWER_ITEM_PADDING_X,
+            )
+    }
+}
+
+/**
+ * Base `CssStyle` for the drawer footer housing the language switch on
+ * mobile. A thin top separator would belong here if we ever add more items;
+ * for now it is a flex row so the pair sits left-aligned.
+ */
+val MobileDrawerFooterStyle = CssStyle {
+    base {
+        Modifier
+            .display(DisplayStyle.Flex)
+            .alignItems(AlignItems.Center)
+            .padding(
+                topBottom = MOBILE_DRAWER_ITEM_PADDING_Y,
+                leftRight = MOBILE_DRAWER_ITEM_PADDING_X,
+            )
+    }
 }
 
 /**
@@ -394,6 +577,12 @@ val NavMetaStyle = CssStyle {
                     duration = NAV_META_LAYOUT_TRANSITION_S.s,
                 ),
             )
+    }
+    // The status pill is an editorial affordance that relies on hover to
+    // expand. Touch devices do not have a meaningful hover state and the
+    // pill fights for width in an already-tight nav; hide it below MD.
+    until(Breakpoint.MD) {
+        Modifier.display(DisplayStyle.None)
     }
 }
 

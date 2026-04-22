@@ -13,6 +13,7 @@ object StringsPtBr : Strings() {
         about = "sobre",
         articles = "artigos",
         resume = "currículo",
+        mobileMenuAriaLabel = "Abrir menu de navegação",
     )
 
     override val statusBadge: StatusBadge = StatusBadge(
