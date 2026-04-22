@@ -40,6 +40,7 @@ import org.jetbrains.compose.web.css.Position
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.em
 import org.jetbrains.compose.web.css.fr
+import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.H2
 import org.jetbrains.compose.web.dom.Text as ComposeText
@@ -181,7 +182,7 @@ val ProjectSectionStyle = CssStyle {
     base {
         Modifier
             .display(DisplayStyle.Grid)
-            .gridTemplateColumns { size(SECTION_CONTENT_COL_FR.fr) }
+            .gridTemplateColumns { minmax(0.px, SECTION_CONTENT_COL_FR.fr) }
             .gap(SECTION_GAP_MOBILE)
             .padding(topBottom = SECTION_PADDING_Y)
     }
@@ -189,7 +190,7 @@ val ProjectSectionStyle = CssStyle {
         Modifier
             .gridTemplateColumns {
                 size(SECTION_LABEL_COL)
-                size(SECTION_CONTENT_COL_FR.fr)
+                minmax(0.px, SECTION_CONTENT_COL_FR.fr)
             }
             .gap(SECTION_GAP_DESKTOP)
     }

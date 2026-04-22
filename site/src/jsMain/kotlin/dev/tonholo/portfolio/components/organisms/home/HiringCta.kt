@@ -48,6 +48,7 @@ import org.jetbrains.compose.web.css.LineStyle
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.em
 import org.jetbrains.compose.web.css.fr
+import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.css.vw
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.H3
@@ -258,14 +259,14 @@ val HiringCtaBlockStyle = CssStyle {
             .borderRadius(BLOCK_BORDER_RADIUS)
             .display(DisplayStyle.Grid)
             .gridTemplateColumns {
-                size(1.fr)
+                minmax(0.px, 1.fr)
             }
             .alignItems(AlignItems.Center)
             .gap(BLOCK_GAP)
     }
     Breakpoint.LG {
         Modifier.gridTemplateColumns {
-            size(1.fr)
+            minmax(0.px, 1.fr)
             size(auto)
         }
     }

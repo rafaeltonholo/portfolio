@@ -33,6 +33,7 @@ import org.jetbrains.compose.web.css.AlignItems
 import org.jetbrains.compose.web.css.DisplayStyle
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.fr
+import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.H1
 import org.jetbrains.compose.web.dom.Text as ComposeText
@@ -250,7 +251,7 @@ val ProjectDetailHeroStyle = CssStyle {
     base {
         Modifier
             .display(DisplayStyle.Grid)
-            .gridTemplateColumns { size(HERO_GRID_COL_FR.fr) }
+            .gridTemplateColumns { minmax(0.px, HERO_GRID_COL_FR.fr) }
             .gap(HERO_GRID_GAP_MOBILE)
             .alignItems(AlignItems.Start)
             .margin(bottom = HERO_MARGIN_BOTTOM)
@@ -258,8 +259,8 @@ val ProjectDetailHeroStyle = CssStyle {
     Breakpoint.LG {
         Modifier
             .gridTemplateColumns {
-                size(HERO_GRID_COL_FR.fr)
-                size(HERO_GRID_COL_FR.fr)
+                minmax(0.px, HERO_GRID_COL_FR.fr)
+                minmax(0.px, HERO_GRID_COL_FR.fr)
             }
             .gap(HERO_GRID_GAP_DESKTOP)
             .alignItems(AlignItems.End)

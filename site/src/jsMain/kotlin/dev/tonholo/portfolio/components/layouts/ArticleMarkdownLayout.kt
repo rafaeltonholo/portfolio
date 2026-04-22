@@ -52,6 +52,7 @@ import org.jetbrains.compose.web.css.ch
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.em
 import org.jetbrains.compose.web.css.fr
+import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.dom.Article
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.H1
@@ -279,7 +280,7 @@ val ArticleMarkdownGridStyle = CssStyle {
     base {
         Modifier
             .display(DisplayStyle.Grid)
-            .gridTemplateColumns { size(1.fr) }
+            .gridTemplateColumns { minmax(0.px, 1.fr) }
             .gap(GRID_GAP_MOBILE_REM.cssRem)
             .alignItems(AlignItems.Start)
     }
@@ -287,7 +288,7 @@ val ArticleMarkdownGridStyle = CssStyle {
         Modifier
             .gridTemplateColumns {
                 size(GRID_SIDEBAR_COL_REM.cssRem)
-                size(1.fr)
+                minmax(0.px, 1.fr)
             }
             .gap(GRID_GAP_REM.cssRem)
     }
