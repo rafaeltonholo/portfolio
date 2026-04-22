@@ -33,7 +33,6 @@ import com.varabyte.kobweb.silk.components.navigation.UncoloredLinkVariant
 import com.varabyte.kobweb.silk.components.navigation.UndecoratedLinkVariant
 import com.varabyte.kobweb.silk.style.CssStyle
 import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
-import com.varabyte.kobweb.silk.style.selectors.hover
 import com.varabyte.kobweb.silk.style.toModifier
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import dev.tonholo.portfolio.components.atoms.PhosphorIcon
@@ -51,11 +50,13 @@ import dev.tonholo.portfolio.theme.color.Paper
 import dev.tonholo.portfolio.theme.layout.unit.dp
 import dev.tonholo.portfolio.theme.typography.FontFamilies
 import org.jetbrains.compose.web.css.AlignItems
+import org.jetbrains.compose.web.css.CSSMediaQuery
 import org.jetbrains.compose.web.css.CSSSizeValue
 import org.jetbrains.compose.web.css.CSSUnit
 import org.jetbrains.compose.web.css.DisplayStyle
 import org.jetbrains.compose.web.css.FlexDirection
 import org.jetbrains.compose.web.css.LineStyle
+import org.jetbrains.compose.web.css.StylePropertyValue
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.em
 import org.jetbrains.compose.web.css.fr
@@ -328,7 +329,24 @@ val ArticleRowStyle = CssStyle {
             }
             .gap(ROW_GAP)
     }
-    hover {
+    // Scope the hover inflation to `(hover: hover) and (pointer: fine)` so
+    // touch devices never fire the sticky-hover that would shift the stacked
+    // row horizontally on tap. Desktop mouse users keep the slide.
+    cssRule(
+        mediaQuery = CSSMediaQuery.And(
+            mutableListOf(
+                CSSMediaQuery.MediaFeature(
+                    name = "hover",
+                    value = StylePropertyValue(value = "hover"),
+                ),
+                CSSMediaQuery.MediaFeature(
+                    name = "pointer",
+                    value = StylePropertyValue(value = "fine"),
+                ),
+            ),
+        ),
+        suffix = ":hover",
+    ) {
         val paper = if (colorMode == ColorMode.DARK) Paper.dark else Paper.light
         Modifier
             .backgroundColor(paper.paper2)

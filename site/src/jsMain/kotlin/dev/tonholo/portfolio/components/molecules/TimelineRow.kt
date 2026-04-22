@@ -30,6 +30,7 @@ import com.varabyte.kobweb.silk.style.CssStyle
 import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.style.selectors.before
 import com.varabyte.kobweb.silk.style.toModifier
+import com.varabyte.kobweb.silk.style.until
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import dev.tonholo.portfolio.components.atoms.MetaSeparator
 import dev.tonholo.portfolio.domain.model.Experience
@@ -177,8 +178,10 @@ fun TimelineRow(experience: Experience, modifier: Modifier = Modifier, last: Boo
             }
         }
 
-        // Column 2: empty spacer preserves the grid shape defined in the handoff.
-        Div(attrs = Modifier.toAttrs())
+        // Column 2: empty spacer preserves the 4-column grid shape on desktop.
+        // Hidden below MD where the row collapses to a single column so the
+        // spacer does not add an empty gap between the date meta and the role.
+        Div(attrs = TimelineSpacerStyle.toModifier().toAttrs())
 
         // Column 3: role (display medium) with company subtitle block.
         Div(
@@ -268,6 +271,18 @@ val TimelineRowStyle = CssStyle {
                 minmax(0.px, GRID_BODY_COL_FR.fr)
             }
             .gap(ROW_GAP)
+    }
+}
+
+/**
+ * Base `CssStyle` for the empty second grid column. On desktop the column
+ * renders as a blank 60px gutter (per the handoff spec); below MD the grid
+ * collapses to a single column so we hide the spacer entirely to avoid an
+ * empty row slot between the date meta and the role title.
+ */
+val TimelineSpacerStyle = CssStyle {
+    until(Breakpoint.MD) {
+        Modifier.display(DisplayStyle.None)
     }
 }
 
