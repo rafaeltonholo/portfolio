@@ -21,6 +21,8 @@ import com.varabyte.kobweb.compose.ui.modifiers.maxWidth
 import com.varabyte.kobweb.compose.ui.modifiers.objectFit
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.silk.components.graphics.Image
+import com.varabyte.kobweb.silk.components.graphics.ImageDecoding
+import com.varabyte.kobweb.silk.components.graphics.ImageFetchPriority
 import com.varabyte.kobweb.silk.style.CssStyle
 import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.style.toModifier
@@ -117,6 +119,8 @@ private fun AboutHeaderPortrait() {
             src = PORTRAIT_SRC,
             description = strings.portraitAlt,
             modifier = AboutHeaderPortraitImageStyle.toModifier(),
+            decoding = ImageDecoding.Async,
+            fetchPriority = ImageFetchPriority.High,
         )
     }
 }
