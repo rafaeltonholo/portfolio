@@ -42,9 +42,11 @@ class TypographyTest {
         // Arrange / Act
         val style = Typography.hero
 
-        // Assert
+        // Assert - hero is a fluid `clamp(min, vw + bias, max)` expression capped
+        // at the handoff's 5.375rem max. We assert the serialized CSS so both
+        // the bounds and the fluid mid-range stay pinned to the handoff intent.
         assertContentEquals(expected = FontFamilies.DISPLAY, actual = style.family)
-        assertEquals(expected = 5.375, actual = style.size.value.toDouble(), absoluteTolerance = TOLERANCE)
+        assertEquals(expected = "clamp(2.75rem, calc(7vw + 1.5rem), 5.375rem)", actual = style.size.toString())
         assertEquals(FontWeight.Medium, style.weight)
         assertEquals(expected = 0.95, actual = style.lineHeight, absoluteTolerance = TOLERANCE)
         val letterSpacing = assertNotNull(style.letterSpacing)
@@ -57,9 +59,9 @@ class TypographyTest {
         // Arrange / Act
         val style = Typography.h1
 
-        // Assert
+        // Assert - same shape as [Typography.hero], tuned for the 4.25rem h1 cap.
         assertContentEquals(expected = FontFamilies.DISPLAY, actual = style.family)
-        assertEquals(expected = 4.25, actual = style.size.value.toDouble(), absoluteTolerance = TOLERANCE)
+        assertEquals(expected = "clamp(2.25rem, calc(5.5vw + 1.25rem), 4.25rem)", actual = style.size.toString())
         assertEquals(FontWeight.Medium, style.weight)
         assertEquals(expected = 1.05, actual = style.lineHeight, absoluteTolerance = TOLERANCE)
         val letterSpacing = assertNotNull(style.letterSpacing)

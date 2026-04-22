@@ -2,13 +2,27 @@ package dev.tonholo.portfolio.theme.typography
 
 import com.varabyte.kobweb.compose.css.FontWeight
 import com.varabyte.kobweb.compose.css.TextTransform
+import dev.tonholo.portfolio.theme.typography.unit.fluidRem
 import dev.tonholo.portfolio.theme.typography.unit.sp
 import org.jetbrains.compose.web.css.em
 
-// Size scale in `sp`; 16sp == 1rem at the site's default root font-size.
-// Values mirror the handoff px scale, with clamp maxima noted inline.
-private val HERO_SIZE = 86.sp // clamp max
-private val H1_SIZE = 68.sp // clamp max
+// Fluid display sizes for hero / h1. `clamp(min, preferredVw + bias, max)`
+// keeps the display type readable at 320px mobile without shrinking below a
+// usable floor, and caps at the handoff desktop size. Values chosen so:
+//   hero @ 375px viewport ≈ 50px; caps at 86px ≥ 1340px.
+//   h1   @ 375px viewport ≈ 41px; caps at 68px ≥ 1070px.
+private val HERO_SIZE = fluidRem(
+    minRem = 2.75,
+    preferredVw = 7.0,
+    biasRem = 1.5,
+    maxRem = 5.375,
+)
+private val H1_SIZE = fluidRem(
+    minRem = 2.25,
+    preferredVw = 5.5,
+    biasRem = 1.25,
+    maxRem = 4.25,
+)
 private val H2_SIZE = 28.sp
 private val H3_DISPLAY_SIZE = 26.sp
 private val BODY_LARGE_SIZE = 17.sp
