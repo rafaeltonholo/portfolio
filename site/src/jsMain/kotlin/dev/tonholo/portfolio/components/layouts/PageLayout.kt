@@ -9,6 +9,8 @@ import androidx.compose.runtime.setValue
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.core.rememberPageContext
+import dev.tonholo.portfolio.components.atoms.SKIP_LINK_TARGET_ID
+import dev.tonholo.portfolio.components.atoms.SkipLink
 import dev.tonholo.portfolio.components.organisms.chrome.Footer
 import dev.tonholo.portfolio.components.organisms.chrome.LanguageToast
 import dev.tonholo.portfolio.components.organisms.chrome.Nav
@@ -56,8 +58,12 @@ fun PageLayout(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
         }
     }
 
+    SkipLink()
     Nav(currentRoute = currentRoute)
-    TagElement<HTMLElement>(tagName = "main", applyAttrs = modifier.toAttrs()) {
+    TagElement<HTMLElement>(
+        tagName = "main",
+        applyAttrs = modifier.toAttrs { attr("id", SKIP_LINK_TARGET_ID) },
+    ) {
         content()
     }
     Footer()
