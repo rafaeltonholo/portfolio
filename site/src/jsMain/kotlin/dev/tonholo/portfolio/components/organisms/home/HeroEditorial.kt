@@ -11,6 +11,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.color
 import com.varabyte.kobweb.compose.ui.modifiers.display
 import com.varabyte.kobweb.compose.ui.modifiers.gap
 import com.varabyte.kobweb.compose.ui.modifiers.gridTemplateColumns
+import com.varabyte.kobweb.compose.ui.modifiers.id
 import com.varabyte.kobweb.compose.ui.modifiers.margin
 import com.varabyte.kobweb.compose.ui.modifiers.maxWidth
 import com.varabyte.kobweb.compose.ui.modifiers.overflowWrap
@@ -24,9 +25,10 @@ import dev.tonholo.portfolio.components.atoms.ButtonVariant
 import dev.tonholo.portfolio.components.atoms.MetaLabel
 import dev.tonholo.portfolio.components.atoms.MetaLabelVariant
 import dev.tonholo.portfolio.components.atoms.PhosphorIcon
+import dev.tonholo.portfolio.components.layouts.SectionContentStyle
 import dev.tonholo.portfolio.locale.LocalStrings
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
-import dev.tonholo.portfolio.theme.layout.ShellStyle
+import dev.tonholo.portfolio.theme.layout.SiteDimensions
 import dev.tonholo.portfolio.theme.layout.unit.dp
 import dev.tonholo.portfolio.theme.typography.Typography
 import dev.tonholo.portfolio.theme.typography.apply
@@ -41,17 +43,9 @@ import org.jetbrains.compose.web.dom.Br
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.H1
 import org.jetbrains.compose.web.dom.P
+import org.jetbrains.compose.web.dom.Section
 import org.jetbrains.compose.web.dom.Span
 import org.jetbrains.compose.web.dom.Text as ComposeText
-
-// ---------------------------------------------------------------------------
-// Section chrome. Handoff `.hero`:
-//   padding: calc(var(--pad-y) * 1.2) 0 var(--pad-y);
-// --pad-y compact density = 80px * 0.72 = ~57.6px -> rem values below match
-// the design-token spacing (6rem top, 5rem bottom) for the pinned density.
-// ---------------------------------------------------------------------------
-private const val HERO_PADDING_TOP_REM = 6.0
-private const val HERO_PADDING_BOTTOM_REM = 5.0
 
 // Handoff `.hero-a`: two-column grid, 64px gap. Collapses to a single column
 // below 900px (Silk's `Breakpoint.LG`) with a 32px gap.
@@ -104,8 +98,8 @@ fun HeroEditorial(
         .toModifier()
         .then(modifier)
 
-    Div(attrs = finalModifier.toAttrs()) {
-        Div(attrs = ShellStyle.toModifier().toAttrs()) {
+    Section(attrs = finalModifier.id("hero").toAttrs()) {
+        Div(attrs = SectionContentStyle.toModifier().toAttrs()) {
             Div(attrs = HeroEditorialGridStyle.toModifier().toAttrs()) {
                 HeroCopyColumn(
                     onFeaturedWorkClick = onFeaturedWorkClick,
@@ -187,15 +181,28 @@ private fun HeroCopyColumn(onFeaturedWorkClick: () -> Unit, onDownloadCvClick: (
 // ---------------------------------------------------------------------------
 
 /**
- * Base `CssStyle` for the outer `<section>` container. Ports `.hero` padding
- * from the handoff (top padding is 1.2x the bottom padding to give the copy
- * more breathing room above the fold).
+ * Outer `<section>` chrome for the home hero. Mobile-first: `base` IS the
+ * mobile tier, with [SiteDimensions.padding.heroTop] on top (extra
+ * breathing room above the fold), [SiteDimensions.padding.section] on
+ * bottom, and [SiteDimensions.size.Lg] horizontal gutter. From
+ * [Breakpoint.MD] the gutter ramps up to [SiteDimensions.size.Xxl]; the
+ * vertical padding scales through the underlying
+ * [dev.tonholo.portfolio.theme.layout.SiteSizeVar.Xxl] CSS variable, so no
+ * per-organism overrides are needed.
  */
 val HeroEditorialSectionStyle = CssStyle {
     base {
         Modifier.padding(
-            top = HERO_PADDING_TOP_REM.cssRem,
-            bottom = HERO_PADDING_BOTTOM_REM.cssRem,
+            top = SiteDimensions.padding.heroTop,
+            bottom = SiteDimensions.padding.section,
+            leftRight = SiteDimensions.size.Lg,
+        )
+    }
+    Breakpoint.MD {
+        Modifier.padding(
+            top = SiteDimensions.padding.heroTop,
+            bottom = SiteDimensions.padding.section,
+            leftRight = SiteDimensions.size.Xxl,
         )
     }
 }
