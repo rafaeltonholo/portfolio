@@ -24,10 +24,13 @@ import org.jetbrains.compose.web.css.FlexDirection
 import org.jetbrains.compose.web.dom.Section
 
 /**
- * Outer `<section>` chrome: vertical [SiteDimensions.padding.section] on every
- * breakpoint, horizontal [SiteDimensions.size] that ramps with breakpoint, and
- * a centered flex column so child content stacks inside the
- * [SectionContentStyle] inner container with max-width applied.
+ * Outer `<section>` chrome. `base` is mobile-first (the project does not
+ * declare a separate `Breakpoint.SM` tier); from [Breakpoint.MD] the
+ * horizontal gutter ramps up. Vertical padding is
+ * [SiteDimensions.padding.section] at every breakpoint and grows through
+ * the underlying [SiteDimensions.size.Xxl] CSS variable. Inner content is
+ * centered as a flex column so the [SectionContentStyle] cap applies
+ * max-width.
  */
 val SectionContainerStyle = CssStyle {
     base {
@@ -40,12 +43,6 @@ val SectionContainerStyle = CssStyle {
             .display(DisplayStyle.Flex)
             .flexDirection(FlexDirection.Column)
             .alignItems(AlignItems.Center)
-    }
-    Breakpoint.SM {
-        Modifier.padding(
-            topBottom = SiteDimensions.padding.section,
-            leftRight = SiteDimensions.size.Xl,
-        )
     }
     Breakpoint.MD {
         Modifier.padding(
