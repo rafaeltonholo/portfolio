@@ -22,6 +22,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.letterSpacing
 import com.varabyte.kobweb.compose.ui.modifiers.lineHeight
 import com.varabyte.kobweb.compose.ui.modifiers.margin
 import com.varabyte.kobweb.compose.ui.modifiers.maxWidth
+import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.core.PageContext
 import com.varabyte.kobweb.core.data.add
@@ -39,7 +40,7 @@ import dev.tonholo.portfolio.components.organisms.articles.ArticleTocSidebar
 import dev.tonholo.portfolio.components.organisms.articles.TocEntry
 import dev.tonholo.portfolio.navigation.Routes
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
-import dev.tonholo.portfolio.theme.layout.PageSectionShellStyle
+import dev.tonholo.portfolio.theme.layout.SiteDimensions
 import dev.tonholo.portfolio.theme.layout.unit.dp
 import dev.tonholo.portfolio.theme.typography.FontFamilies
 import dev.tonholo.portfolio.theme.typography.Typography
@@ -57,7 +58,9 @@ import org.jetbrains.compose.web.dom.Article
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.H1
 import org.jetbrains.compose.web.dom.P
+import org.jetbrains.compose.web.dom.Section
 import org.w3c.dom.HTMLElement
+import org.w3c.dom.Node
 import org.w3c.dom.asList
 import org.jetbrains.compose.web.dom.Text as ComposeText
 
@@ -92,8 +95,6 @@ private const val BODY_HEADING_MARGIN_BOTTOM_EM = 0.6
 // markdown body. `<article>` is the body wrapper so we scope the query to
 // avoid grabbing the page `<h1>`, which is rendered separately by the layout.
 private const val TOC_SELECTOR = "article h2, article h3"
-private const val TOC_RETRY_DELAY_MS = 30
-private const val TOC_MAX_ATTEMPTS = 10
 
 /**
  * Route-local data bag populated by [initArticleMarkdownLayout] so the layout
@@ -168,46 +169,53 @@ fun ArticleMarkdownLayout(context: PageContext, content: @Composable () -> Unit)
     var tocEntries by remember(data.slug) { mutableStateOf<List<TocEntry>>(emptyList()) }
 
     PageLayout {
-        Div(attrs = PageSectionShellStyle.toModifier().toAttrs()) {
-            // Handoff structure: meta row, title, and lede span the full shell
-            // width above the sidebar/body grid. The two-column layout only
-            // applies to the article body + TOC, not to the editorial header.
-            ArticleMetaRow(
-                date = data.date,
-                readTime = data.readTime,
-                backRoute = Routes.ARTICLES,
-            )
-            H1(
-                attrs = ArticleMarkdownTitleStyle
-                    .toModifier()
-                    .apply(Typography.h1)
-                    .color(tokens.ink.ink)
-                    .toAttrs(),
-            ) {
-                ComposeText(data.title)
-            }
-            if (data.description.isNotEmpty()) {
-                P(
-                    attrs = ArticleMarkdownLedeStyle
+        Section(attrs = ArticleMarkdownShellStyle.toModifier().toAttrs()) {
+            Div(attrs = SectionContentStyle.toModifier().toAttrs()) {
+                // Handoff structure: meta row, title, and lede span the full
+                // shell width above the sidebar/body grid. The two-column
+                // layout only applies to the article body + TOC, not to the
+                // editorial header.
+                ArticleMetaRow(
+                    date = data.date,
+                    readTime = data.readTime,
+                    backRoute = Routes.ARTICLES,
+                )
+                H1(
+                    attrs = ArticleMarkdownTitleStyle
                         .toModifier()
-                        .color(tokens.ink.ink2)
+                        .apply(Typography.h1)
+                        .color(tokens.ink.ink)
                         .toAttrs(),
                 ) {
-                    ComposeText(data.description)
+                    ComposeText(data.title)
                 }
-            }
-            Div(attrs = ArticleMarkdownGridStyle.toModifier().toAttrs()) {
-                ArticleTocSidebar(
-                    contents = tocEntries,
-                    activeId = tocEntries.firstOrNull()?.id.orEmpty(),
-                    onCopyLink = { copyCurrentLocation() },
-                )
-                Article(attrs = ArticleMarkdownBodyStyle.toModifier().toAttrs()) {
-                    content()
+                if (data.description.isNotEmpty()) {
+                    P(
+                        attrs = ArticleMarkdownLedeStyle
+                            .toModifier()
+                            .color(tokens.ink.ink2)
+                            .toAttrs(),
+                    ) {
+                        ComposeText(data.description)
+                    }
+                }
+                Div(attrs = ArticleMarkdownGridStyle.toModifier().toAttrs()) {
+                    ArticleTocSidebar(
+                        contents = tocEntries,
+                        activeId = tocEntries.firstOrNull()?.id.orEmpty(),
+                        onCopyLink = { copyCurrentLocation() },
+                    )
+                    Article(attrs = ArticleMarkdownBodyStyle.toModifier().toAttrs()) {
+                        content()
 
-                    DisposableEffect(data.slug) {
-                        tocEntries = collectTocEntries()
-                        onDispose { }
+                        DisposableEffect(data.slug) {
+                            tocEntries = collectTocEntries()
+                            val observer = observeHeadingsIfEmpty(
+                                entries = tocEntries,
+                                onCollected = { tocEntries = it },
+                            )
+                            onDispose { observer?.disconnect() }
+                        }
                     }
                 }
             }
@@ -217,48 +225,60 @@ fun ArticleMarkdownLayout(context: PageContext, content: @Composable () -> Unit)
 
 /**
  * Walks the DOM under the article body and collects every `<h2>` / `<h3>`
- * with a non-blank id into a [TocEntry] list. Runs inside a [DisposableEffect]
- * after the markdown body mounts, and retries a few times because the renderer
- * may not have inserted every node by the time the effect first fires.
+ * with a non-blank id into a [TocEntry] list.
  */
-private fun collectTocEntries(): List<TocEntry> {
-    val nodes = document.querySelectorAll(TOC_SELECTOR).asList()
-    if (nodes.isEmpty()) {
-        retryCollectTocEntries(attempt = 1)
-        return emptyList()
-    }
-    return nodes.mapNotNull { node ->
+private fun collectTocEntries(): List<TocEntry> =
+    document.querySelectorAll(TOC_SELECTOR).asList().mapNotNull { node ->
         val element = node as? HTMLElement ?: return@mapNotNull null
         val id = element.id.takeIf { it.isNotBlank() } ?: return@mapNotNull null
         val label = element.textContent?.trim().orEmpty().takeIf { it.isNotEmpty() }
             ?: return@mapNotNull null
         TocEntry(id = id, label = label)
     }
-}
 
 /**
- * Retry helper for [collectTocEntries]. The Kobweb markdown renderer emits
- * headings asynchronously during the first composition pass; when the initial
- * query returns nothing we schedule a handful of follow-up queries that
- * rewrite the DOM in-place once the content has mounted.
+ * If [entries] is empty (headings not yet in the DOM), attaches a
+ * [MutationObserver] to the `<article>` element. Once headings appear,
+ * the observer fires [onCollected] with the new list and disconnects.
  */
-private fun retryCollectTocEntries(attempt: Int) {
-    if (attempt > TOC_MAX_ATTEMPTS) return
-    window.setTimeout(
-        {
-            val nodes = document.querySelectorAll(TOC_SELECTOR).asList()
-            if (nodes.isEmpty()) {
-                retryCollectTocEntries(attempt = attempt + 1)
-                return@setTimeout
-            }
-            // Successful late scrape: ask the browser to re-dispatch a hash
-            // change so the sidebar re-renders against the now-populated DOM.
-            // The cheapest way to force that is to tickle the URL fragment.
-            val current = window.location.hash
-            window.location.hash = current
-        },
-        TOC_RETRY_DELAY_MS,
-    )
+private fun observeHeadingsIfEmpty(
+    entries: List<TocEntry>,
+    onCollected: (List<TocEntry>) -> Unit,
+): MutationObserver? {
+    if (entries.isNotEmpty()) return null
+    val articleEl = document.querySelector("article") ?: return null
+    return MutationObserver { _, obs ->
+        val collected = collectTocEntries()
+        if (collected.isNotEmpty()) {
+            onCollected(collected)
+            obs.disconnect()
+        }
+    }.also { obs ->
+        val options = createMutationObserverInit(childList = true, subtree = true)
+        obs.observe(target = articleEl, options = options)
+    }
+}
+
+private external class MutationObserver(
+    callback: (records: Array<dynamic>, observer: MutationObserver) -> Unit,
+) {
+    fun observe(target: Node, options: MutationObserverInit)
+    fun disconnect()
+}
+
+private external interface MutationObserverInit {
+    var childList: Boolean
+    var subtree: Boolean
+}
+
+private fun createMutationObserverInit(
+    childList: Boolean = false,
+    subtree: Boolean = false,
+): MutationObserverInit {
+    val options = js("({})").unsafeCast<MutationObserverInit>()
+    options.childList = childList
+    options.subtree = subtree
+    return options
 }
 
 /**
@@ -269,6 +289,33 @@ private fun retryCollectTocEntries(attempt: Int) {
 private fun copyCurrentLocation() {
     val clipboard = window.navigator.clipboard
     clipboard.writeText(window.location.href)
+}
+
+/**
+ * Outer `<section>` chrome for the article detail body. Mirrors the
+ * hero-shaped pattern shared with every other long-form route: vertical
+ * rhythm uses [SiteDimensions.padding.heroTop] on top and
+ * [SiteDimensions.padding.section] on bottom; the horizontal gutter ramps
+ * mobile-first from [SiteDimensions.size.Lg] at the base to
+ * [SiteDimensions.size.Xxl] from [Breakpoint.MD]. The inner content sits
+ * inside [SectionContentStyle] so the article body shares the
+ * [SiteDimensions.layout.contentMaxWidth] cap with every other section.
+ */
+val ArticleMarkdownShellStyle = CssStyle {
+    base {
+        Modifier.padding(
+            top = SiteDimensions.padding.heroTop,
+            bottom = SiteDimensions.padding.section,
+            leftRight = SiteDimensions.size.Lg,
+        )
+    }
+    Breakpoint.MD {
+        Modifier.padding(
+            top = SiteDimensions.padding.heroTop,
+            bottom = SiteDimensions.padding.section,
+            leftRight = SiteDimensions.size.Xxl,
+        )
+    }
 }
 
 /**
