@@ -32,11 +32,11 @@ import com.varabyte.kobweb.silk.style.toModifier
 import dev.tonholo.portfolio.components.atoms.Button
 import dev.tonholo.portfolio.components.atoms.ButtonVariant
 import dev.tonholo.portfolio.components.atoms.PhosphorIcon
+import dev.tonholo.portfolio.components.layouts.SectionContainerStyle
+import dev.tonholo.portfolio.components.layouts.SectionContentStyle
 import dev.tonholo.portfolio.locale.LocalStrings
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.color.AccentMint
-import dev.tonholo.portfolio.theme.layout.ShellStyle
-import dev.tonholo.portfolio.theme.layout.SpacingVars
 import dev.tonholo.portfolio.theme.layout.unit.dp
 import dev.tonholo.portfolio.theme.typography.FontFamilies
 import org.jetbrains.compose.web.css.AlignItems
@@ -54,11 +54,6 @@ import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.H3
 import org.jetbrains.compose.web.dom.Section
 import org.jetbrains.compose.web.dom.Text as ComposeText
-
-// Outer section spacing. Handoff line 316: `paddingTop:40, paddingBottom:40`
-// overrides the default `.section` padding for this block; the small padY
-// token (2.5rem at Normal density, scaled by the active Density) keeps the
-// hiring band visually compressed relative to the other numbered sections.
 
 // Inverted block metrics from handoff lines 317-325.
 private val BLOCK_PADDING_Y = 64.dp
@@ -123,12 +118,13 @@ fun HiringCta(
     onEmailClick: () -> Unit = {},
     onBookingClick: () -> Unit = {},
 ) {
-    val sectionModifier = HiringCtaSectionStyle
-        .toModifier()
-        .then(modifier)
-
-    Section(attrs = sectionModifier.toAttrs()) {
-        Div(attrs = ShellStyle.toModifier().toAttrs()) {
+    Section(
+        attrs = SectionContainerStyle
+            .toModifier()
+            .then(modifier)
+            .toAttrs(),
+    ) {
+        Div(attrs = SectionContentStyle.toModifier().toAttrs()) {
             HiringCtaBlock(onEmailClick = onEmailClick, onBookingClick = onBookingClick)
         }
     }
@@ -227,17 +223,6 @@ private fun HiringCtaActions(onEmailClick: () -> Unit, onBookingClick: () -> Uni
                 ),
             trailing = { PhosphorIcon(name = "arrow-up-right") },
         )
-    }
-}
-
-/**
- * Base `CssStyle` for the outer `<section>` wrapper. Handoff lines 316-317
- * set 40px top and bottom padding for this section specifically (the default
- * section rule would use `--pad-y`).
- */
-val HiringCtaSectionStyle = CssStyle {
-    base {
-        Modifier.padding(topBottom = SpacingVars.PadYSmall.value())
     }
 }
 
