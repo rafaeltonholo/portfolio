@@ -4,6 +4,8 @@ import com.varabyte.kobweb.compose.css.Animation
 import com.varabyte.kobweb.compose.css.AnimationIterationCount
 import com.varabyte.kobweb.compose.css.OutlineWidth
 import com.varabyte.kobweb.compose.css.ScrollBehavior
+import com.varabyte.kobweb.compose.css.Transition
+import com.varabyte.kobweb.compose.css.TransitionTimingFunction
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.animation
 import com.varabyte.kobweb.compose.ui.modifiers.backgroundColor
@@ -15,15 +17,16 @@ import com.varabyte.kobweb.compose.ui.modifiers.outlineOffset
 import com.varabyte.kobweb.compose.ui.modifiers.scrollBehavior
 import com.varabyte.kobweb.compose.ui.modifiers.setVariable
 import com.varabyte.kobweb.compose.ui.modifiers.transition
-import com.varabyte.kobweb.compose.ui.styleModifier
 import com.varabyte.kobweb.silk.init.InitSilk
 import com.varabyte.kobweb.silk.init.InitSilkContext
 import com.varabyte.kobweb.silk.init.registerStyleBase
+import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.style.breakpoint.BreakpointSizes
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import dev.tonholo.portfolio.theme.color.AccentMint
 import dev.tonholo.portfolio.theme.color.Ink
 import dev.tonholo.portfolio.theme.color.Paper
+import dev.tonholo.portfolio.theme.layout.SiteSizeVar
 import dev.tonholo.portfolio.theme.layout.unit.dp
 import dev.tonholo.portfolio.theme.typography.unit.DEFAULT_FONT_SIZE
 import org.jetbrains.compose.web.css.CSSMediaQuery
@@ -134,7 +137,7 @@ fun initAccessibilityLayer(ctx: InitSilkContext) {
             .setVariable(PortfolioThemeVars.FocusRing, AccentMint.dark.accent)
     }
     ctx.stylesheet.registerStyleBase(":focus") {
-        Modifier.styleModifier { property("outline", "none") }
+        Modifier.outline(style = LineStyle.None)
     }
     ctx.stylesheet.registerStyleBase(":focus-visible") {
         Modifier
@@ -163,6 +166,81 @@ fun initAccessibilityLayer(ctx: InitSilkContext) {
                 )
                 .transition { duration(0.01.ms) }
                 .scrollBehavior(ScrollBehavior.Auto)
+        }
+    }
+}
+
+private const val LAYOUT_TRANSITION_DURATION_MS = 300
+
+private val LAYOUT_TRANSITION_PROPERTIES = listOf("padding", "margin", "gap", "max-width")
+
+private val LayoutTransitions: List<Transition.Listable> =
+    LAYOUT_TRANSITION_PROPERTIES.map { property ->
+        Transition.of(
+            property = property,
+            duration = LAYOUT_TRANSITION_DURATION_MS.ms,
+            timingFunction = TransitionTimingFunction.EaseOut,
+        )
+    }
+
+/**
+ * Registers the [SiteSizeVar] scale at `:root` for every active breakpoint
+ * and adds a smooth transition for layout properties on `main, section, nav,
+ * footer` so resizing the viewport across breakpoints does not jank.
+ *
+ * Smaller tokens (Xsm..Lg) stay constant across breakpoints; only `Xl` and
+ * `Xxl` ramp upward, matching the svg-to-compose precedent. Adjust the
+ * values below if rhythm needs tuning after the home migration lands.
+ */
+@InitSilk
+fun initLayoutTokens(ctx: InitSilkContext) {
+    ctx.stylesheet.registerStyle(":root") {
+        base {
+            Modifier
+                .setVariable(SiteSizeVar.Xsm, 0.25.cssRem)
+                .setVariable(SiteSizeVar.Sm, 0.5.cssRem)
+                .setVariable(SiteSizeVar.Md, 0.75.cssRem)
+                .setVariable(SiteSizeVar.Lg, 1.cssRem)
+                .setVariable(SiteSizeVar.Xl, 1.5.cssRem)
+                .setVariable(SiteSizeVar.Xxl, 2.cssRem)
+        }
+        Breakpoint.MD {
+            Modifier
+                .setVariable(SiteSizeVar.Xsm, 0.25.cssRem)
+                .setVariable(SiteSizeVar.Sm, 0.5.cssRem)
+                .setVariable(SiteSizeVar.Md, 0.75.cssRem)
+                .setVariable(SiteSizeVar.Lg, 1.cssRem)
+                .setVariable(SiteSizeVar.Xl, 1.5.cssRem)
+                .setVariable(SiteSizeVar.Xxl, 3.cssRem)
+        }
+        Breakpoint.LG {
+            Modifier
+                .setVariable(SiteSizeVar.Xsm, 0.25.cssRem)
+                .setVariable(SiteSizeVar.Sm, 0.5.cssRem)
+                .setVariable(SiteSizeVar.Md, 0.75.cssRem)
+                .setVariable(SiteSizeVar.Lg, 1.cssRem)
+                .setVariable(SiteSizeVar.Xl, 2.cssRem)
+                .setVariable(SiteSizeVar.Xxl, 3.cssRem)
+        }
+        Breakpoint.XL {
+            Modifier
+                .setVariable(SiteSizeVar.Xsm, 0.25.cssRem)
+                .setVariable(SiteSizeVar.Sm, 0.5.cssRem)
+                .setVariable(SiteSizeVar.Md, 0.75.cssRem)
+                .setVariable(SiteSizeVar.Lg, 1.cssRem)
+                .setVariable(SiteSizeVar.Xl, 2.cssRem)
+                .setVariable(SiteSizeVar.Xxl, 4.cssRem)
+        }
+    }
+
+    ctx.stylesheet.registerStyle("main, section, nav, footer") {
+        cssRule(
+            mediaQuery = CSSMediaQuery.MediaFeature(
+                name = "prefers-reduced-motion",
+                value = StylePropertyValue(value = "no-preference"),
+            ),
+        ) {
+            Modifier.transition(LayoutTransitions)
         }
     }
 }
