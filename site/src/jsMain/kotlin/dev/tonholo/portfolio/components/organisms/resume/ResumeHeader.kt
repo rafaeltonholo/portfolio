@@ -7,8 +7,10 @@ import com.varabyte.kobweb.compose.ui.modifiers.color
 import com.varabyte.kobweb.compose.ui.modifiers.display
 import com.varabyte.kobweb.compose.ui.modifiers.gap
 import com.varabyte.kobweb.compose.ui.modifiers.gridTemplateColumns
+import com.varabyte.kobweb.compose.ui.modifiers.id
 import com.varabyte.kobweb.compose.ui.modifiers.margin
 import com.varabyte.kobweb.compose.ui.modifiers.maxWidth
+import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.silk.style.CssStyle
 import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
@@ -18,8 +20,10 @@ import dev.tonholo.portfolio.components.atoms.ButtonVariant
 import dev.tonholo.portfolio.components.atoms.MetaLabel
 import dev.tonholo.portfolio.components.atoms.MetaLabelVariant
 import dev.tonholo.portfolio.components.atoms.PhosphorIcon
+import dev.tonholo.portfolio.components.layouts.SectionContentStyle
 import dev.tonholo.portfolio.locale.LocalStrings
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
+import dev.tonholo.portfolio.theme.layout.SiteDimensions
 import dev.tonholo.portfolio.theme.layout.unit.dp
 import dev.tonholo.portfolio.theme.typography.Typography
 import dev.tonholo.portfolio.theme.typography.apply
@@ -34,15 +38,16 @@ import org.jetbrains.compose.web.dom.Br
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.H1
 import org.jetbrains.compose.web.dom.P
+import org.jetbrains.compose.web.dom.Section
 import org.jetbrains.compose.web.dom.Text as ComposeText
 
-// Handoff `.resume-head`:
-//   display: grid; grid-template-columns: 1fr auto; gap: 32px;
-//   align-items: end; margin-bottom: 64px;
-// Below the handoff `@media (max-width: 900px)` the grid collapses to a single
-// column; we use `Breakpoint.LG` (900px) to match the rest of the redesign.
+// Internal grid layout. Handoff `.resume-head`:
+//   display: grid; grid-template-columns: 1fr auto; gap: 32px; align-items: end;
+// Below [Breakpoint.LG] the grid collapses to a single column. The 64px
+// bottom margin from the handoff is now owned by the outer section's
+// padding.section bottom token, so the header organism no longer applies
+// it.
 private val HEAD_GRID_GAP = 32.dp
-private val HEAD_GRID_MARGIN_BOTTOM = 64.dp
 private const val HEAD_GRID_COPY_FR = 1
 
 // Copy-column spacing.
@@ -74,18 +79,24 @@ private const val DOWNLOAD_ICON = "arrow-down"
 fun ResumeHeader(modifier: Modifier = Modifier, onDownloadPdf: () -> Unit = {}) {
     val strings = LocalStrings.current.resume
 
-    val finalModifier = ResumeHeaderStyle
-        .toModifier()
-        .then(modifier)
-
-    Div(attrs = finalModifier.toAttrs()) {
-        ResumeHeaderCopyColumn()
-        Button(
-            text = strings.downloadCta,
-            variant = ButtonVariant.Accent,
-            onClick = onDownloadPdf,
-            trailing = { PhosphorIcon(name = DOWNLOAD_ICON) },
-        )
+    Section(
+        attrs = ResumeHeaderSectionStyle
+            .toModifier()
+            .id("resume-header")
+            .then(modifier)
+            .toAttrs(),
+    ) {
+        Div(attrs = SectionContentStyle.toModifier().toAttrs()) {
+            Div(attrs = ResumeHeaderGridStyle.toModifier().toAttrs()) {
+                ResumeHeaderCopyColumn()
+                Button(
+                    text = strings.downloadCta,
+                    variant = ButtonVariant.Accent,
+                    onClick = onDownloadPdf,
+                    trailing = { PhosphorIcon(name = DOWNLOAD_ICON) },
+                )
+            }
+        }
     }
 }
 
@@ -129,21 +140,42 @@ private fun ResumeHeaderCopyColumn() {
 }
 
 /**
- * Base `CssStyle` for [ResumeHeader]. Ports `.resume-head` from the handoff:
- * a two-column grid with a 32px gap, the copy column stretching to fill the
- * available width and the CTA column auto-sized on the right; columns align on
- * their baseline/end edge so the button sits flush with the paragraph. Below
- * [Breakpoint.LG] the grid collapses to a single column matching the handoff
- * media query.
+ * Outer `<section>` chrome for [ResumeHeader]. Mirrors the hero-shaped
+ * pattern shared with every other page header: vertical rhythm uses
+ * [SiteDimensions.padding.heroTop] on top and [SiteDimensions.padding.section]
+ * on bottom; the horizontal gutter ramps mobile-first from
+ * [SiteDimensions.size.Lg] at the base to [SiteDimensions.size.Xxl] from
+ * [Breakpoint.MD].
  */
-val ResumeHeaderStyle = CssStyle {
+val ResumeHeaderSectionStyle = CssStyle {
+    base {
+        Modifier.padding(
+            top = SiteDimensions.padding.heroTop,
+            bottom = SiteDimensions.padding.section,
+            leftRight = SiteDimensions.size.Lg,
+        )
+    }
+    Breakpoint.MD {
+        Modifier.padding(
+            top = SiteDimensions.padding.heroTop,
+            bottom = SiteDimensions.padding.section,
+            leftRight = SiteDimensions.size.Xxl,
+        )
+    }
+}
+
+/**
+ * Internal two-column grid. Single column at the mobile-first base; switches
+ * to `1fr auto` with `align-items: end` from [Breakpoint.LG] so the
+ * Download-PDF button sits flush with the paragraph baseline.
+ */
+val ResumeHeaderGridStyle = CssStyle {
     base {
         Modifier
             .display(DisplayStyle.Grid)
             .gridTemplateColumns { size(HEAD_GRID_COPY_FR.fr) }
             .gap(HEAD_GRID_GAP)
             .alignItems(AlignItems.Start)
-            .margin(bottom = HEAD_GRID_MARGIN_BOTTOM)
     }
     Breakpoint.LG {
         Modifier
