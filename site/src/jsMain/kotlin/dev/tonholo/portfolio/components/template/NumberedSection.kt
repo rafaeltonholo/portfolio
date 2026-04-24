@@ -4,8 +4,10 @@ import androidx.compose.runtime.Composable
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.silk.style.toModifier
+import dev.tonholo.portfolio.components.layouts.SectionContainerStyle
+import dev.tonholo.portfolio.components.layouts.SectionContentStyle
 import dev.tonholo.portfolio.components.molecules.SectionHead
-import dev.tonholo.portfolio.theme.layout.PageSectionShellStyle
+import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Section
 
 // Mono marker format used by every numbered section (`// 00`, `// 01`, ...).
@@ -27,14 +29,17 @@ fun sectionMarker(ordinal: Int): String =
 
 /**
  * Shared layout wrapper for every numbered home-page section (`// 00` - `// 03`).
- * Renders the `<section>` element with [PageSectionShellStyle] (shell gutters
- * + density-aware `--pad-y` vertical rhythm), a [SectionHead] carrying the
- * ordinal marker, and a content slot.
+ * Renders a semantic `<section>` with the standard
+ * [SectionContainerStyle] rhythm (vertical [SiteDimensions.padding.section]
+ * and the mobile-first horizontal gutter ramp via [SiteDimensions.size]) and
+ * the inner [SectionContentStyle] cap so content stays under
+ * [SiteDimensions.layout.contentMaxWidth]. The `<section>` body holds a
+ * [SectionHead] with the ordinal marker followed by the content slot.
  *
  * Using `padding` rather than `margin` means adjacent sections always get the
  * full `padY + padY` combined padding between content boxes; padding never
- * collapses, so the rhythm is deterministic regardless of the content above
- * or below and the Density setting drives both halves consistently.
+ * collapses so the rhythm is deterministic regardless of what lives above or
+ * below.
  *
  * @param number the section ordinal; formatted into the mono marker as
  *   `"// 00"` etc.
@@ -53,12 +58,15 @@ fun NumberedSection(
     trailing: (@Composable () -> Unit)? = null,
     content: @Composable () -> Unit,
 ) {
-    val sectionModifier = PageSectionShellStyle
-        .toModifier()
-        .then(modifier)
-
-    Section(attrs = sectionModifier.toAttrs()) {
-        SectionHead(number = sectionMarker(ordinal = number), title = title, trailing = trailing)
-        content()
+    Section(
+        attrs = SectionContainerStyle
+            .toModifier()
+            .then(modifier)
+            .toAttrs(),
+    ) {
+        Div(attrs = SectionContentStyle.toModifier().toAttrs()) {
+            SectionHead(number = sectionMarker(ordinal = number), title = title, trailing = trailing)
+            content()
+        }
     }
 }
