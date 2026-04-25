@@ -3,6 +3,7 @@ package dev.tonholo.portfolio.components.organisms.home
 import androidx.compose.runtime.Composable
 import com.varabyte.kobweb.compose.css.BoxDecorationBreak
 import com.varabyte.kobweb.compose.css.OverflowWrap
+import com.varabyte.kobweb.compose.css.functions.min
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.alignItems
 import com.varabyte.kobweb.compose.ui.modifiers.backgroundColor
@@ -36,7 +37,7 @@ import org.jetbrains.compose.web.css.CSSUnit
 import org.jetbrains.compose.web.css.DisplayStyle
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.fr
-import org.jetbrains.compose.web.css.px
+import org.jetbrains.compose.web.css.percent
 import org.jetbrains.compose.web.dom.Br
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.H1
@@ -44,11 +45,20 @@ import org.jetbrains.compose.web.dom.P
 import org.jetbrains.compose.web.dom.Span
 import org.jetbrains.compose.web.dom.Text as ComposeText
 
-// Handoff `.hero-a`: two-column grid, 64px gap. Collapses to a single column
-// below 900px (Silk's `Breakpoint.LG`) with a 32px gap.
+// Handoff `.hero-a`: two-column grid, 64px gap. Tracks self-collapse to one
+// column when the container can no longer fit two of [HERO_GRID_MIN_COL_WIDTH]
+// side-by-side; the gap shrinks to 32px below [Breakpoint.LG] so stacked
+// content keeps a tighter rhythm on narrow phones.
 private val HERO_GRID_GAP_DESKTOP = 64.dp
 private val HERO_GRID_GAP_MOBILE = 32.dp
-private const val HERO_GRID_COL_FR = 1
+
+// Minimum width before each grid track is allowed; below this the `auto-fit`
+// grid collapses to a single column. Treat this as a layout contract for the
+// hero ("don't render the side-by-side split until each side has substantial
+// editorial breathing room"), not a content-coupled measurement; the
+// `min(100%, ...)` wrapper at the call site keeps narrow mobile containers
+// from overflowing this floor.
+private val HERO_GRID_MIN_COL_WIDTH = 32.cssRem
 
 // Handoff inline styles on the meta label row and the CTA row.
 private val META_MARGIN_BOTTOM = 20.dp
@@ -127,6 +137,7 @@ private fun HeroCopyColumn(onFeaturedWorkClick: () -> Unit, onDownloadCvClick: (
             attrs = Modifier
                 .apply(Typography.hero)
                 .color(tokens.ink.ink)
+                .overflowWrap(OverflowWrap.BreakWord)
                 .margin(top = 0.cssRem, bottom = TITLE_MARGIN_BOTTOM)
                 .toAttrs(),
         ) {
@@ -172,25 +183,30 @@ private fun HeroCopyColumn(onFeaturedWorkClick: () -> Unit, onDownloadCvClick: (
 // ---------------------------------------------------------------------------
 
 /**
- * Base `CssStyle` for the split grid. Mobile is a single column with a tight
- * 32px gap; from [Breakpoint.LG] (900px) upwards the grid becomes two equal
- * columns separated by 64px, matching `.hero-a` in the handoff CSS.
+ * Base `CssStyle` for the split grid. Uses `repeat(auto-fit, minmax(...))` so
+ * the layout itself decides when there's room for two columns based on its
+ * container width, instead of relying on a viewport breakpoint that drifts as
+ * copy or font-size changes. The handoff layout - editorial title on the
+ * left, code snippet on the right - falls out of the grid math: at any
+ * container wide enough for two `HERO_GRID_MIN_COL_WIDTH` tracks plus the
+ * gap, two columns appear; below that, the snippet stacks below the title.
+ * The gap still uses [Breakpoint.LG] so stacked rows on phones stay tighter
+ * than the desktop column rhythm.
  */
 val HeroEditorialGridStyle = CssStyle {
     base {
         Modifier
             .display(DisplayStyle.Grid)
-            .gridTemplateColumns { minmax(0.px, HERO_GRID_COL_FR.fr) }
+            .gridTemplateColumns {
+                repeat(autoFit) {
+                    minmax(min(100.percent, HERO_GRID_MIN_COL_WIDTH), 1.fr)
+                }
+            }
             .gap(HERO_GRID_GAP_MOBILE)
             .alignItems(AlignItems.Start)
     }
     Breakpoint.LG {
-        Modifier
-            .gridTemplateColumns {
-                minmax(0.px, HERO_GRID_COL_FR.fr)
-                minmax(0.px, HERO_GRID_COL_FR.fr)
-            }
-            .gap(HERO_GRID_GAP_DESKTOP)
+        Modifier.gap(HERO_GRID_GAP_DESKTOP)
     }
 }
 
