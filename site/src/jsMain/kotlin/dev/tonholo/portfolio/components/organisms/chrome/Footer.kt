@@ -15,6 +15,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.color
 import com.varabyte.kobweb.compose.ui.modifiers.cursor
 import com.varabyte.kobweb.compose.ui.modifiers.display
 import com.varabyte.kobweb.compose.ui.modifiers.flexDirection
+import com.varabyte.kobweb.compose.ui.modifiers.flexWrap
 import com.varabyte.kobweb.compose.ui.modifiers.fontFamily
 import com.varabyte.kobweb.compose.ui.modifiers.fontSize
 import com.varabyte.kobweb.compose.ui.modifiers.fontWeight
@@ -50,6 +51,7 @@ import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.color.AccentMint
 import dev.tonholo.portfolio.theme.color.Ink
 import dev.tonholo.portfolio.theme.layout.ChromeShellStyle
+import dev.tonholo.portfolio.theme.layout.SiteDimensions
 import dev.tonholo.portfolio.theme.layout.unit.dp
 import dev.tonholo.portfolio.theme.typography.FontFamilies
 import org.jetbrains.compose.web.css.AlignItems
@@ -58,6 +60,7 @@ import org.jetbrains.compose.web.css.CSSSizeValue
 import org.jetbrains.compose.web.css.CSSUnit
 import org.jetbrains.compose.web.css.DisplayStyle
 import org.jetbrains.compose.web.css.FlexDirection
+import org.jetbrains.compose.web.css.FlexWrap
 import org.jetbrains.compose.web.css.JustifyContent
 import org.jetbrains.compose.web.css.LineStyle
 import org.jetbrains.compose.web.css.StylePropertyValue
@@ -77,13 +80,13 @@ import org.jetbrains.compose.web.dom.Text as ComposeText
 
 // ---------------------------------------------------------------------------
 // Container chrome. Handoff `.footer`:
-//   border-top 1px paper-3 (paper-2 dark), padding 48px 0 36px, margin-top 80px,
-//   mono family, 12px, muted color.
+//   border-top 1px paper-3 (paper-2 dark), mono family, 12px, muted color.
+// Vertical padding is SiteDimensions.padding.footerVertical (token-driven so
+// it scales with breakpoints). The handoff's 80px margin-top is intentionally
+// dropped: the previous content section's padding.section bottom token now
+// provides the separation between page body and footer.
 // ---------------------------------------------------------------------------
 private val FOOTER_BORDER_WIDTH = 1.dp
-private val FOOTER_PADDING_TOP = 48.dp
-private val FOOTER_PADDING_BOTTOM = 36.dp
-private val FOOTER_MARGIN_TOP = 80.dp
 private val FOOTER_FONT_SIZE = 12.dp
 
 // Handoff `.footer-grid`:
@@ -123,6 +126,9 @@ private val FOOTER_BOTTOM_PADDING_TOP = 24.dp
 
 // Inline gap between the copyright segments and the centered separator dots.
 private val FOOTER_BOTTOM_LEFT_GAP = 8.dp
+
+// Vertical rhythm between stacked rows of the footer bottom bar on mobile.
+private val FOOTER_BOTTOM_STACK_GAP = 8.dp
 
 // Work column entries stay as mono technical literals (product / project
 // names), not user-facing copy that needs translation. Slug values match
@@ -371,13 +377,7 @@ private fun FooterBottom(leftSegments: List<String>, versionInfo: String, border
             )
             .toAttrs(),
     ) {
-        Span(
-            attrs = Modifier
-                .display(DisplayStyle.LegacyInlineFlex)
-                .alignItems(AlignItems.Center)
-                .gap(FOOTER_BOTTOM_LEFT_GAP)
-                .toAttrs(),
-        ) {
+        Span(attrs = FooterBottomLeftSegmentsStyle.toModifier().toAttrs()) {
             leftSegments.forEachIndexed { index, segment ->
                 if (index > 0) {
                     MetaSeparator()
@@ -404,11 +404,7 @@ private fun FooterBottom(leftSegments: List<String>, versionInfo: String, border
 val FooterStyle = CssStyle {
     base {
         Modifier
-            .margin(top = FOOTER_MARGIN_TOP)
-            .padding(
-                top = FOOTER_PADDING_TOP,
-                bottom = FOOTER_PADDING_BOTTOM,
-            )
+            .padding(topBottom = SiteDimensions.padding.footerVertical)
             .fontFamily(*FontFamilies.MONO)
             .fontSize(FOOTER_FONT_SIZE)
     }
@@ -519,16 +515,44 @@ val FooterLinkStyle = CssStyle {
 }
 
 /**
- * Base `CssStyle` for `.footer-bottom`. Flex row with space-between alignment
- * and a 24px top padding; the 1px top border is applied inline by the
- * composable so its color can follow the active theme.
+ * Base `CssStyle` for `.footer-bottom`. On mobile the bar stacks as a column
+ * with a small gap so the copyright/build segments and the version slug each
+ * get their own line instead of fighting `space-between` for horizontal room
+ * (the handoff row otherwise wraps segments into narrow vertical stacks under
+ * ~600px). From [Breakpoint.MD] the handoff layout kicks in: flex row with
+ * space-between and a 24px top padding. The 1px top border is applied inline
+ * by the composable so its color can follow the active theme.
  */
 val FooterBottomStyle = CssStyle {
     base {
         Modifier
             .display(DisplayStyle.Flex)
-            .justifyContent(JustifyContent.SpaceBetween)
+            .flexDirection(FlexDirection.Column)
+            .gap(FOOTER_BOTTOM_STACK_GAP)
             .padding(top = FOOTER_BOTTOM_PADDING_TOP)
+    }
+    Breakpoint.MD {
+        Modifier
+            .flexDirection(FlexDirection.Row)
+            .justifyContent(JustifyContent.SpaceBetween)
+            .gap(0.cssRem)
+    }
+}
+
+/**
+ * Base `CssStyle` for the left cluster of the bottom bar (copyright + build
+ * notes joined by [MetaSeparator] dots). Renders as a wrapping inline-flex so
+ * the segments reflow across rows on narrow viewports instead of overflowing
+ * the shell, while the dot separators stay inline with their neighbouring
+ * copy on every row.
+ */
+val FooterBottomLeftSegmentsStyle = CssStyle {
+    base {
+        Modifier
+            .display(DisplayStyle.Flex)
+            .flexWrap(FlexWrap.Wrap)
+            .alignItems(AlignItems.Center)
+            .gap(rowGap = FOOTER_BOTTOM_STACK_GAP, columnGap = FOOTER_BOTTOM_LEFT_GAP)
     }
 }
 
