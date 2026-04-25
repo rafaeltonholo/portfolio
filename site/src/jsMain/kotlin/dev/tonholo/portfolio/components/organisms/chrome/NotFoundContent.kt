@@ -12,7 +12,6 @@ import com.varabyte.kobweb.compose.ui.modifiers.fontFamily
 import com.varabyte.kobweb.compose.ui.modifiers.fontSize
 import com.varabyte.kobweb.compose.ui.modifiers.fontWeight
 import com.varabyte.kobweb.compose.ui.modifiers.gap
-import com.varabyte.kobweb.compose.ui.modifiers.id
 import com.varabyte.kobweb.compose.ui.modifiers.letterSpacing
 import com.varabyte.kobweb.compose.ui.modifiers.lineHeight
 import com.varabyte.kobweb.compose.ui.modifiers.listStyle
@@ -25,16 +24,14 @@ import com.varabyte.kobweb.silk.components.navigation.Link
 import com.varabyte.kobweb.silk.components.navigation.UncoloredLinkVariant
 import com.varabyte.kobweb.silk.components.navigation.UndecoratedLinkVariant
 import com.varabyte.kobweb.silk.style.CssStyle
-import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.style.toModifier
 import dev.tonholo.portfolio.components.atoms.MetaLabel
 import dev.tonholo.portfolio.components.atoms.MetaLabelVariant
 import dev.tonholo.portfolio.components.atoms.VisuallyHiddenStyle
-import dev.tonholo.portfolio.components.layouts.SectionContentStyle
+import dev.tonholo.portfolio.components.layouts.HeroSection
 import dev.tonholo.portfolio.locale.LocalStrings
 import dev.tonholo.portfolio.navigation.Routes
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
-import dev.tonholo.portfolio.theme.layout.SiteDimensions
 import dev.tonholo.portfolio.theme.layout.unit.dp
 import dev.tonholo.portfolio.theme.typography.FontFamilies
 import dev.tonholo.portfolio.theme.typography.Typography
@@ -51,7 +48,6 @@ import org.jetbrains.compose.web.dom.H1
 import org.jetbrains.compose.web.dom.H2
 import org.jetbrains.compose.web.dom.Li
 import org.jetbrains.compose.web.dom.P
-import org.jetbrains.compose.web.dom.Section
 import org.jetbrains.compose.web.dom.Span
 import org.jetbrains.compose.web.dom.Ul
 import org.jetbrains.compose.web.dom.Text as ComposeText
@@ -100,108 +96,76 @@ fun NotFoundContent() {
         RecoveryTarget(label = strings.recoveryResume, route = Routes.RESUME),
     )
 
-    Section(
-        attrs = NotFoundSectionStyle
-            .toModifier()
-            .id("not-found")
-            .toAttrs(),
-    ) {
-        Div(attrs = SectionContentStyle.toModifier().toAttrs()) {
-            MetaLabel(
-                text = META_LABEL,
-                variant = MetaLabelVariant.Accent,
-                modifier = Modifier
-                    .display(DisplayStyle.Block)
-                    .margin(bottom = ERROR_META_BOTTOM),
-            )
-            H1(
-                attrs = NotFoundTitleStyle
-                    .toModifier()
-                    .apply(Typography.h2)
-                    .color(tokens.ink.ink)
+    HeroSection(id = "not-found") {
+        MetaLabel(
+            text = META_LABEL,
+            variant = MetaLabelVariant.Accent,
+            modifier = Modifier
+                .display(DisplayStyle.Block)
+                .margin(bottom = ERROR_META_BOTTOM),
+        )
+        H1(
+            attrs = NotFoundTitleStyle
+                .toModifier()
+                .apply(Typography.h2)
+                .color(tokens.ink.ink)
+                .toAttrs(),
+        ) {
+            ComposeText(strings.title)
+        }
+        P(
+            attrs = NotFoundLeadStyle
+                .toModifier()
+                .color(tokens.ink.ink2)
+                .toAttrs(),
+        ) {
+            ComposeText(strings.lead)
+        }
+        Div(
+            attrs = NotFoundShellLineStyle
+                .toModifier()
+                .color(tokens.muted.muted)
+                .toAttrs(),
+        ) {
+            Span(
+                attrs = Modifier
+                    .color(tokens.accent.accent)
+                    .fontWeight(FontWeight.SemiBold)
                     .toAttrs(),
             ) {
-                ComposeText(strings.title)
+                ComposeText(PROMPT)
             }
-            P(
-                attrs = NotFoundLeadStyle
-                    .toModifier()
-                    .color(tokens.ink.ink2)
-                    .toAttrs(),
-            ) {
-                ComposeText(strings.lead)
+            Span(attrs = Modifier.toAttrs()) {
+                ComposeText(strings.shellCommandPrefix + path)
             }
-            Div(
-                attrs = NotFoundShellLineStyle
-                    .toModifier()
-                    .color(tokens.muted.muted)
-                    .toAttrs(),
-            ) {
-                Span(
-                    attrs = Modifier
-                        .color(tokens.accent.accent)
-                        .fontWeight(FontWeight.SemiBold)
-                        .toAttrs(),
-                ) {
-                    ComposeText(PROMPT)
-                }
-                Span(attrs = Modifier.toAttrs()) {
-                    ComposeText(strings.shellCommandPrefix + path)
-                }
-            }
-            // Visually-hidden section heading paired with the mono "// try
-            // one of" label. Gives the recovery list an h2 under the page h1
-            // so the document outline never skips to the footer h3.
-            H2(attrs = VisuallyHiddenStyle.toModifier().toAttrs()) {
-                ComposeText("Recovery routes")
-            }
-            MetaLabel(
-                text = RECOVERY_LABEL,
-                modifier = Modifier
-                    .display(DisplayStyle.Block)
-                    .margin(bottom = RECOVERY_LABEL_MARGIN_BOTTOM),
-            )
-            Ul(attrs = NotFoundRecoveryListStyle.toModifier().toAttrs()) {
-                recoveryTargets.forEach { target ->
-                    Li(attrs = Modifier.toAttrs()) {
-                        Link(
-                            path = target.route,
-                            modifier = NotFoundRecoveryLinkStyle
-                                .toModifier()
-                                .color(tokens.accent.accent),
-                            variant = UndecoratedLinkVariant then UncoloredLinkVariant,
-                        ) {
-                            ComposeText(target.label)
-                        }
+        }
+        // Visually-hidden section heading paired with the mono "// try
+        // one of" label. Gives the recovery list an h2 under the page h1
+        // so the document outline never skips to the footer h3.
+        H2(attrs = VisuallyHiddenStyle.toModifier().toAttrs()) {
+            ComposeText("Recovery routes")
+        }
+        MetaLabel(
+            text = RECOVERY_LABEL,
+            modifier = Modifier
+                .display(DisplayStyle.Block)
+                .margin(bottom = RECOVERY_LABEL_MARGIN_BOTTOM),
+        )
+        Ul(attrs = NotFoundRecoveryListStyle.toModifier().toAttrs()) {
+            recoveryTargets.forEach { target ->
+                Li(attrs = Modifier.toAttrs()) {
+                    Link(
+                        path = target.route,
+                        modifier = NotFoundRecoveryLinkStyle
+                            .toModifier()
+                            .color(tokens.accent.accent),
+                        variant = UndecoratedLinkVariant then UncoloredLinkVariant,
+                    ) {
+                        ComposeText(target.label)
                     }
                 }
             }
         }
-    }
-}
-
-/**
- * Outer `<section>` chrome for the 404 page body. Mirrors the hero-shaped
- * pattern shared with every other long-form route: vertical rhythm uses
- * [SiteDimensions.padding.heroTop] on top and [SiteDimensions.padding.section]
- * on bottom; the horizontal gutter ramps mobile-first from
- * [SiteDimensions.size.Lg] at the base to [SiteDimensions.size.Xxl] from
- * [Breakpoint.MD].
- */
-val NotFoundSectionStyle = CssStyle {
-    base {
-        Modifier.padding(
-            top = SiteDimensions.padding.heroTop,
-            bottom = SiteDimensions.padding.section,
-            leftRight = SiteDimensions.size.Lg,
-        )
-    }
-    Breakpoint.MD {
-        Modifier.padding(
-            top = SiteDimensions.padding.heroTop,
-            bottom = SiteDimensions.padding.section,
-            leftRight = SiteDimensions.size.Xxl,
-        )
     }
 }
 

@@ -9,9 +9,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.fontFamily
 import com.varabyte.kobweb.compose.ui.modifiers.fontSize
 import com.varabyte.kobweb.compose.ui.modifiers.gap
 import com.varabyte.kobweb.compose.ui.modifiers.gridTemplateColumns
-import com.varabyte.kobweb.compose.ui.modifiers.id
 import com.varabyte.kobweb.compose.ui.modifiers.margin
-import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.silk.style.CssStyle
 import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
@@ -19,10 +17,9 @@ import com.varabyte.kobweb.silk.style.toModifier
 import dev.tonholo.portfolio.components.atoms.MetaLabel
 import dev.tonholo.portfolio.components.atoms.MetaLabelVariant
 import dev.tonholo.portfolio.components.atoms.MetaSeparator
-import dev.tonholo.portfolio.components.layouts.SectionContentStyle
+import dev.tonholo.portfolio.components.layouts.HeroSection
 import dev.tonholo.portfolio.locale.LocalStrings
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
-import dev.tonholo.portfolio.theme.layout.SiteDimensions
 import dev.tonholo.portfolio.theme.layout.unit.dp
 import dev.tonholo.portfolio.theme.typography.FontFamilies
 import dev.tonholo.portfolio.theme.typography.Typography
@@ -35,7 +32,6 @@ import org.jetbrains.compose.web.css.keywords.auto
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.H1
 import org.jetbrains.compose.web.dom.P
-import org.jetbrains.compose.web.dom.Section
 import org.jetbrains.compose.web.dom.Text as ComposeText
 
 // Internal grid: `1fr` on mobile (single column, summary stacks below the
@@ -76,73 +72,39 @@ fun ArticlesHeader(articleCount: Int, modifier: Modifier = Modifier) {
     val tokens = LocalPortfolioTokens.current
     val strings = LocalStrings.current.articlesList
 
-    Section(
-        attrs = ArticlesHeaderSectionStyle
-            .toModifier()
-            .id("articles-header")
-            .then(modifier)
-            .toAttrs(),
-    ) {
-        Div(attrs = SectionContentStyle.toModifier().toAttrs()) {
-            Div(attrs = ArticlesHeaderGridStyle.toModifier().toAttrs()) {
-                Div(attrs = Modifier.toAttrs()) {
-                    MetaLabel(
-                        text = META_TEXT,
-                        variant = MetaLabelVariant.Accent,
-                        modifier = Modifier
-                            .display(DisplayStyle.Block)
-                            .margin(bottom = META_MARGIN_BOTTOM),
-                    )
-                    H1(
-                        attrs = Modifier
-                            .apply(Typography.h1)
-                            .color(tokens.ink.ink)
-                            .margin(topBottom = 0.cssRem)
-                            .toAttrs(),
-                    ) {
-                        ComposeText(strings.title)
-                    }
-                }
-                P(
-                    attrs = ArticlesHeaderSummaryStyle
-                        .toModifier()
-                        .color(tokens.muted.muted)
+    HeroSection(id = "articles-header", modifier = modifier) {
+        Div(attrs = ArticlesHeaderGridStyle.toModifier().toAttrs()) {
+            Div(attrs = Modifier.toAttrs()) {
+                MetaLabel(
+                    text = META_TEXT,
+                    variant = MetaLabelVariant.Accent,
+                    modifier = Modifier
+                        .display(DisplayStyle.Block)
+                        .margin(bottom = META_MARGIN_BOTTOM),
+                )
+                H1(
+                    attrs = Modifier
+                        .apply(Typography.h1)
+                        .color(tokens.ink.ink)
+                        .margin(topBottom = 0.cssRem)
                         .toAttrs(),
                 ) {
-                    ComposeText("$articleCount ${strings.postsSuffix}")
-                    MetaSeparator()
-                    ComposeText(strings.rssCopy)
-                    MetaSeparator()
-                    ComposeText(strings.subscribersCopy)
+                    ComposeText(strings.title)
                 }
             }
+            P(
+                attrs = ArticlesHeaderSummaryStyle
+                    .toModifier()
+                    .color(tokens.muted.muted)
+                    .toAttrs(),
+            ) {
+                ComposeText("$articleCount ${strings.postsSuffix}")
+                MetaSeparator()
+                ComposeText(strings.rssCopy)
+                MetaSeparator()
+                ComposeText(strings.subscribersCopy)
+            }
         }
-    }
-}
-
-/**
- * Outer `<section>` chrome for [ArticlesHeader]. Mirrors the hero-shaped
- * pattern from `HeroEditorialSectionStyle`: vertical rhythm uses
- * [SiteDimensions.padding.heroTop] on top and [SiteDimensions.padding.section]
- * on bottom; horizontal gutter ramps from [SiteDimensions.size.Lg] at the
- * mobile-first base to [SiteDimensions.size.Xxl] from [Breakpoint.MD]. All
- * values flow through [dev.tonholo.portfolio.theme.layout.SiteSizeVar.Xxl]
- * so the rhythm scales without per-organism overrides.
- */
-val ArticlesHeaderSectionStyle = CssStyle {
-    base {
-        Modifier.padding(
-            top = SiteDimensions.padding.heroTop,
-            bottom = SiteDimensions.padding.section,
-            leftRight = SiteDimensions.size.Lg,
-        )
-    }
-    Breakpoint.MD {
-        Modifier.padding(
-            top = SiteDimensions.padding.heroTop,
-            bottom = SiteDimensions.padding.section,
-            leftRight = SiteDimensions.size.Xxl,
-        )
     }
 }
 

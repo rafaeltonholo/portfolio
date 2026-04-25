@@ -22,7 +22,6 @@ import com.varabyte.kobweb.compose.ui.modifiers.letterSpacing
 import com.varabyte.kobweb.compose.ui.modifiers.lineHeight
 import com.varabyte.kobweb.compose.ui.modifiers.margin
 import com.varabyte.kobweb.compose.ui.modifiers.maxWidth
-import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.core.PageContext
 import com.varabyte.kobweb.core.data.add
@@ -40,7 +39,6 @@ import dev.tonholo.portfolio.components.organisms.articles.ArticleTocSidebar
 import dev.tonholo.portfolio.components.organisms.articles.TocEntry
 import dev.tonholo.portfolio.navigation.Routes
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
-import dev.tonholo.portfolio.theme.layout.SiteDimensions
 import dev.tonholo.portfolio.theme.layout.unit.dp
 import dev.tonholo.portfolio.theme.typography.FontFamilies
 import dev.tonholo.portfolio.theme.typography.Typography
@@ -58,7 +56,6 @@ import org.jetbrains.compose.web.dom.Article
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.H1
 import org.jetbrains.compose.web.dom.P
-import org.jetbrains.compose.web.dom.Section
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.Node
 import org.w3c.dom.asList
@@ -169,53 +166,51 @@ fun ArticleMarkdownLayout(context: PageContext, content: @Composable () -> Unit)
     var tocEntries by remember(data.slug) { mutableStateOf<List<TocEntry>>(emptyList()) }
 
     PageLayout {
-        Section(attrs = ArticleMarkdownShellStyle.toModifier().toAttrs()) {
-            Div(attrs = SectionContentStyle.toModifier().toAttrs()) {
-                // Handoff structure: meta row, title, and lede span the full
-                // shell width above the sidebar/body grid. The two-column
-                // layout only applies to the article body + TOC, not to the
-                // editorial header.
-                ArticleMetaRow(
-                    date = data.date,
-                    readTime = data.readTime,
-                    backRoute = Routes.ARTICLES,
-                )
-                H1(
-                    attrs = ArticleMarkdownTitleStyle
+        HeroSection(id = "article-shell") {
+            // Handoff structure: meta row, title, and lede span the full
+            // shell width above the sidebar/body grid. The two-column
+            // layout only applies to the article body + TOC, not to the
+            // editorial header.
+            ArticleMetaRow(
+                date = data.date,
+                readTime = data.readTime,
+                backRoute = Routes.ARTICLES,
+            )
+            H1(
+                attrs = ArticleMarkdownTitleStyle
+                    .toModifier()
+                    .apply(Typography.h1)
+                    .color(tokens.ink.ink)
+                    .toAttrs(),
+            ) {
+                ComposeText(data.title)
+            }
+            if (data.description.isNotEmpty()) {
+                P(
+                    attrs = ArticleMarkdownLedeStyle
                         .toModifier()
-                        .apply(Typography.h1)
-                        .color(tokens.ink.ink)
+                        .color(tokens.ink.ink2)
                         .toAttrs(),
                 ) {
-                    ComposeText(data.title)
+                    ComposeText(data.description)
                 }
-                if (data.description.isNotEmpty()) {
-                    P(
-                        attrs = ArticleMarkdownLedeStyle
-                            .toModifier()
-                            .color(tokens.ink.ink2)
-                            .toAttrs(),
-                    ) {
-                        ComposeText(data.description)
-                    }
-                }
-                Div(attrs = ArticleMarkdownGridStyle.toModifier().toAttrs()) {
-                    ArticleTocSidebar(
-                        contents = tocEntries,
-                        activeId = tocEntries.firstOrNull()?.id.orEmpty(),
-                        onCopyLink = { copyCurrentLocation() },
-                    )
-                    Article(attrs = ArticleMarkdownBodyStyle.toModifier().toAttrs()) {
-                        content()
+            }
+            Div(attrs = ArticleMarkdownGridStyle.toModifier().toAttrs()) {
+                ArticleTocSidebar(
+                    contents = tocEntries,
+                    activeId = tocEntries.firstOrNull()?.id.orEmpty(),
+                    onCopyLink = { copyCurrentLocation() },
+                )
+                Article(attrs = ArticleMarkdownBodyStyle.toModifier().toAttrs()) {
+                    content()
 
-                        DisposableEffect(data.slug) {
-                            tocEntries = collectTocEntries()
-                            val observer = observeHeadingsIfEmpty(
-                                entries = tocEntries,
-                                onCollected = { tocEntries = it },
-                            )
-                            onDispose { observer?.disconnect() }
-                        }
+                    DisposableEffect(data.slug) {
+                        tocEntries = collectTocEntries()
+                        val observer = observeHeadingsIfEmpty(
+                            entries = tocEntries,
+                            onCollected = { tocEntries = it },
+                        )
+                        onDispose { observer?.disconnect() }
                     }
                 }
             }
@@ -289,33 +284,6 @@ private fun createMutationObserverInit(
 private fun copyCurrentLocation() {
     val clipboard = window.navigator.clipboard
     clipboard.writeText(window.location.href)
-}
-
-/**
- * Outer `<section>` chrome for the article detail body. Mirrors the
- * hero-shaped pattern shared with every other long-form route: vertical
- * rhythm uses [SiteDimensions.padding.heroTop] on top and
- * [SiteDimensions.padding.section] on bottom; the horizontal gutter ramps
- * mobile-first from [SiteDimensions.size.Lg] at the base to
- * [SiteDimensions.size.Xxl] from [Breakpoint.MD]. The inner content sits
- * inside [SectionContentStyle] so the article body shares the
- * [SiteDimensions.layout.contentMaxWidth] cap with every other section.
- */
-val ArticleMarkdownShellStyle = CssStyle {
-    base {
-        Modifier.padding(
-            top = SiteDimensions.padding.heroTop,
-            bottom = SiteDimensions.padding.section,
-            leftRight = SiteDimensions.size.Lg,
-        )
-    }
-    Breakpoint.MD {
-        Modifier.padding(
-            top = SiteDimensions.padding.heroTop,
-            bottom = SiteDimensions.padding.section,
-            leftRight = SiteDimensions.size.Xxl,
-        )
-    }
 }
 
 /**

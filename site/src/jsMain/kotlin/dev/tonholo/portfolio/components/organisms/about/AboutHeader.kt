@@ -15,12 +15,10 @@ import com.varabyte.kobweb.compose.ui.modifiers.fontSize
 import com.varabyte.kobweb.compose.ui.modifiers.fontStyle
 import com.varabyte.kobweb.compose.ui.modifiers.gap
 import com.varabyte.kobweb.compose.ui.modifiers.gridTemplateColumns
-import com.varabyte.kobweb.compose.ui.modifiers.id
 import com.varabyte.kobweb.compose.ui.modifiers.lineHeight
 import com.varabyte.kobweb.compose.ui.modifiers.margin
 import com.varabyte.kobweb.compose.ui.modifiers.maxWidth
 import com.varabyte.kobweb.compose.ui.modifiers.objectFit
-import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.silk.components.graphics.Image
 import com.varabyte.kobweb.silk.components.graphics.ImageDecoding
@@ -30,10 +28,9 @@ import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.style.toModifier
 import dev.tonholo.portfolio.components.atoms.MetaLabel
 import dev.tonholo.portfolio.components.atoms.MetaLabelVariant
-import dev.tonholo.portfolio.components.layouts.SectionContentStyle
+import dev.tonholo.portfolio.components.layouts.HeroSection
 import dev.tonholo.portfolio.locale.LocalStrings
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
-import dev.tonholo.portfolio.theme.layout.SiteDimensions
 import dev.tonholo.portfolio.theme.layout.unit.dp
 import dev.tonholo.portfolio.theme.typography.FontFamilies
 import dev.tonholo.portfolio.theme.typography.Typography
@@ -47,7 +44,6 @@ import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Em
 import org.jetbrains.compose.web.dom.H1
 import org.jetbrains.compose.web.dom.P
-import org.jetbrains.compose.web.dom.Section
 import org.jetbrains.compose.web.dom.Text as ComposeText
 
 // Handoff `.about-hdr`: two-column grid, `1.2fr 1fr`, 64px gap, items aligned
@@ -93,18 +89,10 @@ private const val PORTRAIT_ASPECT_H = 5
  */
 @Composable
 fun AboutHeader(modifier: Modifier = Modifier) {
-    Section(
-        attrs = AboutHeaderSectionStyle
-            .toModifier()
-            .id("about-header")
-            .then(modifier)
-            .toAttrs(),
-    ) {
-        Div(attrs = SectionContentStyle.toModifier().toAttrs()) {
-            Div(attrs = AboutHeaderGridStyle.toModifier().toAttrs()) {
-                AboutHeaderCopyColumn()
-                AboutHeaderPortrait()
-            }
+    HeroSection(id = "about-header", modifier = modifier) {
+        Div(attrs = AboutHeaderGridStyle.toModifier().toAttrs()) {
+            AboutHeaderCopyColumn()
+            AboutHeaderPortrait()
         }
     }
 }
@@ -185,31 +173,6 @@ private fun AboutHeaderCopyColumn() {
 // ---------------------------------------------------------------------------
 // Styles
 // ---------------------------------------------------------------------------
-
-/**
- * Outer `<section>` chrome for [AboutHeader]. Mirrors the hero-shaped pattern
- * shared with other page headers: vertical rhythm uses
- * [SiteDimensions.padding.heroTop] on top and [SiteDimensions.padding.section]
- * on bottom; the horizontal gutter ramps mobile-first from
- * [SiteDimensions.size.Lg] at the base to [SiteDimensions.size.Xxl] from
- * [Breakpoint.MD].
- */
-val AboutHeaderSectionStyle = CssStyle {
-    base {
-        Modifier.padding(
-            top = SiteDimensions.padding.heroTop,
-            bottom = SiteDimensions.padding.section,
-            leftRight = SiteDimensions.size.Lg,
-        )
-    }
-    Breakpoint.MD {
-        Modifier.padding(
-            top = SiteDimensions.padding.heroTop,
-            bottom = SiteDimensions.padding.section,
-            leftRight = SiteDimensions.size.Xxl,
-        )
-    }
-}
 
 /**
  * Internal two-column grid. Single column at the mobile-first base; switches

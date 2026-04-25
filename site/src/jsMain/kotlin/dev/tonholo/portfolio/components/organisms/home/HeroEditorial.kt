@@ -11,7 +11,6 @@ import com.varabyte.kobweb.compose.ui.modifiers.color
 import com.varabyte.kobweb.compose.ui.modifiers.display
 import com.varabyte.kobweb.compose.ui.modifiers.gap
 import com.varabyte.kobweb.compose.ui.modifiers.gridTemplateColumns
-import com.varabyte.kobweb.compose.ui.modifiers.id
 import com.varabyte.kobweb.compose.ui.modifiers.margin
 import com.varabyte.kobweb.compose.ui.modifiers.maxWidth
 import com.varabyte.kobweb.compose.ui.modifiers.overflowWrap
@@ -25,10 +24,9 @@ import dev.tonholo.portfolio.components.atoms.ButtonVariant
 import dev.tonholo.portfolio.components.atoms.MetaLabel
 import dev.tonholo.portfolio.components.atoms.MetaLabelVariant
 import dev.tonholo.portfolio.components.atoms.PhosphorIcon
-import dev.tonholo.portfolio.components.layouts.SectionContentStyle
+import dev.tonholo.portfolio.components.layouts.HeroSection
 import dev.tonholo.portfolio.locale.LocalStrings
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
-import dev.tonholo.portfolio.theme.layout.SiteDimensions
 import dev.tonholo.portfolio.theme.layout.unit.dp
 import dev.tonholo.portfolio.theme.typography.Typography
 import dev.tonholo.portfolio.theme.typography.apply
@@ -43,7 +41,6 @@ import org.jetbrains.compose.web.dom.Br
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.H1
 import org.jetbrains.compose.web.dom.P
-import org.jetbrains.compose.web.dom.Section
 import org.jetbrains.compose.web.dom.Span
 import org.jetbrains.compose.web.dom.Text as ComposeText
 
@@ -94,23 +91,17 @@ fun HeroEditorial(
     onWritingClick: () -> Unit = {},
     onHireClick: () -> Unit = {},
 ) {
-    val finalModifier = HeroEditorialSectionStyle
-        .toModifier()
-        .then(modifier)
-
-    Section(attrs = finalModifier.id("hero").toAttrs()) {
-        Div(attrs = SectionContentStyle.toModifier().toAttrs()) {
-            Div(attrs = HeroEditorialGridStyle.toModifier().toAttrs()) {
-                HeroCopyColumn(
-                    onFeaturedWorkClick = onFeaturedWorkClick,
-                    onDownloadCvClick = onDownloadCvClick,
-                )
-                KotlinCodeSnippet(
-                    onCurrentlyBuildingClick = onCurrentlyBuildingClick,
-                    onWritingClick = onWritingClick,
-                    onHireClick = onHireClick,
-                )
-            }
+    HeroSection(id = "hero", modifier = modifier) {
+        Div(attrs = HeroEditorialGridStyle.toModifier().toAttrs()) {
+            HeroCopyColumn(
+                onFeaturedWorkClick = onFeaturedWorkClick,
+                onDownloadCvClick = onDownloadCvClick,
+            )
+            KotlinCodeSnippet(
+                onCurrentlyBuildingClick = onCurrentlyBuildingClick,
+                onWritingClick = onWritingClick,
+                onHireClick = onHireClick,
+            )
         }
     }
 }
@@ -179,33 +170,6 @@ private fun HeroCopyColumn(onFeaturedWorkClick: () -> Unit, onDownloadCvClick: (
 // ---------------------------------------------------------------------------
 // Styles
 // ---------------------------------------------------------------------------
-
-/**
- * Outer `<section>` chrome for the home hero. Mobile-first: `base` IS the
- * mobile tier, with [SiteDimensions.padding.heroTop] on top (extra
- * breathing room above the fold), [SiteDimensions.padding.section] on
- * bottom, and [SiteDimensions.size.Lg] horizontal gutter. From
- * [Breakpoint.MD] the gutter ramps up to [SiteDimensions.size.Xxl]; the
- * vertical padding scales through the underlying
- * [dev.tonholo.portfolio.theme.layout.SiteSizeVar.Xxl] CSS variable, so no
- * per-organism overrides are needed.
- */
-val HeroEditorialSectionStyle = CssStyle {
-    base {
-        Modifier.padding(
-            top = SiteDimensions.padding.heroTop,
-            bottom = SiteDimensions.padding.section,
-            leftRight = SiteDimensions.size.Lg,
-        )
-    }
-    Breakpoint.MD {
-        Modifier.padding(
-            top = SiteDimensions.padding.heroTop,
-            bottom = SiteDimensions.padding.section,
-            leftRight = SiteDimensions.size.Xxl,
-        )
-    }
-}
 
 /**
  * Base `CssStyle` for the split grid. Mobile is a single column with a tight
