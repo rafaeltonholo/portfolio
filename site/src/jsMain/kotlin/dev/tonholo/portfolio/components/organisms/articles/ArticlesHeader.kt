@@ -37,8 +37,7 @@ import org.jetbrains.compose.web.dom.Text as ComposeText
 // Internal grid: `1fr` on mobile (single column, summary stacks below the
 // title block) and `1fr auto` from `Breakpoint.MD` (summary aligns to the
 // title's right baseline). Outer chrome (vertical rhythm + horizontal
-// gutter) lives on [ArticlesHeaderSectionStyle] and reads from
-// [SiteDimensions].
+// gutter) is owned by [HeroSection].
 private val HEADER_GRID_GAP = 32.dp
 private const val HEADER_GRID_FLEX_COL_FR = 1
 

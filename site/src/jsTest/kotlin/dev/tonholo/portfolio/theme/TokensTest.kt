@@ -6,8 +6,6 @@ import dev.tonholo.portfolio.theme.color.Ink
 import dev.tonholo.portfolio.theme.color.Muted
 import dev.tonholo.portfolio.theme.color.Paper
 import dev.tonholo.portfolio.theme.color.Syntax
-import dev.tonholo.portfolio.theme.layout.Density
-import dev.tonholo.portfolio.theme.layout.SpacingScale
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
@@ -123,93 +121,6 @@ class TokensTest {
         assertEquals(Color.rgb(0x8B5CF6), scale.keyword)
         assertEquals(Color.rgb(0x3D8A4D), scale.string)
         assertEquals(Color.rgb(0xF2C078), scale.number)
-    }
-
-    @Test
-    fun `given Density Compact, when multiplier is read, then it equals 0_72`() {
-        // Arrange / Act
-        val multiplier = Density.Compact.multiplier
-
-        // Assert
-        assertEquals(0.72, multiplier)
-    }
-
-    @Test
-    fun `given Density Normal, when multiplier is read, then it equals 1_0`() {
-        // Arrange / Act
-        val multiplier = Density.Normal.multiplier
-
-        // Assert
-        assertEquals(1.0, multiplier)
-    }
-
-    @Test
-    fun `given Density Spacious, when multiplier is read, then it equals 1_25`() {
-        // Arrange / Act
-        val multiplier = Density.Spacious.multiplier
-
-        // Assert
-        assertEquals(1.25, multiplier)
-    }
-
-    @Test
-    fun `given Density Compact, when SpacingScale is created, then padY equals 3_6rem`() {
-        // Arrange
-        val density = Density.Compact
-
-        // Act
-        val scale = SpacingScale.from(density = density)
-
-        // Assert - 5rem * 0.72 = 3.6rem
-        assertEquals(3.6, scale.padY.value.toDouble(), absoluteTolerance = 0.001)
-    }
-
-    @Test
-    fun `given Density Compact, when SpacingScale is created, then padYSmall equals 1_8rem`() {
-        // Arrange
-        val density = Density.Compact
-
-        // Act
-        val scale = SpacingScale.from(density = density)
-
-        // Assert - 2.5rem * 0.72 = 1.8rem
-        assertEquals(1.8, scale.padYSmall.value.toDouble(), absoluteTolerance = 0.001)
-    }
-
-    @Test
-    fun `given Density Compact, when SpacingScale is created, then gap equals 1_08rem`() {
-        // Arrange
-        val density = Density.Compact
-
-        // Act
-        val scale = SpacingScale.from(density = density)
-
-        // Assert - 1.5rem * 0.72 = 1.08rem
-        assertEquals(1.08, scale.gap.value.toDouble(), absoluteTolerance = 0.001)
-    }
-
-    @Test
-    fun `given Density Normal, when SpacingScale is created, then padY equals 5rem`() {
-        // Arrange
-        val density = Density.Normal
-
-        // Act
-        val scale = SpacingScale.from(density = density)
-
-        // Assert
-        assertEquals(5.0, scale.padY.value.toDouble(), absoluteTolerance = 0.001)
-    }
-
-    @Test
-    fun `given Density Spacious, when SpacingScale is created, then padY equals 6_25rem`() {
-        // Arrange
-        val density = Density.Spacious
-
-        // Act
-        val scale = SpacingScale.from(density = density)
-
-        // Assert - 5rem * 1.25 = 6.25rem
-        assertEquals(6.25, scale.padY.value.toDouble(), absoluteTolerance = 0.001)
     }
 
     @Test

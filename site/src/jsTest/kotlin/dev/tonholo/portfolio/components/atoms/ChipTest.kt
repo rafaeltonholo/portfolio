@@ -7,8 +7,6 @@ import dev.tonholo.portfolio.theme.color.Ink
 import dev.tonholo.portfolio.theme.color.Muted
 import dev.tonholo.portfolio.theme.color.Paper
 import dev.tonholo.portfolio.theme.color.Syntax
-import dev.tonholo.portfolio.theme.layout.Density
-import dev.tonholo.portfolio.theme.layout.SpacingScale
 import dev.tonholo.portfolio.theme.typography.Typography
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -21,7 +19,6 @@ class ChipTest {
         muted = Muted.light,
         accent = AccentMint.light,
         syntax = Syntax.light,
-        spacing = SpacingScale.from(density = Density.Compact),
         typography = Typography,
     )
 
