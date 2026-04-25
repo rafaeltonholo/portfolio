@@ -27,7 +27,7 @@ import dev.tonholo.portfolio.components.molecules.TickerEntry
 import dev.tonholo.portfolio.state.LocalLocaleState
 import dev.tonholo.portfolio.state.StaticContent
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
-import dev.tonholo.portfolio.theme.layout.ShellStyle
+import dev.tonholo.portfolio.theme.layout.ChromeShellStyle
 import dev.tonholo.portfolio.theme.layout.unit.dp
 import dev.tonholo.portfolio.theme.typography.FontFamilies
 import org.jetbrains.compose.web.css.AlignItems
@@ -100,7 +100,7 @@ fun Ticker(modifier: Modifier = Modifier) {
 
     Div(attrs = stripModifier.toAttrs()) {
         Div(
-            attrs = ShellStyle
+            attrs = ChromeShellStyle
                 .toModifier()
                 .then(TickerTrackStyle.toModifier())
                 .color(tokens.ink.ink3)

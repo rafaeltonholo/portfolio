@@ -27,6 +27,7 @@ import com.varabyte.kobweb.silk.style.toModifier
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.PortfolioTokens
+import dev.tonholo.portfolio.theme.layout.SiteDimensions
 import dev.tonholo.portfolio.theme.layout.unit.dp
 import dev.tonholo.portfolio.theme.typography.FontFamilies
 import dev.tonholo.portfolio.theme.typography.Typography
@@ -46,14 +47,17 @@ import org.jetbrains.compose.web.dom.H2
 import org.jetbrains.compose.web.dom.Text as ComposeText
 
 // Handoff `.project-section`: two-column grid with a 220px left column and a
-// fluid right column (`1fr`), 64px gap, 48px top/bottom padding, and a 1px
-// `--paper-3` (light) / `--paper-2` (dark) top border. Below 900px
-// (`Breakpoint.LG`) collapses to a single column with a 16px gap.
+// fluid right column (`1fr`), 64px gap, vertical padding scaled through
+// SiteDimensions.size.Xxl, and a 1px `--paper-3` (light) / `--paper-2` (dark)
+// top border. Below 900px (`Breakpoint.LG`) collapses to a single column with
+// a 16px gap. The vertical padding is intra-section rhythm between stacked
+// content blocks inside the project detail layout's outer section, and reads
+// from the SiteSizeVar.Xxl ramp so it scales with the breakpoint instead of
+// hardcoded mobile / desktop literals.
 private val SECTION_LABEL_COL = 220.dp
 private const val SECTION_CONTENT_COL_FR = 1.0
 private val SECTION_GAP_DESKTOP = 64.dp
 private val SECTION_GAP_MOBILE = 16.dp
-private val SECTION_PADDING_Y = 48.dp
 private val SECTION_BORDER_WIDTH = 1.dp
 
 // Handoff `.project-section .lbl`: mono 11px uppercase with 0.08em tracking,
@@ -184,7 +188,7 @@ val ProjectSectionStyle = CssStyle {
             .display(DisplayStyle.Grid)
             .gridTemplateColumns { minmax(0.px, SECTION_CONTENT_COL_FR.fr) }
             .gap(SECTION_GAP_MOBILE)
-            .padding(topBottom = SECTION_PADDING_Y)
+            .padding(topBottom = SiteDimensions.size.Xxl)
     }
     Breakpoint.LG {
         Modifier
@@ -198,8 +202,11 @@ val ProjectSectionStyle = CssStyle {
 
 /**
  * Base `CssStyle` for `.project-section .lbl`. Mono 11px uppercase with
- * +0.08em tracking; sticky with `top: 100px` so the label trails the nav
- * chrome while the content column scrolls. Color is applied inline by the
+ * +0.08em tracking. From [Breakpoint.LG] the label is sticky at `top: 100px`
+ * so it trails the nav chrome while the content column scrolls beside it.
+ * Below LG the section collapses to a single column; sticky positioning is
+ * dropped there because it would float the label over the body copy instead
+ * of keeping it inline with its section. Color is applied inline by the
  * composable so it tracks the active theme.
  */
 val ProjectSectionLabelStyle = CssStyle {
@@ -209,6 +216,9 @@ val ProjectSectionLabelStyle = CssStyle {
             .fontSize(LABEL_FONT_SIZE)
             .letterSpacing(LABEL_LETTER_SPACING_EM.em)
             .textTransform(TextTransform.Uppercase)
+    }
+    Breakpoint.LG {
+        Modifier
             .position(Position.Sticky)
             .top(LABEL_STICKY_TOP)
             .alignSelf(AlignSelf.Start)
