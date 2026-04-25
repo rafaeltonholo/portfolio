@@ -1,15 +1,14 @@
 package dev.tonholo.portfolio.components.layouts
 
 import androidx.compose.runtime.Composable
+import com.varabyte.kobweb.compose.css.CSSLengthOrPercentageNumericValue
 import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier
-import com.varabyte.kobweb.compose.ui.modifiers.alignItems
 import com.varabyte.kobweb.compose.ui.modifiers.backgroundColor
-import com.varabyte.kobweb.compose.ui.modifiers.display
 import com.varabyte.kobweb.compose.ui.modifiers.fillMaxWidth
-import com.varabyte.kobweb.compose.ui.modifiers.flexDirection
 import com.varabyte.kobweb.compose.ui.modifiers.id
+import com.varabyte.kobweb.compose.ui.modifiers.margin
 import com.varabyte.kobweb.compose.ui.modifiers.maxWidth
 import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.compose.ui.toAttrs
@@ -18,9 +17,8 @@ import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.style.toModifier
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.layout.SiteDimensions
-import org.jetbrains.compose.web.css.AlignItems
-import org.jetbrains.compose.web.css.DisplayStyle
-import org.jetbrains.compose.web.css.FlexDirection
+import org.jetbrains.compose.web.css.cssRem
+import org.jetbrains.compose.web.css.keywords.auto
 import org.jetbrains.compose.web.dom.Section
 
 /**
@@ -28,9 +26,9 @@ import org.jetbrains.compose.web.dom.Section
  * declare a separate `Breakpoint.SM` tier); from [Breakpoint.MD] the
  * horizontal gutter ramps up. Vertical padding is
  * [SiteDimensions.padding.section] at every breakpoint and grows through
- * the underlying [SiteDimensions.size.Xxl] CSS variable. Inner content is
- * centered as a flex column so the [SectionContentStyle] cap applies
- * max-width.
+ * the underlying [SiteDimensions.size.Xxl] CSS variable. The inner
+ * [SectionContentStyle] caps content width and self-centers via `margin: 0
+ * auto`, so the outer section does not need to be a flex container.
  */
 val SectionContainerStyle = CssStyle {
     base {
@@ -40,9 +38,6 @@ val SectionContainerStyle = CssStyle {
                 topBottom = SiteDimensions.padding.section,
                 leftRight = SiteDimensions.size.Lg,
             )
-            .display(DisplayStyle.Flex)
-            .flexDirection(FlexDirection.Column)
-            .alignItems(AlignItems.Center)
     }
     Breakpoint.MD {
         Modifier.padding(
@@ -54,14 +49,20 @@ val SectionContainerStyle = CssStyle {
 
 /**
  * Inner content container: caps width at [SiteDimensions.layout.contentMaxWidth]
- * and stretches to fill the available width below that cap. Consumers compose
- * their own grid / column inside this wrapper.
+ * and stretches to fill the available width below that cap. Self-centers
+ * horizontally via `margin: 0 auto` so any parent (flex, block, grid) renders
+ * the cap centered on viewports wider than 80rem without needing its own
+ * centering rule.
  */
 val SectionContentStyle = CssStyle {
     base {
         Modifier
             .fillMaxWidth()
             .maxWidth(SiteDimensions.layout.contentMaxWidth)
+            .margin(
+                topBottom = 0.cssRem,
+                leftRight = auto.unsafeCast<CSSLengthOrPercentageNumericValue>(),
+            )
     }
 }
 
