@@ -130,7 +130,7 @@ fun LanguageToast(visible: Boolean, modifier: Modifier = Modifier) {
         .role("status")
         .then(modifier)
 
-    Div(attrs = finalModifier.toAttrs()) {
+    Div(attrs = finalModifier.toAttrs { attr("aria-live", "polite") }) {
         B(
             attrs = Modifier
                 .fontWeight(FontWeight.Bold)
