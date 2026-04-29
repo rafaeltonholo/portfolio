@@ -20,14 +20,17 @@ import com.varabyte.kobweb.silk.components.navigation.Link
 import com.varabyte.kobweb.silk.components.navigation.UncoloredLinkVariant
 import com.varabyte.kobweb.silk.components.navigation.UndecoratedLinkVariant
 import com.varabyte.kobweb.silk.style.CssStyle
+import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.style.toModifier
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import dev.tonholo.portfolio.components.atoms.PhosphorIcon
 import dev.tonholo.portfolio.locale.LocalStrings
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.PortfolioTokens
+import dev.tonholo.portfolio.theme.layout.SiteDimensions
 import dev.tonholo.portfolio.theme.layout.unit.dp
 import dev.tonholo.portfolio.theme.typography.FontFamilies
+import dev.tonholo.portfolio.theme.typography.unit.sp
 import org.jetbrains.compose.web.css.AlignItems
 import org.jetbrains.compose.web.css.DisplayStyle
 import org.jetbrains.compose.web.css.JustifyContent
@@ -35,17 +38,12 @@ import org.jetbrains.compose.web.css.LineStyle
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Text as ComposeText
 
-// Handoff inline style on the `.prev-next` container (lines 183-186 of
-// `pages2.jsx`): flex row with space-between alignment, 48px vertical padding,
-// 48px top margin, and a 1px hairline top border.
-private val NAV_PADDING_Y = 48.dp
-private val NAV_MARGIN_TOP = 48.dp
 private val NAV_BORDER_WIDTH = 1.dp
 
 // Handoff link metrics (`.prev-next a`): mono font family at 12px. Left link
 // uses `--muted`, right link uses `--accent`. Icon + label sit on the same
 // baseline with an 8px gap.
-private val LINK_FONT_SIZE = 12.dp
+private val LINK_FONT_SIZE = 12.sp
 private val LINK_GAP = 8.dp
 
 private const val ICON_ARROW_LEFT = "arrow-left"
@@ -156,7 +154,9 @@ private fun prevNextBorderColor(tokens: PortfolioTokens): Color {
 
 /**
  * Base `CssStyle` for the outer nav strip. Flex row with space-between
- * alignment, 48px vertical padding, 48px top margin. The 1px top border is
+ * alignment, 48px vertical padding, 48px top margin at [Breakpoint.MD] and
+ * above; mobile compresses both to 24px so the strip does not float ~200px
+ * below the final markdown paragraph on a phone. The 1px top border is
  * applied inline so it can flip per theme.
  */
 val PrevNextNavStyle = CssStyle {
@@ -165,8 +165,13 @@ val PrevNextNavStyle = CssStyle {
             .display(DisplayStyle.Flex)
             .justifyContent(JustifyContent.SpaceBetween)
             .alignItems(AlignItems.Center)
-            .padding(topBottom = NAV_PADDING_Y)
-            .margin(top = NAV_MARGIN_TOP)
+            .padding(topBottom = SiteDimensions.size.Lg)
+            .margin(top = SiteDimensions.size.Lg)
+    }
+    Breakpoint.MD {
+        Modifier
+            .padding(topBottom = SiteDimensions.size.Xl)
+            .margin(top = SiteDimensions.size.Xl)
     }
 }
 
