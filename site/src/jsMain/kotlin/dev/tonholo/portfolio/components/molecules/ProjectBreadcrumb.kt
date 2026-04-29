@@ -5,9 +5,11 @@ import com.varabyte.kobweb.compose.css.Cursor
 import com.varabyte.kobweb.compose.css.TextDecorationLine
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.alignItems
+import com.varabyte.kobweb.compose.ui.modifiers.ariaLabel
 import com.varabyte.kobweb.compose.ui.modifiers.color
 import com.varabyte.kobweb.compose.ui.modifiers.cursor
 import com.varabyte.kobweb.compose.ui.modifiers.display
+import com.varabyte.kobweb.compose.ui.modifiers.flexWrap
 import com.varabyte.kobweb.compose.ui.modifiers.fontFamily
 import com.varabyte.kobweb.compose.ui.modifiers.fontSize
 import com.varabyte.kobweb.compose.ui.modifiers.gap
@@ -23,21 +25,18 @@ import dev.tonholo.portfolio.components.atoms.PhosphorIcon
 import dev.tonholo.portfolio.locale.LocalStrings
 import dev.tonholo.portfolio.navigation.Routes
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
-import dev.tonholo.portfolio.theme.layout.unit.dp
+import dev.tonholo.portfolio.theme.layout.SiteDimensions
 import dev.tonholo.portfolio.theme.typography.FontFamilies
+import dev.tonholo.portfolio.theme.typography.unit.sp
 import org.jetbrains.compose.web.css.AlignItems
 import org.jetbrains.compose.web.css.DisplayStyle
-import org.jetbrains.compose.web.css.cssRem
-import org.jetbrains.compose.web.dom.Div
+import org.jetbrains.compose.web.css.FlexWrap
 import org.jetbrains.compose.web.dom.Span
+import org.jetbrains.compose.web.dom.Nav as WebNav
 import org.jetbrains.compose.web.dom.Text as ComposeText
 
-private val BREADCRUMB_FONT_SIZE = 12.dp
-private val BREADCRUMB_SEPARATOR_GAP = 12.dp
-private val BREADCRUMB_MARGIN_BOTTOM = 32.dp
+private val BREADCRUMB_FONT_SIZE = 12.sp
 private const val BACK_ICON_NAME = "arrow-left"
-private const val BACK_ICON_SIZE_REM = 0.875
-private const val BACK_ICON_GAP_REM = 0.25
 
 /**
  * Top-of-page breadcrumb for a project detail route. Ports the handoff
@@ -59,10 +58,11 @@ fun ProjectBreadcrumb(projectName: String, modifier: Modifier = Modifier) {
 
     val finalModifier = ProjectBreadcrumbStyle
         .toModifier()
+        .ariaLabel("Breadcrumb")
         .color(tokens.muted.muted)
         .then(modifier)
 
-    Div(attrs = finalModifier.toAttrs()) {
+    WebNav(attrs = finalModifier.toAttrs()) {
         Link(
             path = Routes.PROJECTS,
             modifier = Modifier
@@ -70,16 +70,16 @@ fun ProjectBreadcrumb(projectName: String, modifier: Modifier = Modifier) {
                 .cursor(Cursor.Pointer)
                 .display(DisplayStyle.LegacyInlineFlex)
                 .alignItems(AlignItems.Center)
-                .gap(BACK_ICON_GAP_REM.cssRem)
+                .gap(SiteDimensions.size.Xsm)
                 .textDecorationLine(TextDecorationLine.None),
             variant = UndecoratedLinkVariant then UncoloredLinkVariant,
         ) {
-            PhosphorIcon(name = BACK_ICON_NAME, size = BACK_ICON_SIZE_REM.cssRem)
+            PhosphorIcon(name = BACK_ICON_NAME, size = SiteDimensions.layout.button.icon.Medium)
             ComposeText(strings.breadcrumbRoot)
         }
         Span(
             attrs = Modifier
-                .margin(leftRight = BREADCRUMB_SEPARATOR_GAP)
+                .margin(leftRight = SiteDimensions.size.Md)
                 .toAttrs(),
         ) {
             ComposeText("/")
@@ -89,12 +89,12 @@ fun ProjectBreadcrumb(projectName: String, modifier: Modifier = Modifier) {
         }
         Span(
             attrs = Modifier
-                .margin(leftRight = BREADCRUMB_SEPARATOR_GAP)
+                .margin(leftRight = SiteDimensions.size.Md)
                 .toAttrs(),
         ) {
             ComposeText("/")
         }
-        Span(attrs = Modifier.toAttrs()) {
+        Span(attrs = Modifier.toAttrs { attr("aria-current", "page") }) {
             ComposeText(strings.breadcrumbFile)
         }
     }
@@ -107,11 +107,15 @@ fun ProjectBreadcrumb(projectName: String, modifier: Modifier = Modifier) {
  */
 val ProjectBreadcrumbStyle = CssStyle {
     base {
+        // `Flex` + `flex-wrap: wrap` lets the `work / project / case-study.md`
+        // trail break across rows on a phone instead of overflowing the shell
+        // padding and pushing the slash separators into their own columns.
         Modifier
-            .display(DisplayStyle.LegacyInlineFlex)
+            .display(DisplayStyle.Flex)
+            .flexWrap(FlexWrap.Wrap)
             .alignItems(AlignItems.Center)
             .fontFamily(*FontFamilies.MONO)
             .fontSize(BREADCRUMB_FONT_SIZE)
-            .margin(bottom = BREADCRUMB_MARGIN_BOTTOM)
+            .margin(bottom = SiteDimensions.size.Xxl)
     }
 }

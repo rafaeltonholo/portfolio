@@ -2,6 +2,9 @@ package dev.tonholo.portfolio.theme.layout
 
 import com.varabyte.kobweb.compose.css.StyleVariable
 import com.varabyte.kobweb.compose.css.functions.calc
+import dev.tonholo.portfolio.theme.layout.PaddingTokens.section
+import dev.tonholo.portfolio.theme.layout.unit.Dp
+import dev.tonholo.portfolio.theme.layout.unit.dp
 import org.jetbrains.compose.web.css.CSSSizeValue
 import org.jetbrains.compose.web.css.CSSUnit
 import org.jetbrains.compose.web.css.cssRem
@@ -64,6 +67,17 @@ object MarginTokens {
 object LayoutTokens {
     /** Maximum width for page-level content containers (80rem = 1280px). */
     val contentMaxWidth: CSSSizeValue<CSSUnit.rem> get() = 80.cssRem
+    val button: ButtonSizes = ButtonSizes
+}
+
+object ButtonSizes {
+    val icon: IconButtonSizes = IconButtonSizes
+}
+
+object IconButtonSizes {
+    val Small: Dp get() = 12.dp
+    val Medium: Dp get() = 16.dp
+    val Large: Dp get() = 24.dp
 }
 
 /**

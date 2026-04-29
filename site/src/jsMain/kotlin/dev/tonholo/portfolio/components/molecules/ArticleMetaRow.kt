@@ -44,7 +44,6 @@ private val META_ROW_FONT_SIZE = 12.sp
 // not personal data.
 private const val DEFAULT_AUTHOR = "rafael"
 private const val BACK_ICON_NAME = "arrow-left"
-private const val BACK_ICON_SIZE_REM = 0.875
 
 /**
  * Inline meta row rendered at the top of an article detail page. Ports
@@ -96,7 +95,7 @@ fun ArticleMetaRow(
         ) {
             PhosphorIcon(
                 name = BACK_ICON_NAME,
-                size = BACK_ICON_SIZE_REM.cssRem,
+                size = SiteDimensions.layout.button.icon.Medium,
             )
             ComposeText(strings.backLabel)
         }
