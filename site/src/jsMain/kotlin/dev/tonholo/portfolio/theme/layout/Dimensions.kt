@@ -68,6 +68,7 @@ object LayoutTokens {
     /** Maximum width for page-level content containers (80rem = 1280px). */
     val contentMaxWidth: CSSSizeValue<CSSUnit.rem> get() = 80.cssRem
     val button: ButtonSizes = ButtonSizes
+    val minimumTouchSize = 44.dp
 }
 
 object ButtonSizes {

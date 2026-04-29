@@ -6,6 +6,7 @@ import com.varabyte.kobweb.compose.css.TextDecorationLine
 import com.varabyte.kobweb.compose.css.Transition
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.alignItems
+import com.varabyte.kobweb.compose.ui.modifiers.ariaHidden
 import com.varabyte.kobweb.compose.ui.modifiers.color
 import com.varabyte.kobweb.compose.ui.modifiers.display
 import com.varabyte.kobweb.compose.ui.modifiers.gap
@@ -22,28 +23,24 @@ import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import dev.tonholo.portfolio.components.atoms.PhosphorIcon
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.color.AccentMint
+import dev.tonholo.portfolio.theme.color.Ink
+import dev.tonholo.portfolio.theme.layout.SiteDimensions
 import dev.tonholo.portfolio.theme.layout.unit.dp
 import org.jetbrains.compose.web.css.AlignItems
 import org.jetbrains.compose.web.css.CSSMediaQuery
 import org.jetbrains.compose.web.css.DisplayStyle
 import org.jetbrains.compose.web.css.StylePropertyValue
-import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.s
 import org.jetbrains.compose.web.dom.A
 import org.jetbrains.compose.web.dom.Span
 import org.jetbrains.compose.web.dom.Text as ComposeText
 
 private const val EXTERNAL_ARROW_ICON_NAME = "arrow-up-right"
-private const val EXTERNAL_ARROW_SIZE_REM = 0.875
 private const val EXTERNAL_TARGET = "_blank"
 private const val EXTERNAL_REL = "noopener noreferrer"
 
 private val SOCIAL_LINK_GAP = 6.dp
 private const val SOCIAL_LINK_TRANSITION_DURATION_S = 0.18
-
-// WCAG 2.5.5 touch-target floor on `pointer: coarse` devices.
-private val SOCIAL_LINK_TOUCH_MIN_HEIGHT = 44.dp
-private val SOCIAL_LINK_TOUCH_PADDING_Y = 10.dp
 
 /**
  * Footer-style social link. Renders a horizontal row composed of an optional
@@ -87,7 +84,8 @@ fun SocialLink(
                 attrs = Modifier
                     .display(DisplayStyle.LegacyInlineFlex)
                     .alignItems(AlignItems.Center)
-                    .toAttrs { attr("aria-hidden", "true") },
+                    .ariaHidden(true)
+                    .toAttrs(),
             ) {
                 icon()
             }
@@ -100,11 +98,12 @@ fun SocialLink(
         Span(
             attrs = SocialLinkArrowStyle
                 .toModifier()
-                .toAttrs { attr("aria-hidden", "true") },
+                .ariaHidden(true)
+                .toAttrs(),
         ) {
             PhosphorIcon(
                 name = EXTERNAL_ARROW_ICON_NAME,
-                size = EXTERNAL_ARROW_SIZE_REM.cssRem,
+                size = SiteDimensions.layout.button.icon.Medium,
             )
         }
     }
@@ -128,7 +127,13 @@ val SocialLinkArrowStyle = CssStyle {
  */
 val SocialLinkStyle = CssStyle {
     base {
+        // The anchor UA style sets `color: -webkit-link` / `color: blue`, so
+        // leaving the base unset leaks browser defaults (and the purple
+        // visited state) into the footer. Match `FooterLinkStyle` and paint
+        // the resting state with the muted `ink-2` token per theme.
+        val ink = if (colorMode == ColorMode.DARK) Ink.dark else Ink.light
         Modifier
+            .color(ink.ink2)
             .display(DisplayStyle.LegacyInlineFlex)
             .alignItems(AlignItems.Center)
             .gap(SOCIAL_LINK_GAP)
@@ -155,7 +160,7 @@ val SocialLinkStyle = CssStyle {
         ),
     ) {
         Modifier
-            .minHeight(SOCIAL_LINK_TOUCH_MIN_HEIGHT)
-            .padding(topBottom = SOCIAL_LINK_TOUCH_PADDING_Y)
+            .minHeight(SiteDimensions.layout.minimumTouchSize)
+            .padding(topBottom = SiteDimensions.size.Md)
     }
 }
