@@ -32,6 +32,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.minWidth
 import com.varabyte.kobweb.compose.ui.modifiers.onClick
 import com.varabyte.kobweb.compose.ui.modifiers.overflow
 import com.varabyte.kobweb.compose.ui.modifiers.padding
+import com.varabyte.kobweb.compose.ui.modifiers.role
 import com.varabyte.kobweb.compose.ui.modifiers.textTransform
 import com.varabyte.kobweb.compose.ui.modifiers.transition
 import com.varabyte.kobweb.compose.ui.modifiers.whiteSpace
@@ -45,8 +46,10 @@ import dev.tonholo.portfolio.locale.Strings
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.PortfolioTokens
 import dev.tonholo.portfolio.theme.color.Paper
+import dev.tonholo.portfolio.theme.layout.SiteDimensions
 import dev.tonholo.portfolio.theme.layout.unit.dp
 import dev.tonholo.portfolio.theme.typography.FontFamilies
+import dev.tonholo.portfolio.theme.typography.unit.sp
 import org.jetbrains.compose.web.css.CSSSizeValue
 import org.jetbrains.compose.web.css.CSSUnit
 import org.jetbrains.compose.web.css.DisplayStyle
@@ -63,27 +66,8 @@ import org.jetbrains.compose.web.dom.Span
 import org.jetbrains.compose.web.dom.Button as WebButton
 import org.jetbrains.compose.web.dom.Text as ComposeText
 
-// ---------------------------------------------------------------------------
-// Tab bar. Handoff `.tabs` (styles.css): flex row, no gap, border-bottom 1px
-// `paper-3`, 40px top + 32px bottom margin.
-// ---------------------------------------------------------------------------
-private val TABS_BAR_MARGIN_TOP = 40.dp
-private val TABS_BAR_MARGIN_BOTTOM = 32.dp
 private val TABS_BAR_BORDER_WIDTH_PX = 1.dp
-
-// ---------------------------------------------------------------------------
-// Single tab button. Handoff `.tab`: mono 13px, 14px x 22px padding, 2px
-// bottom border, -1px bottom margin so the active accent line sits flush on
-// the shared rule, 0.18s transition on color + border-color. Numeric prefix
-// (`.num`) uses muted-2 color and 8px right margin.
-// ---------------------------------------------------------------------------
-private val TAB_FONT_SIZE = 13.dp
-private val TAB_PADDING_Y = 14.dp
-private val TAB_PADDING_X = 22.dp
-private val TAB_BORDER_BOTTOM_WIDTH_PX = 2.dp
-private val TAB_MARGIN_BOTTOM_PX = (-1).dp
-private val TAB_NUM_MARGIN_RIGHT = 8.dp
-private const val TAB_TRANSITION_DURATION_S = 0.18
+private val TAB_FONT_SIZE = 12.sp
 
 // ---------------------------------------------------------------------------
 // `.prose` body. Serif 19px, 1.65 line-height, max-width 66ch, color ink-2.
@@ -92,11 +76,11 @@ private const val TAB_TRANSITION_DURATION_S = 0.18
 // `.prose h3`: display font, 22px, weight 500, letter-spacing -0.015em, color
 // ink, margin 2em 0 0.6em.
 // ---------------------------------------------------------------------------
-private val PROSE_FONT_SIZE = 19.dp
+private val PROSE_FONT_SIZE = 19.sp
 private const val PROSE_LINE_HEIGHT = 1.65
 private const val PROSE_MAX_WIDTH_CH = 66.0
 private const val PROSE_P_GAP_EM = 1.2
-private val PROSE_H3_FONT_SIZE = 22.dp
+private val PROSE_H3_FONT_SIZE = 22.sp
 private const val PROSE_H3_LETTER_SPACING_EM = -0.015
 private const val PROSE_H3_LINE_HEIGHT = 1.2
 private const val PROSE_H3_MARGIN_TOP_EM = 2.0
@@ -107,20 +91,15 @@ private const val PROSE_H3_MARGIN_BOTTOM_EM = 0.6
 // 20px bottom margin.
 // ---------------------------------------------------------------------------
 private val NOW_TIMESTAMP_FONT_SIZE = 13.dp
-private val NOW_TIMESTAMP_MARGIN_BOTTOM = 20.dp
 
 // ---------------------------------------------------------------------------
 // Hobbies panel. Handoff inline: 2-column grid at max-width 900px, 48px gap.
 // Each cell: accent meta label (`/cooking`) + serif 17px body copy.
 // ---------------------------------------------------------------------------
-private val HOBBIES_GRID_GAP = 48.dp
-private val HOBBIES_GRID_MAX_WIDTH = 900.dp
-private const val HOBBIES_GRID_COL_FR = 1.0
-private val HOBBIES_META_MARGIN_BOTTOM = 8.dp
 private const val HOBBIES_META_LETTER_SPACING_EM = 0.08
-private val HOBBIES_META_FONT_SIZE = 11.dp
+private val HOBBIES_META_FONT_SIZE = 11.sp
 private const val HOBBIES_META_LINE_HEIGHT = 1.4
-private val HOBBIES_BODY_FONT_SIZE = 17.dp
+private val HOBBIES_BODY_FONT_SIZE = 17.sp
 private const val HOBBIES_BODY_LINE_HEIGHT = 1.55
 
 /**
@@ -161,7 +140,12 @@ fun AboutTabs(modifier: Modifier = Modifier) {
     val strings = LocalStrings.current.about
 
     Div(attrs = modifier.toAttrs()) {
-        Div(attrs = TabsBarStyle.toModifier().toAttrs()) {
+        Div(
+            attrs = TabsBarStyle
+                .toModifier()
+                .role("tablist")
+                .toAttrs(),
+        ) {
             AboutTab.entries.forEach { tab ->
                 TabButton(
                     tab = tab,
@@ -171,11 +155,13 @@ fun AboutTabs(modifier: Modifier = Modifier) {
                 )
             }
         }
-        when (selected) {
-            AboutTab.Story -> StoryPanel(strings = strings)
-            AboutTab.Now -> NowPanel(strings = strings)
-            AboutTab.Hobbies -> HobbiesPanel(strings = strings)
-            AboutTab.Beyond -> BeyondPanel(strings = strings)
+        Div(attrs = Modifier.toAttrs { attr("role", "tabpanel") }) {
+            when (selected) {
+                AboutTab.Story -> StoryPanel(strings = strings)
+                AboutTab.Now -> NowPanel(strings = strings)
+                AboutTab.Hobbies -> HobbiesPanel(strings = strings)
+                AboutTab.Beyond -> BeyondPanel(strings = strings)
+            }
         }
     }
 }
@@ -197,19 +183,25 @@ private fun TabButton(
 
     val finalModifier = TabButtonStyle
         .toModifier()
+        .role("tab")
         .color(textColor)
         .borderBottom(
-            width = TAB_BORDER_BOTTOM_WIDTH_PX,
+            width = 2.dp,
             style = LineStyle.Solid,
             color = borderColor,
         )
         .onClick { onClick() }
 
-    WebButton(attrs = finalModifier.toAttrs { attr("type", "button") }) {
+    WebButton(
+        attrs = finalModifier.toAttrs {
+            attr("type", "button")
+            attr("aria-selected", isActive.toString())
+        },
+    ) {
         Span(
             attrs = Modifier
                 .color(tokens.muted.muted2)
-                .margin(right = TAB_NUM_MARGIN_RIGHT)
+                .margin(right = SiteDimensions.size.Sm)
                 .toAttrs(),
         ) {
             ComposeText(tab.number)
@@ -375,8 +367,8 @@ val TabsBarStyle = CssStyle {
             }
             .borderBottom(width = TABS_BAR_BORDER_WIDTH_PX, style = LineStyle.Solid, color = ruleColor)
             .margin(
-                top = TABS_BAR_MARGIN_TOP,
-                bottom = TABS_BAR_MARGIN_BOTTOM,
+                top = SiteDimensions.size.Xxl,
+                bottom = SiteDimensions.size.Xl,
             )
     }
 }
@@ -394,12 +386,12 @@ val TabButtonStyle = CssStyle {
             .fontSize(TAB_FONT_SIZE)
             .fontWeight(FontWeight.Medium)
             .padding(
-                topBottom = TAB_PADDING_Y,
-                leftRight = TAB_PADDING_X,
+                topBottom = SiteDimensions.size.Md,
+                leftRight = SiteDimensions.size.Lg,
             )
             .backgroundColor(Transparent)
             .border(style = LineStyle.None)
-            .margin(bottom = TAB_MARGIN_BOTTOM_PX)
+            .margin(bottom = (-1).dp)
             .cursor(Cursor.Pointer)
             // Keep each label on a single line so the horizontal scroll inside
             // the tabs bar works predictably on narrow viewports.
@@ -407,7 +399,7 @@ val TabButtonStyle = CssStyle {
             .transition(
                 Transition.group(
                     properties = listOf("color", "border-color"),
-                    duration = TAB_TRANSITION_DURATION_S.s,
+                    duration = 0.18.s,
                 ),
             )
     }
@@ -452,7 +444,7 @@ val NowTimestampStyle = CssStyle {
         Modifier
             .fontFamily(*FontFamilies.MONO)
             .fontSize(NOW_TIMESTAMP_FONT_SIZE)
-            .margin(top = 0.cssRem, bottom = NOW_TIMESTAMP_MARGIN_BOTTOM)
+            .margin(top = 0.cssRem, bottom = SiteDimensions.size.Xl)
     }
 }
 
@@ -465,14 +457,13 @@ val HobbiesGridStyle = CssStyle {
     base {
         Modifier
             .display(DisplayStyle.Grid)
-            .gridTemplateColumns { size(HOBBIES_GRID_COL_FR.fr) }
-            .gap(HOBBIES_GRID_GAP)
-            .maxWidth(HOBBIES_GRID_MAX_WIDTH)
+            .gridTemplateColumns { size(value = 1.fr) }
+            .gap(SiteDimensions.size.Xxl)
     }
     Breakpoint.LG {
         Modifier.gridTemplateColumns {
-            size(HOBBIES_GRID_COL_FR.fr)
-            size(HOBBIES_GRID_COL_FR.fr)
+            size(value = 1.fr)
+            size(value = 1.fr)
         }
     }
 }
@@ -491,7 +482,7 @@ val HobbiesMetaStyle = CssStyle {
             .lineHeight(HOBBIES_META_LINE_HEIGHT)
             .letterSpacing(HOBBIES_META_LETTER_SPACING_EM.em)
             .textTransform(TextTransform.Uppercase)
-            .margin(bottom = HOBBIES_META_MARGIN_BOTTOM)
+            .margin(bottom = SiteDimensions.size.Sm)
     }
 }
 
