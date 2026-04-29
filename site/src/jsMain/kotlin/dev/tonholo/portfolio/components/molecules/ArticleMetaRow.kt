@@ -8,6 +8,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.alignItems
 import com.varabyte.kobweb.compose.ui.modifiers.color
 import com.varabyte.kobweb.compose.ui.modifiers.cursor
 import com.varabyte.kobweb.compose.ui.modifiers.display
+import com.varabyte.kobweb.compose.ui.modifiers.flexWrap
 import com.varabyte.kobweb.compose.ui.modifiers.fontFamily
 import com.varabyte.kobweb.compose.ui.modifiers.fontSize
 import com.varabyte.kobweb.compose.ui.modifiers.gap
@@ -24,18 +25,19 @@ import dev.tonholo.portfolio.components.atoms.PhosphorIcon
 import dev.tonholo.portfolio.locale.LocalStrings
 import dev.tonholo.portfolio.navigation.Routes
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
+import dev.tonholo.portfolio.theme.layout.SiteDimensions
 import dev.tonholo.portfolio.theme.layout.unit.dp
 import dev.tonholo.portfolio.theme.typography.FontFamilies
+import dev.tonholo.portfolio.theme.typography.unit.sp
 import org.jetbrains.compose.web.css.AlignItems
 import org.jetbrains.compose.web.css.DisplayStyle
+import org.jetbrains.compose.web.css.FlexWrap
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Span
 import org.jetbrains.compose.web.dom.Text as ComposeText
 
-private val META_ROW_FONT_SIZE = 12.dp
-private val META_ROW_GAP = 20.dp
-private val META_ROW_MARGIN_BOTTOM = 24.dp
+private val META_ROW_FONT_SIZE = 12.sp
 
 // Byline default is the author's first name; keeping it here as a constant
 // avoids threading identity through an i18n surface that describes formatting,
@@ -43,10 +45,6 @@ private val META_ROW_MARGIN_BOTTOM = 24.dp
 private const val DEFAULT_AUTHOR = "rafael"
 private const val BACK_ICON_NAME = "arrow-left"
 private const val BACK_ICON_SIZE_REM = 0.875
-private const val BACK_ICON_GAP_REM = 0.25
-
-// Inline gap between the bullet dot and the text inside each meta segment.
-private val META_SEGMENT_GAP = 6.dp
 
 /**
  * Inline meta row rendered at the top of an article detail page. Ports
@@ -92,7 +90,7 @@ fun ArticleMetaRow(
                 .cursor(Cursor.Pointer)
                 .display(DisplayStyle.LegacyInlineFlex)
                 .alignItems(AlignItems.Center)
-                .gap(BACK_ICON_GAP_REM.cssRem)
+                .gap(SiteDimensions.size.Xsm)
                 .textDecorationLine(TextDecorationLine.None),
             variant = UndecoratedLinkVariant then UncoloredLinkVariant,
         ) {
@@ -116,13 +114,18 @@ fun ArticleMetaRow(
  */
 val ArticleMetaRowStyle = CssStyle {
     base {
+        // `flexWrap` with a tighter row gap prevents the mono segments from
+        // pushing the row past the mobile viewport (they would otherwise
+        // fracture into a broken vertical stack with the centered dots hanging
+        // in their own columns).
         Modifier
             .display(DisplayStyle.Flex)
+            .flexWrap(FlexWrap.Wrap)
             .alignItems(AlignItems.Center)
             .fontFamily(*FontFamilies.MONO)
             .fontSize(META_ROW_FONT_SIZE)
-            .gap(META_ROW_GAP)
-            .margin(bottom = META_ROW_MARGIN_BOTTOM)
+            .gap(rowGap = SiteDimensions.size.Sm, columnGap = SiteDimensions.size.Lg)
+            .margin(bottom = SiteDimensions.size.Xl)
     }
 }
 
@@ -137,7 +140,7 @@ private fun ArticleMetaSegment(content: @Composable () -> Unit) {
         attrs = Modifier
             .display(DisplayStyle.LegacyInlineFlex)
             .alignItems(AlignItems.Center)
-            .gap(META_SEGMENT_GAP)
+            .gap(value = 6.dp)
             .toAttrs(),
     ) {
         MetaSeparator()
