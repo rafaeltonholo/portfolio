@@ -29,6 +29,7 @@ import dev.tonholo.portfolio.theme.color.Ink
 import dev.tonholo.portfolio.theme.color.Paper
 import dev.tonholo.portfolio.theme.layout.SiteSizeVar
 import dev.tonholo.portfolio.theme.layout.unit.dp
+import dev.tonholo.portfolio.theme.typography.applyInlineCodeStyle
 import dev.tonholo.portfolio.theme.typography.unit.DEFAULT_FONT_SIZE
 import org.jetbrains.compose.web.css.CSSMediaQuery
 import org.jetbrains.compose.web.css.LineStyle
@@ -109,6 +110,25 @@ fun initPageBackground(ctx: InitSilkContext) {
             Modifier
                 .backgroundColor(Paper.dark.paper)
                 .color(Ink.dark.ink)
+        }
+    }
+}
+
+/**
+ * Global styling for inline `<code>` tags across the site, matching the `@old-layout` design:
+ * JetBrains Mono font, 4px horizontal and 2px vertical padding, 4px corner radius,
+ * 32px line height, and a subtle theme-aware background with `anywhere` overflow wrap.
+ */
+@InitSilk
+fun initInlineCode(ctx: InitSilkContext) {
+    ctx.stylesheet.registerStyle("html.${ColorMode.LIGHT.cssClass} :not(pre) > code") {
+        base {
+            Modifier.applyInlineCodeStyle(isDark = false)
+        }
+    }
+    ctx.stylesheet.registerStyle("html.${ColorMode.DARK.cssClass} :not(pre) > code") {
+        base {
+            Modifier.applyInlineCodeStyle(isDark = true)
         }
     }
 }

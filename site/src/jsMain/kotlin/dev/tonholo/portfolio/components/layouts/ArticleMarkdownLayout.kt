@@ -34,6 +34,7 @@ import com.varabyte.kobweb.silk.style.CssStyle
 import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.style.selectors.descendants
 import com.varabyte.kobweb.silk.style.toModifier
+import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import com.varabyte.kobwebx.markdown.markdown
 import dev.tonholo.portfolio.components.atoms.GiscusWrapper
 import dev.tonholo.portfolio.components.molecules.ArticleMetaRow
@@ -45,6 +46,7 @@ import dev.tonholo.portfolio.theme.layout.unit.dp
 import dev.tonholo.portfolio.theme.typography.FontFamilies
 import dev.tonholo.portfolio.theme.typography.Typography
 import dev.tonholo.portfolio.theme.typography.apply
+import dev.tonholo.portfolio.theme.typography.applyInlineCodeStyle
 import kotlinx.browser.document
 import kotlinx.browser.window
 import org.jetbrains.compose.web.css.AlignItems
@@ -370,5 +372,8 @@ val ArticleMarkdownBodyStyle = CssStyle {
                 top = BODY_HEADING_MARGIN_TOP_EM.em,
                 bottom = BODY_HEADING_MARGIN_BOTTOM_EM.em,
             )
+    }
+    cssRule(" :not(pre) > code") {
+        Modifier.applyInlineCodeStyle(isDark = colorMode == ColorMode.DARK)
     }
 }
