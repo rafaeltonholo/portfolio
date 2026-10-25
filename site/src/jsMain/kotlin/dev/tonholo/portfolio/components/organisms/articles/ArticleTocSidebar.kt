@@ -122,7 +122,7 @@ fun ArticleTocSidebar(
     Aside(attrs = finalModifier.toAttrs()) {
         SidebarHeading(
             text = strings.contents,
-            modifier = Modifier.margin { top(0.dp) }
+            modifier = Modifier.margin { top(0.dp) },
         )
         Ul(attrs = SidebarListStyle.toModifier().toAttrs()) {
             contents.forEachIndexed { index, entry ->
@@ -137,7 +137,7 @@ fun ArticleTocSidebar(
         }
         SidebarHeading(
             text = strings.share,
-            modifier = Modifier.margin { top(SiteDimensions.size.Xxl) }
+            modifier = Modifier.margin { top(SiteDimensions.size.Xxl) },
         )
         Ul(attrs = SidebarListStyle.toModifier().toAttrs()) {
             ShareAnchorRow(label = strings.shareCopyLink, onClick = onCopyLink, mutedColor = tokens.muted.muted)
