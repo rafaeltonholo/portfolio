@@ -19,6 +19,7 @@ import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.graphics.Color
 import com.varabyte.kobweb.compose.ui.graphics.Colors
 import com.varabyte.kobweb.compose.ui.modifiers.alignItems
+import com.varabyte.kobweb.compose.ui.modifiers.ariaLabel
 import com.varabyte.kobweb.compose.ui.modifiers.backdropFilter
 import com.varabyte.kobweb.compose.ui.modifiers.background
 import com.varabyte.kobweb.compose.ui.modifiers.borderBottom
@@ -354,6 +355,7 @@ private fun StatusBadge(statusLabel: String, presenceLabel: String) {
         .onMouseEnter { collapsed = false }
         .onMouseLeave { collapsed = true }
         .title("$statusLabel $presenceLabel")
+        .ariaLabel("$statusLabel $presenceLabel")
 
     Div(attrs = badgeModifier.toAttrs()) {
         Dot(variant = DotVariant.Static, color = tokens.muted.muted2)
@@ -401,7 +403,7 @@ val NavStyle = CssStyle {
                 )
             }
             .backdropFilter(
-                saturate(amount = 140.percent),
+                saturate(amount = 110.percent),
                 blur(radius = 12.dp),
             )
             .borderBottom(
