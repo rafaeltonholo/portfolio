@@ -36,6 +36,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.role
 import com.varabyte.kobweb.compose.ui.modifiers.textTransform
 import com.varabyte.kobweb.compose.ui.modifiers.transition
 import com.varabyte.kobweb.compose.ui.modifiers.whiteSpace
+import com.varabyte.kobweb.compose.ui.styleModifier
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.silk.style.CssStyle
 import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
@@ -357,19 +358,25 @@ val TabsBarStyle = CssStyle {
         val ruleColor = if (isDark) Paper.dark.paper2 else Paper.light.paper3
         Modifier
             .display(DisplayStyle.Flex)
-            // Five mono tabs do not fit a 375px viewport side-by-side; allow
-            // the bar to scroll horizontally inside itself instead of pushing
-            // the page past the viewport.
+            // Tabs scroll horizontally if the viewport is narrower than their
+            // combined width, but vertical overflow is explicitly hidden to
+            // avoid a stray scrollbar caused by the 1px active tab overlap.
             .minWidth(0.px)
             .overflow {
                 x(Overflow.Auto)
-                y(Overflow.Visible)
+                y(Overflow.Hidden)
+            }
+            .styleModifier {
+                property("scrollbar-width", "none")
             }
             .borderBottom(width = TABS_BAR_BORDER_WIDTH_PX, style = LineStyle.Solid, color = ruleColor)
             .margin(
                 top = SiteDimensions.size.Xxl,
                 bottom = SiteDimensions.size.Xl,
             )
+    }
+    cssRule("::-webkit-scrollbar") {
+        Modifier.display(DisplayStyle.None)
     }
 }
 
