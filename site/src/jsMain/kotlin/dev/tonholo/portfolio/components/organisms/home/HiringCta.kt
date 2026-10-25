@@ -35,6 +35,8 @@ import dev.tonholo.portfolio.components.atoms.PhosphorIcon
 import dev.tonholo.portfolio.components.layouts.SectionContainerStyle
 import dev.tonholo.portfolio.components.layouts.SectionContentStyle
 import dev.tonholo.portfolio.locale.LocalStrings
+import dev.tonholo.portfolio.state.LocalThemeState
+import dev.tonholo.portfolio.state.ThemeState
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.color.AccentMint
 import dev.tonholo.portfolio.theme.layout.unit.dp
@@ -83,12 +85,44 @@ private val BUTTONS_GAP = 10.dp
 // so we override the base Ghost variant's tokens via the modifier slot.
 private const val GHOST_BORDER_ALPHA = 0.2f
 private val GHOST_BORDER_WIDTH = 1.dp
-private const val GHOST_BORDER_RGB = 255
+private const val GHOST_BORDER_DARK_SURFACE_RGB = 255
+private const val GHOST_BORDER_LIGHT_SURFACE_RGB = 21
+
+// Eyebrow accent colors:
+// In light mode, the inverted block has a dark ink surface (#15130F), so AccentMint.dark.accent
+// (#7DD198) clears WCAG AAA at ~10.5:1 contrast.
+// In dark mode, the inverted block has a light cream surface (#F2EFE6), where #7DD198 would
+// fail severely at 1.60:1. To satisfy WCAG AAA (>= 7.0:1) on this light surface, we use a deep
+// mint green (#135328) with ~7.95:1 contrast ratio within the same 140° hue family.
+private const val META_ACCENT_LIGHT_SURFACE_RGB = 0x135328
+private val META_ACCENT_LIGHT_SURFACE = Color.rgb(META_ACCENT_LIGHT_SURFACE_RGB)
 
 // Mono eyebrow is a shell-script-style technical literal and stays
 // untranslated. The email address is also stable across locales.
 private const val META_LABEL_COPY = "// hiring_me.sh"
 private const val EMAIL_HREF = "mailto:rafael@tonholo.dev"
+
+/**
+ * Resolves the eyebrow color to ensure WCAG AAA compliance (>= 7.0:1) on both
+ * light and dark inverted surfaces.
+ *
+ * @param isDark whether the site is currently rendering in dark mode.
+ * @return [Color] for the eyebrow copy.
+ */
+internal fun resolveEyebrowColor(isDark: Boolean): Color =
+    if (isDark) META_ACCENT_LIGHT_SURFACE else AccentMint.dark.accent
+
+/**
+ * Resolves the ghost button border color for the inverted block, adapting to
+ * light and dark surfaces.
+ *
+ * @param isDark whether the site is currently rendering in dark mode.
+ * @return [Color] for the ghost button border.
+ */
+internal fun resolveGhostBorderColor(isDark: Boolean): Color {
+    val rgb: Int = if (isDark) GHOST_BORDER_LIGHT_SURFACE_RGB else GHOST_BORDER_DARK_SURFACE_RGB
+    return Color.rgba(r = rgb, g = rgb, b = rgb, a = GHOST_BORDER_ALPHA)
+}
 
 /**
  * Home page organism. Inverted dark CTA block that sits at the bottom of the
@@ -159,7 +193,8 @@ private fun HiringCtaBlock(onEmailClick: () -> Unit, onBookingClick: () -> Unit)
 @Composable
 private fun HiringCtaCopy() {
     val strings = LocalStrings.current.hiringCta
-
+    val themeState: ThemeState = LocalThemeState.current
+    val eyebrowColor: Color = resolveEyebrowColor(isDark = themeState.current.isDark)
     Div(attrs = Modifier.toAttrs()) {
         Div(
             attrs = Modifier
@@ -167,10 +202,7 @@ private fun HiringCtaCopy() {
                 .fontSize(META_FONT_SIZE)
                 .letterSpacing(META_LETTER_SPACING_EM.em)
                 .textTransform(TextTransform.Uppercase)
-                // The CTA block paints a fixed ink surface regardless of
-                // theme, so we pin to the dark-swatch mint (~10:1 contrast)
-                // rather than the ambient light-mode accent (fails 4.5:1).
-                .color(AccentMint.dark.accent)
+                .color(eyebrowColor)
                 .margin(bottom = META_MARGIN_BOTTOM)
                 .toAttrs(),
         ) {
@@ -188,13 +220,14 @@ private fun HiringCtaCopy() {
  * Right column: accent email button over ghost "book 30 min" button with a
  * trailing arrow-up-right [PhosphorIcon]. The ghost button's color triplet
  * is replaced via the [Modifier] slot to match the handoff's on-dark
- * treatment (transparent bg, semi-transparent white border, paper text).
+ * treatment (transparent bg, semi-transparent border, paper text).
  */
 @Composable
 private fun HiringCtaActions(onEmailClick: () -> Unit, onBookingClick: () -> Unit) {
     val tokens = LocalPortfolioTokens.current
     val strings = LocalStrings.current.hiringCta
-
+    val themeState: ThemeState = LocalThemeState.current
+    val ghostBorderColor: Color = resolveGhostBorderColor(isDark = themeState.current.isDark)
     Div(attrs = HiringCtaActionsStyle.toModifier().toAttrs()) {
         Button(
             text = strings.emailLabel,
@@ -214,12 +247,7 @@ private fun HiringCtaActions(onEmailClick: () -> Unit, onBookingClick: () -> Uni
                 .border(
                     width = GHOST_BORDER_WIDTH,
                     style = LineStyle.Solid,
-                    color = Color.rgba(
-                        r = GHOST_BORDER_RGB,
-                        g = GHOST_BORDER_RGB,
-                        b = GHOST_BORDER_RGB,
-                        a = GHOST_BORDER_ALPHA,
-                    ),
+                    color = ghostBorderColor,
                 ),
             trailing = { PhosphorIcon(name = "arrow-up-right") },
         )
