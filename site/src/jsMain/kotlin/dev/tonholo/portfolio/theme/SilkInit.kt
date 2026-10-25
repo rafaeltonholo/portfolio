@@ -11,6 +11,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.animation
 import com.varabyte.kobweb.compose.ui.modifiers.backgroundColor
 import com.varabyte.kobweb.compose.ui.modifiers.borderRadius
 import com.varabyte.kobweb.compose.ui.modifiers.color
+import com.varabyte.kobweb.compose.ui.modifiers.fontFamily
 import com.varabyte.kobweb.compose.ui.modifiers.fontSize
 import com.varabyte.kobweb.compose.ui.modifiers.outline
 import com.varabyte.kobweb.compose.ui.modifiers.outlineOffset
@@ -29,6 +30,7 @@ import dev.tonholo.portfolio.theme.color.Ink
 import dev.tonholo.portfolio.theme.color.Paper
 import dev.tonholo.portfolio.theme.layout.SiteSizeVar
 import dev.tonholo.portfolio.theme.layout.unit.dp
+import dev.tonholo.portfolio.theme.typography.FontFamilies
 import dev.tonholo.portfolio.theme.typography.applyInlineCodeStyle
 import dev.tonholo.portfolio.theme.typography.unit.DEFAULT_FONT_SIZE
 import org.jetbrains.compose.web.css.CSSMediaQuery
@@ -76,7 +78,9 @@ fun initBreakpoints(ctx: InitSilkContext) {
 @InitSilk
 fun initRootFontSize(ctx: InitSilkContext) {
     ctx.stylesheet.registerStyleBase("html") {
-        Modifier.fontSize(DEFAULT_FONT_SIZE.px)
+        Modifier
+            .fontFamily(*FontFamilies.BODY)
+            .fontSize(DEFAULT_FONT_SIZE.px)
     }
 }
 
@@ -101,6 +105,7 @@ fun initPageBackground(ctx: InitSilkContext) {
     ctx.stylesheet.registerStyle("html.${ColorMode.LIGHT.cssClass} body") {
         base {
             Modifier
+                .fontFamily(*FontFamilies.BODY)
                 .backgroundColor(Paper.light.paper)
                 .color(Ink.light.ink)
         }
@@ -108,6 +113,7 @@ fun initPageBackground(ctx: InitSilkContext) {
     ctx.stylesheet.registerStyle("html.${ColorMode.DARK.cssClass} body") {
         base {
             Modifier
+                .fontFamily(*FontFamilies.BODY)
                 .backgroundColor(Paper.dark.paper)
                 .color(Ink.dark.ink)
         }

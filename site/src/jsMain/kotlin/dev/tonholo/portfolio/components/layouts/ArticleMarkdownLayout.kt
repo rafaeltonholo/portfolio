@@ -6,10 +6,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import com.varabyte.kobweb.compose.css.BorderCollapse
 import com.varabyte.kobweb.compose.css.FontStyle
 import com.varabyte.kobweb.compose.css.FontWeight
+import com.varabyte.kobweb.compose.css.TextDecorationLine
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.alignItems
+import com.varabyte.kobweb.compose.ui.modifiers.border
+import com.varabyte.kobweb.compose.ui.modifiers.borderCollapse
+import com.varabyte.kobweb.compose.ui.modifiers.borderLeft
 import com.varabyte.kobweb.compose.ui.modifiers.color
 import com.varabyte.kobweb.compose.ui.modifiers.display
 import com.varabyte.kobweb.compose.ui.modifiers.fillMaxWidth
@@ -23,6 +28,8 @@ import com.varabyte.kobweb.compose.ui.modifiers.letterSpacing
 import com.varabyte.kobweb.compose.ui.modifiers.lineHeight
 import com.varabyte.kobweb.compose.ui.modifiers.margin
 import com.varabyte.kobweb.compose.ui.modifiers.maxWidth
+import com.varabyte.kobweb.compose.ui.modifiers.padding
+import com.varabyte.kobweb.compose.ui.modifiers.textDecorationLine
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.core.PageContext
 import com.varabyte.kobweb.core.data.add
@@ -42,6 +49,9 @@ import dev.tonholo.portfolio.components.organisms.articles.ArticleTocSidebar
 import dev.tonholo.portfolio.components.organisms.articles.TocEntry
 import dev.tonholo.portfolio.navigation.Routes
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
+import dev.tonholo.portfolio.theme.color.AccentMint
+import dev.tonholo.portfolio.theme.color.Ink
+import dev.tonholo.portfolio.theme.color.Paper
 import dev.tonholo.portfolio.theme.layout.unit.dp
 import dev.tonholo.portfolio.theme.typography.FontFamilies
 import dev.tonholo.portfolio.theme.typography.Typography
@@ -51,10 +61,12 @@ import kotlinx.browser.document
 import kotlinx.browser.window
 import org.jetbrains.compose.web.css.AlignItems
 import org.jetbrains.compose.web.css.DisplayStyle
+import org.jetbrains.compose.web.css.LineStyle
 import org.jetbrains.compose.web.css.ch
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.em
 import org.jetbrains.compose.web.css.fr
+import org.jetbrains.compose.web.css.percent
 import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.dom.Article
 import org.jetbrains.compose.web.dom.Div
@@ -91,6 +103,21 @@ private val BODY_HEADING_SIZE = 22.dp
 private const val BODY_HEADING_LETTER_SPACING_EM = -0.015
 private const val BODY_HEADING_MARGIN_TOP_EM = 2.0
 private const val BODY_HEADING_MARGIN_BOTTOM_EM = 0.6
+
+private const val PROSE_FONT_SIZE_REM = 1.125
+private const val PROSE_LINE_HEIGHT = 1.65
+private const val PROSE_MAX_WIDTH_CH = 68
+private const val PROSE_BLOCK_GAP_EM = 1.2
+private const val PROSE_LIST_PADDING_LEFT_REM = 1.5
+private const val PROSE_LIST_ITEM_GAP_EM = 0.4
+private val PROSE_QUOTE_BORDER_WIDTH = 3.dp
+private const val PROSE_QUOTE_PADDING_REM = 0.25
+private val PROSE_TABLE_BORDER_WIDTH = 1.dp
+private val PROSE_TABLE_PADDING_Y = 8.px
+private val PROSE_TABLE_PADDING_X = 12.px
+private val PROSE_TH_FONT_SIZE = 13.px
+private val PROSE_TD_FONT_SIZE = 14.px
+private const val PROSE_TABLE_MARGIN_BOTTOM_EM = 1.5
 
 // Selector the runtime TOC scraper uses to find every heading under the
 // markdown body. `<article>` is the body wrapper so we scope the query to
@@ -336,42 +363,104 @@ val ArticleMarkdownTitleStyle = CssStyle {
 }
 
 /**
- * Base `CssStyle` for the article lede. Ports `.article-detail .lede`: serif
- * italic at 22px with 1.45 line-height, a 48ch cap, and a 40px bottom margin.
- * Color is applied inline from the `ink-2` token so it reacts to the active
- * color mode.
+ * Base `CssStyle` for the article lede. Uses body sans (Geist) at 22px with 1.45 line-height,
+ * a 48ch cap, and a 40px bottom margin, matching the typography of the rest of the site.
  */
 val ArticleMarkdownLedeStyle = CssStyle {
     base {
         Modifier
-            .fontFamily(*FontFamilies.SERIF)
+            .fontFamily(*FontFamilies.BODY)
             .fontSize(LEDE_SIZE_REM.cssRem)
             .lineHeight(LEDE_LINE_HEIGHT)
-            .fontStyle(FontStyle.Italic)
             .maxWidth(LEDE_MAX_WIDTH_CH.ch)
             .margin(top = 0.cssRem, bottom = LEDE_MARGIN_BOTTOM_REM.cssRem)
     }
 }
 
 /**
- * Base `CssStyle` for the markdown article body wrapper. Applies the handoff
- * `.prose h3` rule to every nested `<h2>` / `<h3>` the markdown renderer emits
- * so subsection headings inherit the IDE-voice: display mono at 22px, weight
- * 500, slight negative tracking, and the handoff `2em 0 0.6em` vertical rhythm.
- * Color is intentionally omitted here so each heading still reads from the
- * surrounding ink token via inheritance.
+ * Base `CssStyle` for the markdown article body wrapper. Uses the site's body sans
+ * (Geist) for prose paragraphs, display mono for subsection headings, styled code
+ * badges for inline snippets, and clean blockquote/table treatments.
  */
 val ArticleMarkdownBodyStyle = CssStyle {
+    base {
+        val isDark: Boolean = colorMode == ColorMode.DARK
+        val ink = if (isDark) Ink.dark else Ink.light
+        Modifier
+            .fontFamily(*FontFamilies.BODY)
+            .fontSize(PROSE_FONT_SIZE_REM.cssRem)
+            .lineHeight(PROSE_LINE_HEIGHT)
+            .color(ink.ink2)
+            .maxWidth(PROSE_MAX_WIDTH_CH.ch)
+    }
+    descendants("p") {
+        Modifier.margin(top = 0.em, bottom = PROSE_BLOCK_GAP_EM.em)
+    }
     descendants("h2", "h3") {
+        val isDark: Boolean = colorMode == ColorMode.DARK
+        val ink = if (isDark) Ink.dark else Ink.light
         Modifier
             .fontFamily(*FontFamilies.DISPLAY)
             .fontSize(BODY_HEADING_SIZE)
             .fontWeight(FontWeight.Medium)
             .letterSpacing(BODY_HEADING_LETTER_SPACING_EM.em)
+            .color(ink.ink)
             .margin(
                 top = BODY_HEADING_MARGIN_TOP_EM.em,
                 bottom = BODY_HEADING_MARGIN_BOTTOM_EM.em,
             )
+    }
+    descendants("ul", "ol") {
+        Modifier
+            .margin(top = 0.em, bottom = PROSE_BLOCK_GAP_EM.em)
+            .padding(left = PROSE_LIST_PADDING_LEFT_REM.cssRem)
+    }
+    descendants("li") {
+        Modifier.margin(bottom = PROSE_LIST_ITEM_GAP_EM.em)
+    }
+    descendants("blockquote") {
+        val isDark: Boolean = colorMode == ColorMode.DARK
+        val accent = if (isDark) AccentMint.dark else AccentMint.light
+        val ink = if (isDark) Ink.dark else Ink.light
+        Modifier
+            .borderLeft(width = PROSE_QUOTE_BORDER_WIDTH, style = LineStyle.Solid, color = accent.accent)
+            .padding(topBottom = PROSE_QUOTE_PADDING_REM.cssRem)
+            .margin(top = PROSE_BLOCK_GAP_EM.em, bottom = PROSE_BLOCK_GAP_EM.em)
+            .color(ink.ink3)
+            .fontStyle(FontStyle.Italic)
+    }
+    descendants("a") {
+        val isDark: Boolean = colorMode == ColorMode.DARK
+        val accent = if (isDark) AccentMint.dark else AccentMint.light
+        Modifier
+            .color(accent.accent)
+            .textDecorationLine(TextDecorationLine.Underline)
+    }
+    descendants("table") {
+        Modifier
+            .borderCollapse(BorderCollapse.Collapse)
+            .margin(top = 0.em, bottom = PROSE_TABLE_MARGIN_BOTTOM_EM.em)
+            .maxWidth(100.percent)
+    }
+    descendants("th") {
+        val isDark: Boolean = colorMode == ColorMode.DARK
+        val border = if (isDark) Paper.dark.paper3 else Paper.light.paper3
+        val ink = if (isDark) Ink.dark else Ink.light
+        Modifier
+            .border(width = PROSE_TABLE_BORDER_WIDTH, style = LineStyle.Solid, color = border)
+            .padding(topBottom = PROSE_TABLE_PADDING_Y, leftRight = PROSE_TABLE_PADDING_X)
+            .fontFamily(*FontFamilies.DISPLAY)
+            .fontSize(PROSE_TH_FONT_SIZE)
+            .fontWeight(FontWeight.SemiBold)
+            .color(ink.ink)
+    }
+    descendants("td") {
+        val isDark: Boolean = colorMode == ColorMode.DARK
+        val border = if (isDark) Paper.dark.paper3 else Paper.light.paper3
+        Modifier
+            .border(width = PROSE_TABLE_BORDER_WIDTH, style = LineStyle.Solid, color = border)
+            .padding(topBottom = PROSE_TABLE_PADDING_Y, leftRight = PROSE_TABLE_PADDING_X)
+            .fontSize(PROSE_TD_FONT_SIZE)
     }
     cssRule(" :not(pre) > code") {
         Modifier.applyInlineCodeStyle(isDark = colorMode == ColorMode.DARK)
