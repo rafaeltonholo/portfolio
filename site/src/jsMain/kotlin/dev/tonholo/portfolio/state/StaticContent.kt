@@ -315,11 +315,11 @@ private val PROJECTS_PT_BR: List<Project> = listOf(
 
 private val EXPERIENCE_EN: List<Experience> = listOf(
     Experience(
-        date = "apr 2025 - present",
-        duration = "1 yr 1 mo",
+        date = "apr 2025 - oct 2026",
+        duration = "1 yr 7 mos",
         role = "Senior Software Engineer, Mobile",
         company = "Mozilla / Thunderbird for Android - Remote - Canada",
-        body = "Helping bring Thunderbird to Android alongside broader Mozilla " +
+        body = "Helped bring Thunderbird to Android alongside broader Mozilla " +
             "mobile work. Kotlin-first, privacy-first, Compose-forward, " +
             "everything-in-the-open.",
         bullets = listOf(
@@ -416,11 +416,11 @@ private val EXPERIENCE_EN: List<Experience> = listOf(
 
 private val EXPERIENCE_PT_BR: List<Experience> = listOf(
     Experience(
-        date = "abr 2025 - presente",
-        duration = "1 ano 1 mês",
+        date = "abr 2025 - out 2026",
+        duration = "1 ano 7 meses",
         role = "Engenheiro de Software Sênior, Mobile",
         company = "Mozilla / Thunderbird para Android - Remoto - Canadá",
-        body = "Ajudando a trazer o Thunderbird para Android ao lado de outros projetos " +
+        body = "Ajudei a trazer o Thunderbird para Android ao lado de outros projetos " +
             "mobile da Mozilla. Kotlin em primeiro, privacidade em primeiro, Compose " +
             "em primeiro, tudo aberto.",
         bullets = listOf(
