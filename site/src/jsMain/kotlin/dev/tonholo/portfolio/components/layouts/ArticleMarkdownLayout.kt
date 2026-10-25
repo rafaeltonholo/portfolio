@@ -12,6 +12,7 @@ import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.alignItems
 import com.varabyte.kobweb.compose.ui.modifiers.color
 import com.varabyte.kobweb.compose.ui.modifiers.display
+import com.varabyte.kobweb.compose.ui.modifiers.fillMaxWidth
 import com.varabyte.kobweb.compose.ui.modifiers.fontFamily
 import com.varabyte.kobweb.compose.ui.modifiers.fontSize
 import com.varabyte.kobweb.compose.ui.modifiers.fontStyle
@@ -57,9 +58,7 @@ import org.jetbrains.compose.web.dom.Article
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.H1
 import org.jetbrains.compose.web.dom.P
-import org.jetbrains.compose.web.dom.TagElement
 import org.w3c.dom.HTMLElement
-import org.w3c.dom.HTMLScriptElement
 import org.w3c.dom.Node
 import org.w3c.dom.asList
 import org.jetbrains.compose.web.dom.Text as ComposeText
@@ -204,60 +203,28 @@ fun ArticleMarkdownLayout(context: PageContext, content: @Composable () -> Unit)
                     activeId = tocEntries.firstOrNull()?.id.orEmpty(),
                     onCopyLink = { copyCurrentLocation() },
                 )
-                Article(attrs = ArticleMarkdownBodyStyle.toModifier().toAttrs()) {
-                    content()
+                Div(attrs = Modifier.fillMaxWidth().toAttrs()) {
+                    Article(attrs = ArticleMarkdownBodyStyle.toModifier().toAttrs()) {
+                        content()
 
-                    DisposableEffect(data.slug) {
-                        tocEntries = collectTocEntries()
-                        val observer = observeHeadingsIfEmpty(
-                            entries = tocEntries,
-                            onCollected = { tocEntries = it },
+                        DisposableEffect(data.slug) {
+                            tocEntries = collectTocEntries()
+                            val observer = observeHeadingsIfEmpty(
+                                entries = tocEntries,
+                                onCollected = { tocEntries = it },
+                            )
+                            onDispose { observer?.disconnect() }
+                        }
+                    }
+                    if (data.title.isNotBlank()) {
+                        GiscusWrapper(
+                            term = data.title,
+                            modifier = Modifier.fillMaxWidth().margin(top = 4.cssRem),
                         )
-                        onDispose { observer?.disconnect() }
                     }
                 }
-                GiscusWrapper()
             }
         }
-        TagElement<HTMLScriptElement>(
-            tagName = "script",
-            applyAttrs = {
-                /*
-                 * <script src="https://giscus.app/client.js"
-                 *         data-repo="rafaeltonholo/portfolio"
-                 *         data-repo-id="R_kgDOL0CWLw"
-                 *         data-category="Q&A"
-                 *         data-category-id="DIC_kwDOL0CWL84DJluC"
-                 *         data-mapping="og:title"
-                 *         data-strict="1"
-                 *         data-reactions-enabled="1"
-                 *         data-emit-metadata="0"
-                 *         data-input-position="bottom"
-                 *         data-theme="preferred_color_scheme"
-                 *         data-lang="en"
-                 *         data-loading="lazy"
-                 *         crossorigin="anonymous"
-                 *         async>
-                 * </script>
-                 */
-                attr("src", "https://giscus.app/client.js")
-                attr("data-repo", "rafaeltonholo/portfolio")
-                attr("data-repo-id", "R_kgDOL0CWLw")
-                attr("data-category", "Q&A")
-                attr("data-category-id", "DIC_kwDOL0CWL84DJluC")
-                attr("data-mapping", "og:title")
-                attr("data-strict", "1")
-                attr("data-reactions-enabled", "1")
-                attr("data-emit-metadata", "0")
-                attr("data-input-position", "bottom")
-                attr("data-theme", "preferred_color_scheme")
-                attr("data-lang", "en")
-                attr("data-loading", "lazy")
-                attr("crossorigin", "anonymous")
-                attr("async", "true")
-            },
-            content = null,
-        )
     }
 }
 
