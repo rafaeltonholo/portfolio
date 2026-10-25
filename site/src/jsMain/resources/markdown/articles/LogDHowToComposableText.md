@@ -19,6 +19,7 @@ Shall we? Let's start from the beginning.
 
 The `@Composable Text()` component, as defined in its documentation, is:
 
+> [!NOTE]
 > High-level element that displays text and provides semantics/accessibility information.
 
 Although the name suggests that `Text` is part of the foundation of Compose, it belongs to `androidx.compose.material3` (or `androidx.compose.material` if you are on Material 2). But what does that mean in practice?

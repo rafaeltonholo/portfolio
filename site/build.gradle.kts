@@ -314,6 +314,29 @@ tasks.withType<com.varabyte.kobwebx.gradle.markdown.tasks.ConvertMarkdownTask>()
         val escaped = with(handlers) { codeBlock.literal.escapeTripleQuotedText() }
         "dev.tonholo.portfolio.components.atoms.ShikiCodeBlock(code = \"\"\"$escaped\"\"\", language = \"$lang\")"
     }
+    handlers.blockquote.set { blockQuote ->
+        val firstParagraph = blockQuote.firstChild as? org.commonmark.node.Paragraph
+        val firstText = firstParagraph?.firstChild as? org.commonmark.node.Text
+        val regex = """\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION|QUOTE)(?:\s+"([^"]*)")?\]""".toRegex(RegexOption.IGNORE_CASE)
+        val match = firstText?.let { regex.find(it.literal) }
+        if (match != null) {
+            val typeStr = match.groupValues[1].uppercase()
+            val customTitle = match.groupValues[2].takeIf { it.isNotBlank() }
+            val remaining = firstText.literal.substringAfter(match.value).trimStart()
+            if (remaining.isEmpty()) {
+                firstText.unlink()
+                if (firstParagraph.firstChild == null) {
+                    firstParagraph.unlink()
+                }
+            } else {
+                firstText.literal = remaining
+            }
+            val titleParam = if (customTitle != null) ", title = \"$customTitle\"" else ""
+            "dev.tonholo.portfolio.components.molecules.Callout(type = dev.tonholo.portfolio.components.molecules.CalloutType.$typeStr$titleParam)"
+        } else {
+            "dev.tonholo.portfolio.components.molecules.Callout(type = dev.tonholo.portfolio.components.molecules.CalloutType.QUOTE)"
+        }
+    }
 }
 
 kotlin {

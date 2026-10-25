@@ -11,10 +11,13 @@ import com.varabyte.kobweb.compose.css.FontStyle
 import com.varabyte.kobweb.compose.css.FontWeight
 import com.varabyte.kobweb.compose.css.TextDecorationLine
 import com.varabyte.kobweb.compose.ui.Modifier
+import com.varabyte.kobweb.compose.ui.graphics.Color
 import com.varabyte.kobweb.compose.ui.modifiers.alignItems
+import com.varabyte.kobweb.compose.ui.modifiers.backgroundColor
 import com.varabyte.kobweb.compose.ui.modifiers.border
 import com.varabyte.kobweb.compose.ui.modifiers.borderCollapse
 import com.varabyte.kobweb.compose.ui.modifiers.borderLeft
+import com.varabyte.kobweb.compose.ui.modifiers.borderRadius
 import com.varabyte.kobweb.compose.ui.modifiers.color
 import com.varabyte.kobweb.compose.ui.modifiers.display
 import com.varabyte.kobweb.compose.ui.modifiers.fillMaxWidth
@@ -110,8 +113,13 @@ private const val PROSE_MAX_WIDTH_CH = 68
 private const val PROSE_BLOCK_GAP_EM = 1.2
 private const val PROSE_LIST_PADDING_LEFT_REM = 1.5
 private const val PROSE_LIST_ITEM_GAP_EM = 0.4
-private val PROSE_QUOTE_BORDER_WIDTH = 3.dp
-private const val PROSE_QUOTE_PADDING_REM = 0.25
+private val PROSE_QUOTE_BORDER_WIDTH = 4.dp
+private const val PROSE_QUOTE_PADDING_Y_REM = 0.875
+private const val PROSE_QUOTE_PADDING_X_REM = 1.125
+private val PROSE_QUOTE_BORDER_RADIUS_END = 6.dp
+private val PROSE_QUOTE_BORDER_RADIUS_START = 0.dp
+private const val PROSE_QUOTE_BG_ALPHA_LIGHT = 0.03f
+private const val PROSE_QUOTE_BG_ALPHA_DARK = 0.04f
 private val PROSE_TABLE_BORDER_WIDTH = 1.dp
 private val PROSE_TABLE_PADDING_Y = 8.px
 private val PROSE_TABLE_PADDING_X = 12.px
@@ -422,11 +430,27 @@ val ArticleMarkdownBodyStyle = CssStyle {
         val isDark: Boolean = colorMode == ColorMode.DARK
         val accent = if (isDark) AccentMint.dark else AccentMint.light
         val ink = if (isDark) Ink.dark else Ink.light
+        val bgAlpha = if (isDark) PROSE_QUOTE_BG_ALPHA_DARK else PROSE_QUOTE_BG_ALPHA_LIGHT
+        val bg = if (isDark) {
+            Color.rgba(r = 255, g = 255, b = 255, a = bgAlpha)
+        } else {
+            Color.rgba(r = 0, g = 0, b = 0, a = bgAlpha)
+        }
         Modifier
             .borderLeft(width = PROSE_QUOTE_BORDER_WIDTH, style = LineStyle.Solid, color = accent.accent)
-            .padding(topBottom = PROSE_QUOTE_PADDING_REM.cssRem)
+            .backgroundColor(bg)
+            .borderRadius(
+                topLeft = PROSE_QUOTE_BORDER_RADIUS_START,
+                bottomLeft = PROSE_QUOTE_BORDER_RADIUS_START,
+                topRight = PROSE_QUOTE_BORDER_RADIUS_END,
+                bottomRight = PROSE_QUOTE_BORDER_RADIUS_END,
+            )
+            .padding(
+                topBottom = PROSE_QUOTE_PADDING_Y_REM.cssRem,
+                leftRight = PROSE_QUOTE_PADDING_X_REM.cssRem,
+            )
             .margin(top = PROSE_BLOCK_GAP_EM.em, bottom = PROSE_BLOCK_GAP_EM.em)
-            .color(ink.ink3)
+            .color(ink.ink)
             .fontStyle(FontStyle.Italic)
     }
     descendants("a") {
