@@ -306,6 +306,16 @@ kobweb {
     }
 }
 
+tasks.withType<com.varabyte.kobwebx.gradle.markdown.tasks.ConvertMarkdownTask>().configureEach {
+    val handlers = markdownHandlers
+    handlers.code.set { codeBlock ->
+        val rawInfo = codeBlock.info.trim()
+        val lang = rawInfo.split(Regex("\\s+")).firstOrNull()?.ifBlank { "text" } ?: "text"
+        val escaped = with(handlers) { codeBlock.literal.escapeTripleQuotedText() }
+        "dev.tonholo.portfolio.components.atoms.ShikiCodeBlock(code = \"\"\"$escaped\"\"\", language = \"$lang\")"
+    }
+}
+
 kotlin {
     configAsKobwebApplication("portfolio")
 
