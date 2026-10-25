@@ -31,6 +31,9 @@ fun PortfolioApp(content: @Composable () -> Unit) {
         // mode into Silk's MutableState so PortfolioTheme and all Silk styles
         // recompose when the user toggles the theme.
         val silkColorMode = ColorMode.currentState
+        if (silkColorMode.value != themeState.current) {
+            silkColorMode.value = themeState.current
+        }
         LaunchedEffect(themeState.current) {
             silkColorMode.value = themeState.current
         }

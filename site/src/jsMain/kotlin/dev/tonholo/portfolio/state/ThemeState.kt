@@ -9,10 +9,30 @@ import androidx.compose.runtime.setValue
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import dev.tonholo.portfolio.extensions.readLocalStorage
 import dev.tonholo.portfolio.extensions.writeLocalStorage
+import kotlinx.browser.window
 
 private const val THEME_KEY = "rt_theme"
 private const val DARK_VALUE = "dark"
 private const val LIGHT_VALUE = "light"
+
+/**
+ * Resolves the initial [ColorMode] from `localStorage` under [THEME_KEY], falling
+ * back to the browser's `prefers-color-scheme: dark` media query if unset.
+ */
+fun resolveInitialColorMode(): ColorMode {
+    val storedValue: String? = readLocalStorage(key = THEME_KEY)
+    if (storedValue != null) {
+        return when (storedValue) {
+            DARK_VALUE -> ColorMode.DARK
+            LIGHT_VALUE -> ColorMode.LIGHT
+            else -> ColorMode.LIGHT
+        }
+    }
+    val prefersDark: Boolean = runCatching {
+        window.matchMedia("(prefers-color-scheme: dark)").matches
+    }.getOrDefault(false)
+    return if (prefersDark) ColorMode.DARK else ColorMode.LIGHT
+}
 
 /**
  * Reactive holder for the active [ColorMode], persisted to `localStorage`
@@ -47,15 +67,10 @@ val LocalThemeState = compositionLocalOf<ThemeState> {
 }
 
 /**
- * Creates a remembered [ThemeState] seeded from `localStorage["rt_theme"]`.
- * Defaults to [ColorMode.LIGHT] when nothing is stored.
+ * Creates a remembered [ThemeState] seeded from [resolveInitialColorMode].
  */
 @Composable
 fun rememberThemeState(): ThemeState {
-    val initial = when (readLocalStorage(key = THEME_KEY)) {
-        DARK_VALUE -> ColorMode.DARK
-        LIGHT_VALUE -> ColorMode.LIGHT
-        else -> ColorMode.LIGHT
-    }
+    val initial: ColorMode = resolveInitialColorMode()
     return remember { ThemeState(initial = initial) }
 }

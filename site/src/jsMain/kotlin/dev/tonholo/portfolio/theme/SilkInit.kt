@@ -23,6 +23,7 @@ import com.varabyte.kobweb.silk.init.registerStyleBase
 import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.style.breakpoint.BreakpointSizes
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
+import dev.tonholo.portfolio.state.resolveInitialColorMode
 import dev.tonholo.portfolio.theme.color.AccentMint
 import dev.tonholo.portfolio.theme.color.Ink
 import dev.tonholo.portfolio.theme.color.Paper
@@ -76,6 +77,15 @@ fun initRootFontSize(ctx: InitSilkContext) {
     ctx.stylesheet.registerStyleBase("html") {
         Modifier.fontSize(DEFAULT_FONT_SIZE.px)
     }
+}
+
+/**
+ * Initializes Silk's color mode from stored preferences or system theme so
+ * the initial render matches the user's expected theme without a flash.
+ */
+@InitSilk
+fun initColorMode(ctx: InitSilkContext) {
+    ctx.config.initialColorMode = resolveInitialColorMode()
 }
 
 /**
