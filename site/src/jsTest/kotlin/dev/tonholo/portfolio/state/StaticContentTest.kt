@@ -39,12 +39,12 @@ class StaticContentTest {
     }
 
     @Test
-    fun `given StaticContent ARTICLES, when read, then it has seven entries and first is draft`() {
+    fun `given StaticContent ARTICLES, when read, then it has ten entries and first is draft`() {
         // Arrange / Act
         val articles = StaticContent.ARTICLES
 
         // Assert
-        assertEquals(expected = 7, actual = articles.size)
+        assertEquals(expected = 10, actual = articles.size)
         assertEquals(
             expected = "compose-stability-without-the-cult",
             actual = articles[0].slug,
