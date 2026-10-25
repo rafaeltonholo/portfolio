@@ -177,7 +177,7 @@ private fun ProjectCardHead(project: Project) {
             attrs = ProjectCardTagStyle
                 .toModifier()
                 .backgroundColor(tokens.accent.accentSoft)
-                .color(tokens.accent.accentInk)
+                .color(tokens.accent.accent)
                 .toAttrs(),
         ) {
             ComposeText(kindLabel)
