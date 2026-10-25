@@ -358,7 +358,7 @@ private fun StatusBadge(statusLabel: String, presenceLabel: String) {
         .ariaLabel("$statusLabel $presenceLabel")
 
     Div(attrs = badgeModifier.toAttrs()) {
-        Dot(variant = DotVariant.Static, color = tokens.muted.muted2)
+        Dot(variant = DotVariant.Pulsing, color = tokens.accent.accent)
         Span(
             attrs = NavMetaTextStyle
                 .toModifier()
