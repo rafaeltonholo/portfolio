@@ -4,8 +4,8 @@ kobweb = "0.24.0"
 kobweb-cli = "0.9.21"                    # kept in sync with the workflow env var
 compose = "1.10.3"
 power-assert = "2.3.20"
-detekt = "2.0.0-alpha.2"
-compose-rules = "0.5.6"
+detekt = "2.0.0-alpha.6"
+compose-rules = "0.6.8"
 
 [libraries]
 compose-html-core             = { module = "org.jetbrains.compose.html:html-core", version.ref = "compose" }
