@@ -393,6 +393,7 @@ obj/
 # End of https://www.toptal.com/developers/gitignore/api/yarn,macos,kotlin,windows,intellij,visualstudiocode,android,androidstudio
 
 .claude/*.local.json
+.claude/*.lock
 .claude/.worktrees
 .worktrees
 **/superpowers/**
