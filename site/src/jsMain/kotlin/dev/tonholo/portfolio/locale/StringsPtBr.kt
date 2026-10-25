@@ -17,8 +17,8 @@ object StringsPtBr : Strings() {
     )
 
     override val statusBadge: StatusBadge = StatusBadge(
-        statusLabel = "não procurando",
-        presenceLabel = "feliz na Mozilla",
+        statusLabel = "disponível",
+        presenceLabel = "remoto / Halifax",
     )
 
     override val themeToggle: ThemeToggle = ThemeToggle(
@@ -91,14 +91,13 @@ object StringsPtBr : Strings() {
             "Modularizar o projeto - de forma incremental, sem freeze - me ensinou mais sobre " +
             "arquitetura do que qualquer livro.",
         storyHeadingToday = "Hoje",
-        storyBodyToday = "Thunderbird for Android na Mozilla. Kotlin em primeiro lugar, " +
-            "privacidade em primeiro lugar, Compose à frente, e tudo sendo lançado em open " +
-            "source. Escrevendo um pouco mais. Cozinhando muito mais.",
-        nowUpdatedPrefix = "// atualizado em 12 abr 2026",
-        nowHeadingWorking = "Trabalhando em",
-        nowBodyWorking = "Thunderbird for Android na Mozilla. Trabalhando em features no app " +
-            "principal e contribuindo upstream em bibliotecas mobile compartilhadas. " +
-            "Open-source, privacidade em primeiro lugar, e uma comunidade que se importa.",
+        storyBodyToday = "Mais recentemente construindo o Thunderbird para Android na Mozilla - " +
+            "Kotlin em primeiro lugar, privacidade em primeiro lugar, Compose à frente e tudo em open source. " +
+            "Agora aberto a novas oportunidades em engenharia mobile sênior e arquitetura.",
+        nowUpdatedPrefix = "// atualizado em out 2026",
+        nowHeadingWorking = "Buscando",
+        nowBodyWorking = "Oportunidades como Engenheiro Android / Mobile Sênior - Kotlin, Jetpack Compose, " +
+            "KMP e arquitetura mobile escalável. Aberto a posições remotas ou em Halifax.",
         nowHeadingLearning = "Aprendendo",
         nowBodyLearning = "Compose Multiplatform no desktop. Ainda tem arestas em alguns pontos, " +
             "mas a sensação de uma única codebase rodando em 4 targets voltou a ser " +

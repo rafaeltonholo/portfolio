@@ -15,8 +15,8 @@ object StringsEn : Strings() {
     )
 
     override val statusBadge: StatusBadge = StatusBadge(
-        statusLabel = "not looking",
-        presenceLabel = "happy @ Mozilla",
+        statusLabel = "open to work",
+        presenceLabel = "remote / Halifax",
     )
 
     override val themeToggle: ThemeToggle = ThemeToggle(
@@ -88,14 +88,13 @@ object StringsEn : Strings() {
             "it - incrementally, without a freeze - taught me more about architecture than " +
             "any book ever has.",
         storyHeadingToday = "Today",
-        storyBodyToday = "Thunderbird for Android at Mozilla. Kotlin-first, privacy-first, " +
-            "Compose-forward, and everything shipping in the open. Writing a bit more. " +
-            "Cooking a lot more.",
-        nowUpdatedPrefix = "// updated apr 12, 2026",
-        nowHeadingWorking = "Working on",
-        nowBodyWorking = "Thunderbird for Android at Mozilla. Feature work across the flagship " +
-            "app and contributing upstream to shared mobile libraries. Open-source, " +
-            "privacy-first, and the community cares.",
+        storyBodyToday = "Most recently built Thunderbird for Android at Mozilla - " +
+            "Kotlin-first, privacy-first, Compose-forward, and shipping in the open. " +
+            "Now open to new opportunities in senior mobile engineering and architecture.",
+        nowUpdatedPrefix = "// updated oct 2026",
+        nowHeadingWorking = "Looking for",
+        nowBodyWorking = "Senior mobile and Android roles - Kotlin, Jetpack Compose, KMP, and " +
+            "scalable mobile architecture. Open to remote or Halifax-based opportunities.",
         nowHeadingLearning = "Learning",
         nowBodyLearning = "Compose Multiplatform on desktop. It's rough in spots but the feeling " +
             "of one codebase across 4 targets is genuinely exciting again.",
