@@ -18,6 +18,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.outlineOffset
 import com.varabyte.kobweb.compose.ui.modifiers.scrollBehavior
 import com.varabyte.kobweb.compose.ui.modifiers.setVariable
 import com.varabyte.kobweb.compose.ui.modifiers.transition
+import com.varabyte.kobweb.compose.ui.styleModifier
 import com.varabyte.kobweb.silk.init.InitSilk
 import com.varabyte.kobweb.silk.init.InitSilkContext
 import com.varabyte.kobweb.silk.init.registerStyleBase
@@ -201,8 +202,10 @@ fun initAccessibilityLayer(ctx: InitSilkContext) {
                         iterationCount = AnimationIterationCount.of(1),
                     ),
                 )
-                .transition { duration(0.01.ms) }
                 .scrollBehavior(ScrollBehavior.Auto)
+                .styleModifier {
+                    property("transform", "none !important")
+                }
         }
     }
 }
