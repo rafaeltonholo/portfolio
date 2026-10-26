@@ -4,7 +4,7 @@ routeOverride: /projects/pt-br/thunderbird
 slug: thunderbird
 locale: pt-BR
 title: Thunderbird para Android - Máquinas de estado em Compose, onboarding do Thundermail e arquitetura com foco em privacidade
-description: "Modernizando um cliente de e-mail open source de 15 anos: integrando views legadas do Android a máquinas de estado em Jetpack Compose, entregando o onboarding desktop-para-mobile do Thundermail e liderando padrões de RFC e privacidade na Mozilla."
+description: "Modernizando um cliente de e-mail open source de 15 anos: integrando views legadas do Android a máquinas de estado em Jetpack Compose, entregando o onboarding desktop-para-mobile do Thundermail e garantindo privacidade com compiler plugin em Kotlin K2 e RFCs na Mozilla."
 ---
 
 {{{ .components.organisms.projects.ProjectSection ("/ contexto", "Trazendo os padrões modernos da Mozilla para um cliente open source lendário.")
@@ -47,13 +47,19 @@ Também tornei o pipeline de autenticação OAuth mais resiliente, tratando caso
 
 }}}
 
-{{{ .components.organisms.projects.ProjectSection ("/ privacidade & padrões", "Privacidade por design e liderança técnica em RFCs.")
+{{{ .components.organisms.projects.ProjectSection ("/ privacidade & padrões", "Privacidade por design com compiler plugins em Kotlin e liderança técnica em RFCs.")
 
-Em consonância com o compromisso central da Mozilla com a privacidade digital, implementei o **Modo Teclado Anônimo** em todo o aplicativo.
+Em consonância com o compromisso central da Mozilla com a privacidade digital, projetei e implementei um **Compiler Plugin em Kotlin K2 (`pii-safe`)** customizado para eliminar vazamentos de Informações de Identificação Pessoal (PII) em tempo de compilação (`#11532`, `#11533`, `#11534`).
 
-Teclados virtuais frequentemente capturam telemetria de digitação para treinar modelos preditivos. Ao impor o sinalizador `EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING` em campos de busca, composição e credenciais, o app impede que teclados de terceiros registrem conversas confidenciais, rascunhos ou senhas digitadas.
+Em um cliente de e-mail multi-módulo de grande escala, registrar instâncias de modelos de dados (como credenciais de conta, endereços de e-mail e metadados de pastas) pode acidentalmente expor dados sensíveis do usuário em saídas de depuração ou logs de erros. A sanitização manual de strings é propensa a falhas, ruidosa e difícil de manter em escala.
 
-Além do desenvolvimento de features, redigi **RFCs Arquiteturais** de impacto em todo o projeto:
+Para solucionar essa questão de forma sistêmica, desenvolvi uma arquitetura de proteção em nível de compilador:
+
+- **Subplugin Gradle & Anotações:** Desenvolvi as anotações `@LoggingPii.HasPii`, `@LoggingPii.Mask` e `@LoggingPii.Hide`, suportadas por um subplugin de integração Gradle dedicado (`PiiSafeGradleSubplugin`).
+- **Validadores em Frontend IR (FIR):** Construí checkers de validação no novo compilador K2 (`HasPiiPropagationChecker`, `HasPiiRequiresAnnotatedPropertyChecker`) que apontam omissões como erros de compilação durante o build, impedindo que modelos com PII desprotegido cheguem a compilar.
+- **Geração Sintética de `toString()` no Backend IR:** Implementei um gerador em IR (`ToStringOverridePiiSafeBodyGenerator`) que injeta uma implementação sintética de `toString()` protegida contra vazamento nas classes anotadas. Campos confidenciais são automaticamente mascarados ou ocultados sem qualquer uso de reflexão (reflection) ou overhead em runtime.
+
+Além da engenharia de compiladores, liderei revisões técnicas de código e redigi **RFCs Arquiteturais** de impacto em todo o projeto:
 
 - **RFC #11223 (Arquitetura Declarativa de Feature Flags):** Propus e implementei um catálogo tipado em tempo de compilação para feature flags no projeto multi-módulo, substituindo definições dispersas por um modelo escalável.
 - **RFC #11180 (Imagens Inline em Mensagens Plain-Text):** Resolvi uma inconsistência histórica de interoperabilidade em que imagens embutidas em e-mails em texto puro causavam anomalias visuais em diferentes clientes, adequando o app estritamente aos padrões RFC MIME sem quebrar o suporte a identificadores `cid:`.
@@ -63,12 +69,12 @@ Além do desenvolvimento de features, redigi **RFCs Arquiteturais** de impacto e
 
 {{{ .components.organisms.projects.ProjectSection ("/ resultados", "Resultados e impacto.")
 
-{{{ .components.organisms.projects.ProjectOutcomes ("Compose", "lista e leitor de mensagens integrados", "QR sync", "onboarding desktop para mobile", "privado", "modo teclado anônimo sem rastreio") }}}
+{{{ .components.organisms.projects.ProjectOutcomes ("Compose", "lista e leitor de mensagens integrados", "QR sync", "onboarding desktop para mobile", "compilador", "plugin K2 para segurança de PII") }}}
 
 A arquitetura de ponte para o Compose provou que é possível modernizar uma base de código de 15 anos de forma incremental **sem regressões ou interrupção no fluxo de entregas**. A lista de mensagens agora desfruta do gerenciamento reativo do Compose mantendo total compatibilidade com os loaders de dados legados.
 
 A integração do Thundermail e a migração por QR code reduziram sensivelmente a barreira de entrada, criando uma ponte fluida entre o desktop e o celular.
 
-Ao mesmo tempo, as melhorias de privacidade e as RFCs arquiteturais consolidaram a posição do Thunderbird como um cliente de e-mail seguro, moderno e estritamente aderente aos padrões da web aberta.
+Ao mesmo tempo, o compiler plugin K2 de proteção de PII e as RFCs arquiteturais consolidaram a posição do Thunderbird como um cliente de e-mail seguro, moderno e estritamente aderente aos padrões da web aberta.
 
 }}}

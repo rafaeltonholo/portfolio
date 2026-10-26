@@ -2,7 +2,7 @@
 layout: .components.layouts.ProjectMarkdownLayout
 slug: thunderbird
 title: Thunderbird for Android - Compose state machines, Thundermail onboarding, and privacy-first architecture
-description: "Modernizing a 15-year-old open-source email client: bridging legacy Android views to Jetpack Compose state machines, shipping Thundermail desktop-to-mobile onboarding, and driving privacy and RFC standards at Mozilla."
+description: "Modernizing a 15-year-old open-source email client: bridging legacy Android views to Jetpack Compose state machines, shipping Thundermail desktop-to-mobile onboarding, and driving privacy with a Kotlin K2 compiler plugin and RFC standards at Mozilla."
 ---
 
 {{{ .components.organisms.projects.ProjectSection ("/ context", "Bringing modern Mozilla standards to a legendary open-source client.")
@@ -45,13 +45,19 @@ I also hardened the OAuth authentication pipeline, addressing browser lifecycle 
 
 }}}
 
-{{{ .components.organisms.projects.ProjectSection ("/ privacy & standards", "Privacy-by-design and technical RFC leadership.")
+{{{ .components.organisms.projects.ProjectSection ("/ privacy & standards", "Privacy-by-design with Kotlin compiler plugins and RFC leadership.")
 
-Reflecting Mozilla's core commitment to digital privacy, I implemented **Keyboard Incognito Mode** across the application.
+Reflecting Mozilla's core commitment to digital privacy, I designed and implemented a custom **Kotlin K2 Compiler Plugin (`pii-safe`)** to eliminate Personally Identifiable Information (PII) leakage at compile time (`#11532`, `#11533`, `#11534`).
 
-Software keyboards often collect keystroke telemetries to train personalized predictive language models. By enforcing `EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING` across message searches, composition fields, and credentials, the app prevents third-party keyboards from recording sensitive communication, draft contents, or passwords.
+In a large, multi-module email client, logging data classes (such as account credentials, email addresses, and folder metadata) can inadvertently expose sensitive user data in debug outputs or crash logs. Manual string redaction is notoriously error-prone, noisy, and difficult to maintain at scale.
 
-Beyond feature implementation, I authored several project-wide **Architectural RFCs**:
+To solve this systematically, I engineered a compiler-enforced privacy architecture:
+
+- **Gradle Subplugin & Annotations:** Created `@LoggingPii.HasPii`, `@LoggingPii.Mask`, and `@LoggingPii.Hide` annotations backed by a dedicated Gradle integration subplugin (`PiiSafeGradleSubplugin`).
+- **Frontend IR (FIR) Checkers:** Built K2 FIR validation checkers (`HasPiiPropagationChecker`, `HasPiiRequiresAnnotatedPropertyChecker`) that catch omissions as compile errors during developer builds—preventing unmasked PII models from ever compiling.
+- **Synthetic IR `toString()` Generation:** Implemented a backend IR generator (`ToStringOverridePiiSafeBodyGenerator`) that synthetically generates a privacy-hardened `toString()` override for annotated data classes. Sensitive fields are masked or hidden automatically without reflection or runtime overhead.
+
+Beyond compiler architecture, I authored several project-wide **Architectural RFCs** and actively led technical PR reviews across privacy and core systems:
 
 - **RFC #11223 (Declarative Feature Flag Architecture):** Designed a type-safe, compile-time catalog for feature flags across the multi-module project, replacing scattered flag definitions with an extensible architecture.
 - **RFC #11180 (Inline Images in Plain-Text Messages):** Solved a historic email interoperability issue where inline attachments inside plain-text messages caused rendering artifacts across different mail clients, resolving the issue in strict adherence to RFC MIME standards while preserving existing `cid:` behavior.
@@ -61,12 +67,12 @@ Beyond feature implementation, I authored several project-wide **Architectural R
 
 {{{ .components.organisms.projects.ProjectSection ("/ outcomes", "Outcomes and impact.")
 
-{{{ .components.organisms.projects.ProjectOutcomes ("Compose", "core message list & reader bridged", "QR sync", "desktop-to-mobile onboarding", "private", "keyboard incognito mode") }}}
+{{{ .components.organisms.projects.ProjectOutcomes ("Compose", "core message list & reader bridged", "QR sync", "desktop-to-mobile onboarding", "compiler", "PII-safe K2 compiler plugin") }}}
 
 The Compose bridge architecture proved that a 15-year-old codebase can be modernised incrementally **without regressions or feature freezes**. The message list now benefits from reactive Compose state management while remaining compatible with legacy database loaders.
 
 The Thundermail integration and QR code migration drastically reduced onboarding friction, giving Thunderbird users a seamless bridge between desktop and mobile.
 
-Simultaneously, the privacy hardening and architectural RFCs reinforced Thunderbird's position as a privacy-respecting, standards-compliant email client for the open web.
+Simultaneously, the PII-safe K2 compiler plugin and architectural RFCs reinforced Thunderbird's position as a privacy-respecting, standards-compliant email client for the open web.
 
 }}}
