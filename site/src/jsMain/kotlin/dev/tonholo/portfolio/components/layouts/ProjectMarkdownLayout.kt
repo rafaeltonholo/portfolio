@@ -2,9 +2,6 @@ package dev.tonholo.portfolio.components.layouts
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import com.varabyte.kobweb.compose.ui.Modifier
-import com.varabyte.kobweb.compose.ui.modifiers.borderRadius
-import com.varabyte.kobweb.compose.ui.modifiers.margin
 import com.varabyte.kobweb.core.PageContext
 import com.varabyte.kobweb.core.data.add
 import com.varabyte.kobweb.core.data.get
@@ -12,9 +9,8 @@ import com.varabyte.kobweb.core.init.InitRoute
 import com.varabyte.kobweb.core.init.InitRouteContext
 import com.varabyte.kobweb.core.layout.Layout
 import com.varabyte.kobwebx.markdown.markdown
-import dev.tonholo.portfolio.components.atoms.AspectRatio
-import dev.tonholo.portfolio.components.atoms.Placeholder
 import dev.tonholo.portfolio.components.molecules.ProjectBreadcrumb
+import dev.tonholo.portfolio.components.molecules.ProjectCover
 import dev.tonholo.portfolio.components.organisms.projects.ProjectDetailHero
 import dev.tonholo.portfolio.extensions.toKebabCase
 import dev.tonholo.portfolio.locale.LocalStrings
@@ -22,22 +18,7 @@ import dev.tonholo.portfolio.locale.Locale
 import dev.tonholo.portfolio.navigation.Routes
 import dev.tonholo.portfolio.state.LocalLocaleState
 import dev.tonholo.portfolio.state.StaticContent
-import dev.tonholo.portfolio.theme.layout.unit.dp
 import org.jetbrains.compose.web.dom.Text
-
-// Matches the handoff `.project-cover` chrome used by the dynamic project page:
-// 4px radius, 64px bottom margin above the first case-study section.
-private val COVER_RADIUS = 4.dp
-private val COVER_MARGIN_BOTTOM = 64.dp
-
-/**
- * Route-local payload populated by [initProjectMarkdownLayout]. The [slug] is
- * the canonical project slug shared across locales; [locale] is the locale
- * resolved from the markdown frontmatter `locale` key (or the default when
- * the key is absent) and used to keep content, chrome, and prev/next links
- * in sync with the URL.
- */
-data class ProjectMarkdownLayoutData(val slug: String, val locale: Locale)
 
 /**
  * `@InitRoute` hook for markdown-authored project detail pages. Reads the
@@ -64,7 +45,9 @@ fun initProjectMarkdownLayout(ctx: InitRouteContext) {
     }
     val slug = frontMatter?.get("slug")?.singleOrNull()?.takeIf { it.isNotBlank() }
         ?: strippedFallbackSlug
-    ctx.data.add(ProjectMarkdownLayoutData(slug = slug, locale = locale))
+    val coverImage = frontMatter?.get("coverImage")?.singleOrNull()
+        ?: frontMatter?.get("heroImage")?.singleOrNull()
+    ctx.data.add(ProjectMarkdownLayoutData(slug = slug, locale = locale, coverImage = coverImage))
 }
 
 /**
@@ -115,12 +98,11 @@ fun ProjectMarkdownLayout(context: PageContext, content: @Composable () -> Unit)
     ) {
         ProjectBreadcrumb(projectName = project.name)
         ProjectDetailHero(project = project)
-        Placeholder(
-            aspectRatio = AspectRatio.Hero16x9,
-            label = strings.coverPlaceholderLabel,
-            modifier = Modifier
-                .borderRadius(COVER_RADIUS)
-                .margin(bottom = COVER_MARGIN_BOTTOM),
+        val coverImage = data.coverImage ?: project.coverImage
+        ProjectCover(
+            coverImage = coverImage,
+            projectName = project.name,
+            placeholderLabel = strings.coverPlaceholderLabel,
         )
         content()
     }

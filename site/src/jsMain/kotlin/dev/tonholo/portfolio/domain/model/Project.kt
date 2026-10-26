@@ -15,6 +15,7 @@ data class Project(
     val stack: List<String>,
     val stats: List<ProjectStat>,
     val externalCta: String,
+    val coverImage: String? = null,
 )
 
 enum class ProjectKind { Commercial, OpenSource }

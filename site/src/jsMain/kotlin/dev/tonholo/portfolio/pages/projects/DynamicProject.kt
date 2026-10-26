@@ -2,15 +2,11 @@ package dev.tonholo.portfolio.pages.projects
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import com.varabyte.kobweb.compose.ui.Modifier
-import com.varabyte.kobweb.compose.ui.modifiers.borderRadius
-import com.varabyte.kobweb.compose.ui.modifiers.margin
 import com.varabyte.kobweb.core.Page
 import com.varabyte.kobweb.core.rememberPageContext
-import dev.tonholo.portfolio.components.atoms.AspectRatio
-import dev.tonholo.portfolio.components.atoms.Placeholder
 import dev.tonholo.portfolio.components.layouts.ProjectLayout
 import dev.tonholo.portfolio.components.molecules.ProjectBreadcrumb
+import dev.tonholo.portfolio.components.molecules.ProjectCover
 import dev.tonholo.portfolio.components.organisms.projects.OutcomesGrid
 import dev.tonholo.portfolio.components.organisms.projects.ProjectDetailHero
 import dev.tonholo.portfolio.components.organisms.projects.ProjectOutcome
@@ -22,15 +18,9 @@ import dev.tonholo.portfolio.locale.Strings
 import dev.tonholo.portfolio.navigation.Routes
 import dev.tonholo.portfolio.state.LocalLocaleState
 import dev.tonholo.portfolio.state.StaticContent
-import dev.tonholo.portfolio.theme.layout.unit.dp
 import org.jetbrains.compose.web.dom.Text
 
 private const val PROJECT_SLUG_PARAM = "slug"
-
-// `.project-cover` in the handoff CSS: 4px radius, 64px bottom margin above
-// the first case-study section. Aspect ratio comes from the Placeholder atom.
-private val COVER_RADIUS = 4.dp
-private val COVER_MARGIN_BOTTOM = 64.dp
 
 /**
  * Dynamic project route "/projects/{slug}" - looks up the requested project
@@ -99,12 +89,10 @@ private fun RenderDynamicProject(slug: String, locale: Locale) {
     ) {
         ProjectBreadcrumb(projectName = project.name)
         ProjectDetailHero(project = project)
-        Placeholder(
-            aspectRatio = AspectRatio.Hero16x9,
-            label = strings.coverPlaceholderLabel,
-            modifier = Modifier
-                .borderRadius(COVER_RADIUS)
-                .margin(bottom = COVER_MARGIN_BOTTOM),
+        ProjectCover(
+            coverImage = project.coverImage,
+            projectName = project.name,
+            placeholderLabel = strings.coverPlaceholderLabel,
         )
         DefaultProjectSections(project = project, strings = strings)
     }

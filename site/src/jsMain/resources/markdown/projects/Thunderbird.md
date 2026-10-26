@@ -1,6 +1,7 @@
 ---
 layout: .components.layouts.ProjectMarkdownLayout
 slug: thunderbird
+coverImage: /images/projects/thunderbird/hero.png
 title: Thunderbird for Android - Compose state machines, Thundermail onboarding, and privacy-first architecture
 description: "Modernizing a 15-year-old open-source email client: bridging legacy Android views to Jetpack Compose state machines, shipping Thundermail desktop-to-mobile onboarding, and driving privacy with a Kotlin K2 compiler plugin and RFC standards at Mozilla."
 ---

@@ -143,6 +143,7 @@ private val PROJECTS_EN: List<Project> = listOf(
             ProjectStat(value = "Compose", label = "modern UI"),
         ),
         externalCta = "Case study",
+        coverImage = "/images/projects/thunderbird/hero.png",
     ),
     Project(
         slug = "bleacher-report",
@@ -235,6 +236,7 @@ private val PROJECTS_PT_BR: List<Project> = listOf(
             ProjectStat(value = "Compose", label = "UI moderna"),
         ),
         externalCta = "Estudo de caso",
+        coverImage = "/images/projects/thunderbird/hero.png",
     ),
     Project(
         slug = "bleacher-report",

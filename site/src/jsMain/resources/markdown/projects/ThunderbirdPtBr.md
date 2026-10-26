@@ -3,6 +3,7 @@ layout: .components.layouts.ProjectMarkdownLayout
 routeOverride: /projects/pt-br/thunderbird
 slug: thunderbird
 locale: pt-BR
+coverImage: /images/projects/thunderbird/hero.png
 title: Thunderbird para Android - Máquinas de estado em Compose, onboarding do Thundermail e arquitetura com foco em privacidade
 description: "Modernizando um cliente de e-mail open source de 15 anos: integrando views legadas do Android a máquinas de estado em Jetpack Compose, entregando o onboarding desktop-para-mobile do Thundermail e garantindo privacidade com compiler plugin em Kotlin K2 e RFCs na Mozilla."
 ---
