@@ -162,8 +162,10 @@ object StringsEn : Strings() {
         contents = "Contents",
         share = "Share",
         shareCopyLink = "copy link",
+        shareCopied = "link copied!",
         shareTwitter = "on twitter",
         shareLinkedIn = "on linkedin",
+        shareBluesky = "on bluesky",
     )
 
     override val articleMeta: ArticleMeta = ArticleMeta(

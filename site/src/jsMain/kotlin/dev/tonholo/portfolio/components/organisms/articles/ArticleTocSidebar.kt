@@ -1,16 +1,22 @@
 package dev.tonholo.portfolio.components.organisms.articles
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import com.varabyte.kobweb.compose.css.Cursor
 import com.varabyte.kobweb.compose.css.ListStyleType
 import com.varabyte.kobweb.compose.css.TextAlign
 import com.varabyte.kobweb.compose.css.TextDecorationLine
 import com.varabyte.kobweb.compose.css.TextTransform
-import com.varabyte.kobweb.compose.css.UserSelect
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.graphics.Color
 import com.varabyte.kobweb.compose.ui.graphics.Colors
+import com.varabyte.kobweb.compose.ui.modifiers.alignItems
 import com.varabyte.kobweb.compose.ui.modifiers.alignSelf
+import com.varabyte.kobweb.compose.ui.modifiers.animation
 import com.varabyte.kobweb.compose.ui.modifiers.backgroundColor
 import com.varabyte.kobweb.compose.ui.modifiers.border
 import com.varabyte.kobweb.compose.ui.modifiers.color
@@ -24,30 +30,42 @@ import com.varabyte.kobweb.compose.ui.modifiers.letterSpacing
 import com.varabyte.kobweb.compose.ui.modifiers.listStyle
 import com.varabyte.kobweb.compose.ui.modifiers.margin
 import com.varabyte.kobweb.compose.ui.modifiers.onClick
+import com.varabyte.kobweb.compose.ui.modifiers.opacity
 import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.compose.ui.modifiers.position
+import com.varabyte.kobweb.compose.ui.modifiers.scale
 import com.varabyte.kobweb.compose.ui.modifiers.textAlign
 import com.varabyte.kobweb.compose.ui.modifiers.textDecorationLine
 import com.varabyte.kobweb.compose.ui.modifiers.textTransform
 import com.varabyte.kobweb.compose.ui.modifiers.top
-import com.varabyte.kobweb.compose.ui.modifiers.userSelect
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.silk.style.CssStyle
+import com.varabyte.kobweb.silk.style.animation.Keyframes
+import com.varabyte.kobweb.silk.style.animation.toAnimation
 import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
+import com.varabyte.kobweb.silk.style.selectors.hover
 import com.varabyte.kobweb.silk.style.toModifier
+import com.varabyte.kobweb.silk.theme.colors.ColorMode
+import dev.tonholo.portfolio.components.atoms.PhosphorIcon
 import dev.tonholo.portfolio.locale.LocalStrings
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
+import dev.tonholo.portfolio.theme.color.Ink
 import dev.tonholo.portfolio.theme.layout.SiteDimensions
 import dev.tonholo.portfolio.theme.layout.unit.dp
 import dev.tonholo.portfolio.theme.typography.FontFamilies
 import dev.tonholo.portfolio.theme.typography.unit.sp
+import kotlinx.browser.window
+import org.jetbrains.compose.web.css.AlignItems
 import org.jetbrains.compose.web.css.AlignSelf
+import org.jetbrains.compose.web.css.AnimationTimingFunction
 import org.jetbrains.compose.web.css.DisplayStyle
 import org.jetbrains.compose.web.css.FlexDirection
 import org.jetbrains.compose.web.css.LineStyle
 import org.jetbrains.compose.web.css.Position
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.em
+import org.jetbrains.compose.web.css.ms
+import org.jetbrains.compose.web.css.percent
 import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.dom.A
 import org.jetbrains.compose.web.dom.Aside
@@ -58,51 +76,99 @@ import org.jetbrains.compose.web.dom.Ul
 import org.jetbrains.compose.web.dom.Button as WebButton
 import org.jetbrains.compose.web.dom.Text as ComposeText
 
-// Handoff `.article-detail .sidebar` (styles.css 1088-1103):
-//   font-family mono; font-size 11px; color muted; position sticky;
-//   top 100px; align-self start.
 private val SIDEBAR_FONT_SIZE = 11.sp
 private val SIDEBAR_STICKY_TOP = 100.dp
 
-// Handoff `.article-detail .sidebar h5` (styles.css 1096-1099):
-//   font-size 11px; letter-spacing 0.08em; uppercase; color ink-3;
-//   margin-bottom 10px.
 private val HEADING_FONT_SIZE = 11.sp
 private const val HEADING_LETTER_SPACING_EM = 0.08
 
-// Numeric prefix width: "01", "02", ... with a zero pad.
 private const val ENTRY_NUMBER_PAD_LENGTH = 2
 private const val ENTRY_NUMBER_PAD_CHAR = '0'
-
-// Separator between the entry number and the label. Handoff uses an em-dash;
-// the repo style forbids em-dashes so we fall back to a regular hyphen.
 private const val ENTRY_SEPARATOR = " - "
+
+private const val COPY_FEEDBACK_DURATION_MS = 2000
+private const val COPY_CHECKMARK_ANIMATION_MS = 240
+private const val COPY_ICON_SIZE_REM = 0.85
+private val COPY_BUTTON_GAP_PX = 6.px
+
+private const val CHECKMARK_START_PERCENT = 0
+private const val CHECKMARK_MID_PERCENT = 60
+private const val CHECKMARK_END_PERCENT = 100
+private const val CHECKMARK_START_SCALE = 0.5
+private const val CHECKMARK_MID_SCALE = 1.2
+private const val CHECKMARK_END_SCALE = 1.0
+
+private external fun encodeURIComponent(uriComponent: String): String
+
+/**
+ * Keyframe animation giving the copy confirmation checkmark a tactile pop.
+ */
+val CopyCheckmarkPopKeyframes = Keyframes {
+    CHECKMARK_START_PERCENT.percent {
+        Modifier
+            .opacity(0.0)
+            .scale(CHECKMARK_START_SCALE)
+    }
+    CHECKMARK_MID_PERCENT.percent {
+        Modifier
+            .opacity(1.0)
+            .scale(CHECKMARK_MID_SCALE)
+    }
+    CHECKMARK_END_PERCENT.percent {
+        Modifier
+            .opacity(1.0)
+            .scale(CHECKMARK_END_SCALE)
+    }
+}
 
 /**
  * One entry in the sidebar table of contents. [id] is the matching anchor id
- * on an in-body heading; [label] is the rendered title. The sidebar prefixes
- * each entry with a 1-indexed two-digit counter (e.g. `01 - The problem`).
+ * on an in-body heading; [label] is the rendered title.
+ *
+ * @param id the HTML element id matching the heading.
+ * @param label the display text for the heading.
  */
 data class TocEntry(val id: String, val label: String)
 
 /**
- * Sticky table-of-contents + share sidebar shown to the left of the article
- * body on detail pages. Ports the `.article-detail .sidebar` block from the
- * handoff (styles.css 1088-1103 and pages1.jsx 161-173):
+ * All share targets supported by the article detail sidebar.
  *
- * - Two mono `<h5>` sections: `Contents` and `Share`.
- * - The contents list numbers each entry (`01 - Label`) and highlights the
- *   [activeId] entry in the ink tone; non-active entries use the muted tone.
- * - The share list exposes three actions; `copy link` invokes [onCopyLink],
- *   while the twitter and linkedin intents are rendered as placeholders until
- *   the share integration lands.
+ * @param twitter external share URL for Twitter / X.
+ * @param linkedIn external share URL for LinkedIn.
+ * @param bluesky external share URL for Bluesky.
+ */
+data class ArticleShareUrls(val twitter: String, val linkedIn: String, val bluesky: String)
+
+/**
+ * Builds external share intent URLs for Twitter/X, LinkedIn, and Bluesky.
+ *
+ * @param title article title to prefill into the share message.
+ * @param url canonical article URL.
+ * @return [ArticleShareUrls] populated with destination intents.
+ */
+fun buildShareUrls(title: String, url: String): ArticleShareUrls {
+    val encodedUrl: String = encodeURIComponent(url)
+    val encodedTitle: String = encodeURIComponent(title)
+    val blueskyText: String = if (title.isNotBlank()) "$title $url" else url
+    val encodedBlueskyText: String = encodeURIComponent(blueskyText)
+    return ArticleShareUrls(
+        twitter = "https://twitter.com/intent/tweet?text=$encodedTitle&url=$encodedUrl",
+        linkedIn = "https://www.linkedin.com/sharing/share-offsite/?url=$encodedUrl",
+        bluesky = "https://bsky.app/intent/compose?text=$encodedBlueskyText",
+    )
+}
+
+/**
+ * Sticky table-of-contents + share sidebar shown to the left of the article
+ * body on detail pages.
  *
  * @param contents table-of-contents entries, rendered in order with a
  *   two-digit counter prefix.
- * @param activeId the id of the entry to highlight; falls back to the muted
- *   tone when no entry matches.
+ * @param activeId the id of the entry to highlight.
  * @param onCopyLink invoked when the `copy link` share action is clicked.
  * @param modifier optional [Modifier] chained after the base sidebar styles.
+ * @param articleTitle article title used to compose share intent messages.
+ * @param articleUrl canonical URL of the article.
  */
 @Composable
 fun ArticleTocSidebar(
@@ -110,9 +176,34 @@ fun ArticleTocSidebar(
     activeId: String,
     onCopyLink: () -> Unit,
     modifier: Modifier = Modifier,
+    articleTitle: String = "",
+    articleUrl: String = "",
 ) {
     val tokens = LocalPortfolioTokens.current
     val strings = LocalStrings.current.articlesSidebar
+
+    var isCopied by remember { mutableStateOf(false) }
+    var copyTimerId by remember { mutableStateOf<Int?>(null) }
+
+    val resolvedUrl: String = articleUrl.ifBlank {
+        runCatching { window.location.href }.getOrDefault("")
+    }
+    val shareUrls: ArticleShareUrls = remember(resolvedUrl, articleTitle) {
+        buildShareUrls(title = articleTitle, url = resolvedUrl)
+    }
+
+    val handleCopy: () -> Unit = {
+        onCopyLink()
+        isCopied = true
+        copyTimerId?.let { window.clearTimeout(it) }
+        copyTimerId = window.setTimeout({ isCopied = false }, COPY_FEEDBACK_DURATION_MS)
+    }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            copyTimerId?.let { window.clearTimeout(it) }
+        }
+    }
 
     val finalModifier = ArticleTocSidebarStyle
         .toModifier()
@@ -140,16 +231,35 @@ fun ArticleTocSidebar(
             modifier = Modifier.margin { top(SiteDimensions.size.Xxl) },
         )
         Ul(attrs = SidebarListStyle.toModifier().toAttrs()) {
-            ShareAnchorRow(label = strings.shareCopyLink, onClick = onCopyLink, mutedColor = tokens.muted.muted)
-            ShareAnchorRow(label = strings.shareTwitter, onClick = null, mutedColor = tokens.muted.muted)
-            ShareAnchorRow(label = strings.shareLinkedIn, onClick = null, mutedColor = tokens.muted.muted)
+            CopyLinkRow(
+                label = strings.shareCopyLink,
+                copiedLabel = strings.shareCopied,
+                isCopied = isCopied,
+                onClick = handleCopy,
+                mutedColor = tokens.muted.muted,
+                accentColor = tokens.accent.accent,
+            )
+            ShareLinkRow(
+                label = strings.shareTwitter,
+                href = shareUrls.twitter,
+                mutedColor = tokens.muted.muted,
+            )
+            ShareLinkRow(
+                label = strings.shareLinkedIn,
+                href = shareUrls.linkedIn,
+                mutedColor = tokens.muted.muted,
+            )
+            ShareLinkRow(
+                label = strings.shareBluesky,
+                href = shareUrls.bluesky,
+                mutedColor = tokens.muted.muted,
+            )
         }
     }
 }
 
 /**
  * One contents row: renders the two-digit counter and label inside an anchor.
- * Active rows adopt [activeColor] (ink) while all others stay muted.
  */
 @Composable
 private fun TocAnchorRow(
@@ -167,9 +277,9 @@ private fun TocAnchorRow(
     Li(attrs = Modifier.toAttrs()) {
         A(
             href = "#${entry.id}",
-            attrs = Modifier
+            attrs = TocAnchorStyle
+                .toModifier()
                 .color(resolvedColor)
-                .textDecorationLine(TextDecorationLine.None)
                 .toAttrs(),
         ) {
             ComposeText(label)
@@ -178,57 +288,78 @@ private fun TocAnchorRow(
 }
 
 /**
- * One share row. When [onClick] is supplied the row renders as a semantic
- * `<button type="button">` stripped of browser chrome so it visually matches
- * the sibling anchors while announcing as a button to assistive tech. The
- * previous implementation used `<a href="javascript:void(0)">` which degraded
- * Ctrl/Cmd-click and announced a fake link. Share targets that are not wired
- * up yet (twitter / linkedin) render as a non-interactive
- * `<span aria-disabled="true">`.
+ * Renders the copy link button with confirmation icon and animated feedback.
  */
 @Composable
-private fun ShareAnchorRow(label: String, onClick: (() -> Unit)?, mutedColor: Color) {
+private fun CopyLinkRow(
+    label: String,
+    copiedLabel: String,
+    isCopied: Boolean,
+    onClick: () -> Unit,
+    mutedColor: Color,
+    accentColor: Color,
+) {
     Li(attrs = Modifier.toAttrs()) {
-        if (onClick != null) {
-            WebButton(
-                attrs = Modifier
-                    .fontFamily(*FontFamilies.MONO)
-                    .fontSize(SIDEBAR_FONT_SIZE)
-                    .color(mutedColor)
-                    .cursor(Cursor.Pointer)
-                    .textDecorationLine(TextDecorationLine.None)
-                    .textAlign(TextAlign.Start)
-                    .backgroundColor(Colors.Transparent)
-                    .border(style = LineStyle.None)
-                    .padding(0.px)
-                    .onClick { onClick() }
-                    .toAttrs {
-                        attr("type", "button")
-                    },
-            ) {
-                ComposeText(label)
-            }
-        } else {
-            Span(
-                attrs = Modifier
-                    .color(mutedColor)
-                    .cursor(Cursor.Default)
-                    .userSelect(UserSelect.None)
-                    .toAttrs {
-                        attr("aria-disabled", "true")
-                        attr("title", "Coming soon")
-                    },
-            ) {
-                ComposeText(label)
+        WebButton(
+            attrs = ShareButtonStyle
+                .toModifier()
+                .color(if (isCopied) accentColor else mutedColor)
+                .onClick { onClick() }
+                .toAttrs {
+                    attr("type", "button")
+                    if (isCopied) {
+                        attr("aria-live", "polite")
+                    }
+                },
+        ) {
+            ComposeText(if (isCopied) copiedLabel else label)
+            if (isCopied) {
+                Span(
+                    attrs = Modifier
+                        .display(DisplayStyle.LegacyInlineFlex)
+                        .alignItems(AlignItems.Center)
+                        .color(accentColor)
+                        .animation(
+                            CopyCheckmarkPopKeyframes.toAnimation(
+                                duration = COPY_CHECKMARK_ANIMATION_MS.ms,
+                                timingFunction = AnimationTimingFunction.EaseOut,
+                            ),
+                        )
+                        .toAttrs(),
+                ) {
+                    PhosphorIcon(
+                        name = "check",
+                        size = COPY_ICON_SIZE_REM.cssRem,
+                    )
+                }
             }
         }
     }
 }
 
 /**
+ * One external share link row navigating to Twitter, LinkedIn, or Bluesky.
+ */
+@Composable
+private fun ShareLinkRow(label: String, href: String, mutedColor: Color) {
+    Li(attrs = Modifier.toAttrs()) {
+        A(
+            href = href,
+            attrs = ShareLinkStyle
+                .toModifier()
+                .color(mutedColor)
+                .toAttrs {
+                    attr("target", "_blank")
+                    attr("rel", "noopener noreferrer")
+                },
+        ) {
+            ComposeText(label)
+        }
+    }
+}
+
+/**
  * Mono sidebar heading used by both the contents and share sections.
- * Rendered as an `<h2>` - the sidebar is a peer section to the article body
- * under the page `<h1>`.
  */
 @Composable
 private fun SidebarHeading(text: String, modifier: Modifier = Modifier) {
@@ -251,15 +382,7 @@ private fun SidebarHeading(text: String, modifier: Modifier = Modifier) {
 }
 
 /**
- * Base `CssStyle` for the sticky sidebar wrapper. Ports the static pieces of
- * `.article-detail .sidebar`: mono font, 11px font-size, and - from
- * [Breakpoint.LG] - sticky positioning with a 100px top offset plus
- * `align-self: start` so the sidebar does not stretch to the body column's
- * full height. Below LG the two-column grid collapses to a single column,
- * so sticky positioning is dropped: a sticky TOC at `top: 100px` would
- * otherwise float over the article body as the reader scrolled. The muted
- * base color is applied inline by [ArticleTocSidebar] so it stays reactive
- * to the active color mode.
+ * Base `CssStyle` for the sticky sidebar wrapper.
  */
 val ArticleTocSidebarStyle = CssStyle {
     base {
@@ -276,10 +399,61 @@ val ArticleTocSidebarStyle = CssStyle {
 }
 
 /**
- * Base `CssStyle` for the two `<ul>` lists inside the sidebar. Ports
- * `.article-detail .sidebar ul`: no markers, vertical flex stack with an 8px
- * gap between rows, and zero intrinsic padding so the list aligns with its
- * preceding heading.
+ * Base `CssStyle` for table-of-contents anchor rows.
+ */
+val TocAnchorStyle = CssStyle {
+    base {
+        Modifier.textDecorationLine(TextDecorationLine.None)
+    }
+    hover {
+        val ink = if (colorMode == ColorMode.DARK) Ink.dark else Ink.light
+        Modifier.color(ink.ink)
+    }
+}
+
+/**
+ * Base `CssStyle` for the `copy link` interactive button.
+ */
+val ShareButtonStyle = CssStyle {
+    base {
+        Modifier
+            .fontFamily(*FontFamilies.MONO)
+            .fontSize(SIDEBAR_FONT_SIZE)
+            .cursor(Cursor.Pointer)
+            .textDecorationLine(TextDecorationLine.None)
+            .textAlign(TextAlign.Start)
+            .backgroundColor(Colors.Transparent)
+            .border(style = LineStyle.None)
+            .padding(0.px)
+            .display(DisplayStyle.Flex)
+            .alignItems(AlignItems.Center)
+            .gap(COPY_BUTTON_GAP_PX)
+    }
+    hover {
+        val ink = if (colorMode == ColorMode.DARK) Ink.dark else Ink.light
+        Modifier.color(ink.ink)
+    }
+}
+
+/**
+ * Base `CssStyle` for external share anchor links.
+ */
+val ShareLinkStyle = CssStyle {
+    base {
+        Modifier
+            .fontFamily(*FontFamilies.MONO)
+            .fontSize(SIDEBAR_FONT_SIZE)
+            .textDecorationLine(TextDecorationLine.None)
+            .display(DisplayStyle.InlineBlock)
+    }
+    hover {
+        val ink = if (colorMode == ColorMode.DARK) Ink.dark else Ink.light
+        Modifier.color(ink.ink)
+    }
+}
+
+/**
+ * Base `CssStyle` for the two `<ul>` lists inside the sidebar.
  */
 val SidebarListStyle = CssStyle {
     base {

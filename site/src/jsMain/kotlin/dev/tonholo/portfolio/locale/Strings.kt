@@ -145,8 +145,10 @@ sealed class Strings {
         val contents: String,
         val share: String,
         val shareCopyLink: String,
+        val shareCopied: String,
         val shareTwitter: String,
         val shareLinkedIn: String,
+        val shareBluesky: String,
     )
 
     /** Copy shown by the back-to-articles meta row on the detail page. */

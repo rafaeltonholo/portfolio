@@ -167,8 +167,10 @@ object StringsPtBr : Strings() {
         contents = "Conteúdo",
         share = "Compartilhar",
         shareCopyLink = "copiar link",
+        shareCopied = "link copiado!",
         shareTwitter = "no twitter",
         shareLinkedIn = "no linkedin",
+        shareBluesky = "no bluesky",
     )
 
     override val articleMeta: ArticleMeta = ArticleMeta(

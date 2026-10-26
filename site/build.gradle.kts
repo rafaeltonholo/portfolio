@@ -1,9 +1,11 @@
 import com.varabyte.kobweb.gradle.application.util.configAsKobwebApplication
 import kotlinx.html.link
+import java.io.File
 import java.time.LocalDate
 import java.time.format.DateTimeFormatterBuilder
 import java.util.Locale
 import java.util.Properties
+import kotlin.math.ceil
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
@@ -243,6 +245,20 @@ kobweb {
                 LocalDate.parse(this.trim(), articleDateFormatter)
             }.getOrElse { LocalDate.MIN }
 
+            val markdownResourceDir = layout.projectDirectory.dir("src/jsMain/resources/markdown").asFile
+            val readingSpeedWordsPerMinute = 200.0
+            fun calculateReadingTime(markdownText: String): String {
+                val body = if (markdownText.startsWith("---")) {
+                    val secondMarker = markdownText.indexOf("---", startIndex = 3)
+                    if (secondMarker != -1) markdownText.substring(secondMarker + 3) else markdownText
+                } else {
+                    markdownText
+                }
+                val words = body.trim().split(Regex("\\s+")).count { it.isNotBlank() }
+                val minutes = maxOf(1, ceil(words / readingSpeedWordsPerMinute).toInt())
+                return "$minutes min"
+            }
+
             val rows = entries
                 .filter { entry -> entry.filePath.startsWith("articles/") }
                 .mapNotNull { entry ->
@@ -254,7 +270,12 @@ kobweb {
                     val title = frontMatter["title"]?.singleOrNull() ?: return@mapNotNull null
                     val date = frontMatter["date"]?.singleOrNull().orEmpty()
                     val description = frontMatter["description"]?.singleOrNull().orEmpty()
-                    val readTime = frontMatter["readTime"]?.singleOrNull().orEmpty()
+                    val markdownFile = File(markdownResourceDir, entry.filePath)
+                    val readTime = if (markdownFile.exists()) {
+                        calculateReadingTime(markdownFile.readText())
+                    } else {
+                        frontMatter["readTime"]?.singleOrNull().orEmpty()
+                    }
                     val statusRaw = frontMatter["status"]?.singleOrNull()?.lowercase().orEmpty()
                     val tags = frontMatter["tags"].orEmpty()
                     Row(
@@ -306,15 +327,28 @@ kobweb {
     }
 }
 
+tasks.withType<com.varabyte.kobwebx.gradle.markdown.tasks.ProcessMarkdownTask>().configureEach {
+    notCompatibleWithConfigurationCache("Kobweb markdown processing task")
+}
+
 tasks.withType<com.varabyte.kobwebx.gradle.markdown.tasks.ConvertMarkdownTask>().configureEach {
-    val handlers = markdownHandlers
-    handlers.code.set { codeBlock ->
+    notCompatibleWithConfigurationCache("Kobweb markdown conversion task")
+    markdownHandlers.code.set { codeBlock ->
         val rawInfo = codeBlock.info.trim()
         val lang = rawInfo.split(Regex("\\s+")).firstOrNull()?.ifBlank { "text" } ?: "text"
-        val escaped = with(handlers) { codeBlock.literal.escapeTripleQuotedText() }
+        val escaped = codeBlock.literal
+            .replace("$", "\${'$'}")
+            .replace("\"\"\"", "\${\"\\\"\\\"\\\"\"}")
         "dev.tonholo.portfolio.components.atoms.ShikiCodeBlock(code = \"\"\"$escaped\"\"\", language = \"$lang\")"
     }
-    handlers.blockquote.set { blockQuote ->
+    markdownHandlers.a.set { link ->
+        val dest = link.destination
+            .replace("\\", "\\\\")
+            .replace("\"", "\\\"")
+            .replace("$", "\${'$'}")
+        "dev.tonholo.portfolio.components.atoms.ArticleLink(href = \"$dest\")"
+    }
+    markdownHandlers.blockquote.set { blockQuote ->
         val firstParagraph = blockQuote.firstChild as? org.commonmark.node.Paragraph
         val firstText = firstParagraph?.firstChild as? org.commonmark.node.Text
         val regex = """\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION|QUOTE)(?:\s+"([^"]*)")?\]""".toRegex(RegexOption.IGNORE_CASE)

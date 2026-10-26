@@ -39,23 +39,24 @@ class StaticContentTest {
     }
 
     @Test
-    fun `given StaticContent ARTICLES, when read, then it has ten entries and first is draft`() {
+    fun `given StaticContent ARTICLES, when read, then it has eleven entries and contains draft`() {
         // Arrange / Act
         val articles = StaticContent.ARTICLES
 
         // Assert
-        assertEquals(expected = 10, actual = articles.size)
+        assertEquals(expected = 11, actual = articles.size)
         assertEquals(
-            expected = "compose-stability-without-the-cult",
+            expected = "git-time-travel-reflog-reset",
             actual = articles[0].slug,
         )
-        assertEquals(expected = ArticleStatus.Draft, actual = articles[0].status)
+        val draft = articles.singleOrNull { it.status == ArticleStatus.Draft }
+        assertEquals(expected = "compose-stability-without-the-cult", actual = draft?.slug)
     }
 
     @Test
     fun `given StaticContent ARTICLES, when inspected, then non-draft entries are Published`() {
         // Arrange / Act
-        val published = StaticContent.ARTICLES.drop(1)
+        val published = StaticContent.ARTICLES.filter { it.status != ArticleStatus.Draft }
 
         // Assert
         assertTrue(actual = published.isNotEmpty())

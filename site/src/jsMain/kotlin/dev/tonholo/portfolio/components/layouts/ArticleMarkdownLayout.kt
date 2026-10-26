@@ -50,6 +50,7 @@ import dev.tonholo.portfolio.components.atoms.GiscusWrapper
 import dev.tonholo.portfolio.components.molecules.ArticleMetaRow
 import dev.tonholo.portfolio.components.organisms.articles.ArticleTocSidebar
 import dev.tonholo.portfolio.components.organisms.articles.TocEntry
+import dev.tonholo.portfolio.generated.articles.GeneratedArticles
 import dev.tonholo.portfolio.navigation.Routes
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.color.AccentMint
@@ -163,13 +164,15 @@ fun initArticleMarkdownLayout(ctx: InitRouteContext) {
     val frontMatter = ctx.markdown?.frontMatter
     val path = ctx.markdown?.path.orEmpty()
     val slug = path.substringAfterLast('/').removeSuffix(".md")
+    val readTime = GeneratedArticles.ALL.firstOrNull { it.slug == slug }?.readTime
+        ?: frontMatter?.get("readTime")?.singleOrNull().orEmpty()
     ctx.data.add(
         ArticleMarkdownLayoutData(
             slug = slug,
             title = frontMatter?.get("title")?.singleOrNull().orEmpty(),
             date = frontMatter?.get("date")?.singleOrNull().orEmpty(),
             description = frontMatter?.get("description")?.singleOrNull().orEmpty(),
-            readTime = frontMatter?.get("readTime")?.singleOrNull().orEmpty(),
+            readTime = readTime,
         ),
     )
 }
@@ -203,6 +206,7 @@ fun ArticleMarkdownLayout(context: PageContext, content: @Composable () -> Unit)
     )
 
     var tocEntries by remember(data.slug) { mutableStateOf<List<TocEntry>>(emptyList()) }
+    val activeId: String = rememberScrollActiveHeadingId(slug = data.slug, entries = tocEntries)
 
     PageLayout {
         HeroSection(id = "article-shell") {
@@ -237,8 +241,9 @@ fun ArticleMarkdownLayout(context: PageContext, content: @Composable () -> Unit)
             Div(attrs = ArticleMarkdownGridStyle.toModifier().toAttrs()) {
                 ArticleTocSidebar(
                     contents = tocEntries,
-                    activeId = tocEntries.firstOrNull()?.id.orEmpty(),
+                    activeId = activeId.ifBlank { tocEntries.firstOrNull()?.id.orEmpty() },
                     onCopyLink = { copyCurrentLocation() },
+                    articleTitle = data.title,
                 )
                 Div(attrs = Modifier.fillMaxWidth().toAttrs()) {
                     Article(attrs = ArticleMarkdownBodyStyle.toModifier().toAttrs()) {
@@ -263,6 +268,75 @@ fun ArticleMarkdownLayout(context: PageContext, content: @Composable () -> Unit)
             }
         }
     }
+}
+
+/**
+ * Remembers and updates the active table-of-contents entry based on viewport scroll position.
+ *
+ * @param slug current article slug used as a key for state reset.
+ * @param entries list of collected table-of-contents entries.
+ * @return anchor id of the heading element currently considered active.
+ */
+@Composable
+fun rememberScrollActiveHeadingId(slug: String, entries: List<TocEntry>): String {
+    var activeId by remember(slug) { mutableStateOf("") }
+    DisposableEffect(entries) {
+        if (entries.isEmpty()) {
+            return@DisposableEffect onDispose {}
+        }
+        val initialId: String = resolveActiveHeadingId(entries = entries)
+        if (initialId.isNotBlank()) {
+            activeId = initialId
+        }
+        var rafHandle: Int? = null
+        val onScrollOrResize: (org.w3c.dom.events.Event) -> Unit = {
+            if (rafHandle == null) {
+                rafHandle = window.requestAnimationFrame {
+                    rafHandle = null
+                    val currentActiveId: String = resolveActiveHeadingId(entries = entries)
+                    if (currentActiveId.isNotBlank() && currentActiveId != activeId) {
+                        activeId = currentActiveId
+                    }
+                }
+            }
+        }
+        window.addEventListener("scroll", onScrollOrResize)
+        window.addEventListener("resize", onScrollOrResize)
+        onDispose {
+            rafHandle?.let { window.cancelAnimationFrame(it) }
+            window.removeEventListener("scroll", onScrollOrResize)
+            window.removeEventListener("resize", onScrollOrResize)
+        }
+    }
+    return activeId
+}
+
+private const val TOP_NAV_BAR_HEIGHT_PX = 80.0
+
+/**
+ * Resolves the id of the first heading element currently visible in the viewport,
+ * falling back to the most recent heading scrolled past the top.
+ *
+ * @param entries list of collected table-of-contents entries.
+ * @return matching anchor id, or empty string if no heading is resolvable.
+ */
+fun resolveActiveHeadingId(entries: List<TocEntry>): String {
+    if (entries.isEmpty()) return ""
+    val headingsWithRect = entries.mapNotNull { entry ->
+        val element = document.getElementById(entry.id) ?: return@mapNotNull null
+        val rect = element.getBoundingClientRect()
+        entry.id to rect
+    }
+    if (headingsWithRect.isEmpty()) return ""
+    val firstVisible = headingsWithRect.firstOrNull { (_, rect) ->
+        rect.bottom > TOP_NAV_BAR_HEIGHT_PX && rect.top < window.innerHeight
+    }
+    if (firstVisible != null) {
+        return firstVisible.first
+    }
+    return headingsWithRect.lastOrNull { (_, rect) ->
+        rect.bottom <= TOP_NAV_BAR_HEIGHT_PX
+    }?.first ?: headingsWithRect.first().first
 }
 
 /**
