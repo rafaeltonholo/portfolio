@@ -103,12 +103,18 @@ private const val LEDE_LINE_HEIGHT = 1.45
 private const val LEDE_MAX_WIDTH_CH = 48.0
 private const val LEDE_MARGIN_BOTTOM_REM = 2.5
 
-// Handoff `.prose h3` (applied to any nested heading under the article body):
-// display mono at 22px, weight 500, -0.015em tracking, margin `2em 0 0.6em`.
-private val BODY_HEADING_SIZE = 22.dp
-private const val BODY_HEADING_LETTER_SPACING_EM = -0.015
-private const val BODY_HEADING_MARGIN_TOP_EM = 2.0
-private const val BODY_HEADING_MARGIN_BOTTOM_EM = 0.6
+// Prose headings: H2 serves as the primary section divider (24px, medium weight, 2em top margin);
+// H3 serves as a secondary sub-section divider (18px, medium weight, 1.6em top margin) to
+// establish clear visual hierarchy within long-form markdown prose.
+private val PROSE_H2_FONT_SIZE = 24.dp
+private const val PROSE_H2_LETTER_SPACING_EM = -0.015
+private const val PROSE_H2_MARGIN_TOP_EM = 2.0
+private const val PROSE_H2_MARGIN_BOTTOM_EM = 0.6
+
+private val PROSE_H3_FONT_SIZE = 18.dp
+private const val PROSE_H3_LETTER_SPACING_EM = -0.01
+private const val PROSE_H3_MARGIN_TOP_EM = 1.6
+private const val PROSE_H3_MARGIN_BOTTOM_EM = 0.5
 
 private const val PROSE_FONT_SIZE_REM = 1.125
 private const val PROSE_LINE_HEIGHT = 1.65
@@ -484,18 +490,35 @@ val ArticleMarkdownBodyStyle = CssStyle {
     descendants("p") {
         Modifier.margin(top = 0.em, bottom = PROSE_BLOCK_GAP_EM.em)
     }
-    descendants("h2", "h3") {
+    descendants("h2") {
         val isDark: Boolean = colorMode == ColorMode.DARK
         val ink = if (isDark) Ink.dark else Ink.light
         Modifier
             .fontFamily(*FontFamilies.DISPLAY)
-            .fontSize(BODY_HEADING_SIZE)
+            .fontSize(PROSE_H2_FONT_SIZE)
             .fontWeight(FontWeight.Medium)
-            .letterSpacing(BODY_HEADING_LETTER_SPACING_EM.em)
+            .letterSpacing(PROSE_H2_LETTER_SPACING_EM.em)
             .color(ink.ink)
             .margin(
-                top = BODY_HEADING_MARGIN_TOP_EM.em,
-                bottom = BODY_HEADING_MARGIN_BOTTOM_EM.em,
+                top = PROSE_H2_MARGIN_TOP_EM.em,
+                bottom = PROSE_H2_MARGIN_BOTTOM_EM.em,
+            )
+            .styleModifier {
+                property("scroll-margin-top", "6rem")
+            }
+    }
+    descendants("h3") {
+        val isDark: Boolean = colorMode == ColorMode.DARK
+        val ink = if (isDark) Ink.dark else Ink.light
+        Modifier
+            .fontFamily(*FontFamilies.DISPLAY)
+            .fontSize(PROSE_H3_FONT_SIZE)
+            .fontWeight(FontWeight.Medium)
+            .letterSpacing(PROSE_H3_LETTER_SPACING_EM.em)
+            .color(ink.ink)
+            .margin(
+                top = PROSE_H3_MARGIN_TOP_EM.em,
+                bottom = PROSE_H3_MARGIN_BOTTOM_EM.em,
             )
             .styleModifier {
                 property("scroll-margin-top", "6rem")
