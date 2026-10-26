@@ -142,7 +142,7 @@ private val PROJECTS_EN: List<Project> = listOf(
             ProjectStat(value = "Mozilla", label = "affiliated"),
             ProjectStat(value = "Compose", label = "modern UI"),
         ),
-        externalCta = "View on GitHub",
+        externalCta = "Case study",
     ),
     Project(
         slug = "bleacher-report",
@@ -234,7 +234,7 @@ private val PROJECTS_PT_BR: List<Project> = listOf(
             ProjectStat(value = "Mozilla", label = "afiliado"),
             ProjectStat(value = "Compose", label = "UI moderna"),
         ),
-        externalCta = "Ver no GitHub",
+        externalCta = "Estudo de caso",
     ),
     Project(
         slug = "bleacher-report",

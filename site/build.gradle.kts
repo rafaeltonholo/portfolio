@@ -78,7 +78,6 @@ fun String.splitLocalizedSlug(): Pair<String, String?> {
 // so the exporter can emit one HTML per markdown file without maintaining a
 // parallel list.
 val projectSlugs = listOf(
-    "thunderbird",
     "svg-compose",
     "ivy-wallet",
 )
