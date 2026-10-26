@@ -6,11 +6,13 @@ import com.varabyte.kobweb.compose.ui.graphics.Color
 import com.varabyte.kobweb.compose.ui.modifiers.backgroundColor
 import com.varabyte.kobweb.compose.ui.modifiers.borderRadius
 import com.varabyte.kobweb.compose.ui.modifiers.fontFamily
+import com.varabyte.kobweb.compose.ui.modifiers.fontSize
 import com.varabyte.kobweb.compose.ui.modifiers.lineHeight
 import com.varabyte.kobweb.compose.ui.modifiers.overflowWrap
 import com.varabyte.kobweb.compose.ui.modifiers.padding
 import dev.tonholo.portfolio.theme.layout.unit.Dp
 import dev.tonholo.portfolio.theme.layout.unit.dp
+import org.jetbrains.compose.web.css.em
 
 internal val INLINE_CODE_PADDING_HORIZONTAL: Dp = 4.dp
 internal val INLINE_CODE_PADDING_VERTICAL: Dp = 2.dp
@@ -39,4 +41,5 @@ fun Modifier.applyInlineCodeStyle(isDark: Boolean): Modifier {
         .lineHeight(INLINE_CODE_LINE_HEIGHT)
         .backgroundColor(backgroundColor)
         .overflowWrap(OverflowWrap.Anywhere)
+        .fontSize(0.85.em)
 }
