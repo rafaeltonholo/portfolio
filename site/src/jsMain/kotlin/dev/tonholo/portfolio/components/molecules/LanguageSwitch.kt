@@ -135,13 +135,15 @@ private fun LanguageOption(
     val (code, suffix) = splitLocaleTag(locale.tag)
 
     val activeColor = tokens.accent.accent
-    val baseColor = tokens.ink.ink3
 
-    val optionModifier = LanguageOptionStyle
+    var optionModifier = LanguageOptionStyle
         .toModifier()
-        .color(if (isActive) activeColor else baseColor)
-        .fontWeight(if (isActive) FontWeight.SemiBold else FontWeight.Normal)
         .onClick { onSwitch(locale) }
+    if (isActive) {
+        optionModifier = optionModifier
+            .color(activeColor)
+            .fontWeight(FontWeight.SemiBold)
+    }
 
     WebButton(
         attrs = optionModifier.toAttrs {

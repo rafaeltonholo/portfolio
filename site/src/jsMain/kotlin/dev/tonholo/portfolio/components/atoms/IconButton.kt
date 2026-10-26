@@ -27,7 +27,6 @@ import com.varabyte.kobweb.silk.style.CssStyle
 import com.varabyte.kobweb.silk.style.selectors.hover
 import com.varabyte.kobweb.silk.style.toModifier
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
-import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.color.Ink
 import dev.tonholo.portfolio.theme.color.Paper
 import dev.tonholo.portfolio.theme.layout.unit.dp
@@ -68,11 +67,7 @@ fun IconButton(
     onClick: (() -> Unit)? = null,
     content: @Composable () -> Unit,
 ) {
-    val tokens = LocalPortfolioTokens.current
-
-    var finalModifier = IconButtonStyle
-        .toModifier()
-        .color(tokens.ink.ink3)
+    var finalModifier = IconButtonStyle.toModifier()
     if (onClick != null) {
         finalModifier = finalModifier.onClick { onClick() }
     }
@@ -99,6 +94,9 @@ fun IconButton(
  * clickable area is larger.
  */
 val IconButtonStyle = CssStyle {
+    val isDark = colorMode == ColorMode.DARK
+    val paper = if (isDark) Paper.dark else Paper.light
+    val ink = if (isDark) Ink.dark else Ink.light
     base {
         Modifier
             .width(ICON_BUTTON_SIZE)
@@ -113,11 +111,9 @@ val IconButtonStyle = CssStyle {
             .backgroundColor(TransparentColor)
             .border(style = LineStyle.None)
             .cursor(Cursor.Pointer)
+            .color(ink.ink3)
     }
     hover {
-        val isDark = colorMode == ColorMode.DARK
-        val paper = if (isDark) Paper.dark else Paper.light
-        val ink = if (isDark) Ink.dark else Ink.light
         Modifier
             .backgroundColor(paper.paper2)
             .color(ink.ink)
