@@ -53,7 +53,7 @@ import org.jetbrains.compose.web.css.fr
 import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.css.vw
 import org.jetbrains.compose.web.dom.Div
-import org.jetbrains.compose.web.dom.H3
+import org.jetbrains.compose.web.dom.H2
 import org.jetbrains.compose.web.dom.Section
 import org.jetbrains.compose.web.dom.Text as ComposeText
 
@@ -208,7 +208,7 @@ private fun HiringCtaCopy() {
         ) {
             ComposeText(META_LABEL_COPY)
         }
-        H3(
+        H2(
             attrs = HiringCtaHeadingStyle.toModifier().toAttrs(),
         ) {
             ComposeText(strings.heading)

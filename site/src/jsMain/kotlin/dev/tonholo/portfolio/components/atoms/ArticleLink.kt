@@ -15,6 +15,7 @@ import com.varabyte.kobweb.silk.style.CssStyle
 import com.varabyte.kobweb.silk.style.selectors.hover
 import com.varabyte.kobweb.silk.style.toModifier
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
+import dev.tonholo.portfolio.locale.LocalStrings
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.color.AccentMint
 import org.jetbrains.compose.web.css.DisplayStyle
@@ -22,6 +23,7 @@ import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.em
 import org.jetbrains.compose.web.dom.A
 import org.jetbrains.compose.web.dom.Span
+import org.jetbrains.compose.web.dom.Text as ComposeText
 
 private const val EXTERNAL_ARROW_ICON_NAME = "arrow-up-right"
 private const val EXTERNAL_TARGET = "_blank"
@@ -77,6 +79,13 @@ fun ArticleLink(href: String, modifier: Modifier = Modifier, content: @Composabl
                     name = EXTERNAL_ARROW_ICON_NAME,
                     size = EXTERNAL_ARROW_SIZE_REM.cssRem,
                 )
+            }
+            Span(
+                attrs = VisuallyHiddenStyle
+                    .toModifier()
+                    .toAttrs(),
+            ) {
+                ComposeText(" ${LocalStrings.current.a11y.opensInNewTab}")
             }
         }
     }

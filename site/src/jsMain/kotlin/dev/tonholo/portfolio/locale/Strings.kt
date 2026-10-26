@@ -16,6 +16,7 @@ import androidx.compose.runtime.staticCompositionLocalOf
  * use [stringsFor].
  */
 sealed class Strings {
+    abstract val a11y: A11y
     abstract val nav: Nav
     abstract val statusBadge: StatusBadge
     abstract val themeToggle: ThemeToggle
@@ -39,6 +40,9 @@ sealed class Strings {
     abstract val uses: Uses
     abstract val selectedWork: SelectedWork
     abstract val notFound: NotFound
+
+    /** Screen-reader and accessibility announcements. */
+    data class A11y(val opensInNewTab: String)
 
     /** Primary navigation link labels rendered in [dev.tonholo.portfolio.components.organisms.chrome.Nav]. */
     data class Nav(

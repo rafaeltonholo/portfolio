@@ -5,6 +5,10 @@ package dev.tonholo.portfolio.locale
  * locale layers on top by overriding only the groups it actually translates.
  */
 object StringsEn : Strings() {
+    override val a11y: A11y = A11y(
+        opensInNewTab = "(opens in a new tab)",
+    )
+
     override val nav: Nav = Nav(
         home = "home",
         projects = "projects",

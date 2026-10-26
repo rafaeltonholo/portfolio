@@ -129,4 +129,28 @@ class StringsTest {
         // Assert
         assertEquals(expected = StringsPtBr.hero.titleLine1, actual = actual)
     }
+
+    @Test
+    fun `given EnCa locale, when a11y opensInNewTab is read, then returns English announcement`() {
+        // Arrange
+        val strings = stringsFor(locale = Locale.EnCa)
+
+        // Act
+        val actual = strings.a11y.opensInNewTab
+
+        // Assert
+        assertEquals(expected = "(opens in a new tab)", actual = actual)
+    }
+
+    @Test
+    fun `given PtBr locale, when a11y opensInNewTab is read, then returns Portuguese announcement`() {
+        // Arrange
+        val strings = stringsFor(locale = Locale.PtBr)
+
+        // Act
+        val actual = strings.a11y.opensInNewTab
+
+        // Assert
+        assertEquals(expected = "(abre em uma nova aba)", actual = actual)
+    }
 }

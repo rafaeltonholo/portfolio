@@ -7,6 +7,10 @@ package dev.tonholo.portfolio.locale
  * match the IDE-voice of the English originals.
  */
 object StringsPtBr : Strings() {
+    override val a11y: A11y = A11y(
+        opensInNewTab = "(abre em uma nova aba)",
+    )
+
     override val nav: Nav = Nav(
         home = "início",
         projects = "projetos",

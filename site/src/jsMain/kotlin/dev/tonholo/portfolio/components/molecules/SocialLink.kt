@@ -23,6 +23,8 @@ import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import dev.tonholo.portfolio.analytics.LocalAnalyticsManager
 import dev.tonholo.portfolio.analytics.events.AnalyticEvent
 import dev.tonholo.portfolio.components.atoms.PhosphorIcon
+import dev.tonholo.portfolio.components.atoms.VisuallyHiddenStyle
+import dev.tonholo.portfolio.locale.LocalStrings
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.color.AccentMint
 import dev.tonholo.portfolio.theme.color.Ink
@@ -107,6 +109,13 @@ fun SocialLink(
                 name = EXTERNAL_ARROW_ICON_NAME,
                 size = SiteDimensions.layout.button.icon.Medium,
             )
+        }
+        Span(
+            attrs = VisuallyHiddenStyle
+                .toModifier()
+                .toAttrs(),
+        ) {
+            ComposeText(" ${LocalStrings.current.a11y.opensInNewTab}")
         }
     }
 }
