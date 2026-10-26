@@ -231,9 +231,11 @@ private fun ProjectDetailHeroStatusCell(strings: Strings.ProjectDetail) {
 
 /** Resolves the localized kind label rendered in the eyebrow. */
 private fun projectKindLabel(project: Project, strings: Strings.ProjectDetail): String =
-    when (project.kind) {
-        ProjectKind.Commercial -> strings.commercialKind
-        ProjectKind.OpenSource -> strings.openSourceKind
+    project.kinds.joinToString(separator = " / ") { kind ->
+        when (kind) {
+            ProjectKind.Commercial -> strings.commercialKind
+            ProjectKind.OpenSource -> strings.openSourceKind
+        }
     }
 
 // ---------------------------------------------------------------------------

@@ -171,12 +171,7 @@ fun ProjectCardIde(project: Project, modifier: Modifier = Modifier) {
 @Composable
 private fun ProjectCardHead(project: Project) {
     val tokens = LocalPortfolioTokens.current
-    val kindLabel = when (project.kind) {
-        ProjectKind.Commercial -> KIND_COMMERCIAL_LABEL
-        ProjectKind.OpenSource -> KIND_OPEN_SOURCE_LABEL
-    }
     val filename = "${FILENAME_PREFIX}${project.name.toKebabCase()}${FILENAME_EXTENSION}"
-
     Div(
         attrs = ProjectCardHeadStyle
             .toModifier()
@@ -184,14 +179,28 @@ private fun ProjectCardHead(project: Project) {
             .color(tokens.muted.muted)
             .toAttrs(),
     ) {
-        Span(
-            attrs = ProjectCardTagStyle
-                .toModifier()
-                .backgroundColor(tokens.accent.accentSoft)
-                .color(tokens.accent.accent)
+        Div(
+            attrs = Modifier
+                .display(DisplayStyle.Flex)
+                .alignItems(AlignItems.Center)
+                .gap(HEAD_GAP)
                 .toAttrs(),
         ) {
-            ComposeText(kindLabel)
+            project.kinds.forEach { kind ->
+                val kindLabel = when (kind) {
+                    ProjectKind.Commercial -> KIND_COMMERCIAL_LABEL
+                    ProjectKind.OpenSource -> KIND_OPEN_SOURCE_LABEL
+                }
+                Span(
+                    attrs = ProjectCardTagStyle
+                        .toModifier()
+                        .backgroundColor(tokens.accent.accentSoft)
+                        .color(tokens.accent.accent)
+                        .toAttrs(),
+                ) {
+                    ComposeText(kindLabel)
+                }
+            }
         }
         Span { ComposeText(filename) }
         Span { ComposeText(project.year) }

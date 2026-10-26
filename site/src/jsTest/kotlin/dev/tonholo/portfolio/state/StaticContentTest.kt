@@ -17,7 +17,8 @@ class StaticContentTest {
         assertEquals(expected = 4, actual = projects.size)
         assertEquals(expected = "thunderbird", actual = projects[0].slug)
         assertEquals(expected = "01", actual = projects[0].index)
-        assertEquals(expected = ProjectKind.OpenSource, actual = projects[0].kind)
+        assertTrue(ProjectKind.Commercial in projects[0].kinds)
+        assertTrue(ProjectKind.OpenSource in projects[0].kinds)
     }
 
     @Test

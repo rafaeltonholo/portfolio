@@ -57,8 +57,8 @@ fun ProjectsPage() {
     val projects = StaticContent.projectsFor(locale = locale)
     val filtered = when (filter) {
         ProjectsFilter.All -> projects
-        ProjectsFilter.Commercial -> projects.filter { it.kind == ProjectKind.Commercial }
-        ProjectsFilter.OpenSource -> projects.filter { it.kind == ProjectKind.OpenSource }
+        ProjectsFilter.Commercial -> projects.filter { ProjectKind.Commercial in it.kinds }
+        ProjectsFilter.OpenSource -> projects.filter { ProjectKind.OpenSource in it.kinds }
     }
 
     PageLayout {
