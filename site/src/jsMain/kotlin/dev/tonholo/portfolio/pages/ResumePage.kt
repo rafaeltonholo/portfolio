@@ -2,7 +2,8 @@ package dev.tonholo.portfolio.pages
 
 import androidx.compose.runtime.Composable
 import com.varabyte.kobweb.core.Page
-import dev.tonholo.portfolio.analytics.UmamiAnalytics
+import dev.tonholo.portfolio.analytics.LocalAnalyticsManager
+import dev.tonholo.portfolio.analytics.events.AnalyticEvent
 import dev.tonholo.portfolio.components.layouts.PageLayout
 import dev.tonholo.portfolio.components.layouts.SectionContainer
 import dev.tonholo.portfolio.components.organisms.resume.ExperienceTimeline
@@ -30,10 +31,11 @@ private const val RESUME_PDF_TARGET = "_blank"
 @Suppress("ModifierMissing")
 fun ResumePage() {
     val locale = LocalLocaleState.current.current
+    val analytics = LocalAnalyticsManager.current
     PageLayout {
         ResumeHeader(
             onDownloadPdf = {
-                UmamiAnalytics.trackResumeDownload(language = locale.tag)
+                analytics.track(AnalyticEvent.ViewResumePdf(language = locale.tag))
                 window.open(url = RESUME_PDF_PATH, target = RESUME_PDF_TARGET)
             },
         )

@@ -6,7 +6,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import dev.tonholo.portfolio.analytics.UmamiAnalytics
+import dev.tonholo.portfolio.analytics.AnalyticsManager
+import dev.tonholo.portfolio.analytics.events.AnalyticEvent
 import dev.tonholo.portfolio.extensions.readLocalStorage
 import dev.tonholo.portfolio.extensions.writeLocalStorage
 import dev.tonholo.portfolio.locale.Locale
@@ -37,7 +38,9 @@ class LocaleState(initial: Locale) {
         writeLocalStorage(key = LOCALE_KEY, value = next.tag)
         (document.documentElement as? HTMLElement)?.lang = next.tag
         if (previous != next) {
-            UmamiAnalytics.trackLanguageChange(previousLanguage = previous.tag, newLanguage = next.tag)
+            AnalyticsManager().track(
+                AnalyticEvent.LanguageChange(previousLanguage = previous.tag, language = next.tag),
+            )
         }
     }
 }

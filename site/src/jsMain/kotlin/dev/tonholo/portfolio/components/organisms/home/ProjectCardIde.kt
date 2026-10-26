@@ -37,7 +37,8 @@ import com.varabyte.kobweb.silk.style.CssStyle
 import com.varabyte.kobweb.silk.style.selectors.hover
 import com.varabyte.kobweb.silk.style.toModifier
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
-import dev.tonholo.portfolio.analytics.UmamiAnalytics
+import dev.tonholo.portfolio.analytics.LocalAnalyticsManager
+import dev.tonholo.portfolio.analytics.events.AnalyticEvent
 import dev.tonholo.portfolio.components.atoms.ArrowStyle
 import dev.tonholo.portfolio.components.atoms.MetaSeparator
 import dev.tonholo.portfolio.components.atoms.PhosphorIcon
@@ -143,15 +144,18 @@ private val STACK_ROW_GAP = 6.dp
 fun ProjectCardIde(project: Project, modifier: Modifier = Modifier) {
     val tokens = LocalPortfolioTokens.current
     val locale = LocalLocaleState.current.current
+    val analytics = LocalAnalyticsManager.current
     val projectPath = Routes.project(slug = project.slug, locale = locale)
     val cardModifier = ProjectCardIdeStyle
         .toModifier()
         .backgroundColor(tokens.paper.paper)
         .then(modifier)
         .onClick {
-            UmamiAnalytics.trackProjectClick(
-                projectName = project.name,
-                projectUrl = projectPath,
+            analytics.track(
+                AnalyticEvent.ViewProject(
+                    projectName = project.name,
+                    projectUrl = projectPath,
+                ),
             )
         }
     Link(

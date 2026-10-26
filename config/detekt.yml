@@ -791,7 +791,7 @@ Compose:
   CompositionLocalAllowlist:
     active: true
     # -- You can optionally define a list of CompositionLocals that are allowed here
-    allowedCompositionLocals: LocalPortfolioTokens,LocalThemeState,LocalLocaleState,LocalStrings
+    allowedCompositionLocals: LocalPortfolioTokens,LocalThemeState,LocalLocaleState,LocalStrings,LocalAnalyticsManager
   CompositionLocalNaming:
     active: true
   ContentEmitterReturningValues:

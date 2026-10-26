@@ -4,7 +4,8 @@ import androidx.compose.runtime.Composable
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.id
 import com.varabyte.kobweb.core.Page
-import dev.tonholo.portfolio.analytics.UmamiAnalytics
+import dev.tonholo.portfolio.analytics.LocalAnalyticsManager
+import dev.tonholo.portfolio.analytics.events.AnalyticEvent
 import dev.tonholo.portfolio.components.layouts.PageLayout
 import dev.tonholo.portfolio.components.organisms.home.HeroEditorial
 import dev.tonholo.portfolio.components.organisms.home.HiringCta
@@ -40,11 +41,12 @@ private const val RESUME_PDF_URL = "/docs/rafael-tonholo-resume.pdf"
 @Suppress("ModifierMissing")
 fun HomePage() {
     val locale = LocalLocaleState.current.current
+    val analytics = LocalAnalyticsManager.current
     PageLayout {
         HeroEditorial(
             onFeaturedWorkClick = { scrollToElementId(id = SELECTED_WORK_ID) },
             onDownloadCvClick = {
-                UmamiAnalytics.trackResumeDownload(language = locale.tag)
+                analytics.track(AnalyticEvent.ViewResumePdf(language = locale.tag))
                 openInNewTab(url = RESUME_PDF_URL)
             },
             onCurrentlyBuildingClick = { scrollToElementId(id = NOW_STRIP_ID) },

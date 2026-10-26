@@ -3,10 +3,12 @@ package dev.tonholo.portfolio
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import com.varabyte.kobweb.core.App
 import com.varabyte.kobweb.silk.SilkApp
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
-import dev.tonholo.portfolio.analytics.UmamiInjector
+import dev.tonholo.portfolio.analytics.AnalyticsManager
+import dev.tonholo.portfolio.analytics.LocalAnalyticsManager
 import dev.tonholo.portfolio.extensions.InstallRevealObserver
 import dev.tonholo.portfolio.locale.LocalStrings
 import dev.tonholo.portfolio.locale.stringsFor
@@ -20,16 +22,9 @@ import dev.tonholo.portfolio.theme.PortfolioTheme
 @Composable
 fun PortfolioApp(content: @Composable () -> Unit) {
     SilkApp {
-        LaunchedEffect(Unit) {
-            UmamiInjector.inject()
-        }
+        val analytics = remember { AnalyticsManager() }
         val themeState = rememberThemeState()
         val localeState = rememberLocaleState()
-
-        // Silk remains the source of truth for which color-scoped styles render.
-        // ThemeState persists the user's choice; this effect mirrors the chosen
-        // mode into Silk's MutableState so PortfolioTheme and all Silk styles
-        // recompose when the user toggles the theme.
         val silkColorMode = ColorMode.currentState
         if (silkColorMode.value != themeState.current) {
             silkColorMode.value = themeState.current
@@ -37,13 +32,12 @@ fun PortfolioApp(content: @Composable () -> Unit) {
         LaunchedEffect(themeState.current) {
             silkColorMode.value = themeState.current
         }
-
         val strings = stringsFor(locale = localeState.current)
-
         CompositionLocalProvider(
             LocalThemeState provides themeState,
             LocalLocaleState provides localeState,
             LocalStrings provides strings,
+            LocalAnalyticsManager provides analytics,
         ) {
             PortfolioTheme {
                 InstallRevealObserver()

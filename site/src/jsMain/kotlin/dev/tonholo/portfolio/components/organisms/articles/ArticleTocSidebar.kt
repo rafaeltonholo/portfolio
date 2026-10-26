@@ -46,7 +46,8 @@ import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.style.selectors.hover
 import com.varabyte.kobweb.silk.style.toModifier
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
-import dev.tonholo.portfolio.analytics.UmamiAnalytics
+import dev.tonholo.portfolio.analytics.LocalAnalyticsManager
+import dev.tonholo.portfolio.analytics.events.AnalyticEvent
 import dev.tonholo.portfolio.components.atoms.PhosphorIcon
 import dev.tonholo.portfolio.locale.LocalStrings
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
@@ -182,6 +183,7 @@ fun ArticleTocSidebar(
 ) {
     val tokens = LocalPortfolioTokens.current
     val strings = LocalStrings.current.articlesSidebar
+    val analytics = LocalAnalyticsManager.current
 
     var isCopied by remember { mutableStateOf(false) }
     var copyTimerId by remember { mutableStateOf<Int?>(null) }
@@ -194,7 +196,7 @@ fun ArticleTocSidebar(
     }
 
     val handleCopy: () -> Unit = {
-        UmamiAnalytics.trackArticleCopyLink(articleTitle = articleTitle)
+        analytics.track(AnalyticEvent.CopyArticleLink(articleTitle = articleTitle))
         onCopyLink()
         isCopied = true
         copyTimerId?.let { window.clearTimeout(it) }
@@ -246,7 +248,9 @@ fun ArticleTocSidebar(
                 href = shareUrls.twitter,
                 mutedColor = tokens.muted.muted,
                 onClick = {
-                    UmamiAnalytics.trackArticleShare(platform = "twitter", articleTitle = articleTitle)
+                    analytics.track(
+                        AnalyticEvent.ShareArticle(platform = "twitter", articleTitle = articleTitle),
+                    )
                 },
             )
             ShareLinkRow(
@@ -254,7 +258,9 @@ fun ArticleTocSidebar(
                 href = shareUrls.linkedIn,
                 mutedColor = tokens.muted.muted,
                 onClick = {
-                    UmamiAnalytics.trackArticleShare(platform = "linkedin", articleTitle = articleTitle)
+                    analytics.track(
+                        AnalyticEvent.ShareArticle(platform = "linkedin", articleTitle = articleTitle),
+                    )
                 },
             )
             ShareLinkRow(
@@ -262,7 +268,9 @@ fun ArticleTocSidebar(
                 href = shareUrls.bluesky,
                 mutedColor = tokens.muted.muted,
                 onClick = {
-                    UmamiAnalytics.trackArticleShare(platform = "bluesky", articleTitle = articleTitle)
+                    analytics.track(
+                        AnalyticEvent.ShareArticle(platform = "bluesky", articleTitle = articleTitle),
+                    )
                 },
             )
         }

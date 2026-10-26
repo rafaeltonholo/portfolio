@@ -7,7 +7,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
-import dev.tonholo.portfolio.analytics.UmamiAnalytics
+import dev.tonholo.portfolio.analytics.AnalyticsManager
+import dev.tonholo.portfolio.analytics.events.AnalyticEvent
 import dev.tonholo.portfolio.extensions.readLocalStorage
 import dev.tonholo.portfolio.extensions.writeLocalStorage
 import kotlinx.browser.window
@@ -57,7 +58,7 @@ class ThemeState(initial: ColorMode) {
         val next = if (current.isDark) ColorMode.LIGHT else ColorMode.DARK
         current = next
         writeLocalStorage(key = THEME_KEY, value = if (next.isDark) DARK_VALUE else LIGHT_VALUE)
-        UmamiAnalytics.trackThemeChange(theme = next.name)
+        AnalyticsManager().track(AnalyticEvent.ThemeChange(theme = next.name))
     }
 }
 
