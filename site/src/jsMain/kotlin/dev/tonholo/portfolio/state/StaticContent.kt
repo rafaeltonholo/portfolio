@@ -198,24 +198,6 @@ private val PROJECTS_EN: List<Project> = listOf(
         ),
         externalCta = "View on GitHub",
     ),
-    Project(
-        slug = "ivy-wallet",
-        index = "05",
-        name = "ivy-wallet",
-        kind = ProjectKind.OpenSource,
-        role = "Maintainer",
-        year = "2023",
-        description = "Ivy Wallet is a free and open source money management android app. " +
-            "It's written using 100% Kotlin and Jetpack Compose. It's designed to help you " +
-            "keep track of your personal finances with ease.",
-        stack = listOf("Kotlin", "Compose", "Room"),
-        stats = listOf(
-            ProjectStat(value = "100k+", label = "installs"),
-            ProjectStat(value = "4.6", label = "Play Store star"),
-            ProjectStat(value = "OSS", label = "fully open source"),
-        ),
-        externalCta = "View in Play Store",
-    ),
 )
 
 private val PROJECTS_PT_BR: List<Project> = listOf(
@@ -290,24 +272,6 @@ private val PROJECTS_PT_BR: List<Project> = listOf(
             ProjectStat(value = "v2.1", label = "versão atual"),
         ),
         externalCta = "Ver no GitHub",
-    ),
-    Project(
-        slug = "ivy-wallet",
-        index = "05",
-        name = "ivy-wallet",
-        kind = ProjectKind.OpenSource,
-        role = "Mantenedor",
-        year = "2023",
-        description = "Ivy Wallet é um aplicativo Android gerenciador de finanças grátis e " +
-            "open source. É escrito usando 100% Kotlin e Jetpack Compose. Seu objetivo é " +
-            "ajudar o usuário a manter os registros pessoais de suas finanças de maneira simples.",
-        stack = listOf("Kotlin", "Compose", "Room"),
-        stats = listOf(
-            ProjectStat(value = "100k+", label = "instalações"),
-            ProjectStat(value = "4.6", label = "estrelas na Play Store"),
-            ProjectStat(value = "OSS", label = "totalmente open source"),
-        ),
-        externalCta = "Ver na Play Store",
     ),
 )
 

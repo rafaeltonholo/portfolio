@@ -134,14 +134,14 @@ private val FOOTER_BOTTOM_STACK_GAP = 8.dp
 // names), not user-facing copy that needs translation. Slug values match
 // the seed project ids in `StaticContent.PROJECTS` and route through
 // `Routes.project(...)` when the row is clicked.
-private const val WORK_PINTEREST_LABEL = "Pinterest"
-private const val WORK_PINTEREST_SLUG = "pinterest"
+private const val WORK_THUNDERBIRD_LABEL = "Thunderbird"
+private const val WORK_THUNDERBIRD_SLUG = "thunderbird"
 private const val WORK_BLEACHER_REPORT_LABEL = "Bleacher Report"
 private const val WORK_BLEACHER_REPORT_SLUG = "bleacher-report"
+private const val WORK_PINTEREST_LABEL = "Pinterest"
+private const val WORK_PINTEREST_SLUG = "pinterest"
 private const val WORK_SVG_TO_COMPOSE_LABEL = "SVG to Compose"
 private const val WORK_SVG_TO_COMPOSE_SLUG = "svg-compose"
-private const val WORK_IVY_WALLET_LABEL = "ivy-wallet"
-private const val WORK_IVY_WALLET_SLUG = "ivy-wallet"
 
 // Elsewhere column rows are static social destinations (labels match the
 // handles), so they stay as constants rather than localized strings.
@@ -277,20 +277,20 @@ private fun WorkColumn(heading: String) {
         ColumnHeading(text = heading)
         Ul(attrs = FooterListStyle.toModifier().toAttrs()) {
             FooterNavItem(
-                label = WORK_PINTEREST_LABEL,
-                route = Routes.project(slug = WORK_PINTEREST_SLUG, locale = locale),
+                label = WORK_THUNDERBIRD_LABEL,
+                route = Routes.project(slug = WORK_THUNDERBIRD_SLUG, locale = locale),
             )
             FooterNavItem(
                 label = WORK_BLEACHER_REPORT_LABEL,
                 route = Routes.project(slug = WORK_BLEACHER_REPORT_SLUG, locale = locale),
             )
             FooterNavItem(
-                label = WORK_SVG_TO_COMPOSE_LABEL,
-                route = Routes.project(slug = WORK_SVG_TO_COMPOSE_SLUG, locale = locale),
+                label = WORK_PINTEREST_LABEL,
+                route = Routes.project(slug = WORK_PINTEREST_SLUG, locale = locale),
             )
             FooterNavItem(
-                label = WORK_IVY_WALLET_LABEL,
-                route = Routes.project(slug = WORK_IVY_WALLET_SLUG, locale = locale),
+                label = WORK_SVG_TO_COMPOSE_LABEL,
+                route = Routes.project(slug = WORK_SVG_TO_COMPOSE_SLUG, locale = locale),
             )
         }
     }

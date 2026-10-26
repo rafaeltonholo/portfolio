@@ -79,7 +79,6 @@ fun String.splitLocalizedSlug(): Pair<String, String?> {
 // parallel list.
 val projectSlugs = listOf(
     "svg-compose",
-    "ivy-wallet",
 )
 
 val articlesMarkdownDir = layout.projectDirectory

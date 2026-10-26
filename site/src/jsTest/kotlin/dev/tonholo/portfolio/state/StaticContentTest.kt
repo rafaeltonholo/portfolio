@@ -9,12 +9,12 @@ import kotlin.test.assertTrue
 
 class StaticContentTest {
     @Test
-    fun `given StaticContent PROJECTS, when read, then it has five entries starting with thunderbird`() {
+    fun `given StaticContent PROJECTS, when read, then it has four entries starting with thunderbird`() {
         // Arrange / Act
         val projects = StaticContent.PROJECTS
 
         // Assert
-        assertEquals(expected = 5, actual = projects.size)
+        assertEquals(expected = 4, actual = projects.size)
         assertEquals(expected = "thunderbird", actual = projects[0].slug)
         assertEquals(expected = "01", actual = projects[0].index)
         assertEquals(expected = ProjectKind.OpenSource, actual = projects[0].kind)
@@ -28,7 +28,6 @@ class StaticContentTest {
             "bleacher-report",
             "pinterest",
             "svg-compose",
-            "ivy-wallet",
         )
 
         // Act
