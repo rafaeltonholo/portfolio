@@ -16,6 +16,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.color
 import com.varabyte.kobweb.compose.ui.modifiers.fontFamily
 import com.varabyte.kobweb.compose.ui.modifiers.fontSize
 import com.varabyte.kobweb.compose.ui.modifiers.fontWeight
+import com.varabyte.kobweb.compose.ui.modifiers.left
 import com.varabyte.kobweb.compose.ui.modifiers.margin
 import com.varabyte.kobweb.compose.ui.modifiers.maxWidth
 import com.varabyte.kobweb.compose.ui.modifiers.opacity
@@ -29,7 +30,9 @@ import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.silk.style.CssStyle
 import com.varabyte.kobweb.silk.style.animation.Keyframes
 import com.varabyte.kobweb.silk.style.animation.toAnimation
+import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.style.toModifier
+import com.varabyte.kobweb.silk.style.until
 import dev.tonholo.portfolio.locale.LocalStrings
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.layout.unit.dp
@@ -49,6 +52,7 @@ import org.jetbrains.compose.web.dom.Text as ComposeText
 // `.lang-toast` geometry (from handoff `styles.css`, distilled so the card is
 // a single uniform surface - no more accent side-stripe).
 private val TOAST_OFFSET = 24.dp
+private val TOAST_MOBILE_OFFSET = 16.dp
 private val TOAST_PADDING_Y = 12.dp
 private val TOAST_PADDING_X = 16.dp
 private val TOAST_RADIUS = 2.dp
@@ -193,6 +197,13 @@ val LanguageToastStyle = CssStyle {
                     iterationCount = AnimationIterationCount.of(TOAST_ANIMATION_ITERATIONS),
                 ),
             )
+    }
+    until(Breakpoint.SM) {
+        Modifier
+            .left(TOAST_MOBILE_OFFSET)
+            .right(TOAST_MOBILE_OFFSET)
+            .bottom(TOAST_MOBILE_OFFSET)
+            .maxWidth(100.percent)
     }
 }
 

@@ -29,6 +29,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.gap
 import com.varabyte.kobweb.compose.ui.modifiers.letterSpacing
 import com.varabyte.kobweb.compose.ui.modifiers.listStyle
 import com.varabyte.kobweb.compose.ui.modifiers.margin
+import com.varabyte.kobweb.compose.ui.modifiers.minHeight
 import com.varabyte.kobweb.compose.ui.modifiers.onClick
 import com.varabyte.kobweb.compose.ui.modifiers.opacity
 import com.varabyte.kobweb.compose.ui.modifiers.padding
@@ -61,10 +62,12 @@ import kotlinx.browser.window
 import org.jetbrains.compose.web.css.AlignItems
 import org.jetbrains.compose.web.css.AlignSelf
 import org.jetbrains.compose.web.css.AnimationTimingFunction
+import org.jetbrains.compose.web.css.CSSMediaQuery
 import org.jetbrains.compose.web.css.DisplayStyle
 import org.jetbrains.compose.web.css.FlexDirection
 import org.jetbrains.compose.web.css.LineStyle
 import org.jetbrains.compose.web.css.Position
+import org.jetbrains.compose.web.css.StylePropertyValue
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.em
 import org.jetbrains.compose.web.css.ms
@@ -435,11 +438,24 @@ val ArticleTocSidebarStyle = CssStyle {
  */
 val TocAnchorStyle = CssStyle {
     base {
-        Modifier.textDecorationLine(TextDecorationLine.None)
+        Modifier
+            .textDecorationLine(TextDecorationLine.None)
+            .display(DisplayStyle.LegacyInlineFlex)
+            .alignItems(AlignItems.Center)
     }
     hover {
         val ink = if (colorMode == ColorMode.DARK) Ink.dark else Ink.light
         Modifier.color(ink.ink)
+    }
+    cssRule(
+        mediaQuery = CSSMediaQuery.MediaFeature(
+            name = "pointer",
+            value = StylePropertyValue(value = "coarse"),
+        ),
+    ) {
+        Modifier
+            .minHeight(SiteDimensions.layout.minimumTouchSize)
+            .padding(topBottom = SiteDimensions.size.Sm)
     }
 }
 
@@ -465,6 +481,16 @@ val ShareButtonStyle = CssStyle {
         val ink = if (colorMode == ColorMode.DARK) Ink.dark else Ink.light
         Modifier.color(ink.ink)
     }
+    cssRule(
+        mediaQuery = CSSMediaQuery.MediaFeature(
+            name = "pointer",
+            value = StylePropertyValue(value = "coarse"),
+        ),
+    ) {
+        Modifier
+            .minHeight(SiteDimensions.layout.minimumTouchSize)
+            .padding(topBottom = SiteDimensions.size.Sm)
+    }
 }
 
 /**
@@ -476,11 +502,22 @@ val ShareLinkStyle = CssStyle {
             .fontFamily(*FontFamilies.MONO)
             .fontSize(SIDEBAR_FONT_SIZE)
             .textDecorationLine(TextDecorationLine.None)
-            .display(DisplayStyle.InlineBlock)
+            .display(DisplayStyle.LegacyInlineFlex)
+            .alignItems(AlignItems.Center)
     }
     hover {
         val ink = if (colorMode == ColorMode.DARK) Ink.dark else Ink.light
         Modifier.color(ink.ink)
+    }
+    cssRule(
+        mediaQuery = CSSMediaQuery.MediaFeature(
+            name = "pointer",
+            value = StylePropertyValue(value = "coarse"),
+        ),
+    ) {
+        Modifier
+            .minHeight(SiteDimensions.layout.minimumTouchSize)
+            .padding(topBottom = SiteDimensions.size.Sm)
     }
 }
 
