@@ -235,13 +235,6 @@ object StringsEn : Strings() {
         bookingLabel = "book 30 min",
     )
 
-    override val snippet: Snippet = Snippet(
-        sectionTitle = "Snippet of the week",
-        copyTitle = "A tiny Compose extension I keep re-writing.",
-        copyBody = "Every time I need a debounced click, I reach for this. It's 9 lines, and " +
-            "it saves hours of \"why did the button fire three times?\"",
-    )
-
     override val nowStrip: NowStrip = NowStrip(
         sectionTitle = "Currently",
         labelWorkingOn = "working on",

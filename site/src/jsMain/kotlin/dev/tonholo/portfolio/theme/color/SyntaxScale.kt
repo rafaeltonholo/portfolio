@@ -7,7 +7,7 @@ import com.varabyte.kobweb.compose.ui.graphics.Color
  * is part of the site's brand identity (precise, opinionated, handmade), so
  * the keyword / string / number hues live in the token system alongside
  * [InkScale], [PaperScale], and [AccentSwatch] rather than as hardcoded
- * constants inside [dev.tonholo.portfolio.components.organisms.home.TerminalSnippet].
+ * constants inside code snippet components.
  *
  * The naming convention tracks the active page `ColorMode`, not the terminal
  * card background. In light mode the terminal card inverts to an `ink`

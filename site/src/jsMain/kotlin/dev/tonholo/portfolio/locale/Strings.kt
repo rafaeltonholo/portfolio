@@ -35,7 +35,6 @@ sealed class Strings {
     abstract val projectDetail: ProjectDetail
     abstract val prevNext: PrevNext
     abstract val hiringCta: HiringCta
-    abstract val snippet: Snippet
     abstract val nowStrip: NowStrip
     abstract val uses: Uses
     abstract val selectedWork: SelectedWork
@@ -201,9 +200,6 @@ sealed class Strings {
 
     /** Copy for the [dev.tonholo.portfolio.components.organisms.home.HiringCta] block. */
     data class HiringCta(val heading: String, val emailLabel: String, val bookingLabel: String)
-
-    /** Copy for the [dev.tonholo.portfolio.components.organisms.home.SnippetOfTheWeek] organism. */
-    data class Snippet(val sectionTitle: String, val copyTitle: String, val copyBody: String)
 
     /** Copy for the [dev.tonholo.portfolio.components.organisms.home.NowStrip] organism. */
     data class NowStrip(

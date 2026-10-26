@@ -240,13 +240,6 @@ object StringsPtBr : Strings() {
         bookingLabel = "reservar 30 min",
     )
 
-    override val snippet: Snippet = Snippet(
-        sectionTitle = "Snippet da semana",
-        copyTitle = "Uma pequena extensão Compose que eu reescrevo toda hora.",
-        copyBody = "Toda vez que preciso de um clique com debounce, busco este código. São 9 " +
-            "linhas que economizam horas de \"por que o botão disparou três vezes?\"",
-    )
-
     override val nowStrip: NowStrip = NowStrip(
         sectionTitle = "Atualmente",
         labelWorkingOn = "trabalhando em",

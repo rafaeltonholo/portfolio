@@ -40,8 +40,8 @@ import org.jetbrains.compose.web.dom.Li
 import org.jetbrains.compose.web.dom.Ul
 import org.jetbrains.compose.web.dom.Text as ComposeText
 
-// Ordinal for the Uses section: renders as `// 03`.
-private const val SECTION_ORDINAL = 3
+// Ordinal for the Uses section: renders as `// 02`.
+private const val SECTION_ORDINAL = 2
 
 // Grid: 4 equal columns, 32px gap (handoff line 239). Collapses to 2 cols
 // below LG (820px) and 1 col below MD (720px).
@@ -66,7 +66,7 @@ private const val CATEGORY_NAME_PREFIX = "/"
  * Home page organism. Ports the `Uses` section from the handoff
  * `home.jsx` (lines 231-255): a four-column grid of categorized tool lists
  * (editor / hardware / desk / cli) introduced by a [SectionHead] labelled
- * `// 03 Uses` with a trailing `full list ->` accent link.
+ * `// 02 Uses` with a trailing `full list ->` accent link.
  *
  * Collapses to two columns below [Breakpoint.LG] and one column below
  * [Breakpoint.MD], matching the handoff media queries on `.uses-grid`
