@@ -7,9 +7,9 @@ description: "Modernizing a 15-year-old open-source email client: bridging legac
 
 {{{ .components.organisms.projects.ProjectSection ("/ context", "Bringing modern Mozilla standards to a legendary open-source client.")
 
-Thunderbird for Android represents the next generation of open-source mobile email, built on the battle-tested foundation of K-9 Mail alongside Mozilla. With over 15 years of continuous development and millions of active users, the application presented a distinct engineering challenge: **modernizing a massive legacy codebase while preserving rock-solid email reliability**.
+Thunderbird for Android lives alongside K-9 Mail, sharing the same multi-module codebase across distinct application flavors under Mozilla. Built on a battle-tested foundation with over 15 years of continuous development and millions of active users, evolving the platform presents a distinct engineering challenge: **modernizing a massive legacy codebase in production while preserving rock-solid email reliability across both apps**.
 
-As the project prepared for its official Mozilla release, several critical needs emerged:
+Several critical architectural and product needs emerged:
 
 **1. Architectural Modernization:** The core message list and reader were tied to legacy Android Views and complex mutable state. The team needed a safe, incremental strategy to transition these central user flows to **Jetpack Compose** and **Unidirectional Data Flow (UDF)** without risking regressions across diverse IMAP, POP3, and Exchange providers.
 
@@ -21,7 +21,7 @@ As the project prepared for its official Mozilla release, several critical needs
 
 {{{ .components.organisms.projects.ProjectSection ("/ legacy to compose", "Bridging legacy Android Views to a Compose state machine.")
 
-The heart of any email client is the message list and message reader. In K-9 Mail, `MessageListFragment` and `MessageContainerView` were deeply intertwined with legacy Android Views, direct database cursors, and fragmented event handling. A complete rewrite would have been high risk and stalled ongoing feature delivery.
+The heart of any email client is the message list and message reader. Across both apps, `MessageListFragment` and `MessageContainerView` were deeply intertwined with legacy Android Views, direct database cursors, and fragmented event handling. A complete rewrite would have been high risk and stalled ongoing feature delivery.
 
 To solve this, I designed and implemented a **bidirectional bridge connecting the legacy loading mechanisms to a modern Jetpack Compose state machine**.
 

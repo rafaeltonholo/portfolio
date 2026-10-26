@@ -9,9 +9,9 @@ description: "Modernizando um cliente de e-mail open source de 15 anos: integran
 
 {{{ .components.organisms.projects.ProjectSection ("/ contexto", "Trazendo os padrões modernos da Mozilla para um cliente open source lendário.")
 
-O Thunderbird para Android representa a nova geração de e-mail móvel open source, construído sobre a sólida fundação do K-9 Mail em conjunto com a Mozilla. Com mais de 15 anos de desenvolvimento contínuo e milhões de usuários ativos, o aplicativo apresentava um desafio de engenharia singular: **modernizar uma base de código legada de grande escala sem abrir mão da confiabilidade essencial do e-mail**.
+O Thunderbird para Android convive lado a lado com o K-9 Mail, compartilhando a mesma base de código multi-módulo sob diferentes sabores de aplicativo (flavors) na Mozilla. Construído sobre uma base consolidada com mais de 15 anos de desenvolvimento contínuo e milhões de usuários ativos, evoluir a plataforma apresenta um desafio de engenharia singular: **modernizar uma base de código legada de grande escala em produção, preservando a confiabilidade essencial do e-mail em ambos os apps**.
 
-À medida que o projeto se preparava para o lançamento oficial sob a chancela da Mozilla, demandas cruciais se destacaram:
+Diversas necessidades arquiteturais e de produto se destacaram:
 
 **1. Modernização Arquitetural:** A lista e o leitor de mensagens estavam fortemente acoplados às Android Views tradicionais e a estados mutáveis complexos. A equipe necessitava de uma estratégia segura e incremental para migrar esses fluxos centrais para **Jetpack Compose** e **Unidirectional Data Flow (UDF)**, sem arriscar regressões com múltiplos provedores IMAP, POP3 e Exchange.
 
@@ -23,7 +23,7 @@ O Thunderbird para Android representa a nova geração de e-mail móvel open sou
 
 {{{ .components.organisms.projects.ProjectSection ("/ views legadas para compose", "Integrando Android Views a uma máquina de estados em Compose.")
 
-O coração de qualquer cliente de e-mail reside na listagem e na leitura de mensagens. No K-9 Mail, `MessageListFragment` e `MessageContainerView` eram profundamente entrelaçados com Views legadas do Android, cursores diretos de banco de dados e eventos fragmentados. Uma reescrita total representaria alto risco e paralisaria a entrega de novas funcionalidades.
+O coração de qualquer cliente de e-mail reside na listagem e na leitura de mensagens. Em ambos os aplicativos, `MessageListFragment` e `MessageContainerView` eram profundamente entrelaçados com Views legadas do Android, cursores diretos de banco de dados e eventos fragmentados. Uma reescrita total representaria alto risco e paralisaria a entrega de novas funcionalidades.
 
 Para superar esse cenário, projetei e implementei uma **ponte bidirecional conectando os mecanismos de carregamento legados a uma moderna máquina de estados em Jetpack Compose**.
 
