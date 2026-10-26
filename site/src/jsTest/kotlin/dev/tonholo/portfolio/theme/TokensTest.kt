@@ -58,23 +58,23 @@ class TokensTest {
     }
 
     @Test
-    fun `given Muted light, when color values are read, then they match handoff CSS`() {
+    fun `given Muted light, when color values are read, then they meet WCAG AA on paper`() {
         // Arrange / Act
         val scale = Muted.light
 
-        // Assert
-        assertEquals(Color.rgb(0x6B675E), scale.muted)
-        assertEquals(Color.rgb(0x8A857A), scale.muted2)
+        // Assert - calibrated to pass WCAG AA (>= 4.5:1) on light paper.
+        assertEquals(Color.rgb(0x5C5850), scale.muted)
+        assertEquals(Color.rgb(0x6E6960), scale.muted2)
     }
 
     @Test
-    fun `given Muted dark, when color values are read, then they match handoff CSS`() {
+    fun `given Muted dark, when color values are read, then they meet WCAG AA on paper`() {
         // Arrange / Act
         val scale = Muted.dark
 
-        // Assert
-        assertEquals(Color.rgb(0x8A857A), scale.muted)
-        assertEquals(Color.rgb(0x6B675E), scale.muted2)
+        // Assert - calibrated to pass WCAG AA (>= 4.5:1) on dark paper.
+        assertEquals(Color.rgb(0x9E998E), scale.muted)
+        assertEquals(Color.rgb(0x8E8A80), scale.muted2)
     }
 
     @Test

@@ -17,9 +17,11 @@ import com.varabyte.kobweb.compose.ui.modifiers.width
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.silk.style.CssStyle
 import com.varabyte.kobweb.silk.style.toModifier
+import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import dev.tonholo.portfolio.components.atoms.Dot
 import dev.tonholo.portfolio.components.atoms.DotVariant
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
+import dev.tonholo.portfolio.theme.color.Paper
 import dev.tonholo.portfolio.theme.layout.unit.dp
 import dev.tonholo.portfolio.theme.typography.FontFamilies
 import org.jetbrains.compose.web.css.AlignItems
@@ -48,9 +50,6 @@ private val HEADER_BORDER_WIDTH = 1.dp
 // `.hero-c__term-head .title` typography.
 private val TITLE_MARGIN_LEFT = 12.dp
 private val TITLE_FONT_SIZE = 12.dp
-
-// Border color mirrors `border-bottom: 1px solid #33312d` in the handoff CSS.
-private const val HEADER_BORDER_COLOR = 0x33312D
 
 /**
  * Traffic-light header for terminal-style cards. Maps to `.hero-c__term-head`
@@ -111,6 +110,8 @@ fun TermWindowHeader(modifier: Modifier = Modifier, title: String = DEFAULT_TERM
  */
 val TermWindowHeaderStyle = CssStyle {
     base {
+        val isDark = colorMode == ColorMode.DARK
+        val paper = if (isDark) Paper.dark else Paper.light
         Modifier
             .display(DisplayStyle.Flex)
             .alignItems(AlignItems.Center)
@@ -120,7 +121,7 @@ val TermWindowHeaderStyle = CssStyle {
             .borderBottom(
                 width = HEADER_BORDER_WIDTH,
                 style = LineStyle.Solid,
-                color = Color.rgb(HEADER_BORDER_COLOR),
+                color = paper.paper3,
             )
     }
 }

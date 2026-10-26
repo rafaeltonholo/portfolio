@@ -4,11 +4,12 @@ import com.varabyte.kobweb.compose.ui.graphics.Color
 
 data class MutedScale(val muted: Color, val muted2: Color)
 
-private const val LIGHT_MUTED = 0x6B675E
-private const val LIGHT_MUTED_2 = 0x8A857A
+// Calibrated warm muted scale passing WCAG AA (≥4.5:1) on respective paper surfaces.
+private const val LIGHT_MUTED = 0x5C5850
+private const val LIGHT_MUTED_2 = 0x6E6960
 
-private const val DARK_MUTED = 0x8A857A
-private const val DARK_MUTED_2 = 0x6B675E
+private const val DARK_MUTED = 0x9E998E
+private const val DARK_MUTED_2 = 0x8E8A80
 
 object Muted {
     val light = MutedScale(

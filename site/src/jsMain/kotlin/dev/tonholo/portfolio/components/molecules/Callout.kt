@@ -27,6 +27,8 @@ import dev.tonholo.portfolio.components.atoms.PhosphorIcon
 import dev.tonholo.portfolio.components.atoms.PhosphorWeight
 import dev.tonholo.portfolio.state.LocalThemeState
 import dev.tonholo.portfolio.state.ThemeState
+import dev.tonholo.portfolio.theme.color.AccentAlternates
+import dev.tonholo.portfolio.theme.color.AccentMint
 import dev.tonholo.portfolio.theme.layout.unit.dp
 import dev.tonholo.portfolio.theme.typography.FontFamilies
 import dev.tonholo.portfolio.theme.typography.applyInlineCodeStyle
@@ -43,21 +45,6 @@ import org.jetbrains.compose.web.dom.Text as ComposeText
 
 private const val LIGHT_NOTE_COLOR_HEX = 0x0969DA
 private const val DARK_NOTE_COLOR_HEX = 0x4493F8
-
-private const val LIGHT_TIP_COLOR_HEX = 0x2F7A45
-private const val DARK_TIP_COLOR_HEX = 0x7DD198
-
-private const val LIGHT_IMPORTANT_COLOR_HEX = 0x5B3AD9
-private const val DARK_IMPORTANT_COLOR_HEX = 0x9D83FF
-
-private const val LIGHT_WARNING_COLOR_HEX = 0x8C5C00
-private const val DARK_WARNING_COLOR_HEX = 0xE8A33D
-
-private const val LIGHT_CAUTION_COLOR_HEX = 0xB02A34
-private const val DARK_CAUTION_COLOR_HEX = 0xFF6670
-
-private const val LIGHT_QUOTE_COLOR_HEX = 0x2F7A45
-private const val DARK_QUOTE_COLOR_HEX = 0x7DD198
 
 private const val TINT_ALPHA_LIGHT = 0.06f
 private const val TINT_ALPHA_DARK = 0.12f
@@ -104,32 +91,32 @@ enum class CalloutType(
     TIP(
         iconName = "lightbulb",
         defaultTitle = "Tip",
-        lightColor = Color.rgb(LIGHT_TIP_COLOR_HEX),
-        darkColor = Color.rgb(DARK_TIP_COLOR_HEX),
+        lightColor = AccentMint.light.accent,
+        darkColor = AccentMint.dark.accent,
     ),
     IMPORTANT(
         iconName = "warning-circle",
         defaultTitle = "Important",
-        lightColor = Color.rgb(LIGHT_IMPORTANT_COLOR_HEX),
-        darkColor = Color.rgb(DARK_IMPORTANT_COLOR_HEX),
+        lightColor = AccentAlternates.purple.light.accent,
+        darkColor = AccentAlternates.purple.dark.accent,
     ),
     WARNING(
         iconName = "warning",
         defaultTitle = "Warning",
-        lightColor = Color.rgb(LIGHT_WARNING_COLOR_HEX),
-        darkColor = Color.rgb(DARK_WARNING_COLOR_HEX),
+        lightColor = AccentAlternates.amber.light.accent,
+        darkColor = AccentAlternates.amber.dark.accent,
     ),
     CAUTION(
         iconName = "warning-octagon",
         defaultTitle = "Caution",
-        lightColor = Color.rgb(LIGHT_CAUTION_COLOR_HEX),
-        darkColor = Color.rgb(DARK_CAUTION_COLOR_HEX),
+        lightColor = AccentAlternates.crimson.light.accent,
+        darkColor = AccentAlternates.crimson.dark.accent,
     ),
     QUOTE(
         iconName = "quotes",
         defaultTitle = "",
-        lightColor = Color.rgb(LIGHT_QUOTE_COLOR_HEX),
-        darkColor = Color.rgb(DARK_QUOTE_COLOR_HEX),
+        lightColor = AccentMint.light.accent,
+        darkColor = AccentMint.dark.accent,
     ),
     ;
 

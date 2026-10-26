@@ -42,6 +42,7 @@ import dev.tonholo.portfolio.components.atoms.shiki.createCodeToHastOptions
 import dev.tonholo.portfolio.components.atoms.shiki.shikiTheme
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.PortfolioTokens
+import dev.tonholo.portfolio.theme.color.Paper
 import dev.tonholo.portfolio.theme.layout.unit.Dp
 import dev.tonholo.portfolio.theme.layout.unit.dp
 import dev.tonholo.portfolio.theme.typography.FontFamilies
@@ -77,13 +78,6 @@ import org.jetbrains.compose.web.dom.Style
 import org.jetbrains.compose.web.dom.Text
 
 private const val COPY_RESET_DELAY_MS: Long = 2000L
-
-private const val DARK_BORDER_HEX: Int = 0x27272A
-private const val LIGHT_BORDER_HEX: Int = 0xE4E4E7
-private const val DARK_HEADER_BG_HEX: Int = 0x18181B
-private const val LIGHT_HEADER_BG_HEX: Int = 0xF4F4F5
-private const val DARK_BODY_BG_HEX: Int = 0x0F0F11
-private const val LIGHT_BODY_BG_HEX: Int = 0xFAFAFA
 
 private const val UNFOCUSED_OPACITY: Float = 0.45f
 private const val FOCUSED_OPACITY: Float = 1.0f
@@ -328,10 +322,10 @@ private fun String.unescapeHtmlEntities(): String = replace("&amp;", "&")
     .replace("&#41;", ")")
 
 private fun ColorMode.resolveBorderColor(): Color =
-    if (isDark) Color.rgb(DARK_BORDER_HEX) else Color.rgb(LIGHT_BORDER_HEX)
+    if (isDark) Paper.dark.paper3 else Paper.light.paper3
 
 private fun ColorMode.resolveHeaderBg(): Color =
-    if (isDark) Color.rgb(DARK_HEADER_BG_HEX) else Color.rgb(LIGHT_HEADER_BG_HEX)
+    if (isDark) Paper.dark.paper2 else Paper.light.paper3
 
 private fun ColorMode.resolveCodeBlockBg(): Color =
-    if (isDark) Color.rgb(DARK_BODY_BG_HEX) else Color.rgb(LIGHT_BODY_BG_HEX)
+    if (isDark) Paper.dark.paper else Paper.light.paper2
