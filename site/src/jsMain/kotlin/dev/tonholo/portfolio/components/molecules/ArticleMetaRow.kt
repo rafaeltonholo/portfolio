@@ -74,12 +74,10 @@ fun ArticleMetaRow(
 ) {
     val tokens = LocalPortfolioTokens.current
     val strings = LocalStrings.current.articleMeta
-
     val finalModifier = ArticleMetaRowStyle
         .toModifier()
         .color(tokens.muted.muted)
         .then(modifier)
-
     Div(attrs = finalModifier.toAttrs()) {
         Link(
             path = backRoute,
@@ -99,7 +97,9 @@ fun ArticleMetaRow(
             ComposeText(strings.backLabel)
         }
         ArticleMetaSegment { ComposeText(date) }
-        ArticleMetaSegment { ComposeText("$readTime ${strings.readSuffix}") }
+        if (readTime.isNotBlank()) {
+            ArticleMetaSegment { ComposeText("$readTime ${strings.readSuffix}") }
+        }
         ArticleMetaSegment { ComposeText("${strings.authorPrefix} $author") }
     }
 }

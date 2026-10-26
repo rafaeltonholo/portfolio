@@ -6,7 +6,6 @@ tags:
   - git
   - tooling
   - cli
-readTime: 5 min
 ---
 
 Git is a free, open-source distributed version control system that helps us organize and manage projects easily and efficiently.

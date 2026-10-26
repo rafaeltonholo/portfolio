@@ -16,6 +16,7 @@ import dev.tonholo.portfolio.components.atoms.AspectRatio
 import dev.tonholo.portfolio.components.atoms.Placeholder
 import dev.tonholo.portfolio.components.molecules.ProjectBreadcrumb
 import dev.tonholo.portfolio.components.organisms.projects.ProjectDetailHero
+import dev.tonholo.portfolio.extensions.toKebabCase
 import dev.tonholo.portfolio.locale.LocalStrings
 import dev.tonholo.portfolio.locale.Locale
 import dev.tonholo.portfolio.navigation.Routes
@@ -52,7 +53,7 @@ fun initProjectMarkdownLayout(ctx: InitRouteContext) {
     val fallbackSlug = path
         .substringAfterLast('/')
         .removeSuffix(".md")
-        .kebab()
+        .toKebabCase()
     val localeTag = frontMatter?.get("locale")?.singleOrNull()
     val locale = Locale.fromTagOrDefault(tag = localeTag)
     val langSuffix = locale.pathSegment?.let { "-$it" }.orEmpty()
@@ -64,25 +65,6 @@ fun initProjectMarkdownLayout(ctx: InitRouteContext) {
     val slug = frontMatter?.get("slug")?.singleOrNull()?.takeIf { it.isNotBlank() }
         ?: strippedFallbackSlug
     ctx.data.add(ProjectMarkdownLayoutData(slug = slug, locale = locale))
-}
-
-private fun String.kebab(): String {
-    val words = mutableListOf<String>()
-    val curr = StringBuilder()
-    var lastIsUpper = false
-    forEachIndexed { i, c ->
-        val isUpper = c.isUpperCase()
-        if (isUpper && curr.isNotEmpty() &&
-            (!lastIsUpper || (i < lastIndex && this[i + 1].isLowerCase()))
-        ) {
-            words += curr.toString()
-            curr.clear()
-        }
-        curr.append(c.lowercase())
-        lastIsUpper = isUpper
-    }
-    if (curr.isNotEmpty()) words += curr.toString()
-    return words.joinToString(separator = "-")
 }
 
 /**

@@ -6,7 +6,6 @@ tags:
   - compose
   - android
   - kotlin
-readTime: 6 min
 ---
 
 ## Introduction

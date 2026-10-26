@@ -50,6 +50,7 @@ import dev.tonholo.portfolio.components.atoms.GiscusWrapper
 import dev.tonholo.portfolio.components.molecules.ArticleMetaRow
 import dev.tonholo.portfolio.components.organisms.articles.ArticleTocSidebar
 import dev.tonholo.portfolio.components.organisms.articles.TocEntry
+import dev.tonholo.portfolio.extensions.toKebabCase
 import dev.tonholo.portfolio.generated.articles.GeneratedArticles
 import dev.tonholo.portfolio.navigation.Routes
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
@@ -162,13 +163,17 @@ data class ArticleMarkdownLayoutData(
 @InitRoute
 fun initArticleMarkdownLayout(ctx: InitRouteContext) {
     val frontMatter = ctx.markdown?.frontMatter
-    val path = ctx.markdown?.path.orEmpty()
-    val slug = path.substringAfterLast('/').removeSuffix(".md")
-    val readTime = GeneratedArticles.ALL.firstOrNull { it.slug == slug }?.readTime
+    val path: String = ctx.markdown?.path.orEmpty()
+    val rawSlug: String = path.substringAfterLast('/').removeSuffix(".md")
+    val kebabSlug: String = rawSlug.toKebabCase()
+    val matchedArticle = GeneratedArticles.ALL.firstOrNull { article ->
+        article.slug == kebabSlug || article.slug == rawSlug
+    }
+    val readTime: String = matchedArticle?.readTime?.takeIf { it.isNotBlank() }
         ?: frontMatter?.get("readTime")?.singleOrNull().orEmpty()
     ctx.data.add(
         ArticleMarkdownLayoutData(
-            slug = slug,
+            slug = kebabSlug,
             title = frontMatter?.get("title")?.singleOrNull().orEmpty(),
             date = frontMatter?.get("date")?.singleOrNull().orEmpty(),
             description = frontMatter?.get("description")?.singleOrNull().orEmpty(),

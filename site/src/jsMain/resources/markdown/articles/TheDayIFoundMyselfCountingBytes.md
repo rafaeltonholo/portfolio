@@ -6,7 +6,6 @@ tags:
   - compose
   - kotlin
   - tooling
-readTime: 7 min
 ---
 
 ## Introduction
