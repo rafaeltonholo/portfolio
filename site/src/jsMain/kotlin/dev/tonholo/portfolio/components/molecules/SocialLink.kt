@@ -20,6 +20,7 @@ import com.varabyte.kobweb.silk.style.CssStyle
 import com.varabyte.kobweb.silk.style.selectors.hover
 import com.varabyte.kobweb.silk.style.toModifier
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
+import dev.tonholo.portfolio.analytics.UmamiAnalytics
 import dev.tonholo.portfolio.components.atoms.PhosphorIcon
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.color.AccentMint
@@ -69,14 +70,15 @@ fun SocialLink(
     // Read tokens so the link recomposes when the theme changes even though
     // the base color is inherited from the surrounding footer.
     LocalPortfolioTokens.current
-
     val finalModifier = SocialLinkStyle.toModifier().then(modifier)
-
     A(
         href = href,
         attrs = finalModifier.toAttrs {
             attr("target", EXTERNAL_TARGET)
             attr("rel", EXTERNAL_REL)
+            onClick {
+                UmamiAnalytics.trackSocialClick(platform = label, url = href)
+            }
         },
     ) {
         if (icon != null) {
@@ -90,11 +92,9 @@ fun SocialLink(
                 icon()
             }
         }
-
         Span(attrs = Modifier.toAttrs()) {
             ComposeText(label)
         }
-
         Span(
             attrs = SocialLinkArrowStyle
                 .toModifier()

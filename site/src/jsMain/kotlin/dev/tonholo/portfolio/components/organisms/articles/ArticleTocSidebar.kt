@@ -46,6 +46,7 @@ import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.style.selectors.hover
 import com.varabyte.kobweb.silk.style.toModifier
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
+import dev.tonholo.portfolio.analytics.UmamiAnalytics
 import dev.tonholo.portfolio.components.atoms.PhosphorIcon
 import dev.tonholo.portfolio.locale.LocalStrings
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
@@ -193,6 +194,7 @@ fun ArticleTocSidebar(
     }
 
     val handleCopy: () -> Unit = {
+        UmamiAnalytics.trackArticleCopyLink(articleTitle = articleTitle)
         onCopyLink()
         isCopied = true
         copyTimerId?.let { window.clearTimeout(it) }
@@ -243,16 +245,25 @@ fun ArticleTocSidebar(
                 label = strings.shareTwitter,
                 href = shareUrls.twitter,
                 mutedColor = tokens.muted.muted,
+                onClick = {
+                    UmamiAnalytics.trackArticleShare(platform = "twitter", articleTitle = articleTitle)
+                },
             )
             ShareLinkRow(
                 label = strings.shareLinkedIn,
                 href = shareUrls.linkedIn,
                 mutedColor = tokens.muted.muted,
+                onClick = {
+                    UmamiAnalytics.trackArticleShare(platform = "linkedin", articleTitle = articleTitle)
+                },
             )
             ShareLinkRow(
                 label = strings.shareBluesky,
                 href = shareUrls.bluesky,
                 mutedColor = tokens.muted.muted,
+                onClick = {
+                    UmamiAnalytics.trackArticleShare(platform = "bluesky", articleTitle = articleTitle)
+                },
             )
         }
     }
@@ -341,7 +352,12 @@ private fun CopyLinkRow(
  * One external share link row navigating to Twitter, LinkedIn, or Bluesky.
  */
 @Composable
-private fun ShareLinkRow(label: String, href: String, mutedColor: Color) {
+private fun ShareLinkRow(
+    label: String,
+    href: String,
+    mutedColor: Color,
+    onClick: () -> Unit = {},
+) {
     Li(attrs = Modifier.toAttrs()) {
         A(
             href = href,
@@ -351,6 +367,7 @@ private fun ShareLinkRow(label: String, href: String, mutedColor: Color) {
                 .toAttrs {
                     attr("target", "_blank")
                     attr("rel", "noopener noreferrer")
+                    onClick { onClick() }
                 },
         ) {
             ComposeText(label)

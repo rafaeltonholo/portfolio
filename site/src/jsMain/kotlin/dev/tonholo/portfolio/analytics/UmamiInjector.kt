@@ -8,7 +8,8 @@ internal object UmamiInjector {
     private const val SCRIPT_ID = "umami-analytics"
     private val LOCAL_HOSTS = setOf("localhost", "127.0.0.1", "")
 
-    fun shouldInject(hostname: String): Boolean = hostname !in LOCAL_HOSTS
+    fun shouldInject(hostname: String): Boolean =
+        hostname !in LOCAL_HOSTS && BuildAnalytics.UMAMI_WEBSITE_ID.isNotBlank()
 
     fun inject() {
         if (!shouldInject(window.location.hostname)) return

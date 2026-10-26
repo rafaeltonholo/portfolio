@@ -24,6 +24,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.letterSpacing
 import com.varabyte.kobweb.compose.ui.modifiers.lineHeight
 import com.varabyte.kobweb.compose.ui.modifiers.margin
 import com.varabyte.kobweb.compose.ui.modifiers.maxWidth
+import com.varabyte.kobweb.compose.ui.modifiers.onClick
 import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.compose.ui.modifiers.textTransform
 import com.varabyte.kobweb.compose.ui.modifiers.transition
@@ -36,6 +37,7 @@ import com.varabyte.kobweb.silk.style.CssStyle
 import com.varabyte.kobweb.silk.style.selectors.hover
 import com.varabyte.kobweb.silk.style.toModifier
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
+import dev.tonholo.portfolio.analytics.UmamiAnalytics
 import dev.tonholo.portfolio.components.atoms.ArrowStyle
 import dev.tonholo.portfolio.components.atoms.MetaSeparator
 import dev.tonholo.portfolio.components.atoms.PhosphorIcon
@@ -141,14 +143,19 @@ private val STACK_ROW_GAP = 6.dp
 fun ProjectCardIde(project: Project, modifier: Modifier = Modifier) {
     val tokens = LocalPortfolioTokens.current
     val locale = LocalLocaleState.current.current
-
+    val projectPath = Routes.project(slug = project.slug, locale = locale)
     val cardModifier = ProjectCardIdeStyle
         .toModifier()
         .backgroundColor(tokens.paper.paper)
         .then(modifier)
-
+        .onClick {
+            UmamiAnalytics.trackProjectClick(
+                projectName = project.name,
+                projectUrl = projectPath,
+            )
+        }
     Link(
-        path = Routes.project(slug = project.slug, locale = locale),
+        path = projectPath,
         modifier = cardModifier,
         variant = UndecoratedLinkVariant then UncoloredLinkVariant,
     ) {

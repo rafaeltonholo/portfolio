@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.id
 import com.varabyte.kobweb.core.Page
+import dev.tonholo.portfolio.analytics.UmamiAnalytics
 import dev.tonholo.portfolio.components.layouts.PageLayout
 import dev.tonholo.portfolio.components.organisms.home.HeroEditorial
 import dev.tonholo.portfolio.components.organisms.home.HiringCta
@@ -42,7 +43,10 @@ fun HomePage() {
     PageLayout {
         HeroEditorial(
             onFeaturedWorkClick = { scrollToElementId(id = SELECTED_WORK_ID) },
-            onDownloadCvClick = { openInNewTab(url = RESUME_PDF_URL) },
+            onDownloadCvClick = {
+                UmamiAnalytics.trackResumeDownload(language = locale.tag)
+                openInNewTab(url = RESUME_PDF_URL)
+            },
             onCurrentlyBuildingClick = { scrollToElementId(id = NOW_STRIP_ID) },
             onWritingClick = { scrollToElementId(id = SNIPPET_ID) },
             onHireClick = { scrollToElementId(id = HIRING_CTA_ID) },
