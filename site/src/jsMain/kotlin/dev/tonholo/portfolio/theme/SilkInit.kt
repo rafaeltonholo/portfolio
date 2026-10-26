@@ -81,6 +81,7 @@ fun initRootFontSize(ctx: InitSilkContext) {
         Modifier
             .fontFamily(*FontFamilies.BODY)
             .fontSize(DEFAULT_FONT_SIZE.px)
+            .scrollBehavior(ScrollBehavior.Smooth)
     }
 }
 

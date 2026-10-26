@@ -49,6 +49,7 @@ import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import dev.tonholo.portfolio.analytics.LocalAnalyticsManager
 import dev.tonholo.portfolio.analytics.events.AnalyticEvent
 import dev.tonholo.portfolio.components.atoms.PhosphorIcon
+import dev.tonholo.portfolio.extensions.scrollToElementId
 import dev.tonholo.portfolio.locale.LocalStrings
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.color.Ink
@@ -292,14 +293,19 @@ private fun TocAnchorRow(
     val resolvedColor = if (isActive) activeColor else mutedColor
     val number = (index + 1).toString().padStart(ENTRY_NUMBER_PAD_LENGTH, ENTRY_NUMBER_PAD_CHAR)
     val label = "$number$ENTRY_SEPARATOR${entry.label}"
-
     Li(attrs = Modifier.toAttrs()) {
         A(
             href = "#${entry.id}",
             attrs = TocAnchorStyle
                 .toModifier()
                 .color(resolvedColor)
-                .toAttrs(),
+                .toAttrs {
+                    onClick { evt ->
+                        evt.preventDefault()
+                        window.history.pushState(null, "", "#${entry.id}")
+                        scrollToElementId(entry.id)
+                    }
+                },
         ) {
             ComposeText(label)
         }

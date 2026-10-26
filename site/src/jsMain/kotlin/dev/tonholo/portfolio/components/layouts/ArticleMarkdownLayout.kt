@@ -33,6 +33,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.margin
 import com.varabyte.kobweb.compose.ui.modifiers.maxWidth
 import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.compose.ui.modifiers.textDecorationLine
+import com.varabyte.kobweb.compose.ui.styleModifier
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.core.PageContext
 import com.varabyte.kobweb.core.data.add
@@ -496,6 +497,9 @@ val ArticleMarkdownBodyStyle = CssStyle {
                 top = BODY_HEADING_MARGIN_TOP_EM.em,
                 bottom = BODY_HEADING_MARGIN_BOTTOM_EM.em,
             )
+            .styleModifier {
+                property("scroll-margin-top", "6rem")
+            }
     }
     descendants("ul", "ol") {
         Modifier
