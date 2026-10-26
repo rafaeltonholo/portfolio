@@ -133,7 +133,7 @@ fun KotlinCodeSnippet(
             }
             Line {
                 Text(text = "${INDENT_2}role = ")
-                Str(text = "\"Senior Android\"")
+                Str(text = "\"Senior Android Engineer\"")
                 Text(text = ",")
             }
             Line {
@@ -161,17 +161,12 @@ fun KotlinCodeSnippet(
                 Text(text = ", ")
                 Str(text = "\"Hilt\"")
                 Text(text = ", ")
-                Str(text = "\"Jetpack\"")
+                Str(text = "\"AI\",")
             }
             Line { Text(text = "${INDENT_2}),") }
             Line {
                 Text(text = "${INDENT_2}shipping = ")
                 Kw(text = "true")
-                Text(text = ",")
-            }
-            Line {
-                Text(text = "${INDENT_2}coffee = ")
-                Kw(text = "Infinity")
                 Text(text = ",")
             }
             Line { Text(text = ")") }
