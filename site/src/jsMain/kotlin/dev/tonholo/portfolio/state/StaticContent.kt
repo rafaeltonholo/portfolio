@@ -9,7 +9,6 @@ import dev.tonholo.portfolio.domain.model.ProjectKind
 import dev.tonholo.portfolio.domain.model.ProjectStat
 import dev.tonholo.portfolio.domain.model.SkillBucket
 import dev.tonholo.portfolio.domain.model.SkillCategory
-import dev.tonholo.portfolio.domain.model.TickerItem
 import dev.tonholo.portfolio.domain.model.UseCategory
 import dev.tonholo.portfolio.generated.articles.GeneratedArticles
 import dev.tonholo.portfolio.locale.Locale
@@ -17,7 +16,7 @@ import dev.tonholo.portfolio.locale.Locale
 /**
  * Seed static content keyed by [Locale]. English is the source of truth;
  * [Locale.PtBr] provides parallel copy for every content surface that the site
- * renders directly (projects, experience, education, uses, ticker, now strip).
+ * renders directly (projects, experience, education, uses, now strip).
  * Skills, articles, and the projects list slug-index are locale-neutral: skill
  * names are proper nouns, articles are authored in English only for v1, and
  * slugs are shared across locales.
@@ -85,9 +84,6 @@ object StaticContent {
     /** English (source-of-truth) uses list. Prefer [usesFor]. */
     val USES: List<UseCategory> = USES_EN
 
-    /** English (source-of-truth) ticker items. Prefer [tickerFor]. */
-    val TICKER: List<TickerItem> = TICKER_EN
-
     /** English (source-of-truth) now-strip entries. Prefer [nowStripFor]. */
     val NOW_STRIP: List<NowStripEntry> = NOW_STRIP_EN
 
@@ -109,11 +105,6 @@ object StaticContent {
     fun usesFor(locale: Locale): List<UseCategory> = when (locale) {
         Locale.EnCa -> USES_EN
         Locale.PtBr -> USES_PT_BR
-    }
-
-    fun tickerFor(locale: Locale): List<TickerItem> = when (locale) {
-        Locale.EnCa -> TICKER_EN
-        Locale.PtBr -> TICKER_PT_BR
     }
 
     fun nowStripFor(locale: Locale): List<NowStripEntry> = when (locale) {
@@ -594,24 +585,6 @@ private val USES_PT_BR: List<UseCategory> = listOf(
             "lazygit",
         ),
     ),
-)
-
-// ---------------------------------------------------------------------------
-// Ticker
-// ---------------------------------------------------------------------------
-
-private val TICKER_EN: List<TickerItem> = listOf(
-    TickerItem(label = "now", value = "dynamic-feature system"),
-    TickerItem(label = "reading", value = "Designing Data-Intensive Applications"),
-    TickerItem(label = "learning", value = "Compose Multiplatform"),
-    TickerItem(label = "playing", value = "Hollow Knight"),
-)
-
-private val TICKER_PT_BR: List<TickerItem> = listOf(
-    TickerItem(label = "agora", value = "sistema de dynamic features"),
-    TickerItem(label = "lendo", value = "Designing Data-Intensive Applications"),
-    TickerItem(label = "aprendendo", value = "Compose Multiplatform"),
-    TickerItem(label = "jogando", value = "Hollow Knight"),
 )
 
 // ---------------------------------------------------------------------------

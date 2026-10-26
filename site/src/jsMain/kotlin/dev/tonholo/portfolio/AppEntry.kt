@@ -9,7 +9,6 @@ import com.varabyte.kobweb.silk.SilkApp
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import dev.tonholo.portfolio.analytics.AnalyticsManager
 import dev.tonholo.portfolio.analytics.LocalAnalyticsManager
-import dev.tonholo.portfolio.extensions.InstallRevealObserver
 import dev.tonholo.portfolio.locale.LocalStrings
 import dev.tonholo.portfolio.locale.stringsFor
 import dev.tonholo.portfolio.state.LocalLocaleState
@@ -40,7 +39,6 @@ fun PortfolioApp(content: @Composable () -> Unit) {
             LocalAnalyticsManager provides analytics,
         ) {
             PortfolioTheme {
-                InstallRevealObserver()
                 content()
             }
         }

@@ -89,16 +89,6 @@ class StaticContentTest {
     }
 
     @Test
-    fun `given StaticContent TICKER, when read, then it has four items`() {
-        // Arrange / Act
-        val ticker = StaticContent.TICKER
-
-        // Assert
-        assertEquals(expected = 4, actual = ticker.size)
-        assertEquals(expected = "now", actual = ticker[0].label)
-    }
-
-    @Test
     fun `given StaticContent NOW_STRIP, when read, then it has three entries`() {
         // Arrange / Act
         val now = StaticContent.NOW_STRIP
