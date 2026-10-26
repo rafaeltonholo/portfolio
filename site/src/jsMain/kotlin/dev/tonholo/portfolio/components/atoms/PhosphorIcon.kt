@@ -41,7 +41,7 @@ fun PhosphorIcon(
             .fontSize(size)
             .lineHeight(ICON_LINE_HEIGHT)
             .then(modifier)
-            .toAttrs(),
+            .toAttrs { attr("aria-hidden", "true") },
     )
 }
 

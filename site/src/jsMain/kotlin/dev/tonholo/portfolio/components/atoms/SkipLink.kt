@@ -24,7 +24,6 @@ import com.varabyte.kobweb.silk.style.selectors.focus
 import com.varabyte.kobweb.silk.style.toModifier
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import dev.tonholo.portfolio.theme.color.AccentMint
-import dev.tonholo.portfolio.theme.color.Ink
 import dev.tonholo.portfolio.theme.layout.unit.dp
 import dev.tonholo.portfolio.theme.typography.FontFamilies
 import org.jetbrains.compose.web.css.Position
@@ -92,11 +91,10 @@ val SkipLinkStyle = CssStyle {
     focus {
         val isDark = colorMode == ColorMode.DARK
         val accent = if (isDark) AccentMint.dark else AccentMint.light
-        val ink = if (isDark) Ink.dark else Ink.light
         Modifier
             .left(8.px)
             .top(8.px)
             .backgroundColor(accent.accent)
-            .color(ink.ink)
+            .color(accent.accentInk)
     }
 }

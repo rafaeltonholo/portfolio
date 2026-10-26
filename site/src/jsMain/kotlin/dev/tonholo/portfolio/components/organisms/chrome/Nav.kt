@@ -16,6 +16,7 @@ import com.varabyte.kobweb.compose.css.functions.blur
 import com.varabyte.kobweb.compose.css.functions.colorMix
 import com.varabyte.kobweb.compose.css.functions.saturate
 import com.varabyte.kobweb.compose.ui.Modifier
+import com.varabyte.kobweb.compose.ui.attrsModifier
 import com.varabyte.kobweb.compose.ui.graphics.Color
 import com.varabyte.kobweb.compose.ui.graphics.Colors
 import com.varabyte.kobweb.compose.ui.modifiers.alignItems
@@ -132,6 +133,7 @@ private const val MOBILE_MENU_ICON_OPEN = "list"
 private const val MOBILE_MENU_ICON_CLOSE = "x"
 
 // Mobile drawer spacing.
+private const val MOBILE_DRAWER_ID = "mobile-nav-drawer"
 private val MOBILE_DRAWER_PADDING_Y = 16.dp
 private val MOBILE_DRAWER_GAP = 12.dp
 private val MOBILE_DRAWER_ITEM_PADDING_Y = 10.dp
@@ -248,8 +250,12 @@ private fun NavInner(
         ) {
             PhosphorIcon(name = if (isDark) THEME_ICON_SUN else THEME_ICON_MOON)
         }
+        val mobileToggleModifier = NavMobileToggleStyle.toModifier().attrsModifier {
+            attr("aria-expanded", menuOpen.toString())
+            attr("aria-controls", MOBILE_DRAWER_ID)
+        }
         IconButton(
-            modifier = NavMobileToggleStyle.toModifier(),
+            modifier = mobileToggleModifier,
             ariaLabel = strings.nav.mobileMenuAriaLabel,
             onClick = onToggleMenu,
         ) {
@@ -267,7 +273,11 @@ private fun MobileNavDrawer(
     currentLocale: Locale,
     onSwitchLocale: (Locale) -> Unit,
 ) {
-    Div(attrs = MobileDrawerStyle.toModifier().toAttrs()) {
+    Div(
+        attrs = MobileDrawerStyle
+            .toModifier()
+            .toAttrs { attr("id", MOBILE_DRAWER_ID) },
+    ) {
         Div(attrs = MobileDrawerLinksStyle.toModifier().toAttrs()) {
             links.forEach { entry ->
                 NavLink(

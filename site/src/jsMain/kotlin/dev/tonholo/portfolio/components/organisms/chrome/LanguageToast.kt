@@ -57,10 +57,10 @@ private val TOAST_FONT_SIZE = 12.dp
 private val TOAST_MAX_WIDTH = 320.dp
 private const val TOAST_Z_INDEX = 100
 
-// Secondary note (`<div style={{fontSize:11, opacity:0.55, marginTop:2}}>`).
+// Secondary note, tuned to 0.75 so 11px text contrast passes WCAG AA (4.5:1).
 private val TOAST_NOTE_FONT_SIZE = 11.dp
 private val TOAST_NOTE_MARGIN_TOP = 2.dp
-private const val TOAST_NOTE_OPACITY = 0.55
+private const val TOAST_NOTE_OPACITY = 0.75
 
 // Dim suffix opacity next to the bold `pt-BR` label.
 private const val TOAST_SUFFIX_OPACITY = 0.7

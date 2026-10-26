@@ -156,7 +156,13 @@ fun AboutTabs(modifier: Modifier = Modifier) {
                 )
             }
         }
-        Div(attrs = Modifier.toAttrs { attr("role", "tabpanel") }) {
+        Div(
+            attrs = Modifier.toAttrs {
+                attr("role", "tabpanel")
+                attr("id", "tabpanel-${selected.name.lowercase()}")
+                attr("aria-labelledby", "tab-${selected.name.lowercase()}")
+            },
+        ) {
             when (selected) {
                 AboutTab.Story -> StoryPanel(strings = strings)
                 AboutTab.Now -> NowPanel(strings = strings)
@@ -195,7 +201,11 @@ private fun TabButton(
 
     WebButton(
         attrs = finalModifier.toAttrs {
+            val tabId = "tab-${tab.name.lowercase()}"
+            val panelId = "tabpanel-${tab.name.lowercase()}"
             attr("type", "button")
+            attr("id", tabId)
+            attr("aria-controls", panelId)
             attr("aria-selected", isActive.toString())
         },
     ) {

@@ -300,6 +300,9 @@ private fun TocAnchorRow(
                 .toModifier()
                 .color(resolvedColor)
                 .toAttrs {
+                    if (isActive) {
+                        attr("aria-current", "location")
+                    }
                     onClick { evt ->
                         evt.preventDefault()
                         window.history.pushState(null, "", "#${entry.id}")
@@ -332,9 +335,7 @@ private fun CopyLinkRow(
                 .onClick { onClick() }
                 .toAttrs {
                     attr("type", "button")
-                    if (isCopied) {
-                        attr("aria-live", "polite")
-                    }
+                    attr("aria-live", "polite")
                 },
         ) {
             ComposeText(if (isCopied) copiedLabel else label)

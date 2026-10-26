@@ -66,8 +66,8 @@ private const val LANG_OPT_TRANSITION_DURATION_S = 0.15
 // WCAG 2.5.5 touch-target floor on `pointer: coarse` devices.
 private val LANG_OPT_TOUCH_MIN_SIZE = 44.dp
 
-// `.lang-opt .lang-locale` dim styling.
-private const val LANG_LOCALE_OPACITY = 0.5
+// `.lang-opt .lang-locale` dim styling, tuned to 0.75 so contrast passes WCAG AA (4.5:1).
+private const val LANG_LOCALE_OPACITY = 0.75
 
 // `.lang-sep` dim styling.
 private const val LANG_SEP_OPACITY = 0.3
@@ -147,6 +147,7 @@ private fun LanguageOption(
         attrs = optionModifier.toAttrs {
             attr("type", "button")
             attr("aria-pressed", isActive.toString())
+            attr("aria-label", title)
             attr("title", title)
         },
     ) {

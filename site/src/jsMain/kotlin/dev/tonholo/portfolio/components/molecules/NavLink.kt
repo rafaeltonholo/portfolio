@@ -6,6 +6,7 @@ import com.varabyte.kobweb.compose.css.FontWeight
 import com.varabyte.kobweb.compose.css.TextDecorationLine
 import com.varabyte.kobweb.compose.css.Transition
 import com.varabyte.kobweb.compose.ui.Modifier
+import com.varabyte.kobweb.compose.ui.attrsModifier
 import com.varabyte.kobweb.compose.ui.graphics.Color
 import com.varabyte.kobweb.compose.ui.modifiers.alignItems
 import com.varabyte.kobweb.compose.ui.modifiers.backgroundColor
@@ -85,7 +86,12 @@ fun NavLink(
     modifier: Modifier = Modifier,
 ) {
     val tokens = LocalPortfolioTokens.current
-    val finalModifier = navLinkBaseModifier(active = active, modifier = modifier)
+    var finalModifier = navLinkBaseModifier(active = active, modifier = modifier)
+    if (active) {
+        finalModifier = finalModifier.attrsModifier {
+            attr("aria-current", "page")
+        }
+    }
 
     Link(
         path = route,
@@ -122,7 +128,12 @@ fun NavLinkButton(
     val finalModifier = navLinkBaseModifier(active = active, modifier = modifier)
         .onClick { onClick() }
 
-    WebButton(attrs = finalModifier.toAttrs { attr("type", "button") }) {
+    WebButton(
+        attrs = finalModifier.toAttrs {
+            attr("type", "button")
+            attr("aria-pressed", active.toString())
+        },
+    ) {
         NavLinkContent(label = label, active = active, accentColor = tokens.accent.accent)
     }
 }
