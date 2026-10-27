@@ -1,12 +1,16 @@
 package dev.tonholo.portfolio.components.organisms.home
 
 import androidx.compose.runtime.Composable
+import com.varabyte.kobweb.compose.css.Cursor
 import com.varabyte.kobweb.compose.css.FontStyle
 import com.varabyte.kobweb.compose.css.FontWeight
 import com.varabyte.kobweb.compose.css.ListStyleType
+import com.varabyte.kobweb.compose.css.TextDecorationLine
+import com.varabyte.kobweb.compose.css.Transition
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.alignItems
 import com.varabyte.kobweb.compose.ui.modifiers.color
+import com.varabyte.kobweb.compose.ui.modifiers.cursor
 import com.varabyte.kobweb.compose.ui.modifiers.display
 import com.varabyte.kobweb.compose.ui.modifiers.flexDirection
 import com.varabyte.kobweb.compose.ui.modifiers.fontFamily
@@ -18,21 +22,39 @@ import com.varabyte.kobweb.compose.ui.modifiers.gridTemplateColumns
 import com.varabyte.kobweb.compose.ui.modifiers.listStyle
 import com.varabyte.kobweb.compose.ui.modifiers.margin
 import com.varabyte.kobweb.compose.ui.modifiers.maxWidth
+import com.varabyte.kobweb.compose.ui.modifiers.onClick
 import com.varabyte.kobweb.compose.ui.modifiers.padding
+import com.varabyte.kobweb.compose.ui.modifiers.textDecorationLine
+import com.varabyte.kobweb.compose.ui.modifiers.transition
 import com.varabyte.kobweb.compose.ui.toAttrs
+import com.varabyte.kobweb.silk.components.navigation.Link
+import com.varabyte.kobweb.silk.components.navigation.UncoloredLinkVariant
+import com.varabyte.kobweb.silk.components.navigation.UndecoratedLinkVariant
 import com.varabyte.kobweb.silk.style.CssStyle
 import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
+import com.varabyte.kobweb.silk.style.selectors.hover
 import com.varabyte.kobweb.silk.style.toModifier
+import com.varabyte.kobweb.silk.theme.colors.ColorMode
+import dev.tonholo.portfolio.analytics.AnalyticsManager
+import dev.tonholo.portfolio.analytics.LocalAnalyticsManager
+import dev.tonholo.portfolio.analytics.events.AnalyticEvent
 import dev.tonholo.portfolio.components.atoms.MetaLabel
 import dev.tonholo.portfolio.components.atoms.MetaSeparator
 import dev.tonholo.portfolio.components.template.NumberedSection
 import dev.tonholo.portfolio.domain.model.Article
 import dev.tonholo.portfolio.domain.model.ArticleStatus
 import dev.tonholo.portfolio.locale.LocalStrings
+import dev.tonholo.portfolio.locale.Locale
 import dev.tonholo.portfolio.locale.Strings
+import dev.tonholo.portfolio.navigation.Routes
 import dev.tonholo.portfolio.state.LocalLocaleState
 import dev.tonholo.portfolio.state.StaticContent
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
+import dev.tonholo.portfolio.theme.PortfolioTokens
+import dev.tonholo.portfolio.theme.color.AccentMint
+import dev.tonholo.portfolio.theme.color.AccentSwatch
+import dev.tonholo.portfolio.theme.color.Ink
+import dev.tonholo.portfolio.theme.color.InkScale
 import dev.tonholo.portfolio.theme.layout.unit.dp
 import dev.tonholo.portfolio.theme.typography.FontFamilies
 import dev.tonholo.portfolio.theme.typography.Typography
@@ -44,6 +66,7 @@ import org.jetbrains.compose.web.css.DisplayStyle
 import org.jetbrains.compose.web.css.FlexDirection
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.fr
+import org.jetbrains.compose.web.css.s
 import org.jetbrains.compose.web.dom.B
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.H3
@@ -70,6 +93,7 @@ private const val BODY_MAX_WIDTH_CH = 48.0
 // Writing list: gap between article entries; small-date uses metaSmall.
 private val WRITING_LIST_GAP = 14.dp
 private val WRITING_TITLE_SIZE = 16.dp
+private const val WRITING_TRANSITION_DURATION_S: Double = 0.15
 
 // Inline gap inside the meta line between the status label, the separator
 // dot, and the short date.
@@ -204,40 +228,54 @@ private fun WritingColumn(articles: List<Article>, strings: Strings.NowStrip) {
 
 /**
  * One row inside the writing column: a small mono meta line followed by the
- * article title rendered in the display font.
+ * article title rendered in the display font. Navigates to the article detail route on click.
  */
 @Composable
 private fun WritingEntry(article: Article, strings: Strings.NowStrip) {
-    val tokens = LocalPortfolioTokens.current
-    val statusLabel = when (article.status) {
+    val tokens: PortfolioTokens = LocalPortfolioTokens.current
+    val locale: Locale = LocalLocaleState.current.current
+    val analytics: AnalyticsManager = LocalAnalyticsManager.current
+    val articlePath: String = Routes.article(slug = article.slug, locale = locale)
+    val statusLabel: String = when (article.status) {
         ArticleStatus.Draft -> strings.statusDraft
         ArticleStatus.Published -> strings.statusPublished
     }
-    val shortDate = article.date.substringBefore(delimiter = ',')
-
+    val shortDate: String = article.date.substringBefore(delimiter = ',')
     Li(attrs = Modifier.toAttrs()) {
-        Div(
-            attrs = Modifier
-                .apply(Typography.metaSmall)
-                .color(tokens.muted.muted)
-                .display(DisplayStyle.LegacyInlineFlex)
-                .alignItems(AlignItems.Center)
-                .gap(WRITING_META_GAP)
-                .toAttrs(),
+        Link(
+            path = articlePath,
+            modifier = WritingEntryLinkStyle
+                .toModifier()
+                .onClick {
+                    analytics.track(
+                        AnalyticEvent.ReadArticle(
+                            articleTitle = article.title,
+                            articleUrl = articlePath,
+                        ),
+                    )
+                },
+            variant = UndecoratedLinkVariant then UncoloredLinkVariant,
         ) {
-            Span(attrs = Modifier.toAttrs()) { ComposeText(statusLabel) }
-            MetaSeparator()
-            Span(attrs = Modifier.toAttrs()) { ComposeText(shortDate) }
-        }
-        Div(
-            attrs = Modifier
-                .fontFamily(*FontFamilies.DISPLAY)
-                .fontSize(WRITING_TITLE_SIZE)
-                .fontWeight(FontWeight.Medium)
-                .color(tokens.ink.ink)
-                .toAttrs(),
-        ) {
-            ComposeText(article.title)
+            Div(
+                attrs = Modifier
+                    .apply(Typography.metaSmall)
+                    .color(tokens.muted.muted)
+                    .display(DisplayStyle.LegacyInlineFlex)
+                    .alignItems(AlignItems.Center)
+                    .gap(WRITING_META_GAP)
+                    .toAttrs(),
+            ) {
+                Span(attrs = Modifier.toAttrs()) { ComposeText(statusLabel) }
+                MetaSeparator()
+                Span(attrs = Modifier.toAttrs()) { ComposeText(shortDate) }
+            }
+            Div(
+                attrs = WritingEntryTitleStyle
+                    .toModifier()
+                    .toAttrs(),
+            ) {
+                ComposeText(article.title)
+            }
         }
     }
 }
@@ -368,6 +406,43 @@ val WritingListStyle = CssStyle {
             .display(DisplayStyle.Flex)
             .flexDirection(FlexDirection.Column)
             .gap(WRITING_LIST_GAP)
+    }
+}
+
+/**
+ * Base `CssStyle` for writing entry links. Renders as a block anchor,
+ * overrides text decoration, and transitions color on hover to the accent mint color.
+ */
+val WritingEntryLinkStyle = CssStyle {
+    base {
+        val ink: InkScale = if (colorMode == ColorMode.DARK) Ink.dark else Ink.light
+        Modifier
+            .display(DisplayStyle.Block)
+            .textDecorationLine(TextDecorationLine.None)
+            .cursor(Cursor.Pointer)
+            .color(ink.ink)
+            .transition(
+                Transition.of(
+                    property = "color",
+                    duration = WRITING_TRANSITION_DURATION_S.s,
+                ),
+            )
+    }
+    hover {
+        val accent: AccentSwatch = if (colorMode == ColorMode.DARK) AccentMint.dark else AccentMint.light
+        Modifier.color(accent.accent)
+    }
+}
+
+/**
+ * Base `CssStyle` for the writing entry article title.
+ */
+val WritingEntryTitleStyle = CssStyle {
+    base {
+        Modifier
+            .fontFamily(*FontFamilies.DISPLAY)
+            .fontSize(WRITING_TITLE_SIZE)
+            .fontWeight(FontWeight.Medium)
     }
 }
 
