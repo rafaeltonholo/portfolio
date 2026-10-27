@@ -139,6 +139,10 @@ object StringsPtBr : Strings() {
             "Me mudei do Brasil pro Canadá em 2022 - uma decisão pequena que virou " +
                 "enorme. Me adaptando ao frio, à neve, e à estranha fidelidade ao " +
                 "Tim Hortons que vem junto com morar aqui.",
+            "Em casa, design e engenharia estão sempre conversando - minha esposa é " +
+                "UX/UI designer, o que significa que projetos pessoais têm padrões visuais " +
+                "altos e bastante feedback sincero. Dividimos a casa com dois gatos que " +
+                "basicamente julgam nossa ergonomia no teclado.",
             "Tento devolver um pouco pras comunidades com quem aprendi - principalmente " +
                 "via open source e palestras ocasionais. Se você está no começo da carreira em " +
                 "engenharia e quer conversar, minha caixa de entrada está aberta.",

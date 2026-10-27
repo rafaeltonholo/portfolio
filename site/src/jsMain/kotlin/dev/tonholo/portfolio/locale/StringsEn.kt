@@ -134,6 +134,10 @@ object StringsEn : Strings() {
             "I moved from Brazil to Canada in 2022 - a small decision that became a " +
                 "huge one. Adjusting to the cold, the snow, and the strange Tim " +
                 "Hortons loyalty that comes with living here.",
+            "At home, design and engineering are always in conversation - my wife is a " +
+                "UX/UI designer, which means side projects come with high visual standards " +
+                "and plenty of honest critique. We share the house with two cats who mostly " +
+                "critique our keyboard ergonomics.",
             "I try to give something back to the communities I learned from - mostly " +
                 "through open source and occasional talks. If you're an early-career engineer " +
                 "and want to chat, my inbox is open.",
