@@ -249,11 +249,6 @@ object StringsPtBr : Strings() {
         statusPublished = "publicado",
     )
 
-    override val uses: Uses = Uses(
-        sectionTitle = "Uso",
-        sectionTrailingLabel = "lista completa ->",
-    )
-
     override val selectedWork: SelectedWork = SelectedWork(
         sectionTitle = "Trabalhos selecionados",
         projectsSuffix = "projetos",

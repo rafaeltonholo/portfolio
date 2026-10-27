@@ -9,14 +9,13 @@ import dev.tonholo.portfolio.domain.model.ProjectKind
 import dev.tonholo.portfolio.domain.model.ProjectStat
 import dev.tonholo.portfolio.domain.model.SkillBucket
 import dev.tonholo.portfolio.domain.model.SkillCategory
-import dev.tonholo.portfolio.domain.model.UseCategory
 import dev.tonholo.portfolio.generated.articles.GeneratedArticles
 import dev.tonholo.portfolio.locale.Locale
 
 /**
  * Seed static content keyed by [Locale]. English is the source of truth;
  * [Locale.PtBr] provides parallel copy for every content surface that the site
- * renders directly (projects, experience, education, uses, now strip).
+ * renders directly (projects, experience, education, now strip).
  * Skills, articles, and the projects list slug-index are locale-neutral: skill
  * names are proper nouns, articles are authored in English only for v1, and
  * slugs are shared across locales.
@@ -81,9 +80,6 @@ object StaticContent {
         ),
     )
 
-    /** English (source-of-truth) uses list. Prefer [usesFor]. */
-    val USES: List<UseCategory> = USES_EN
-
     /** English (source-of-truth) now-strip entries. Prefer [nowStripFor]. */
     val NOW_STRIP: List<NowStripEntry> = NOW_STRIP_EN
 
@@ -100,11 +96,6 @@ object StaticContent {
     fun educationFor(locale: Locale): List<Education> = when (locale) {
         Locale.EnCa -> EDUCATION_EN
         Locale.PtBr -> EDUCATION_PT_BR
-    }
-
-    fun usesFor(locale: Locale): List<UseCategory> = when (locale) {
-        Locale.EnCa -> USES_EN
-        Locale.PtBr -> USES_PT_BR
     }
 
     fun nowStripFor(locale: Locale): List<NowStripEntry> = when (locale) {
@@ -510,80 +501,6 @@ private val EDUCATION_PT_BR: List<Education> = listOf(
         degree = "Técnico em Informática",
         institution = "COTEMIG",
         year = "2010",
-    ),
-)
-
-// ---------------------------------------------------------------------------
-// Uses
-// ---------------------------------------------------------------------------
-
-private val USES_EN: List<UseCategory> = listOf(
-    UseCategory(
-        name = "editor",
-        items = listOf(
-            "Android Studio Koala",
-            "IntelliJ IDEA Ultimate",
-            "JetBrains Mono - 14pt",
-        ),
-    ),
-    UseCategory(
-        name = "hardware",
-        items = listOf(
-            "MacBook Pro 16\" M3 Max",
-            "Pixel 8 Pro + Pixel 5",
-            "LG UltraFine 5K",
-        ),
-    ),
-    UseCategory(
-        name = "desk",
-        items = listOf(
-            "HHKB Pro Hybrid",
-            "MX Master 3S",
-            "Freestanding Ikea top",
-        ),
-    ),
-    UseCategory(
-        name = "cli",
-        items = listOf(
-            "zsh + starship",
-            "fzf, bat, eza",
-            "lazygit",
-        ),
-    ),
-)
-
-private val USES_PT_BR: List<UseCategory> = listOf(
-    UseCategory(
-        name = "editor",
-        items = listOf(
-            "Android Studio Koala",
-            "IntelliJ IDEA Ultimate",
-            "JetBrains Mono - 14pt",
-        ),
-    ),
-    UseCategory(
-        name = "hardware",
-        items = listOf(
-            "MacBook Pro 16\" M3 Max",
-            "Pixel 8 Pro + Pixel 5",
-            "LG UltraFine 5K",
-        ),
-    ),
-    UseCategory(
-        name = "mesa",
-        items = listOf(
-            "HHKB Pro Hybrid",
-            "MX Master 3S",
-            "Tampo Ikea autoportante",
-        ),
-    ),
-    UseCategory(
-        name = "cli",
-        items = listOf(
-            "zsh + starship",
-            "fzf, bat, eza",
-            "lazygit",
-        ),
     ),
 )
 

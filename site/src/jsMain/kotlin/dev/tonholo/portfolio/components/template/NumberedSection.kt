@@ -28,7 +28,7 @@ fun sectionMarker(ordinal: Int): String =
     MARKER_PREFIX + ordinal.toString().padStart(MARKER_FORMAT_WIDTH, padChar = '0')
 
 /**
- * Shared layout wrapper for every numbered home-page section (`// 00` - `// 02`).
+ * Shared layout wrapper for every numbered home-page section (`// 00` - `// 01`).
  * Renders a semantic `<section>` with the standard
  * [SectionContainerStyle] rhythm (vertical [SiteDimensions.padding.section]
  * and the mobile-first horizontal gutter ramp via [SiteDimensions.size]) and

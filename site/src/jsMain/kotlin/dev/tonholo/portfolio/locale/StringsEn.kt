@@ -244,11 +244,6 @@ object StringsEn : Strings() {
         statusPublished = "published",
     )
 
-    override val uses: Uses = Uses(
-        sectionTitle = "Uses",
-        sectionTrailingLabel = "full list ->",
-    )
-
     override val selectedWork: SelectedWork = SelectedWork(
         sectionTitle = "Selected work",
         projectsSuffix = "projects",

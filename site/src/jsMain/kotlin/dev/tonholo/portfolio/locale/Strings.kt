@@ -36,7 +36,6 @@ sealed class Strings {
     abstract val prevNext: PrevNext
     abstract val hiringCta: HiringCta
     abstract val nowStrip: NowStrip
-    abstract val uses: Uses
     abstract val selectedWork: SelectedWork
     abstract val notFound: NotFound
 
@@ -210,9 +209,6 @@ sealed class Strings {
         val statusDraft: String,
         val statusPublished: String,
     )
-
-    /** Copy for the [dev.tonholo.portfolio.components.organisms.home.UsesGrid] organism. */
-    data class Uses(val sectionTitle: String, val sectionTrailingLabel: String)
 
     /** Copy for the [dev.tonholo.portfolio.components.organisms.home.SelectedWorkGrid] section head. */
     data class SelectedWork(val sectionTitle: String, val projectsSuffix: String)

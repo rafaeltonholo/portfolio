@@ -79,16 +79,6 @@ class StaticContentTest {
     }
 
     @Test
-    fun `given StaticContent USES, when read, then it has four categories`() {
-        // Arrange / Act
-        val uses = StaticContent.USES
-
-        // Assert
-        assertEquals(expected = 4, actual = uses.size)
-        assertEquals(expected = listOf("editor", "hardware", "desk", "cli"), actual = uses.map { it.name })
-    }
-
-    @Test
     fun `given StaticContent NOW_STRIP, when read, then it has three entries`() {
         // Arrange / Act
         val now = StaticContent.NOW_STRIP
