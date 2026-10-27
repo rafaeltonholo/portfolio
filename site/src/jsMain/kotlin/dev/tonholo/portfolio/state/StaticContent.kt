@@ -594,9 +594,10 @@ private val USES_PT_BR: List<UseCategory> = listOf(
 private val NOW_STRIP_EN: List<NowStripEntry> = listOf(
     NowStripEntry(
         label = "working on",
-        title = "A dynamic-feature system that doesn't fight the dev loop.",
-        body = "Module graphs that scale past 400 modules, without making local " +
-            "compile-times tragic. Turns out the fix was in Gradle, mostly.",
+        title = "A Kotlin to GDScript transpiler for Godot.",
+        body = "Bringing Kotlin's type safety, expressive syntax, and compiler tooling " +
+            "directly to Godot by transpiling into clean, idiomatic GDScript without " +
+            "heavyweight native bindings.",
     ),
     NowStripEntry(
         label = "writing",
@@ -615,9 +616,10 @@ private val NOW_STRIP_EN: List<NowStripEntry> = listOf(
 private val NOW_STRIP_PT_BR: List<NowStripEntry> = listOf(
     NowStripEntry(
         label = "trabalhando em",
-        title = "Um sistema de dynamic features que não briga com o dev loop.",
-        body = "Grafos de módulos que escalam além dos 400 módulos sem tornar os " +
-            "tempos de compilação locais trágicos. No fim, o ajuste estava quase todo no Gradle.",
+        title = "Um transpilador de Kotlin para GDScript no Godot.",
+        body = "Levando a tipagem estática, sintaxe expressiva e ferramentas de compilação " +
+            "do Kotlin para a Godot, transpilando diretamente para GDScript limpo e " +
+            "idiomático sem bindings pesados.",
     ),
     NowStripEntry(
         label = "escrevendo",

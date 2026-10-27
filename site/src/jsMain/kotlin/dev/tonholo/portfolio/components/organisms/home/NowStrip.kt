@@ -133,10 +133,11 @@ fun NowStrip(modifier: Modifier = Modifier) {
 // Fallbacks guard against the NOW_STRIP list being empty; keep the copy aligned
 // with the handoff so the rendered section stays meaningful.
 private const val DEFAULT_WORKING_TITLE =
-    "A dynamic-feature system that doesn't fight the dev loop."
+    "A Kotlin to GDScript transpiler for Godot."
 private const val DEFAULT_WORKING_BODY =
-    "Module graphs that scale past 400 modules, without making local " +
-        "compile-times tragic. Turns out the fix was in Gradle, mostly."
+    "Bringing Kotlin's type safety, expressive syntax, and compiler tooling " +
+        "directly to Godot by transpiling into clean, idiomatic GDScript without " +
+        "heavyweight native bindings."
 
 /**
  * First column: the mono "working on" meta label, a display-font title, and
