@@ -2,9 +2,11 @@ package dev.tonholo.portfolio.components.molecules
 
 import androidx.compose.runtime.Composable
 import com.varabyte.kobweb.compose.css.Cursor
+import com.varabyte.kobweb.compose.css.ObjectFit
 import com.varabyte.kobweb.compose.css.TextDecorationLine
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.alignItems
+import com.varabyte.kobweb.compose.ui.modifiers.borderRadius
 import com.varabyte.kobweb.compose.ui.modifiers.color
 import com.varabyte.kobweb.compose.ui.modifiers.cursor
 import com.varabyte.kobweb.compose.ui.modifiers.display
@@ -13,8 +15,11 @@ import com.varabyte.kobweb.compose.ui.modifiers.fontFamily
 import com.varabyte.kobweb.compose.ui.modifiers.fontSize
 import com.varabyte.kobweb.compose.ui.modifiers.gap
 import com.varabyte.kobweb.compose.ui.modifiers.margin
+import com.varabyte.kobweb.compose.ui.modifiers.objectFit
+import com.varabyte.kobweb.compose.ui.modifiers.size
 import com.varabyte.kobweb.compose.ui.modifiers.textDecorationLine
 import com.varabyte.kobweb.compose.ui.toAttrs
+import com.varabyte.kobweb.silk.components.graphics.Image
 import com.varabyte.kobweb.silk.components.navigation.Link
 import com.varabyte.kobweb.silk.components.navigation.UncoloredLinkVariant
 import com.varabyte.kobweb.silk.components.navigation.UndecoratedLinkVariant
@@ -32,6 +37,7 @@ import dev.tonholo.portfolio.theme.typography.unit.sp
 import org.jetbrains.compose.web.css.AlignItems
 import org.jetbrains.compose.web.css.DisplayStyle
 import org.jetbrains.compose.web.css.FlexWrap
+import org.jetbrains.compose.web.css.percent
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Span
 import org.jetbrains.compose.web.dom.Text as ComposeText
@@ -63,6 +69,7 @@ private const val BACK_ICON_NAME = "arrow-left"
  * @param backRoute destination path for the back link; defaults to the
  *   articles index.
  * @param author byline to render after `by`; defaults to `"rafael"`.
+ * @param authorAvatar optional URL for the author avatar image.
  */
 @Composable
 fun ArticleMetaRow(
@@ -71,6 +78,7 @@ fun ArticleMetaRow(
     modifier: Modifier = Modifier,
     backRoute: String = Routes.ARTICLES,
     author: String = DEFAULT_AUTHOR,
+    authorAvatar: String = "",
 ) {
     val tokens = LocalPortfolioTokens.current
     val strings = LocalStrings.current.articleMeta
@@ -100,7 +108,19 @@ fun ArticleMetaRow(
         if (readTime.isNotBlank()) {
             ArticleMetaSegment { ComposeText("$readTime ${strings.readSuffix}") }
         }
-        ArticleMetaSegment { ComposeText("${strings.authorPrefix} $author") }
+        ArticleMetaSegment {
+            if (authorAvatar.isNotBlank()) {
+                Image(
+                    src = authorAvatar,
+                    alt = author,
+                    modifier = Modifier
+                        .size(16.dp)
+                        .borderRadius(100.percent)
+                        .objectFit(ObjectFit.Cover),
+                )
+            }
+            ComposeText("${strings.authorPrefix} $author")
+        }
     }
 }
 

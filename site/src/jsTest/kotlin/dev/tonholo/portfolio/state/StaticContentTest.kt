@@ -1,5 +1,6 @@
 package dev.tonholo.portfolio.state
 
+import dev.tonholo.portfolio.domain.model.Article
 import dev.tonholo.portfolio.domain.model.ArticleStatus
 import dev.tonholo.portfolio.domain.model.ProjectKind
 import dev.tonholo.portfolio.domain.model.SkillCategory
@@ -40,11 +41,11 @@ class StaticContentTest {
     }
 
     @Test
-    fun `given StaticContent ARTICLES, when read, then it has four entries starting with git-time-travel`() {
+    fun `given StaticContent ARTICLES, when read, then it has five entries starting with git-time-travel`() {
         // Arrange / Act
-        val articles = StaticContent.ARTICLES
+        val articles: List<Article> = StaticContent.ARTICLES
         // Assert
-        assertEquals(expected = 4, actual = articles.size)
+        assertEquals(expected = 5, actual = articles.size)
         assertEquals(
             expected = "git-time-travel-reflog-reset",
             actual = articles[0].slug,
@@ -54,21 +55,62 @@ class StaticContentTest {
     @Test
     fun `given StaticContent ARTICLES, when inspected, then all entries are Published`() {
         // Arrange / Act
-        val published = StaticContent.ARTICLES
+        val published: List<Article> = StaticContent.ARTICLES
         // Assert
         assertTrue(actual = published.isNotEmpty())
         assertTrue(actual = published.all { it.status == ArticleStatus.Published })
     }
 
     @Test
-    fun `given StaticContent articlesFor with PtBr, when read, then it has four localized entries`() {
+    fun `given StaticContent articlesFor with PtBr, when read, then it has five localized entries`() {
         // Arrange / Act
-        val ptArticles = StaticContent.articlesFor(locale = Locale.PtBr)
-
+        val ptArticles: List<Article> = StaticContent.articlesFor(locale = Locale.PtBr)
         // Assert
-        assertEquals(expected = 4, actual = ptArticles.size)
+        assertEquals(expected = 5, actual = ptArticles.size)
         assertEquals(expected = "git-time-travel-reflog-reset", actual = ptArticles[0].slug)
         assertTrue(actual = ptArticles[0].title.contains("Viagem no tempo"))
+    }
+
+    @Test
+    fun `given StaticContent articlesFor with PtBr, when inspecting hello-world, then rich frontmatter is parsed`() {
+        // Arrange
+        val ptArticles: List<Article> = StaticContent.articlesFor(locale = Locale.PtBr)
+        // Act
+        val actualArticle: Article = ptArticles.first { it.slug == "hello-world" }
+        // Assert
+        assertEquals(expected = "Uma nova aventura começa", actual = actualArticle.summary)
+        assertEquals(expected = 1, actual = actualArticle.authors.size)
+        assertEquals(expected = "Rafael Tonholo", actual = actualArticle.authors[0].name)
+        assertEquals(
+            expected = "https://rafael.tonholo.dev/images/writing.jpg",
+            actual = actualArticle.authors[0].avatar,
+        )
+        assertEquals(
+            expected = "https://rafael.tonholo.dev/images/articles/hello-world/thumbnail.png",
+            actual = actualArticle.thumbnail,
+        )
+        assertEquals(expected = "19 de mai. de 2024", actual = actualArticle.date)
+    }
+
+    @Test
+    fun `given StaticContent ARTICLES, when inspecting hello-world, then rich frontmatter is parsed`() {
+        // Arrange
+        val enArticles: List<Article> = StaticContent.ARTICLES
+        // Act
+        val actualArticle: Article = enArticles.first { it.slug == "hello-world" }
+        // Assert
+        assertEquals(expected = "A new journey begins", actual = actualArticle.summary)
+        assertEquals(expected = 1, actual = actualArticle.authors.size)
+        assertEquals(expected = "Rafael Tonholo", actual = actualArticle.authors[0].name)
+        assertEquals(
+            expected = "https://rafael.tonholo.dev/images/writing.jpg",
+            actual = actualArticle.authors[0].avatar,
+        )
+        assertEquals(
+            expected = "https://rafael.tonholo.dev/images/articles/hello-world/thumbnail.png",
+            actual = actualArticle.thumbnail,
+        )
+        assertEquals(expected = "May 19, 2024", actual = actualArticle.date)
     }
 
     @Test

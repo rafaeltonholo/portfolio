@@ -235,6 +235,11 @@ kobweb {
                 return this to null
             }
 
+            data class AuthorRow(
+                val name: String,
+                val avatar: String,
+            )
+
             data class Row(
                 val slug: String,
                 val date: String,
@@ -244,6 +249,9 @@ kobweb {
                 val readTime: String,
                 val status: String,
                 val locale: String,
+                val summary: String,
+                val authors: List<AuthorRow>,
+                val thumbnail: String,
             )
 
             val articleDateFormatter = DateTimeFormatterBuilder()
@@ -252,8 +260,49 @@ kobweb {
                 .toFormatter(Locale.ENGLISH)
 
             fun String.toSortableDate(): LocalDate = runCatching {
+                LocalDate.parse(this.substringBefore('T').trim())
+            }.recoverCatching {
                 LocalDate.parse(this.trim(), articleDateFormatter)
             }.getOrElse { LocalDate.MIN }
+
+            fun formatDisplayDate(rawDate: String, locale: String): String {
+                val isoDate = runCatching {
+                    LocalDate.parse(rawDate.substringBefore('T').trim())
+                }.getOrNull() ?: return rawDate
+                return if (locale == "pt-BR") {
+                    val ptMonth = when (isoDate.monthValue) {
+                        1 -> "jan."
+                        2 -> "fev."
+                        3 -> "mar."
+                        4 -> "abr."
+                        5 -> "mai."
+                        6 -> "jun."
+                        7 -> "jul."
+                        8 -> "ago."
+                        9 -> "set."
+                        10 -> "out."
+                        11 -> "nov."
+                        else -> "dez."
+                    }
+                    "${isoDate.dayOfMonth} de $ptMonth de ${isoDate.year}"
+                } else {
+                    val enMonth = when (isoDate.monthValue) {
+                        1 -> "Jan"
+                        2 -> "Feb"
+                        3 -> "Mar"
+                        4 -> "Apr"
+                        5 -> "May"
+                        6 -> "Jun"
+                        7 -> "Jul"
+                        8 -> "Aug"
+                        9 -> "Sep"
+                        10 -> "Oct"
+                        11 -> "Nov"
+                        else -> "Dec"
+                    }
+                    "$enMonth ${isoDate.dayOfMonth}, ${isoDate.year}"
+                }
+            }
 
             val markdownResourceDir = layout.projectDirectory.dir("src/jsMain/resources/markdown").asFile
             val readingSpeedWordsPerMinute = 200.0
@@ -278,18 +327,103 @@ kobweb {
                         .removeSuffix(".md")
                         .toKebabSlug()
                     val (canonicalSlug, lang) = rawSlug.splitLocalizedSlug()
-                    val slug = frontMatter["slug"]?.singleOrNull()?.takeIf { it.isNotBlank() } ?: canonicalSlug
-                    val locale = frontMatter["locale"]?.singleOrNull() ?: if (lang == "pt-br") "pt-BR" else "en-CA"
-                    val title = frontMatter["title"]?.singleOrNull() ?: return@mapNotNull null
-                    val date = frontMatter["date"]?.singleOrNull().orEmpty()
-                    val description = frontMatter["description"]?.singleOrNull().orEmpty()
                     val markdownFile = File(markdownResourceDir, entry.filePath)
-                    val readTime = if (markdownFile.exists()) {
-                        calculateReadingTime(markdownFile.readText())
+                    val fileText = if (markdownFile.exists()) markdownFile.readText() else ""
+                    val frontMatterLines = if (fileText.startsWith("---")) {
+                        val secondMarker = fileText.indexOf("---", startIndex = 3)
+                        if (secondMarker != -1) {
+                            fileText.substring(3, secondMarker).lines()
+                        } else emptyList()
+                    } else emptyList()
+
+                    fun extractScalar(key: String): String? {
+                        val lineIndex = frontMatterLines.indexOfFirst { line ->
+                            line.trimStart().startsWith("$key:")
+                        }
+                        if (lineIndex == -1) return null
+                        val line = frontMatterLines[lineIndex]
+                        val afterColon = line.substringAfter("$key:").trim()
+                        if (afterColon == ">" || afterColon == ">-" || afterColon == "|") {
+                            val indentedLines = mutableListOf<String>()
+                            for (i in (lineIndex + 1) until frontMatterLines.size) {
+                                val nextLine = frontMatterLines[i]
+                                if (nextLine.isBlank()) {
+                                    indentedLines.add("")
+                                } else if (nextLine.startsWith(" ") || nextLine.startsWith("\t")) {
+                                    indentedLines.add(nextLine.trim())
+                                } else {
+                                    break
+                                }
+                            }
+                            return indentedLines.filter { it.isNotBlank() }.joinToString(" ")
+                        }
+                        return afterColon.removeSurrounding("\"").removeSurrounding("'")
+                    }
+
+                    fun extractAuthors(): List<AuthorRow> {
+                        val authorsIndex = frontMatterLines.indexOfFirst { line ->
+                            line.trimStart().startsWith("authors:")
+                        }
+                        if (authorsIndex == -1) return emptyList()
+                        val authorList = mutableListOf<AuthorRow>()
+                        var currentName = ""
+                        var currentAvatar = ""
+                        fun saveCurrent() {
+                            if (currentName.isNotBlank() || currentAvatar.isNotBlank()) {
+                                authorList.add(AuthorRow(name = currentName, avatar = currentAvatar))
+                                currentName = ""
+                                currentAvatar = ""
+                            }
+                        }
+                        for (i in (authorsIndex + 1) until frontMatterLines.size) {
+                            val line = frontMatterLines[i]
+                            if (line.isNotBlank() && !line.startsWith(" ") && !line.startsWith("\t") && !line.startsWith("-")) {
+                                break
+                            }
+                            val trimmed = line.trim()
+                            if (trimmed.startsWith("-")) {
+                                saveCurrent()
+                                val itemContent = trimmed.removePrefix("-").trim()
+                                if (itemContent.startsWith("name:")) {
+                                    currentName = itemContent.substringAfter("name:").trim().removeSurrounding("\"").removeSurrounding("'")
+                                } else if (itemContent.startsWith("avatar:")) {
+                                    currentAvatar = itemContent.substringAfter("avatar:").trim().removeSurrounding("\"").removeSurrounding("'")
+                                }
+                            } else if (trimmed.startsWith("name:")) {
+                                currentName = trimmed.substringAfter("name:").trim().removeSurrounding("\"").removeSurrounding("'")
+                            } else if (trimmed.startsWith("avatar:")) {
+                                currentAvatar = trimmed.substringAfter("avatar:").trim().removeSurrounding("\"").removeSurrounding("'")
+                            }
+                        }
+                        saveCurrent()
+                        return authorList
+                    }
+
+                    val slug = extractScalar("slug")?.takeIf { it.isNotBlank() }
+                        ?: frontMatter["slug"]?.singleOrNull()?.takeIf { it.isNotBlank() }
+                        ?: canonicalSlug
+                    val locale = extractScalar("locale")?.takeIf { it.isNotBlank() }
+                        ?: frontMatter["locale"]?.singleOrNull()
+                        ?: if (lang == "pt-br") "pt-BR" else "en-CA"
+                    val title = extractScalar("title")
+                        ?: frontMatter["title"]?.singleOrNull()
+                        ?: return@mapNotNull null
+                    val rawDate = extractScalar("date")
+                        ?: frontMatter["date"]?.singleOrNull().orEmpty()
+                    val date = formatDisplayDate(rawDate = rawDate, locale = locale)
+                    val description = extractScalar("description")
+                        ?: frontMatter["description"]?.singleOrNull().orEmpty()
+                    val summary = extractScalar("summary")
+                        ?: frontMatter["summary"]?.singleOrNull().orEmpty()
+                    val thumbnail = extractScalar("thumbnail")
+                        ?: frontMatter["thumbnail"]?.singleOrNull().orEmpty()
+                    val authors = extractAuthors()
+                    val readTime = if (fileText.isNotEmpty()) {
+                        calculateReadingTime(fileText)
                     } else {
                         frontMatter["readTime"]?.singleOrNull().orEmpty()
                     }
-                    val statusRaw = frontMatter["status"]?.singleOrNull()?.lowercase().orEmpty()
+                    val statusRaw = (extractScalar("status") ?: frontMatter["status"]?.singleOrNull()).orEmpty().lowercase()
                     val tags = frontMatter["tags"].orEmpty()
                     Row(
                         slug = slug,
@@ -300,6 +434,9 @@ kobweb {
                         readTime = readTime,
                         status = if (statusRaw == "draft") "Draft" else "Published",
                         locale = locale,
+                        summary = summary,
+                        authors = authors,
+                        thumbnail = thumbnail,
                     )
                 }
 
@@ -319,6 +456,13 @@ kobweb {
                 appendLine("    val $listName: List<Article> = listOf(")
                 listRows.forEach { row ->
                     val tagsLiteral = row.tags.joinToString(separator = ", ") { "\"${it}\"" }
+                    val authorsLiteral = if (row.authors.isEmpty()) {
+                        "emptyList()"
+                    } else {
+                        "listOf(" + row.authors.joinToString(separator = ", ") {
+                            "ArticleAuthor(name = \"${it.name.escapeForKotlin()}\", avatar = \"${it.avatar.escapeForKotlin()}\")"
+                        } + ")"
+                    }
                     appendLine("        Article(")
                     appendLine("            slug = \"${row.slug}\",")
                     appendLine("            date = \"${row.date.escapeForKotlin()}\",")
@@ -327,6 +471,9 @@ kobweb {
                     appendLine("            tags = listOf($tagsLiteral),")
                     appendLine("            readTime = \"${row.readTime.escapeForKotlin()}\",")
                     appendLine("            status = ArticleStatus.${row.status},")
+                    appendLine("            summary = \"${row.summary.escapeForKotlin()}\",")
+                    appendLine("            authors = $authorsLiteral,")
+                    appendLine("            thumbnail = \"${row.thumbnail.escapeForKotlin()}\",")
                     appendLine("        ),")
                 }
                 appendLine("    )")
@@ -336,6 +483,7 @@ kobweb {
                 appendLine("package dev.tonholo.portfolio.generated.articles")
                 appendLine()
                 appendLine("import dev.tonholo.portfolio.domain.model.Article")
+                appendLine("import dev.tonholo.portfolio.domain.model.ArticleAuthor")
                 appendLine("import dev.tonholo.portfolio.domain.model.ArticleStatus")
                 appendLine()
                 appendLine("/**")
@@ -402,6 +550,54 @@ tasks.withType<com.varabyte.kobwebx.gradle.markdown.tasks.ConvertMarkdownTask>()
             "dev.tonholo.portfolio.components.molecules.Callout(type = dev.tonholo.portfolio.components.molecules.CalloutType.$typeStr$titleParam)"
         } else {
             "dev.tonholo.portfolio.components.molecules.Callout(type = dev.tonholo.portfolio.components.molecules.CalloutType.QUOTE)"
+        }
+    }
+    doLast {
+        val genDir = getGenDir().get().asFile
+        if (genDir.exists()) {
+            val localizedArticleRegex = Regex("""@Page\("/articles/(.+)-pt-br"\)""")
+            genDir.walkTopDown().filter { it.isFile && it.extension == "kt" }.forEach { file ->
+                var text = file.readText()
+                val builderStart = "FrontMatterElement.Builder {"
+                val startIndex = text.indexOf(builderStart)
+                if (startIndex != -1) {
+                    val endIndex = text.indexOf("})", startIndex)
+                    if (endIndex != -1) {
+                        val prefix = text.substring(0, startIndex + builderStart.length)
+                        val builderContent = text.substring(startIndex + builderStart.length, endIndex)
+                        val suffix = text.substring(endIndex)
+                        val fixedBuilder = buildString {
+                            var inString = false
+                            var isEscaped = false
+                            for (i in builderContent.indices) {
+                                val c = builderContent[i]
+                                if (isEscaped) {
+                                    append(c)
+                                    isEscaped = false
+                                } else if (c == '\\') {
+                                    append(c)
+                                    isEscaped = true
+                                } else if (c == '"') {
+                                    append(c)
+                                    inString = !inString
+                                } else if (inString && (c == '\n' || c == '\r')) {
+                                    if (c == '\n') append("\\n")
+                                } else {
+                                    append(c)
+                                }
+                            }
+                        }
+                        text = prefix + fixedBuilder + suffix
+                    }
+                }
+                if (localizedArticleRegex.containsMatchIn(text)) {
+                    text = localizedArticleRegex.replace(text) { matchResult ->
+                        val slug = matchResult.groupValues[1]
+                        """@Page("/articles/pt-br/$slug")"""
+                    }
+                }
+                file.writeText(text)
+            }
         }
     }
 }

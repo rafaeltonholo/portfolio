@@ -236,13 +236,14 @@ private fun ArticleMainCell(article: Article, tokens: PortfolioTokens) {
         ) {
             ComposeText(article.title)
         }
+        val descCopy: String = article.summary.ifBlank { article.description }
         P(
             attrs = ArticleDescStyle
                 .toModifier()
                 .color(tokens.ink.ink3)
                 .toAttrs(),
         ) {
-            ComposeText(article.description)
+            ComposeText(descCopy)
         }
     }
 }

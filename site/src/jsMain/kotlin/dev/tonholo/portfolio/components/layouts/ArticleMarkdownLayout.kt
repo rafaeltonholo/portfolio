@@ -10,10 +10,13 @@ import androidx.compose.runtime.setValue
 import com.varabyte.kobweb.compose.css.BorderCollapse
 import com.varabyte.kobweb.compose.css.FontStyle
 import com.varabyte.kobweb.compose.css.FontWeight
+import com.varabyte.kobweb.compose.css.ObjectFit
+import com.varabyte.kobweb.compose.css.Overflow
 import com.varabyte.kobweb.compose.css.TextDecorationLine
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.graphics.Color
 import com.varabyte.kobweb.compose.ui.modifiers.alignItems
+import com.varabyte.kobweb.compose.ui.modifiers.aspectRatio
 import com.varabyte.kobweb.compose.ui.modifiers.backgroundColor
 import com.varabyte.kobweb.compose.ui.modifiers.border
 import com.varabyte.kobweb.compose.ui.modifiers.borderCollapse
@@ -32,6 +35,8 @@ import com.varabyte.kobweb.compose.ui.modifiers.letterSpacing
 import com.varabyte.kobweb.compose.ui.modifiers.lineHeight
 import com.varabyte.kobweb.compose.ui.modifiers.margin
 import com.varabyte.kobweb.compose.ui.modifiers.maxWidth
+import com.varabyte.kobweb.compose.ui.modifiers.objectFit
+import com.varabyte.kobweb.compose.ui.modifiers.overflow
 import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.compose.ui.modifiers.textDecorationLine
 import com.varabyte.kobweb.compose.ui.styleModifier
@@ -42,6 +47,7 @@ import com.varabyte.kobweb.core.data.get
 import com.varabyte.kobweb.core.init.InitRoute
 import com.varabyte.kobweb.core.init.InitRouteContext
 import com.varabyte.kobweb.core.layout.Layout
+import com.varabyte.kobweb.silk.components.graphics.Image
 import com.varabyte.kobweb.silk.style.CssStyle
 import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.style.selectors.descendants
@@ -52,6 +58,7 @@ import dev.tonholo.portfolio.components.atoms.GiscusWrapper
 import dev.tonholo.portfolio.components.molecules.ArticleMetaRow
 import dev.tonholo.portfolio.components.organisms.articles.ArticleTocSidebar
 import dev.tonholo.portfolio.components.organisms.articles.TocEntry
+import dev.tonholo.portfolio.domain.model.ArticleAuthor
 import dev.tonholo.portfolio.extensions.toKebabCase
 import dev.tonholo.portfolio.generated.articles.GeneratedArticles
 import dev.tonholo.portfolio.locale.Locale
@@ -160,6 +167,9 @@ data class ArticleMarkdownLayoutData(
     val description: String,
     val readTime: String,
     val locale: Locale = Locale.EnCa,
+    val summary: String = "",
+    val authors: List<ArticleAuthor> = emptyList(),
+    val thumbnail: String = "",
 )
 
 /**
@@ -194,14 +204,26 @@ fun initArticleMarkdownLayout(ctx: InitRouteContext) {
         ?: GeneratedArticles.ALL.firstOrNull { it.slug == slug }
     val readTime: String = matchedArticle?.readTime?.takeIf { it.isNotBlank() }
         ?: frontMatter?.get("readTime")?.singleOrNull().orEmpty()
+    val summary: String = matchedArticle?.summary?.takeIf { it.isNotBlank() }
+        ?: frontMatter?.get("summary")?.singleOrNull().orEmpty()
+    val thumbnail: String = matchedArticle?.thumbnail?.takeIf { it.isNotBlank() }
+        ?: frontMatter?.get("thumbnail")?.singleOrNull().orEmpty()
+    val authors: List<ArticleAuthor> = matchedArticle?.authors?.takeIf { it.isNotEmpty() }
+        ?: emptyList()
     ctx.data.add(
         ArticleMarkdownLayoutData(
             slug = slug,
-            title = frontMatter?.get("title")?.singleOrNull().orEmpty(),
-            date = frontMatter?.get("date")?.singleOrNull().orEmpty(),
-            description = frontMatter?.get("description")?.singleOrNull().orEmpty(),
+            title = matchedArticle?.title?.takeIf { it.isNotBlank() }
+                ?: frontMatter?.get("title")?.singleOrNull().orEmpty(),
+            date = matchedArticle?.date?.takeIf { it.isNotBlank() }
+                ?: frontMatter?.get("date")?.singleOrNull().orEmpty(),
+            description = matchedArticle?.description?.takeIf { it.isNotBlank() }
+                ?: frontMatter?.get("description")?.singleOrNull().orEmpty(),
             readTime = readTime,
             locale = locale,
+            summary = summary,
+            authors = authors,
+            thumbnail = thumbnail,
         ),
     )
 }
@@ -242,6 +264,7 @@ fun ArticleMarkdownLayout(context: PageContext, content: @Composable () -> Unit)
     }
     var tocEntries by remember(data.slug) { mutableStateOf<List<TocEntry>>(emptyList()) }
     val activeId: String = rememberScrollActiveHeadingId(slug = data.slug, entries = tocEntries)
+    val primaryAuthor: ArticleAuthor? = data.authors.firstOrNull()
     PageLayout {
         HeroSection(id = "article-shell") {
             // Handoff structure: meta row, title, and lede span the full
@@ -252,6 +275,8 @@ fun ArticleMarkdownLayout(context: PageContext, content: @Composable () -> Unit)
                 date = data.date,
                 readTime = data.readTime,
                 backRoute = Routes.ARTICLES,
+                author = primaryAuthor?.name ?: "rafael",
+                authorAvatar = primaryAuthor?.avatar.orEmpty(),
             )
             H1(
                 attrs = ArticleMarkdownTitleStyle
@@ -270,6 +295,24 @@ fun ArticleMarkdownLayout(context: PageContext, content: @Composable () -> Unit)
                         .toAttrs(),
                 ) {
                     ComposeText(data.description)
+                }
+            }
+            if (data.thumbnail.isNotEmpty()) {
+                Div(
+                    attrs = Modifier
+                        .fillMaxWidth()
+                        .margin(bottom = 2.cssRem)
+                        .borderRadius(4.dp)
+                        .overflow(Overflow.Hidden)
+                        .toAttrs(),
+                ) {
+                    Image(
+                        src = data.thumbnail,
+                        alt = data.title,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .objectFit(ObjectFit.Contain),
+                    )
                 }
             }
             Div(attrs = ArticleMarkdownGridStyle.toModifier().toAttrs()) {
