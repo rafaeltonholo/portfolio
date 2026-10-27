@@ -152,8 +152,6 @@ object StringsPtBr : Strings() {
     override val articlesList: ArticlesList = ArticlesList(
         title = "Escrita.",
         postsSuffix = "posts",
-        rssCopy = "RSS disponível",
-        subscribersCopy = "acompanhado por 342 leitores",
         statusDraft = "rascunho",
         statusPublished = "publicado",
     )

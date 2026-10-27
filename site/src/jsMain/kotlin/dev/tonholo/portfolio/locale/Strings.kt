@@ -134,8 +134,6 @@ sealed class Strings {
     data class ArticlesList(
         val title: String,
         val postsSuffix: String,
-        val rssCopy: String,
-        val subscribersCopy: String,
         val statusDraft: String,
         val statusPublished: String,
     )

@@ -16,7 +16,6 @@ import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.style.toModifier
 import dev.tonholo.portfolio.components.atoms.MetaLabel
 import dev.tonholo.portfolio.components.atoms.MetaLabelVariant
-import dev.tonholo.portfolio.components.atoms.MetaSeparator
 import dev.tonholo.portfolio.components.layouts.HeroSection
 import dev.tonholo.portfolio.locale.LocalStrings
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
@@ -58,8 +57,7 @@ private val SUMMARY_GAP = 8.dp
  * handoff CSS (`styles.css` lines 988-1002) and the surrounding markup in
  * `pages1.jsx` `ArticlesPage` (lines 106-112): a two-column grid with an
  * editorial title block on the left (accent meta label + display `H1`) and a
- * mono muted sentence on the right summarising the post count, RSS status, and
- * subscriber count. Below [Breakpoint.MD] the grid collapses to a single
+ * mono muted sentence on the right summarising the post count. Below [Breakpoint.MD] the grid collapses to a single
  * column so both slots stack.
  *
  * @param articleCount number of articles in the feed; rendered as the leading
@@ -98,10 +96,6 @@ fun ArticlesHeader(articleCount: Int, modifier: Modifier = Modifier) {
                     .toAttrs(),
             ) {
                 ComposeText("$articleCount ${strings.postsSuffix}")
-                MetaSeparator()
-                ComposeText(strings.rssCopy)
-                MetaSeparator()
-                ComposeText(strings.subscribersCopy)
             }
         }
     }

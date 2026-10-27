@@ -153,4 +153,26 @@ class StringsTest {
         // Assert
         assertEquals(expected = "(abre em uma nova aba)", actual = actual)
     }
+
+    @Test
+    fun `given EnCa locale, when articlesList is read, then returns expected values`() {
+        // Arrange
+        val strings: Strings = stringsFor(locale = Locale.EnCa)
+        // Act
+        val actual: Strings.ArticlesList = strings.articlesList
+        // Assert
+        assertEquals(expected = "Writing.", actual = actual.title)
+        assertEquals(expected = "posts", actual = actual.postsSuffix)
+    }
+
+    @Test
+    fun `given PtBr locale, when articlesList is read, then returns expected values`() {
+        // Arrange
+        val strings: Strings = stringsFor(locale = Locale.PtBr)
+        // Act
+        val actual: Strings.ArticlesList = strings.articlesList
+        // Assert
+        assertEquals(expected = "Escrita.", actual = actual.title)
+        assertEquals(expected = "posts", actual = actual.postsSuffix)
+    }
 }

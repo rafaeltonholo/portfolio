@@ -147,8 +147,6 @@ object StringsEn : Strings() {
     override val articlesList: ArticlesList = ArticlesList(
         title = "Writing.",
         postsSuffix = "posts",
-        rssCopy = "RSS available",
-        subscribersCopy = "subscribed by 342 readers",
         statusDraft = "draft",
         statusPublished = "published",
     )
