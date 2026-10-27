@@ -303,9 +303,9 @@ private fun HobbyCell(hobby: Strings.About.Hobby, tokens: PortfolioTokens) {
 private fun BeyondPanel(strings: Strings.About) {
     val tokens = LocalPortfolioTokens.current
     ProseContainer {
-        ProseParagraph(text = strings.beyondBody1, isFirst = true, tokens = tokens)
-        ProseParagraph(text = strings.beyondBody2, isFirst = false, tokens = tokens)
-        ProseParagraph(text = strings.beyondBody3, isFirst = false, tokens = tokens)
+        strings.beyondParagraphs.forEachIndexed { index, paragraph ->
+            ProseParagraph(text = paragraph, isFirst = index == 0, tokens = tokens)
+        }
     }
 }
 

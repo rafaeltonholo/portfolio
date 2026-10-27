@@ -135,16 +135,14 @@ object StringsPtBr : Strings() {
                     "Brasil, a cada um ou dois anos.",
             ),
         ),
-        beyondBody1 = "Me mudei do Brasil pro Canadá em 2022 - uma decisão pequena que virou " +
-            "enorme. Me adaptando ao frio, à neve, ao francês, e à estranha fidelidade ao " +
-            "Tim Hortons que vem junto com morar aqui.",
-        beyondBody2 = "Minha esposa é product designer (e a primeira leitora de qualquer coisa " +
-            "que eu escrevo). A gente se conheceu num laboratório de universidade em Belo " +
-            "Horizonte onde ela estava construindo, pasmem, um protótipo físico de jogo de " +
-            "tabuleiro com Arduino. Desde então a gente faz coisas juntos.",
-        beyondBody3 = "Tento devolver um pouco pras comunidades com quem aprendi - principalmente " +
-            "via open source e palestras ocasionais. Se você está no começo da carreira em " +
-            "engenharia e quer conversar, minha caixa de entrada está aberta.",
+        beyondParagraphs = listOf(
+            "Me mudei do Brasil pro Canadá em 2022 - uma decisão pequena que virou " +
+                "enorme. Me adaptando ao frio, à neve, e à estranha fidelidade ao " +
+                "Tim Hortons que vem junto com morar aqui.",
+            "Tento devolver um pouco pras comunidades com quem aprendi - principalmente " +
+                "via open source e palestras ocasionais. Se você está no começo da carreira em " +
+                "engenharia e quer conversar, minha caixa de entrada está aberta.",
+        ),
     )
 
     override val articlesList: ArticlesList = ArticlesList(

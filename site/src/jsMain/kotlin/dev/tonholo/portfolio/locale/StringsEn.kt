@@ -130,16 +130,14 @@ object StringsEn : Strings() {
                     "two.",
             ),
         ),
-        beyondBody1 = "I moved from Brazil to Canada in 2022 - a small decision that became a " +
-            "huge one. Adjusting to the cold, the snow, the French, the strange Tim " +
-            "Hortons loyalty that comes with living here.",
-        beyondBody2 = "My wife is a product designer (and my first reader for anything I write). " +
-            "We met at a university lab in Belo Horizonte where she was building, of all " +
-            "things, a physical board-game prototype with Arduino. We've been making things " +
-            "together ever since.",
-        beyondBody3 = "I try to give something back to the communities I learned from - mostly " +
-            "through open source and occasional talks. If you're an early-career engineer " +
-            "and want to chat, my inbox is open.",
+        beyondParagraphs = listOf(
+            "I moved from Brazil to Canada in 2022 - a small decision that became a " +
+                "huge one. Adjusting to the cold, the snow, and the strange Tim " +
+                "Hortons loyalty that comes with living here.",
+            "I try to give something back to the communities I learned from - mostly " +
+                "through open source and occasional talks. If you're an early-career engineer " +
+                "and want to chat, my inbox is open.",
+        ),
     )
 
     override val articlesList: ArticlesList = ArticlesList(

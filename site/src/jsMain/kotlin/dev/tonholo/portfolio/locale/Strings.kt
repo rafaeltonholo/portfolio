@@ -120,9 +120,7 @@ sealed class Strings {
         val nowHeadingThinking: String,
         val nowBodyThinking: String,
         val hobbies: List<Hobby>,
-        val beyondBody1: String,
-        val beyondBody2: String,
-        val beyondBody3: String,
+        val beyondParagraphs: List<String>,
     ) {
         /**
          * One entry in the hobbies grid. [label] is the accent-meta prefix
