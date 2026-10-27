@@ -101,6 +101,7 @@ private val META_ACCENT_LIGHT_SURFACE = Color.rgb(META_ACCENT_LIGHT_SURFACE_RGB)
 // untranslated. The email address is also stable across locales.
 private const val META_LABEL_COPY = "// hiring_me.sh"
 private const val EMAIL_HREF = "mailto:rafael@tonholo.dev"
+private const val BOOKING_HREF = "mailto:rafael@tonholo.dev?subject=Book%2030%20min"
 
 /**
  * Resolves the eyebrow color to ensure WCAG AAA compliance (>= 7.0:1) on both
@@ -238,6 +239,7 @@ private fun HiringCtaActions(onEmailClick: () -> Unit, onBookingClick: () -> Uni
         Button(
             text = strings.bookingLabel,
             variant = ButtonVariant.Ghost,
+            href = BOOKING_HREF,
             onClick = onBookingClick,
             modifier = Modifier
                 .backgroundColor(
