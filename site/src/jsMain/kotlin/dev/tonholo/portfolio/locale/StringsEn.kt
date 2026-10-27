@@ -116,24 +116,13 @@ object StringsEn : Strings() {
                     "is a work in progress.",
             ),
             About.Hobby(
-                label = "Coffee",
-                body = "V60 every morning, usually Ethiopian. I own more filters than I should " +
-                    "admit.",
-            ),
-            About.Hobby(
                 label = "Running",
                 body = "The Halifax harbourwalk in every season. 10K most weeks, a half-marathon " +
                     "twice a year.",
             ),
             About.Hobby(
                 label = "Games",
-                body = "Metroidvanias. Currently replaying Hollow Knight (again). Silksong, any " +
-                    "day now.",
-            ),
-            About.Hobby(
-                label = "Reading",
-                body = "Non-fiction tech + one novel always going in parallel. Current pair: " +
-                    "DDIA and Station Eleven.",
+                body = "Currently playing Baldur's Gate 3.",
             ),
             About.Hobby(
                 label = "Travel",
