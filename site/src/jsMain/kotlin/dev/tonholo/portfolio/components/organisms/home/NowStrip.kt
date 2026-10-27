@@ -67,6 +67,7 @@ import org.jetbrains.compose.web.css.FlexDirection
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.fr
 import org.jetbrains.compose.web.css.s
+import org.jetbrains.compose.web.dom.A
 import org.jetbrains.compose.web.dom.B
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.H3
@@ -330,12 +331,11 @@ private fun HobbyRow(label: String, body: String) {
 
 /**
  * Reading hobby row: like [HobbyRow] but the book title is rendered in the
- * serif font and italicized, matching the handoff JSX.
+ * serif font, italicized, and links out to the book.
  */
 @Composable
 private fun HobbyReadingRow() {
-    val tokens = LocalPortfolioTokens.current
-
+    val tokens: PortfolioTokens = LocalPortfolioTokens.current
     Li(attrs = Modifier.toAttrs()) {
         B(
             attrs = Modifier
@@ -345,11 +345,16 @@ private fun HobbyReadingRow() {
             ComposeText(HOBBY_READING_LABEL)
         }
         ComposeText(" $HOBBY_SEPARATOR ")
-        Span(
-            attrs = Modifier
+        A(
+            href = HOBBY_READING_URL,
+            attrs = HobbyReadingLinkStyle
+                .toModifier()
                 .fontFamily(*FontFamilies.SERIF)
                 .fontStyle(FontStyle.Italic)
-                .toAttrs(),
+                .toAttrs {
+                    attr("target", "_blank")
+                    attr("rel", "noopener noreferrer")
+                },
         ) {
             ComposeText(HOBBY_READING_TITLE)
         }
@@ -364,7 +369,8 @@ private const val HOBBY_COOKING_BODY = "ragu, most Sundays"
 private const val HOBBY_RUNNING_LABEL = "running"
 private const val HOBBY_RUNNING_BODY = "Karney Lake Dam path"
 private const val HOBBY_READING_LABEL = "reading"
-private const val HOBBY_READING_TITLE = "Designing Data-Intensive Applications"
+private const val HOBBY_READING_TITLE = "Refactoring: Improving the Design of Existing Code"
+private const val HOBBY_READING_URL = "https://a.co/d/09Rs9Xy9"
 
 /**
  * Base `CssStyle` for `.now-grid`. Single column at the base width; switches
@@ -457,5 +463,32 @@ val HobbyListStyle = CssStyle {
             .display(DisplayStyle.Flex)
             .flexDirection(FlexDirection.Column)
             .gap(HOBBY_LIST_GAP)
+    }
+}
+
+/**
+ * Base `CssStyle` for the reading book link in the off-the-clock column.
+ * Inherits surrounding typography, overrides text decoration, and transitions
+ * to the accent color on hover.
+ */
+val HobbyReadingLinkStyle = CssStyle {
+    base {
+        val ink: InkScale = if (colorMode == ColorMode.DARK) Ink.dark else Ink.light
+        Modifier
+            .color(ink.ink2)
+            .textDecorationLine(TextDecorationLine.None)
+            .cursor(Cursor.Pointer)
+            .transition(
+                Transition.of(
+                    property = "color",
+                    duration = WRITING_TRANSITION_DURATION_S.s,
+                ),
+            )
+    }
+    hover {
+        val accent: AccentSwatch = if (colorMode == ColorMode.DARK) AccentMint.dark else AccentMint.light
+        Modifier
+            .color(accent.accent)
+            .textDecorationLine(TextDecorationLine.Underline)
     }
 }
