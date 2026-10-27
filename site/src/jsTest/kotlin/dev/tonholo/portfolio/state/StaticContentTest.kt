@@ -3,6 +3,7 @@ package dev.tonholo.portfolio.state
 import dev.tonholo.portfolio.domain.model.ArticleStatus
 import dev.tonholo.portfolio.domain.model.ProjectKind
 import dev.tonholo.portfolio.domain.model.SkillCategory
+import dev.tonholo.portfolio.locale.Locale
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -57,6 +58,26 @@ class StaticContentTest {
         // Assert
         assertTrue(actual = published.isNotEmpty())
         assertTrue(actual = published.all { it.status == ArticleStatus.Published })
+    }
+
+    @Test
+    fun `given StaticContent articlesFor with PtBr, when read, then it has four localized entries`() {
+        // Arrange / Act
+        val ptArticles = StaticContent.articlesFor(locale = Locale.PtBr)
+
+        // Assert
+        assertEquals(expected = 4, actual = ptArticles.size)
+        assertEquals(expected = "git-time-travel-reflog-reset", actual = ptArticles[0].slug)
+        assertTrue(actual = ptArticles[0].title.contains("Viagem no tempo"))
+    }
+
+    @Test
+    fun `given StaticContent articlesFor with EnCa, when read, then it matches ARTICLES`() {
+        // Arrange / Act
+        val enArticles = StaticContent.articlesFor(locale = Locale.EnCa)
+
+        // Assert
+        assertEquals(expected = StaticContent.ARTICLES, actual = enArticles)
     }
 
     @Test

@@ -43,6 +43,7 @@ import dev.tonholo.portfolio.components.atoms.MetaSeparator
 import dev.tonholo.portfolio.components.template.NumberedSection
 import dev.tonholo.portfolio.domain.model.Article
 import dev.tonholo.portfolio.domain.model.ArticleStatus
+import dev.tonholo.portfolio.domain.model.NowStripEntry
 import dev.tonholo.portfolio.locale.LocalStrings
 import dev.tonholo.portfolio.locale.Locale
 import dev.tonholo.portfolio.locale.Strings
@@ -133,11 +134,10 @@ private val WORKING_TITLE_MARGIN_BOTTOM = 12.dp
  */
 @Composable
 fun NowStrip(modifier: Modifier = Modifier) {
-    val locale = LocalLocaleState.current.current
-    val workingEntry = StaticContent.nowStripFor(locale = locale).firstOrNull()
-    val recentArticles = StaticContent.ARTICLES.take(WRITING_ARTICLES_TAKE)
-    val strings = LocalStrings.current.nowStrip
-
+    val locale: Locale = LocalLocaleState.current.current
+    val workingEntry: NowStripEntry? = StaticContent.nowStripFor(locale = locale).firstOrNull()
+    val recentArticles: List<Article> = StaticContent.articlesFor(locale = locale).take(WRITING_ARTICLES_TAKE)
+    val strings: Strings.NowStrip = LocalStrings.current.nowStrip
     NumberedSection(
         number = SECTION_ORDINAL,
         title = strings.sectionTitle,

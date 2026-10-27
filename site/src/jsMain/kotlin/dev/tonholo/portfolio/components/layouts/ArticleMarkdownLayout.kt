@@ -2,6 +2,7 @@ package dev.tonholo.portfolio.components.layouts
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -53,7 +54,10 @@ import dev.tonholo.portfolio.components.organisms.articles.ArticleTocSidebar
 import dev.tonholo.portfolio.components.organisms.articles.TocEntry
 import dev.tonholo.portfolio.extensions.toKebabCase
 import dev.tonholo.portfolio.generated.articles.GeneratedArticles
+import dev.tonholo.portfolio.locale.Locale
 import dev.tonholo.portfolio.navigation.Routes
+import dev.tonholo.portfolio.state.LocalLocaleState
+import dev.tonholo.portfolio.state.StaticContent
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.color.AccentMint
 import dev.tonholo.portfolio.theme.color.Ink
@@ -155,6 +159,7 @@ data class ArticleMarkdownLayoutData(
     val date: String,
     val description: String,
     val readTime: String,
+    val locale: Locale = Locale.EnCa,
 )
 
 /**
@@ -171,20 +176,32 @@ data class ArticleMarkdownLayoutData(
 fun initArticleMarkdownLayout(ctx: InitRouteContext) {
     val frontMatter = ctx.markdown?.frontMatter
     val path: String = ctx.markdown?.path.orEmpty()
-    val rawSlug: String = path.substringAfterLast('/').removeSuffix(".md")
-    val kebabSlug: String = rawSlug.toKebabCase()
-    val matchedArticle = GeneratedArticles.ALL.firstOrNull { article ->
-        article.slug == kebabSlug || article.slug == rawSlug
+    val fallbackSlug: String = path
+        .substringAfterLast('/')
+        .removeSuffix(".md")
+        .toKebabCase()
+    val localeTag: String? = frontMatter?.get("locale")?.singleOrNull()
+    val locale: Locale = Locale.fromTagOrDefault(tag = localeTag)
+    val langSuffix: String = locale.pathSegment?.let { "-$it" }.orEmpty()
+    val strippedFallbackSlug: String = if (langSuffix.isNotEmpty() && fallbackSlug.endsWith(langSuffix)) {
+        fallbackSlug.removeSuffix(langSuffix)
+    } else {
+        fallbackSlug
     }
+    val slug: String = frontMatter?.get("slug")?.singleOrNull()?.takeIf { it.isNotBlank() }
+        ?: strippedFallbackSlug
+    val matchedArticle = StaticContent.articlesFor(locale = locale).firstOrNull { it.slug == slug }
+        ?: GeneratedArticles.ALL.firstOrNull { it.slug == slug }
     val readTime: String = matchedArticle?.readTime?.takeIf { it.isNotBlank() }
         ?: frontMatter?.get("readTime")?.singleOrNull().orEmpty()
     ctx.data.add(
         ArticleMarkdownLayoutData(
-            slug = kebabSlug,
+            slug = slug,
             title = frontMatter?.get("title")?.singleOrNull().orEmpty(),
             date = frontMatter?.get("date")?.singleOrNull().orEmpty(),
             description = frontMatter?.get("description")?.singleOrNull().orEmpty(),
             readTime = readTime,
+            locale = locale,
         ),
     )
 }
@@ -215,11 +232,16 @@ fun ArticleMarkdownLayout(context: PageContext, content: @Composable () -> Unit)
         date = "",
         description = "",
         readTime = "",
+        locale = Locale.EnCa,
     )
-
+    val localeState = LocalLocaleState.current
+    LaunchedEffect(data.locale) {
+        if (localeState.current != data.locale) {
+            localeState.set(data.locale)
+        }
+    }
     var tocEntries by remember(data.slug) { mutableStateOf<List<TocEntry>>(emptyList()) }
     val activeId: String = rememberScrollActiveHeadingId(slug = data.slug, entries = tocEntries)
-
     PageLayout {
         HeroSection(id = "article-shell") {
             // Handoff structure: meta row, title, and lede span the full

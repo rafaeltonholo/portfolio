@@ -224,6 +224,17 @@ kobweb {
                 return words.joinToString("-")
             }
 
+            val localizedSegments = listOf("pt-br")
+            fun String.splitLocalizedSlug(): Pair<String, String?> {
+                for (lang in localizedSegments) {
+                    val suffix = "-$lang"
+                    if (this.endsWith(suffix)) {
+                        return this.removeSuffix(suffix) to lang
+                    }
+                }
+                return this to null
+            }
+
             data class Row(
                 val slug: String,
                 val date: String,
@@ -232,6 +243,7 @@ kobweb {
                 val tags: List<String>,
                 val readTime: String,
                 val status: String,
+                val locale: String,
             )
 
             val articleDateFormatter = DateTimeFormatterBuilder()
@@ -261,10 +273,13 @@ kobweb {
                 .filter { entry -> entry.filePath.startsWith("articles/") }
                 .mapNotNull { entry ->
                     val frontMatter = entry.frontMatter
-                    val slug = entry.filePath
+                    val rawSlug = entry.filePath
                         .removePrefix("articles/")
                         .removeSuffix(".md")
                         .toKebabSlug()
+                    val (canonicalSlug, lang) = rawSlug.splitLocalizedSlug()
+                    val slug = frontMatter["slug"]?.singleOrNull()?.takeIf { it.isNotBlank() } ?: canonicalSlug
+                    val locale = frontMatter["locale"]?.singleOrNull() ?: if (lang == "pt-br") "pt-BR" else "en-CA"
                     val title = frontMatter["title"]?.singleOrNull() ?: return@mapNotNull null
                     val date = frontMatter["date"]?.singleOrNull().orEmpty()
                     val description = frontMatter["description"]?.singleOrNull().orEmpty()
@@ -284,9 +299,38 @@ kobweb {
                         tags = tags,
                         readTime = readTime,
                         status = if (statusRaw == "draft") "Draft" else "Published",
+                        locale = locale,
                     )
                 }
+
+            val enRows = rows
+                .filter { it.locale == "en-CA" }
                 .sortedByDescending { it.date.toSortableDate() }
+
+            val ptRowsBySlug = rows
+                .filter { it.locale == "pt-BR" }
+                .associateBy { it.slug }
+
+            val ptRows = enRows.map { enRow ->
+                ptRowsBySlug[enRow.slug] ?: enRow
+            }
+
+            fun StringBuilder.appendArticleList(listName: String, listRows: List<Row>) {
+                appendLine("    val $listName: List<Article> = listOf(")
+                listRows.forEach { row ->
+                    val tagsLiteral = row.tags.joinToString(separator = ", ") { "\"${it}\"" }
+                    appendLine("        Article(")
+                    appendLine("            slug = \"${row.slug}\",")
+                    appendLine("            date = \"${row.date.escapeForKotlin()}\",")
+                    appendLine("            title = \"${row.title.escapeForKotlin()}\",")
+                    appendLine("            description = \"${row.description.escapeForKotlin()}\",")
+                    appendLine("            tags = listOf($tagsLiteral),")
+                    appendLine("            readTime = \"${row.readTime.escapeForKotlin()}\",")
+                    appendLine("            status = ArticleStatus.${row.status},")
+                    appendLine("        ),")
+                }
+                appendLine("    )")
+            }
 
             val content = buildString {
                 appendLine("package dev.tonholo.portfolio.generated.articles")
@@ -300,20 +344,11 @@ kobweb {
                 appendLine(" * re-run the `kobwebxMarkdownProcess` task to regenerate.")
                 appendLine(" */")
                 appendLine("object GeneratedArticles {")
-                appendLine("    val ALL: List<Article> = listOf(")
-                rows.forEach { row ->
-                    val tagsLiteral = row.tags.joinToString(separator = ", ") { "\"${it}\"" }
-                    appendLine("        Article(")
-                    appendLine("            slug = \"${row.slug}\",")
-                    appendLine("            date = \"${row.date}\",")
-                    appendLine("            title = \"${row.title.escapeForKotlin()}\",")
-                    appendLine("            description = \"${row.description.escapeForKotlin()}\",")
-                    appendLine("            tags = listOf($tagsLiteral),")
-                    appendLine("            readTime = \"${row.readTime}\",")
-                    appendLine("            status = ArticleStatus.${row.status},")
-                    appendLine("        ),")
-                }
-                appendLine("    )")
+                appendArticleList("EN", enRows)
+                appendLine()
+                appendArticleList("PT_BR", ptRows)
+                appendLine()
+                appendLine("    val ALL: List<Article> = EN")
                 appendLine("}")
             }
 

@@ -6,6 +6,9 @@ import dev.tonholo.portfolio.components.layouts.PageLayout
 import dev.tonholo.portfolio.components.layouts.SectionContainer
 import dev.tonholo.portfolio.components.organisms.articles.ArticleList
 import dev.tonholo.portfolio.components.organisms.articles.ArticlesHeader
+import dev.tonholo.portfolio.domain.model.Article
+import dev.tonholo.portfolio.locale.Locale
+import dev.tonholo.portfolio.state.LocalLocaleState
 import dev.tonholo.portfolio.state.StaticContent
 
 /**
@@ -20,7 +23,8 @@ import dev.tonholo.portfolio.state.StaticContent
 @Composable
 @Suppress("ModifierMissing")
 fun ArticlesPage() {
-    val articles = StaticContent.ARTICLES
+    val locale: Locale = LocalLocaleState.current.current
+    val articles: List<Article> = StaticContent.articlesFor(locale = locale)
     PageLayout {
         ArticlesHeader(articleCount = articles.size)
         SectionContainer(id = "articles-list") {

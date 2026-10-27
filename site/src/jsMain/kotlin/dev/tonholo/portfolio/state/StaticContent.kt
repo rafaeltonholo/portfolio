@@ -32,11 +32,21 @@ object StaticContent {
     val PROJECTS: List<Project> = PROJECTS_EN
 
     /**
-     * The article index is generated at build time from the markdown sources
-     * under `site/src/jsMain/resources/markdown/articles/`. Articles are
-     * authored in English only for v1; pt-BR readers still see English copy.
+     * English (source-of-truth) article list generated from markdown sources.
+     * Prefer [articlesFor] so the list flips with the active locale.
      */
     val ARTICLES: List<Article> = GeneratedArticles.ALL
+
+    /**
+     * Returns the localized list of articles for [locale].
+     *
+     * @param locale the active [Locale] to resolve articles for.
+     * @return the corresponding [Article] list.
+     */
+    fun articlesFor(locale: Locale): List<Article> = when (locale) {
+        Locale.EnCa -> GeneratedArticles.EN
+        Locale.PtBr -> GeneratedArticles.PT_BR
+    }
 
     /** English (source-of-truth) experience list. Prefer [experienceFor]. */
     val EXPERIENCE: List<Experience> = EXPERIENCE_EN
