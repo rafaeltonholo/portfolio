@@ -109,7 +109,7 @@ Every parsed node and path command implements `MethodSizeAccountable`, estimatin
 
 We then sum the estimated bytecode size for the entire icon structure:
 
-$$\text{Total Size} = \text{Base Structure (73 bytes)} + \sum \text{Node Byte Sizes}$$
+> **Total Size** = Base Structure (73 bytes) + Σ (Node Byte Sizes)
 
 ## Chunking methods: `NodeChunker`
 

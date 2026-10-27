@@ -112,7 +112,7 @@ Cada nó e comando de caminho analisado implementa `MethodSizeAccountable`, esti
 
 Nós então somamos o tamanho estimado de bytecode para toda a estrutura do ícone:
 
-$$\text{Tamanho Total} = \text{Estrutura Base (73 bytes)} + \sum \text{Tamanhos em Bytes dos Nós}$$
+> **Tamanho Total** = Estrutura Base (73 bytes) + Σ (Tamanhos em Bytes dos Nós)
 
 ## Dividindo métodos em pedaços: `NodeChunker`
 
