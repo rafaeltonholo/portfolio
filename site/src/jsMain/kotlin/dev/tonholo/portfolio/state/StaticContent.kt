@@ -525,8 +525,7 @@ private val NOW_STRIP_EN: List<NowStripEntry> = listOf(
     NowStripEntry(
         label = "off the clock",
         title = "Ragu, most Sundays.",
-        body = "Cooking slow Italian on Sundays, loose-leaf sencha in the mornings, " +
-            "and running the Halifax harbourwalk in every season.",
+        body = "Cooking slow Italian on Sundays and running the Halifax harbourwalk in every season.",
     ),
 )
 
@@ -547,7 +546,6 @@ private val NOW_STRIP_PT_BR: List<NowStripEntry> = listOf(
     NowStripEntry(
         label = "fora do expediente",
         title = "Ragu, quase todo domingo.",
-        body = "Cozinhando italiano devagar nos domingos, sencha em folha pela manhã " +
-            "e correndo o Halifax harbourwalk em todas as estações.",
+        body = "Cozinhando italiano devagar nos domingos e correndo o Halifax harbourwalk em todas as estações.",
     ),
 )

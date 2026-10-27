@@ -303,7 +303,6 @@ private fun OffTheClockColumn(strings: Strings.NowStrip) {
                 .toAttrs(),
         ) {
             HobbyRow(label = HOBBY_COOKING_LABEL, body = HOBBY_COOKING_BODY)
-            HobbyRow(label = HOBBY_TEA_LABEL, body = HOBBY_TEA_BODY)
             HobbyRow(label = HOBBY_RUNNING_LABEL, body = HOBBY_RUNNING_BODY)
             HobbyReadingRow()
         }
@@ -362,8 +361,6 @@ private fun HobbyReadingRow() {
 private const val HOBBY_SEPARATOR = "-"
 private const val HOBBY_COOKING_LABEL = "cooking"
 private const val HOBBY_COOKING_BODY = "ragu, most Sundays"
-private const val HOBBY_TEA_LABEL = "tea"
-private const val HOBBY_TEA_BODY = "loose-leaf sencha, mornings"
 private const val HOBBY_RUNNING_LABEL = "running"
 private const val HOBBY_RUNNING_BODY = "Karney Lake Dam path"
 private const val HOBBY_READING_LABEL = "reading"
