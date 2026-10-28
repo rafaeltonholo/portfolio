@@ -315,11 +315,14 @@ fun ArticleMarkdownLayout(context: PageContext, content: @Composable () -> Unit)
                 }
             }
             Div(attrs = ArticleMarkdownGridStyle.toModifier().toAttrs()) {
+                val articleCanonicalUrl: String =
+                    "https://rafael.tonholo.dev${Routes.article(slug = data.slug, locale = data.locale)}"
                 ArticleTocSidebar(
                     contents = tocEntries,
                     activeId = activeId.ifBlank { tocEntries.firstOrNull()?.id.orEmpty() },
                     onCopyLink = { copyCurrentLocation() },
                     articleTitle = data.title,
+                    articleUrl = articleCanonicalUrl,
                 )
                 Div(attrs = Modifier.fillMaxWidth().toAttrs()) {
                     Article(attrs = ArticleMarkdownBodyStyle.toModifier().toAttrs()) {

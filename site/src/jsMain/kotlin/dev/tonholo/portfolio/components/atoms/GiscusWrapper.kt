@@ -15,17 +15,6 @@ import org.w3c.dom.HTMLElement
 import org.w3c.dom.HTMLIFrameElement
 import org.w3c.dom.HTMLMetaElement
 import org.w3c.dom.HTMLScriptElement
-import org.w3c.dom.MessageEvent
-import org.w3c.dom.events.Event
-
-private const val GISCUS_ORIGIN: String = "https://giscus.app"
-private const val GISCUS_SCRIPT_SRC: String = "https://giscus.app/client.js"
-private const val GISCUS_REPO: String = "rafaeltonholo/portfolio"
-private const val GISCUS_REPO_ID: String = "R_kgDOL0CWLw"
-private const val GISCUS_CATEGORY: String = "Q&A"
-private const val GISCUS_CATEGORY_ID: String = "DIC_kwDOL0CWL84DJluC"
-private const val GISCUS_THEME_DARK: String = "transparent_dark"
-private const val GISCUS_THEME_LIGHT: String = "light"
 
 /**
  * Embeds the Giscus GitHub Discussions comment widget for the specified discussion [term].
@@ -39,16 +28,9 @@ fun GiscusWrapper(term: String, modifier: Modifier = Modifier) {
     val colorMode: ColorMode = themeState.current
     DisposableEffect(term, colorMode) {
         ensureOgTitleMeta(term = term)
-        val targetTheme: String = if (colorMode.isDark) GISCUS_THEME_DARK else GISCUS_THEME_LIGHT
+        val targetTheme: String = if (colorMode.isDark) GiscusConfig.THEME_DARK else GiscusConfig.THEME_LIGHT
         syncGiscusWidget(targetTheme = targetTheme, term = term)
-        val messageListener: (Event) -> Unit = createGiscusMessageListener(
-            targetTheme = targetTheme,
-            term = term,
-        )
-        window.addEventListener("message", messageListener)
-        onDispose {
-            window.removeEventListener("message", messageListener)
-        }
+        onDispose { }
     }
     Div(
         attrs = Modifier
@@ -67,37 +49,23 @@ fun GiscusWrapper(term: String, modifier: Modifier = Modifier) {
  * @param term discussion title identifier.
  */
 private fun syncGiscusWidget(targetTheme: String, term: String) {
+    if (!GiscusConfig.shouldInject(search = window.location.search)) return
     val existingIframe: HTMLIFrameElement? = document
         .querySelector("iframe.giscus-frame")
         .unsafeCast<HTMLIFrameElement?>()
-    if (existingIframe?.contentWindow != null) {
-        postGiscusThemeMessage(iframe = existingIframe, theme = targetTheme, term = term)
-    } else {
-        val container: HTMLElement? = document.querySelector(".giscus").unsafeCast<HTMLElement?>()
-        if (container != null) {
-            injectGiscusScript(container = container, term = term, targetTheme = targetTheme)
+    if (existingIframe != null) {
+        if (GiscusConfig.isContaminatedIframe(src = existingIframe.src)) {
+            existingIframe.remove()
+        } else if (existingIframe.contentWindow != null) {
+            postGiscusThemeMessage(iframe = existingIframe, theme = targetTheme, term = term)
+            return
         }
+    }
+    val container: HTMLElement? = document.querySelector(".giscus").unsafeCast<HTMLElement?>()
+    if (container != null) {
+        injectGiscusScript(container = container, term = term, targetTheme = targetTheme)
     }
 }
-
-/**
- * Creates an event listener that forwards the latest [targetTheme] and [term] to Giscus when ready.
- *
- * @param targetTheme active Giscus theme name.
- * @param term discussion title identifier.
- */
-private fun createGiscusMessageListener(targetTheme: String, term: String): (Event) -> Unit =
-    { event ->
-        val messageEvent: MessageEvent = event.unsafeCast<MessageEvent>()
-        if (messageEvent.origin == GISCUS_ORIGIN) {
-            val iframe: HTMLIFrameElement? = document
-                .querySelector("iframe.giscus-frame")
-                .unsafeCast<HTMLIFrameElement?>()
-            if (iframe?.contentWindow != null) {
-                postGiscusThemeMessage(iframe = iframe, theme = targetTheme, term = term)
-            }
-        }
-    }
 
 /**
  * Injects the Giscus bootstrap `<script>` into [container] with [term] and [targetTheme].
@@ -109,11 +77,11 @@ private fun createGiscusMessageListener(targetTheme: String, term: String): (Eve
 private fun injectGiscusScript(container: HTMLElement, term: String, targetTheme: String) {
     if (container.querySelector("script") != null) return
     val script: HTMLScriptElement = (document.createElement("script") as HTMLScriptElement).apply {
-        src = GISCUS_SCRIPT_SRC
-        setAttribute("data-repo", GISCUS_REPO)
-        setAttribute("data-repo-id", GISCUS_REPO_ID)
-        setAttribute("data-category", GISCUS_CATEGORY)
-        setAttribute("data-category-id", GISCUS_CATEGORY_ID)
+        src = GiscusConfig.SCRIPT_SRC
+        setAttribute("data-repo", GiscusConfig.REPO)
+        setAttribute("data-repo-id", GiscusConfig.REPO_ID)
+        setAttribute("data-category", GiscusConfig.CATEGORY)
+        setAttribute("data-category-id", GiscusConfig.CATEGORY_ID)
         setAttribute("data-mapping", "og:title")
         setAttribute("data-term", term)
         setAttribute("data-strict", "1")
@@ -139,7 +107,7 @@ private fun injectGiscusScript(container: HTMLElement, term: String, targetTheme
 @Suppress("UnusedParameter")
 private fun postGiscusThemeMessage(iframe: HTMLIFrameElement, theme: String, term: String) {
     val message: dynamic = js("({ giscus: { setConfig: { theme: theme, term: term } } })")
-    iframe.contentWindow?.postMessage(message, GISCUS_ORIGIN)
+    iframe.contentWindow?.postMessage(message, GiscusConfig.ORIGIN)
 }
 
 /**
@@ -149,8 +117,9 @@ private fun postGiscusThemeMessage(iframe: HTMLIFrameElement, theme: String, ter
  */
 private fun ensureOgTitleMeta(term: String) {
     if (term.isBlank()) return
-    val head = document.head ?: return
-    val existing = document.querySelector("meta[property='og:title']").unsafeCast<HTMLMetaElement?>()
+    val head: HTMLMetaElement? = document.head.unsafeCast<HTMLMetaElement?>()
+    if (head == null) return
+    val existing: HTMLMetaElement? = document.querySelector("meta[property='og:title']").unsafeCast<HTMLMetaElement?>()
     if (existing != null) {
         existing.content = term
     } else {
