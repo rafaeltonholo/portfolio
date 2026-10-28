@@ -14,6 +14,7 @@ plugins {
     alias(libs.plugins.kobwebx.markdown)
     alias(libs.plugins.kotlin.power.assert)
     alias(libs.plugins.detekt)
+    id("portfolio.analytics")
 }
 
 group = "dev.tonholo.portfolio"
@@ -650,49 +651,6 @@ dependencies {
     detektPlugins(libs.compose.rules.detekt)
 }
 
-val generatedAnalyticsSrcDir = layout.buildDirectory.dir("generated/analytics/kotlin")
-
-val generateBuildAnalytics by tasks.registering {
-    val scriptUrl = appProperties["UMAMI_SCRIPT_URL"]?.toString()
-        ?: error("UMAMI_SCRIPT_URL not set in app.properties")
-    val websiteId = appProperties["UMAMI_WEBSITE_ID"]?.toString()
-        ?: error("UMAMI_WEBSITE_ID not set in app.properties")
-    val outputDir = generatedAnalyticsSrcDir
-    val outputFile = outputDir.map { it.file("dev/tonholo/portfolio/analytics/BuildAnalytics.kt") }
-    val appPropertiesFile = rootProject.rootDir.resolve("app.properties")
-
-    inputs.file(appPropertiesFile)
-    inputs.property("scriptUrl", scriptUrl)
-    inputs.property("websiteId", websiteId)
-    outputs.file(outputFile)
-
-    doLast {
-        val file = outputFile.get().asFile
-        file.parentFile.mkdirs()
-        file.writeText(
-            """
-                |package dev.tonholo.portfolio.analytics
-                |
-                |internal object BuildAnalytics {
-                |    const val UMAMI_SCRIPT_URL: String = "$scriptUrl"
-                |    const val UMAMI_WEBSITE_ID: String = "$websiteId"
-                |}
-                |
-            """.trimMargin()
-        )
-    }
-}
-
-kotlin.sourceSets.named("jsMain") {
-    kotlin.srcDir(generatedAnalyticsSrcDir)
-}
-
-tasks.configureEach {
-    if (name == "compileKotlinJs" || name == "kspKotlinJs") {
-        dependsOn(generateBuildAnalytics)
-    }
-}
-
 val generateSitemap by tasks.registering {
     val pagesDir = layout.projectDirectory.dir("src/jsMain/kotlin/dev/tonholo/portfolio/pages")
     val outputFile = layout.projectDirectory.file("src/jsMain/resources/public/sitemap.xml")
@@ -766,17 +724,17 @@ val generateSitemap by tasks.registering {
             }
             .toList()
 
-        val extraSlugMetadata = extraSlugs.associate { slug ->
+        val extraSlugMetadata = extraSlugs.associateWith { slug ->
             val priority = if (slug.startsWith("/projects/")) "0.7" else "0.6"
-            slug to ("monthly" to priority)
+            ("monthly" to priority)
         }
         val allMetadata = pageMetadata + extraSlugMetadata
 
         val allPaths = (pagePaths + extraSlugs).distinct().sorted()
 
         val sitemap = buildString {
-            appendLine($$"""<?xml version="1.0" encoding="UTF-8"?>""")
-            appendLine($$"""<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">""")
+            appendLine("""<?xml version="1.0" encoding="UTF-8"?>""")
+            appendLine("""<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">""")
             for (path in allPaths) {
                 val (changefreq, priority) = allMetadata[path] ?: ("monthly" to "0.5")
                 appendLine("  <url>")
