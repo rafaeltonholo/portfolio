@@ -1,50 +1,28 @@
 package dev.tonholo.portfolio.pages
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import com.varabyte.kobweb.compose.ui.Modifier
-import com.varabyte.kobweb.compose.ui.modifiers.fillMaxSize
 import com.varabyte.kobweb.core.Page
-import com.varabyte.kobweb.core.rememberPageContext
-import com.varabyte.kobweb.navigation.Route
-import dev.tonholo.portfolio.core.analytics.LocalAnalyticsManager
-import dev.tonholo.portfolio.core.analytics.events.AnalyticEvent
-import dev.tonholo.portfolio.core.router.AppRoutes
-import dev.tonholo.portfolio.core.router.Articles
-import dev.tonholo.portfolio.core.router.Home
-import dev.tonholo.portfolio.core.router.Resume
-import dev.tonholo.portfolio.core.ui.theme.LocalLyricist
-import dev.tonholo.portfolio.features.about.AboutContent
-import dev.tonholo.portfolio.locale.Locale
-import dev.tonholo.portfolio.locale.localStorageKey
-import kotlinx.browser.localStorage
+import dev.tonholo.portfolio.components.layouts.PageLayout
+import dev.tonholo.portfolio.components.layouts.SectionContainer
+import dev.tonholo.portfolio.components.organisms.about.AboutHeader
+import dev.tonholo.portfolio.components.organisms.about.AboutTabs
 
-@Page(AppRoutes.About.ROUTE)
+/**
+ * About route "/about" - renders the editorial About header on top of the
+ * tabbed biography, approach, and beyond-work content block.
+ *
+ * The `routeOverride` trims Kobweb's default `AboutPage` -> `/about-page`
+ * path convention down to `/about`, matching the route constant used
+ * throughout the chrome navigation and the sitemap metadata.
+ */
+@Page(routeOverride = "/about")
 @Composable
+@Suppress("ModifierMissing")
 fun AboutPage() {
-    val lyricist = LocalLyricist.current
-    val analytics = LocalAnalyticsManager.current
-    LaunchedEffect(Unit) {
-        analytics.track(AnalyticEvent.PageView(language = lyricist.languageTag))
+    PageLayout {
+        AboutHeader()
+        SectionContainer(id = "about-tabs") {
+            AboutTabs()
+        }
     }
-    val context = rememberPageContext()
-    val about = lyricist.strings.pages.about
-    AboutContent(
-        about = about,
-        selectedLanguage = lyricist.languageTag,
-        modifier = Modifier.fillMaxSize(),
-        onLocaleChange = { languageTag ->
-            lyricist.languageTag = languageTag
-            localStorage.setItem(Locale.localStorageKey, languageTag)
-        },
-        onHomeClick = {
-            context.router.navigateTo(Route.Home)
-        },
-        onArticleClick = {
-            context.router.navigateTo(Route.Articles)
-        },
-        onResumeClick = {
-            context.router.navigateTo(Route.Resume)
-        },
-    )
 }

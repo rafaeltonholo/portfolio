@@ -1,0 +1,332 @@
+package dev.tonholo.portfolio.components.molecules
+
+import androidx.compose.runtime.Composable
+import com.varabyte.kobweb.compose.css.FontWeight
+import com.varabyte.kobweb.compose.css.ListStyleType
+import com.varabyte.kobweb.compose.ui.Modifier
+import com.varabyte.kobweb.compose.ui.graphics.Color
+import com.varabyte.kobweb.compose.ui.modifiers.alignItems
+import com.varabyte.kobweb.compose.ui.modifiers.borderBottom
+import com.varabyte.kobweb.compose.ui.modifiers.borderTop
+import com.varabyte.kobweb.compose.ui.modifiers.color
+import com.varabyte.kobweb.compose.ui.modifiers.content
+import com.varabyte.kobweb.compose.ui.modifiers.display
+import com.varabyte.kobweb.compose.ui.modifiers.flexDirection
+import com.varabyte.kobweb.compose.ui.modifiers.fontFamily
+import com.varabyte.kobweb.compose.ui.modifiers.fontSize
+import com.varabyte.kobweb.compose.ui.modifiers.fontWeight
+import com.varabyte.kobweb.compose.ui.modifiers.gap
+import com.varabyte.kobweb.compose.ui.modifiers.gridTemplateColumns
+import com.varabyte.kobweb.compose.ui.modifiers.left
+import com.varabyte.kobweb.compose.ui.modifiers.letterSpacing
+import com.varabyte.kobweb.compose.ui.modifiers.lineHeight
+import com.varabyte.kobweb.compose.ui.modifiers.listStyle
+import com.varabyte.kobweb.compose.ui.modifiers.margin
+import com.varabyte.kobweb.compose.ui.modifiers.maxWidth
+import com.varabyte.kobweb.compose.ui.modifiers.padding
+import com.varabyte.kobweb.compose.ui.modifiers.position
+import com.varabyte.kobweb.compose.ui.toAttrs
+import com.varabyte.kobweb.silk.style.CssStyle
+import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
+import com.varabyte.kobweb.silk.style.selectors.before
+import com.varabyte.kobweb.silk.style.toModifier
+import com.varabyte.kobweb.silk.style.until
+import com.varabyte.kobweb.silk.theme.colors.ColorMode
+import dev.tonholo.portfolio.components.atoms.MetaSeparator
+import dev.tonholo.portfolio.domain.model.Experience
+import dev.tonholo.portfolio.theme.LocalPortfolioTokens
+import dev.tonholo.portfolio.theme.layout.unit.dp
+import dev.tonholo.portfolio.theme.typography.FontFamilies
+import org.jetbrains.compose.web.css.AlignItems
+import org.jetbrains.compose.web.css.CSSSizeValue
+import org.jetbrains.compose.web.css.CSSUnit
+import org.jetbrains.compose.web.css.DisplayStyle
+import org.jetbrains.compose.web.css.FlexDirection
+import org.jetbrains.compose.web.css.LineStyle
+import org.jetbrains.compose.web.css.Position
+import org.jetbrains.compose.web.css.cssRem
+import org.jetbrains.compose.web.css.em
+import org.jetbrains.compose.web.css.fr
+import org.jetbrains.compose.web.css.px
+import org.jetbrains.compose.web.dom.Div
+import org.jetbrains.compose.web.dom.Li
+import org.jetbrains.compose.web.dom.Span
+import org.jetbrains.compose.web.dom.Ul
+import org.jetbrains.compose.web.dom.Text as ComposeText
+
+// Grid template. Handoff: `180px 60px 1fr 2fr` at 16px root = 11.25rem / 3.75rem / 1fr / 2fr.
+private const val GRID_DATE_COL_REM = 11.25
+private const val GRID_SPACER_COL_REM = 3.75
+private const val GRID_ROLE_COL_FR = 1
+private const val GRID_BODY_COL_FR = 2
+
+// Outer row: 32px gap on desktop, 12px vertical gap on the stacked mobile
+// layout; 28px top/bottom padding; 1px hairline borders.
+private val ROW_GAP = 32.dp
+private val ROW_GAP_MOBILE = 12.dp
+private val ROW_PADDING_Y = 28.dp
+private val ROW_BORDER_WIDTH = 1.dp
+
+// Left column: date (12px mono, muted) over duration (11px mono, muted-2 prefixed with a [MetaSeparator] dot).
+private val DATE_SIZE = 12.dp
+private val DURATION_SIZE = 11.dp
+private const val META_LINE_HEIGHT = 1.4
+
+// Inline gap between the bullet dot and the duration text.
+private val DURATION_ROW_GAP = 6.dp
+
+// Right column: role (18px display medium) + company subtitle (13px, muted).
+// Line-height is held at >=1.3 so the 18px display type keeps enough leading
+// for multi-line role titles (e.g. "Senior Software Engineer, Mobile").
+private val ROLE_SIZE = 18.dp
+private const val ROLE_LINE_HEIGHT = 1.35
+private const val ROLE_LETTER_SPACING_EM = -0.01
+private val COMPANY_SIZE = 13.dp
+private val COMPANY_MARGIN_TOP = 2.dp
+
+// Body copy + bullets.
+private val BODY_SIZE = 14.dp
+private const val BODY_LINE_HEIGHT = 1.6
+private const val BODY_MAX_WIDTH_CH = 68.0
+private val BULLETS_MARGIN_TOP = 8.dp
+private val BULLETS_GAP = 6.dp
+private val BULLET_PADDING_LEFT = 18.dp
+
+// Bullet glyph for `::before`. Handoff used an em dash; project rule requires
+// regular dash, so we render a hyphen instead.
+private const val BULLET_GLYPH = "-"
+
+/**
+ * Returns the hairline border color for a timeline row, matching the handoff:
+ * light theme uses `--paper-3`; dark theme overrides to `--paper-2`.
+ */
+@Composable
+private fun timelineBorderColor(): Color {
+    val tokens = LocalPortfolioTokens.current
+    val colorMode = ColorMode.current
+    return when (colorMode) {
+        ColorMode.LIGHT ->
+            tokens.paper.paper3
+
+        ColorMode.DARK ->
+            tokens.paper.paper2
+    }
+}
+
+/**
+ * Single row in the Resume page timeline. Maps to `.timeline-row` in the
+ * handoff CSS: a four-column grid combining a mono date/duration column,
+ * a spacer column, a display-typography role column (with company
+ * subtitle), and a body column carrying the description plus an optional
+ * bullet list.
+ *
+ * When [last] is `true` the row also paints a bottom hairline so the
+ * terminating entry closes the timeline (matches `.timeline-row.last`).
+ *
+ * @param experience the [Experience] model providing copy for every slot.
+ * @param modifier optional [Modifier] chained after the base styles.
+ * @param last set `true` for the final row so it receives the closing border.
+ */
+@Composable
+fun TimelineRow(experience: Experience, modifier: Modifier = Modifier, last: Boolean = false) {
+    val tokens = LocalPortfolioTokens.current
+    val borderColor = timelineBorderColor()
+
+    var finalModifier = TimelineRowStyle
+        .toModifier()
+        .borderTop(
+            width = ROW_BORDER_WIDTH,
+            style = LineStyle.Solid,
+            color = borderColor,
+        )
+    if (last) {
+        finalModifier = finalModifier.borderBottom(
+            width = ROW_BORDER_WIDTH,
+            style = LineStyle.Solid,
+            color = borderColor,
+        )
+    }
+    finalModifier = finalModifier.then(modifier)
+
+    Div(attrs = finalModifier.toAttrs()) {
+        // Column 1: date over duration (mono, muted).
+        Div(attrs = Modifier.toAttrs()) {
+            Span(
+                attrs = Modifier
+                    .display(DisplayStyle.Block)
+                    .fontFamily(*FontFamilies.MONO)
+                    .fontSize(DATE_SIZE)
+                    .lineHeight(META_LINE_HEIGHT)
+                    .color(tokens.muted.muted)
+                    .toAttrs(),
+            ) {
+                ComposeText(experience.date)
+            }
+            Span(
+                attrs = Modifier
+                    .display(DisplayStyle.Flex)
+                    .alignItems(AlignItems.Center)
+                    .gap(DURATION_ROW_GAP)
+                    .fontFamily(*FontFamilies.MONO)
+                    .fontSize(DURATION_SIZE)
+                    .lineHeight(META_LINE_HEIGHT)
+                    .color(tokens.muted.muted2)
+                    .toAttrs(),
+            ) {
+                MetaSeparator(color = tokens.muted.muted2)
+                ComposeText(experience.duration)
+            }
+        }
+
+        // Column 2: empty spacer preserves the 4-column grid shape on desktop.
+        // Hidden below MD where the row collapses to a single column so the
+        // spacer does not add an empty gap between the date meta and the role.
+        Div(attrs = TimelineSpacerStyle.toModifier().toAttrs())
+
+        // Column 3: role (display medium) with company subtitle block.
+        Div(
+            attrs = Modifier
+                .fontFamily(*FontFamilies.DISPLAY)
+                .fontSize(ROLE_SIZE)
+                .fontWeight(FontWeight.Medium)
+                .lineHeight(ROLE_LINE_HEIGHT)
+                .letterSpacing(ROLE_LETTER_SPACING_EM.em)
+                .color(tokens.ink.ink)
+                .toAttrs(),
+        ) {
+            ComposeText(experience.role)
+            Span(
+                attrs = Modifier
+                    .display(DisplayStyle.Block)
+                    .fontFamily(*FontFamilies.BODY)
+                    .fontSize(COMPANY_SIZE)
+                    .fontWeight(FontWeight.Normal)
+                    .margin(top = COMPANY_MARGIN_TOP)
+                    .color(tokens.muted.muted)
+                    .toAttrs(),
+            ) {
+                ComposeText(experience.company)
+            }
+        }
+
+        // Column 4: body copy + optional bullet list.
+        Div(
+            attrs = TimelineBodyStyle
+                .toModifier()
+                .fontFamily(*FontFamilies.BODY)
+                .fontSize(BODY_SIZE)
+                .lineHeight(BODY_LINE_HEIGHT)
+                .maxWidth(BODY_MAX_WIDTH_CH.unsafeCast<CSSSizeValue<CSSUnit.ch>>())
+                .color(tokens.ink.ink2)
+                .toAttrs(),
+        ) {
+            ComposeText(experience.body)
+            if (experience.bullets.isNotEmpty()) {
+                Ul(attrs = TimelineBulletsStyle.toModifier().toAttrs()) {
+                    experience.bullets.forEach { bullet ->
+                        Li(
+                            attrs = TimelineBulletItemStyle
+                                .toModifier()
+                                .color(tokens.accent.accent)
+                                .toAttrs(),
+                        ) {
+                            // The Li's `::before` inherits the accent color set
+                            // above; nested Span restores the body ink color for
+                            // the bullet copy itself.
+                            Span(attrs = Modifier.color(tokens.ink.ink2).toAttrs()) {
+                                ComposeText(bullet)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+/**
+ * Base `CssStyle` for [TimelineRow]. Ports the handoff `.timeline-row`
+ * layout: a four-column grid with generous row padding. Border colors are
+ * applied inline by the composable so they can react to the active color
+ * mode.
+ */
+val TimelineRowStyle = CssStyle {
+    // Mobile stacks every column vertically: date meta, role, body. The
+    // handoff's 4-column layout (180px + 60px spacer + 1fr + 2fr) cannot fit
+    // inside a phone viewport, so we collapse to a single column below MD.
+    base {
+        Modifier
+            .display(DisplayStyle.Grid)
+            .gridTemplateColumns { minmax(0.px, 1.fr) }
+            .gap(ROW_GAP_MOBILE)
+            .padding(topBottom = ROW_PADDING_Y)
+            .alignItems(AlignItems.Start)
+    }
+    Breakpoint.MD {
+        Modifier
+            .gridTemplateColumns {
+                size(GRID_DATE_COL_REM.cssRem)
+                size(GRID_SPACER_COL_REM.cssRem)
+                minmax(0.px, GRID_ROLE_COL_FR.fr)
+                minmax(0.px, GRID_BODY_COL_FR.fr)
+            }
+            .gap(ROW_GAP)
+    }
+}
+
+/**
+ * Base `CssStyle` for the empty second grid column. On desktop the column
+ * renders as a blank 60px gutter (per the handoff spec); below MD the grid
+ * collapses to a single column so we hide the spacer entirely to avoid an
+ * empty row slot between the date meta and the role title.
+ */
+val TimelineSpacerStyle = CssStyle {
+    until(Breakpoint.MD) {
+        Modifier.display(DisplayStyle.None)
+    }
+}
+
+/**
+ * Base `CssStyle` for the `.timeline-body` slot. Kept empty; typography and
+ * max-width land inline via the composable so they can consume tokens.
+ */
+val TimelineBodyStyle = CssStyle {}
+
+/**
+ * `<ul>` container for the bullet list inside `.timeline-body`. Matches
+ * the handoff: no marker, vertical flex stack, 8px top margin, 6px gap
+ * between items, zero padding so alignment is owned by the items.
+ */
+val TimelineBulletsStyle = CssStyle {
+    base {
+        Modifier
+            .listStyle(type = ListStyleType.None)
+            .display(DisplayStyle.Flex)
+            .flexDirection(FlexDirection.Column)
+            .gap(BULLETS_GAP)
+            .margin(top = BULLETS_MARGIN_TOP)
+            .padding(left = 0.cssRem)
+    }
+}
+
+/**
+ * `<li>` style for timeline bullets. Reproduces `.timeline-body ul li` and
+ * its `::before` em-dash marker: 18px left padding makes room for the
+ * absolutely-positioned marker column; the marker inherits the accent
+ * color set inline on the item element so it stays theme-aware.
+ */
+val TimelineBulletItemStyle = CssStyle {
+    base {
+        Modifier
+            .position(Position.Relative)
+            .padding(left = BULLET_PADDING_LEFT)
+    }
+
+    before {
+        Modifier
+            .content(BULLET_GLYPH)
+            .position(Position.Absolute)
+            .left(0.cssRem)
+            .fontWeight(FontWeight.SemiBold)
+    }
+}

@@ -1,50 +1,53 @@
 package dev.tonholo.portfolio.pages
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import com.varabyte.kobweb.compose.ui.Modifier
-import com.varabyte.kobweb.compose.ui.modifiers.fillMaxSize
 import com.varabyte.kobweb.core.Page
-import com.varabyte.kobweb.core.rememberPageContext
-import com.varabyte.kobweb.navigation.Route
-import dev.tonholo.portfolio.core.analytics.LocalAnalyticsManager
-import dev.tonholo.portfolio.core.analytics.events.AnalyticEvent
-import dev.tonholo.portfolio.core.router.About
-import dev.tonholo.portfolio.core.router.AppRoutes
-import dev.tonholo.portfolio.core.router.Articles
-import dev.tonholo.portfolio.core.router.Home
-import dev.tonholo.portfolio.core.ui.theme.LocalLyricist
-import dev.tonholo.portfolio.features.resume.ResumeContent
-import dev.tonholo.portfolio.locale.Locale
-import dev.tonholo.portfolio.locale.localStorageKey
-import kotlinx.browser.localStorage
+import dev.tonholo.portfolio.analytics.LocalAnalyticsManager
+import dev.tonholo.portfolio.analytics.events.AnalyticEvent
+import dev.tonholo.portfolio.components.layouts.PageLayout
+import dev.tonholo.portfolio.components.layouts.SectionContainer
+import dev.tonholo.portfolio.components.organisms.resume.ExperienceTimeline
+import dev.tonholo.portfolio.components.organisms.resume.ResumeHeader
+import dev.tonholo.portfolio.components.organisms.resume.SkillsGrid
+import dev.tonholo.portfolio.state.LocalLocaleState
+import dev.tonholo.portfolio.state.StaticContent
+import kotlinx.browser.window
 
-@Page(AppRoutes.Resume.ROUTE)
+// Resume PDF artifact lives under the static `public/docs` tree so it is
+// served verbatim from the export. The download CTA opens it in a new tab.
+private const val RESUME_PDF_PATH = "/docs/rafael-tonholo-resume.pdf"
+private const val RESUME_PDF_TARGET = "_blank"
+
+/**
+ * Resume route "/resume" - renders the editorial resume header with a PDF
+ * download CTA, the experience timeline, and the stacked skills + education
+ * grid.
+ *
+ * The `routeOverride` collapses Kobweb's default `ResumePage` ->
+ * `/resume-page` path to the expected `/resume` slug.
+ */
+@Page(routeOverride = "/resume")
 @Composable
+@Suppress("ModifierMissing")
 fun ResumePage() {
+    val locale = LocalLocaleState.current.current
     val analytics = LocalAnalyticsManager.current
-    val lyricist = LocalLyricist.current
-    LaunchedEffect(Unit) {
-        analytics.track(AnalyticEvent.PageView(language = lyricist.languageTag))
+    PageLayout {
+        ResumeHeader(
+            onDownloadPdf = {
+                analytics.track(AnalyticEvent.ViewResumePdf(language = locale.tag))
+                window.open(url = RESUME_PDF_PATH, target = RESUME_PDF_TARGET)
+            },
+        )
+        SectionContainer(id = "resume-experience") {
+            ExperienceTimeline(experiences = StaticContent.experienceFor(locale = locale))
+        }
+        SectionContainer(id = "resume-skills") {
+            SkillsGrid(
+                primaryStack = StaticContent.PRIMARY_STACK,
+                alsoComfortable = StaticContent.ALSO_COMFORTABLE,
+                education = StaticContent.educationFor(locale = locale),
+            )
+        }
     }
-    val context = rememberPageContext()
-    val resume = lyricist.strings.pages.resume
-    ResumeContent(
-        resume = resume,
-        selectedLanguage = lyricist.languageTag,
-        modifier = Modifier.fillMaxSize(),
-        onLocaleChange = { languageTag ->
-            lyricist.languageTag = languageTag
-            localStorage.setItem(Locale.localStorageKey, languageTag)
-        },
-        onHomeClick = {
-            context.router.navigateTo(Route.Home)
-        },
-        onAboutClick = {
-            context.router.navigateTo(Route.About)
-        },
-        onArticleClick = {
-            context.router.navigateTo(Route.Articles)
-        },
-    )
 }

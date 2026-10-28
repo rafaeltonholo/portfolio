@@ -9,6 +9,6 @@ server:
       api: "build/libs/portfolio.jar"
     prod:
       script: "build/kotlin-webpack/js/productionExecutable/portfolio.js"
-      siteRoot: "../docs"
+      siteRoot: ".kobweb/site"
 
   port: 8080

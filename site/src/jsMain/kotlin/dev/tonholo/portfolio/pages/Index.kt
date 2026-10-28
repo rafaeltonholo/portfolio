@@ -1,49 +1,63 @@
 package dev.tonholo.portfolio.pages
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import com.varabyte.kobweb.compose.ui.Modifier
-import com.varabyte.kobweb.compose.ui.modifiers.fillMaxSize
+import com.varabyte.kobweb.compose.ui.modifiers.id
 import com.varabyte.kobweb.core.Page
-import com.varabyte.kobweb.core.rememberPageContext
-import com.varabyte.kobweb.navigation.Route
-import dev.tonholo.portfolio.core.analytics.LocalAnalyticsManager
-import dev.tonholo.portfolio.core.analytics.events.AnalyticEvent
-import dev.tonholo.portfolio.core.router.About
-import dev.tonholo.portfolio.core.router.Articles
-import dev.tonholo.portfolio.core.router.Resume
-import dev.tonholo.portfolio.core.ui.theme.LocalLyricist
-import dev.tonholo.portfolio.features.home.layouts.HomeContent
-import dev.tonholo.portfolio.locale.Locale
-import dev.tonholo.portfolio.locale.localStorageKey
-import kotlinx.browser.localStorage
+import dev.tonholo.portfolio.analytics.LocalAnalyticsManager
+import dev.tonholo.portfolio.analytics.events.AnalyticEvent
+import dev.tonholo.portfolio.components.layouts.PageLayout
+import dev.tonholo.portfolio.components.organisms.home.HeroEditorial
+import dev.tonholo.portfolio.components.organisms.home.HiringCta
+import dev.tonholo.portfolio.components.organisms.home.NowStrip
+import dev.tonholo.portfolio.components.organisms.home.SelectedWorkGrid
+import dev.tonholo.portfolio.extensions.openInNewTab
+import dev.tonholo.portfolio.extensions.scrollToElementId
+import dev.tonholo.portfolio.state.LocalLocaleState
+import dev.tonholo.portfolio.state.StaticContent
 
+// Anchor IDs applied to each home section. Kept together so the hero CTAs
+// and the scroll targets stay in sync if a section ever gets renamed.
+private const val SELECTED_WORK_ID = "selected-work-grid"
+private const val NOW_STRIP_ID = "now-strip"
+private const val HIRING_CTA_ID = "hiring-cta"
+
+// Resume PDF lives under `resources/public/docs/` and ships alongside the
+// static bundle; the hero "download CV" CTA opens it in a new tab.
+private const val RESUME_PDF_URL = "/docs/rafael-tonholo-resume.pdf"
+
+/**
+ * Home route "/" - renders the full editorial stack: hero, selected-work
+ * grid, now strip, and the hiring CTA. Each
+ * project card is a real `<a href>` anchor so browser navigation
+ * affordances (middle-click, cmd-click, copy-link-address) work.
+ */
 @Page
 @Composable
+@Suppress("ModifierMissing")
 fun HomePage() {
-    val lyricist = LocalLyricist.current
+    val locale = LocalLocaleState.current.current
     val analytics = LocalAnalyticsManager.current
-    LaunchedEffect(Unit) {
-        analytics.track(AnalyticEvent.PageView(language = lyricist.languageTag))
+    PageLayout {
+        HeroEditorial(
+            onFeaturedWorkClick = { scrollToElementId(id = SELECTED_WORK_ID) },
+            onDownloadCvClick = {
+                analytics.track(AnalyticEvent.ViewResumePdf(language = locale.tag))
+                openInNewTab(url = RESUME_PDF_URL)
+            },
+            onCurrentlyBuildingClick = { scrollToElementId(id = NOW_STRIP_ID) },
+            onWritingClick = { scrollToElementId(id = NOW_STRIP_ID) },
+            onHireClick = { scrollToElementId(id = HIRING_CTA_ID) },
+        )
+        SelectedWorkGrid(
+            projects = StaticContent.projectsFor(locale = locale),
+            modifier = Modifier.id(SELECTED_WORK_ID),
+        )
+        NowStrip(
+            modifier = Modifier.id(NOW_STRIP_ID),
+        )
+        HiringCta(
+            modifier = Modifier.id(HIRING_CTA_ID),
+        )
     }
-    val context = rememberPageContext()
-    val home = lyricist.strings.pages.home
-    HomeContent(
-        home = home,
-        selectedLanguage = lyricist.languageTag,
-        modifier = Modifier.fillMaxSize(),
-        onLocaleChange = { languageTag ->
-            lyricist.languageTag = languageTag
-            localStorage.setItem(Locale.localStorageKey, languageTag)
-        },
-        onAboutClick = {
-            context.router.navigateTo(Route.About)
-        },
-        onArticleClick = {
-            context.router.navigateTo(Route.Articles)
-        },
-        onResumeClick = {
-            context.router.navigateTo(Route.Resume)
-        },
-    )
 }

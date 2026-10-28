@@ -1,0 +1,172 @@
+package dev.tonholo.portfolio.state
+
+import dev.tonholo.portfolio.domain.model.Article
+import dev.tonholo.portfolio.domain.model.ArticleStatus
+import dev.tonholo.portfolio.domain.model.ProjectKind
+import dev.tonholo.portfolio.domain.model.SkillCategory
+import dev.tonholo.portfolio.locale.Locale
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
+
+class StaticContentTest {
+    @Test
+    fun `given StaticContent PROJECTS, when read, then it has four entries starting with thunderbird`() {
+        // Arrange / Act
+        val projects = StaticContent.PROJECTS
+
+        // Assert
+        assertEquals(expected = 4, actual = projects.size)
+        assertEquals(expected = "thunderbird", actual = projects[0].slug)
+        assertEquals(expected = "01", actual = projects[0].index)
+        assertTrue(ProjectKind.Commercial in projects[0].kinds)
+        assertTrue(ProjectKind.OpenSource in projects[0].kinds)
+    }
+
+    @Test
+    fun `given StaticContent PROJECTS, when inspected, then slugs are in the expected order`() {
+        // Arrange
+        val expectedSlugs = listOf(
+            "thunderbird",
+            "bleacher-report",
+            "pinterest",
+            "svg-compose",
+        )
+
+        // Act
+        val actualSlugs = StaticContent.PROJECTS.map { it.slug }
+
+        // Assert
+        assertEquals(expected = expectedSlugs, actual = actualSlugs)
+    }
+
+    @Test
+    fun `given StaticContent ARTICLES, when read, then it has five entries starting with git-time-travel`() {
+        // Arrange / Act
+        val articles: List<Article> = StaticContent.ARTICLES
+        // Assert
+        assertEquals(expected = 5, actual = articles.size)
+        assertEquals(
+            expected = "git-time-travel-reflog-reset",
+            actual = articles[0].slug,
+        )
+    }
+
+    @Test
+    fun `given StaticContent ARTICLES, when inspected, then all entries are Published`() {
+        // Arrange / Act
+        val published: List<Article> = StaticContent.ARTICLES
+        // Assert
+        assertTrue(actual = published.isNotEmpty())
+        assertTrue(actual = published.all { it.status == ArticleStatus.Published })
+    }
+
+    @Test
+    fun `given StaticContent articlesFor with PtBr, when read, then it has five localized entries`() {
+        // Arrange / Act
+        val ptArticles: List<Article> = StaticContent.articlesFor(locale = Locale.PtBr)
+        // Assert
+        assertEquals(expected = 5, actual = ptArticles.size)
+        assertEquals(expected = "git-time-travel-reflog-reset", actual = ptArticles[0].slug)
+        assertTrue(actual = ptArticles[0].title.contains("Viagem no tempo"))
+    }
+
+    @Test
+    fun `given StaticContent articlesFor with PtBr, when inspecting hello-world, then rich frontmatter is parsed`() {
+        // Arrange
+        val ptArticles: List<Article> = StaticContent.articlesFor(locale = Locale.PtBr)
+        // Act
+        val actualArticle: Article = ptArticles.first { it.slug == "hello-world" }
+        // Assert
+        assertEquals(expected = "Uma nova aventura começa", actual = actualArticle.summary)
+        assertEquals(expected = 1, actual = actualArticle.authors.size)
+        assertEquals(expected = "Rafael Tonholo", actual = actualArticle.authors[0].name)
+        assertEquals(
+            expected = "https://rafael.tonholo.dev/images/writing.jpg",
+            actual = actualArticle.authors[0].avatar,
+        )
+        assertEquals(
+            expected = "https://rafael.tonholo.dev/images/articles/hello-world/thumbnail.png",
+            actual = actualArticle.thumbnail,
+        )
+        assertEquals(expected = "19 de mai. de 2024", actual = actualArticle.date)
+    }
+
+    @Test
+    fun `given StaticContent ARTICLES, when inspecting hello-world, then rich frontmatter is parsed`() {
+        // Arrange
+        val enArticles: List<Article> = StaticContent.ARTICLES
+        // Act
+        val actualArticle: Article = enArticles.first { it.slug == "hello-world" }
+        // Assert
+        assertEquals(expected = "A new journey begins", actual = actualArticle.summary)
+        assertEquals(expected = 1, actual = actualArticle.authors.size)
+        assertEquals(expected = "Rafael Tonholo", actual = actualArticle.authors[0].name)
+        assertEquals(
+            expected = "https://rafael.tonholo.dev/images/writing.jpg",
+            actual = actualArticle.authors[0].avatar,
+        )
+        assertEquals(
+            expected = "https://rafael.tonholo.dev/images/articles/hello-world/thumbnail.png",
+            actual = actualArticle.thumbnail,
+        )
+        assertEquals(expected = "May 19, 2024", actual = actualArticle.date)
+    }
+
+    @Test
+    fun `given StaticContent articlesFor with EnCa, when read, then it matches ARTICLES`() {
+        // Arrange / Act
+        val enArticles = StaticContent.articlesFor(locale = Locale.EnCa)
+
+        // Assert
+        assertEquals(expected = StaticContent.ARTICLES, actual = enArticles)
+    }
+
+    @Test
+    fun `given StaticContent EXPERIENCE, when read, then it has seven entries`() {
+        // Arrange / Act
+        val experience = StaticContent.EXPERIENCE
+
+        // Assert
+        assertEquals(expected = 7, actual = experience.size)
+        assertEquals(expected = "Senior Software Engineer, Mobile", actual = experience[0].role)
+    }
+
+    @Test
+    fun `given StaticContent EDUCATION, when read, then it has three entries`() {
+        // Arrange / Act
+        val education = StaticContent.EDUCATION
+
+        // Assert
+        assertEquals(expected = 3, actual = education.size)
+    }
+
+    @Test
+    fun `given StaticContent NOW_STRIP, when read, then it has three entries`() {
+        // Arrange / Act
+        val now = StaticContent.NOW_STRIP
+
+        // Assert
+        assertEquals(expected = 3, actual = now.size)
+    }
+
+    @Test
+    fun `given StaticContent PRIMARY_STACK, when read, then it is the primary stack category`() {
+        // Arrange / Act
+        val bucket = StaticContent.PRIMARY_STACK
+
+        // Assert
+        assertEquals(expected = SkillCategory.PrimaryStack, actual = bucket.category)
+        assertTrue(actual = bucket.skills.isNotEmpty())
+    }
+
+    @Test
+    fun `given StaticContent ALSO_COMFORTABLE, when read, then it is the also comfortable category`() {
+        // Arrange / Act
+        val bucket = StaticContent.ALSO_COMFORTABLE
+
+        // Assert
+        assertEquals(expected = SkillCategory.AlsoComfortable, actual = bucket.category)
+        assertTrue(actual = bucket.skills.isNotEmpty())
+    }
+}

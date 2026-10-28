@@ -1,0 +1,17 @@
+version: 2
+updates:
+  - package-ecosystem: "gradle"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    labels:
+      - "type: dependency"
+      - "type: gradle"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    labels:
+      - "type: dependency"
+      - "type: github-actions"
+    schedule:
+      interval: "monthly"

@@ -1,32 +1,26 @@
 [versions]
-jetbrains-compose = "1.6.11"
-kobweb = "0.20.0"
-kotlin = "2.1.0"
-lyricist = "1.7.0"
-ksp = "2.1.0-1.0.29"
-kotlinx-datetime = "0.6.1"
-kotlin-wrapper-shiki = "1.0.0-1.20.0"
-marktdown = "1.0.0"
-buildconfig = "5.5.1"
+kotlin = "2.4.10"
+kobweb = "0.25.1"
+kobweb-cli = "0.9.23"                    # kept in sync with the workflow env var
+compose = "1.11.1"
+power-assert = "2.4.10"
+detekt = "2.0.0-alpha.6"
+compose-rules = "0.6.8"
 
 [libraries]
-kobweb-core = { module = "com.varabyte.kobweb:kobweb-core ", version.ref = "kobweb" }
-kobweb-silk = { module = "com.varabyte.kobweb:kobweb-silk", version.ref = "kobweb" }
-silk-icons-mdi = { module = "com.varabyte.kobwebx:silk-icons-mdi", version.ref = "kobweb" }
-lyricist = { module = "cafe.adriel.lyricist:lyricist", version.ref = "lyricist" }
-lyricist-processor = { module = "cafe.adriel.lyricist:lyricist-processor", version.ref = "lyricist" }
-kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
-dev-tonholo-kotlin-wrapper-shiki-core = { module = "dev.tonholo.kotlin.wrapper.shiki:shiki-core", version.ref = "kotlin-wrapper-shiki" }
-dev-tonholo-kotlin-wrapper-shiki-compose-html = { module = "dev.tonholo.kotlin.wrapper.shiki:shiki-compose-html", version.ref = "kotlin-wrapper-shiki" }
-dev-tonholo-marktdown-core = { module = "dev.tonholo.marktdown:marktdown-core", version.ref = "marktdown" }
-dev-tonholo-marktdown-processor = { module = "dev.tonholo.marktdown:marktdown-processor", version.ref = "marktdown" }
+compose-html-core             = { module = "org.jetbrains.compose.html:html-core", version.ref = "compose" }
+compose-runtime               = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "compose" }
+kobweb-core                   = { module = "com.varabyte.kobweb:kobweb-core", version.ref = "kobweb" }
+kobweb-silk                   = { module = "com.varabyte.kobweb:kobweb-silk", version.ref = "kobweb" }
+kobwebx-markdown              = { module = "com.varabyte.kobwebx:kobwebx-markdown", version.ref = "kobweb" }
+kotlin-test                   = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
+detekt-rules-ktlint-wrapper   = { module = "dev.detekt:detekt-rules-ktlint-wrapper", version.ref = "detekt" }
+compose-rules-detekt          = { module = "io.nlopez.compose.rules:detekt", version.ref = "compose-rules" }
 
 [plugins]
-jetbrains-compose = { id = "org.jetbrains.compose", version.ref = "jetbrains-compose" }
-org-jetbrains-kotlin-plugin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
-kobweb-application = { id = "com.varabyte.kobweb.application", version.ref = "kobweb" }
-kobweb-library = { id = "com.varabyte.kobweb.library", version.ref = "kobweb" }
-kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
-com-google-devtools-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
-dev-tonholo-marktdown = { id = "dev.tonholo.marktdown", version.ref = "marktdown" }
-com-github-gmazzo-buildconfig = { id = "com.github.gmazzo.buildconfig", version.ref = "buildconfig" }
+kotlin-multiplatform  = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+compose-compiler      = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+kotlin-power-assert   = { id = "org.jetbrains.kotlin.plugin.power-assert", version.ref = "power-assert" }
+kobweb-application    = { id = "com.varabyte.kobweb.application", version.ref = "kobweb" }
+kobwebx-markdown      = { id = "com.varabyte.kobwebx.markdown", version.ref = "kobweb" }
+detekt                = { id = "dev.detekt", version.ref = "detekt" }

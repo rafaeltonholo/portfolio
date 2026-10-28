@@ -1,26 +1,33 @@
-// https://docs.gradle.org/current/userguide/declaring_dependencies.html#sec:type-safe-project-accessors
-enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
-
 pluginManagement {
+    includeBuild("build-logic")
+    repositories {
+        gradlePluginPortal()
+    }
+}
+
+dependencyResolutionManagement {
     repositories {
         mavenCentral()
-        gradlePluginPortal()
         google()
-        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
-        maven("https://us-central1-maven.pkg.dev/varabyte-repos/public")
-        maven {
-            name = "marktdownLocalMaven"
-            url = uri("marktdown/build/localMaven")
+    }
+}
+
+// The following block registers dependencies to enable Kobweb snapshot support. It is safe to delete or comment out
+// this block if you never plan to use them.
+gradle.settingsEvaluated {
+    fun RepositoryHandler.kobwebSnapshots() {
+        maven("https://central.sonatype.com/repository/maven-snapshots/") {
+            mavenContent {
+                includeGroupByRegex("com\\.varabyte\\.kobweb.*")
+                snapshotsOnly()
+            }
         }
     }
+
+    pluginManagement.repositories { kobwebSnapshots() }
+    dependencyResolutionManagement.repositories { kobwebSnapshots() }
 }
 
 rootProject.name = "portfolio"
 
-include(
-    ":site",
-    ":resources",
-    ":core",
-)
-includeBuild("kotlin-wrapper-shiki")
-includeBuild("marktdown")
+include(":site")
