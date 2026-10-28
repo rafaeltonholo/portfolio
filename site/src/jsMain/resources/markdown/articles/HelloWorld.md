@@ -8,7 +8,7 @@ description: >
     sharing within the developer community.
 summary: A new journey begins
 authors:
-    -   name: rafael
+    -   name: Rafael Tonholo
         avatar: https://rafael.tonholo.dev/images/writing.jpg
 date: 2024-05-19T17:16:34-03:00
 thumbnail: https://rafael.tonholo.dev/images/articles/hello-world/thumbnail.png
