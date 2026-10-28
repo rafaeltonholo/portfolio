@@ -9,6 +9,7 @@ import dev.tonholo.portfolio.components.layouts.SectionContainer
 import dev.tonholo.portfolio.components.organisms.resume.ExperienceTimeline
 import dev.tonholo.portfolio.components.organisms.resume.ResumeHeader
 import dev.tonholo.portfolio.components.organisms.resume.SkillsGrid
+import dev.tonholo.portfolio.locale.LocalStrings
 import dev.tonholo.portfolio.state.LocalLocaleState
 import dev.tonholo.portfolio.state.StaticContent
 import kotlinx.browser.window
@@ -32,7 +33,8 @@ private const val RESUME_PDF_TARGET = "_blank"
 fun ResumePage() {
     val locale = LocalLocaleState.current.current
     val analytics = LocalAnalyticsManager.current
-    PageLayout {
+    val strings = LocalStrings.current
+    PageLayout(title = strings.pageTitles.resume) {
         ResumeHeader(
             onDownloadPdf = {
                 analytics.track(AnalyticEvent.ViewResumePdf(language = locale.tag))

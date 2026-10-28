@@ -6,6 +6,7 @@ import dev.tonholo.portfolio.components.layouts.PageLayout
 import dev.tonholo.portfolio.components.layouts.SectionContainer
 import dev.tonholo.portfolio.components.organisms.about.AboutHeader
 import dev.tonholo.portfolio.components.organisms.about.AboutTabs
+import dev.tonholo.portfolio.locale.LocalStrings
 
 /**
  * About route "/about" - renders the editorial About header on top of the
@@ -19,7 +20,8 @@ import dev.tonholo.portfolio.components.organisms.about.AboutTabs
 @Composable
 @Suppress("ModifierMissing")
 fun AboutPage() {
-    PageLayout {
+    val strings = LocalStrings.current
+    PageLayout(title = strings.pageTitles.about) {
         AboutHeader()
         SectionContainer(id = "about-tabs") {
             AboutTabs()

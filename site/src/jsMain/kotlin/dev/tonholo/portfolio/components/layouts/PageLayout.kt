@@ -14,8 +14,10 @@ import dev.tonholo.portfolio.components.atoms.SkipLink
 import dev.tonholo.portfolio.components.organisms.chrome.Footer
 import dev.tonholo.portfolio.components.organisms.chrome.LanguageToast
 import dev.tonholo.portfolio.components.organisms.chrome.Nav
+import dev.tonholo.portfolio.locale.LocalStrings
 import dev.tonholo.portfolio.locale.Locale
 import dev.tonholo.portfolio.state.LocalLocaleState
+import kotlinx.browser.document
 import kotlinx.coroutines.delay
 import org.jetbrains.compose.web.dom.TagElement
 import org.w3c.dom.HTMLElement
@@ -26,9 +28,10 @@ private const val LANGUAGE_TOAST_DISMISS_DELAY_MS = 3600L
 
 /**
  * Base layout shared by every page. Renders the site chrome (top [Nav] and
- * bottom [Footer]), wraps the caller's page body in a semantic `<main>`
- * element, and emits the transient [LanguageToast] when the active locale
- * flips to [Locale.PtBr].
+ * bottom [Footer]), sets the browser tab title via [title] (or falls back
+ * to [dev.tonholo.portfolio.locale.Strings.PageTitles.home]), wraps the
+ * caller's page body in a semantic `<main>` element, and emits the transient
+ * [LanguageToast] when the active locale flips to [Locale.PtBr].
  *
  * Routing state (current path, navigation callback) is read from the active
  * [rememberPageContext]. The callback delegates to `Router.tryRoutingTo`, so
@@ -41,15 +44,24 @@ private const val LANGUAGE_TOAST_DISMISS_DELAY_MS = 3600L
  * current [Locale] so re-selecting pt-BR restarts the timer.
  *
  * @param modifier optional [Modifier] applied to the `<main>` element.
+ * @param title optional page title applied to [document.title].
  * @param content the page body rendered inside `<main>`.
  */
 @Composable
-fun PageLayout(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
+fun PageLayout(
+    modifier: Modifier = Modifier,
+    title: String? = null,
+    content: @Composable () -> Unit,
+) {
     val pageContext = rememberPageContext()
-    val currentRoute = pageContext.route.path
+    val currentRoute: String = pageContext.route.path
     val localeState = LocalLocaleState.current
-
-    var toastVisible by remember { mutableStateOf(value = false) }
+    val strings = LocalStrings.current
+    val resolvedTitle: String = title ?: strings.pageTitles.home
+    LaunchedEffect(resolvedTitle) {
+        document.title = resolvedTitle
+    }
+    var toastVisible: Boolean by remember { mutableStateOf(value = false) }
     LaunchedEffect(localeState.current) {
         if (localeState.current == Locale.PtBr) {
             toastVisible = true
@@ -57,7 +69,6 @@ fun PageLayout(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
             toastVisible = false
         }
     }
-
     SkipLink()
     Nav(currentRoute = currentRoute)
     TagElement<HTMLElement>(

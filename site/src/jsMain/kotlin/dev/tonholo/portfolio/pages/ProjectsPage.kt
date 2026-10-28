@@ -21,8 +21,10 @@ import dev.tonholo.portfolio.components.layouts.SectionContainer
 import dev.tonholo.portfolio.components.organisms.home.ProjectsGrid
 import dev.tonholo.portfolio.components.organisms.projects.ProjectsFilter
 import dev.tonholo.portfolio.components.organisms.projects.ProjectsFilterBar
+import dev.tonholo.portfolio.domain.model.Project
 import dev.tonholo.portfolio.domain.model.ProjectKind
 import dev.tonholo.portfolio.locale.LocalStrings
+import dev.tonholo.portfolio.locale.Locale
 import dev.tonholo.portfolio.state.LocalLocaleState
 import dev.tonholo.portfolio.state.StaticContent
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
@@ -52,16 +54,16 @@ private const val TITLE_MARGIN_BOTTOM_REM = 2.0
 @Composable
 @Suppress("ModifierMissing")
 fun ProjectsPage() {
-    var filter by remember { mutableStateOf(value = ProjectsFilter.All) }
-    val locale = LocalLocaleState.current.current
-    val projects = StaticContent.projectsFor(locale = locale)
-    val filtered = when (filter) {
+    var filter: ProjectsFilter by remember { mutableStateOf(value = ProjectsFilter.All) }
+    val locale: Locale = LocalLocaleState.current.current
+    val strings = LocalStrings.current
+    val projects: List<Project> = StaticContent.projectsFor(locale = locale)
+    val filtered: List<Project> = when (filter) {
         ProjectsFilter.All -> projects
         ProjectsFilter.Commercial -> projects.filter { ProjectKind.Commercial in it.kinds }
         ProjectsFilter.OpenSource -> projects.filter { ProjectKind.OpenSource in it.kinds }
     }
-
-    PageLayout {
+    PageLayout(title = strings.pageTitles.projects) {
         ProjectsPageHeader(current = filter, onSelect = { filter = it })
         SectionContainer(id = "projects-grid") {
             // Visually-hidden section heading: the card grid below is a peer

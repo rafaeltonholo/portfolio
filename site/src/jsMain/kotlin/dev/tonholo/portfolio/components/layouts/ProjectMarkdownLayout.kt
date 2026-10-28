@@ -66,7 +66,8 @@ fun initProjectMarkdownLayout(ctx: InitRouteContext) {
 @Layout
 @Suppress("ModifierMissing")
 fun ProjectMarkdownLayout(context: PageContext, content: @Composable () -> Unit) {
-    val strings = LocalStrings.current.projectDetail
+    val allStrings = LocalStrings.current
+    val strings = allStrings.projectDetail
     val data = context.data.get<ProjectMarkdownLayoutData>()
         ?: ProjectMarkdownLayoutData(slug = "", locale = Locale.EnCa)
     val localeState = LocalLocaleState.current
@@ -79,22 +80,23 @@ fun ProjectMarkdownLayout(context: PageContext, content: @Composable () -> Unit)
     val index = projects.indexOfFirst { it.slug == data.slug }
     val project = projects.getOrNull(index = index)
     val nextProject = projects.getOrNull(index = index + 1)
-
     if (project == null) {
         ProjectLayout(
             backRoute = Routes.PROJECTS,
             nextProjectName = null,
             nextRoute = null,
+            title = allStrings.pageTitles.projects,
         ) {
             Text(strings.notFoundCopy)
         }
         return
     }
-
+    val projectTitle: String = "${project.name} | Rafael Tonholo"
     ProjectLayout(
         backRoute = Routes.PROJECTS,
         nextProjectName = nextProject?.name,
         nextRoute = nextProject?.let { Routes.project(slug = it.slug, locale = data.locale) },
+        title = projectTitle,
     ) {
         ProjectBreadcrumb(projectName = project.name)
         ProjectDetailHero(project = project)

@@ -6,6 +6,7 @@ import com.varabyte.kobweb.core.init.InitKobweb
 import com.varabyte.kobweb.core.init.InitKobwebContext
 import dev.tonholo.portfolio.components.layouts.PageLayout
 import dev.tonholo.portfolio.components.organisms.chrome.NotFoundContent
+import dev.tonholo.portfolio.locale.LocalStrings
 
 /**
  * Explicit `/404` route whose export path produces `404.html` in the static
@@ -22,7 +23,8 @@ import dev.tonholo.portfolio.components.organisms.chrome.NotFoundContent
 @Composable
 @Suppress("ModifierMissing")
 fun NotFoundPage() {
-    PageLayout {
+    val strings = LocalStrings.current
+    PageLayout(title = strings.pageTitles.notFound) {
         NotFoundContent()
     }
 }
@@ -36,7 +38,8 @@ fun NotFoundPage() {
 @InitKobweb
 fun initErrorPage(ctx: InitKobwebContext) {
     ctx.router.setErrorPage {
-        PageLayout {
+        val strings = LocalStrings.current
+        PageLayout(title = strings.pageTitles.notFound) {
             NotFoundContent()
         }
     }
