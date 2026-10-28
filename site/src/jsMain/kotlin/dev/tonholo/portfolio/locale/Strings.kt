@@ -38,6 +38,7 @@ sealed class Strings {
     abstract val nowStrip: NowStrip
     abstract val selectedWork: SelectedWork
     abstract val notFound: NotFound
+    abstract val pageTitles: PageTitles
 
     /** Screen-reader and accessibility announcements. */
     data class A11y(val opensInNewTab: String)
@@ -218,6 +219,16 @@ sealed class Strings {
         val recoveryProjects: String,
         val recoveryArticles: String,
         val recoveryResume: String,
+    )
+
+    /** Browser tab and document titles for top-level pages. */
+    data class PageTitles(
+        val home: String,
+        val about: String,
+        val articles: String,
+        val projects: String,
+        val resume: String,
+        val notFound: String,
     )
 }
 

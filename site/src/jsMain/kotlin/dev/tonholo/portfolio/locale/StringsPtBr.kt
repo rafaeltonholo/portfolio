@@ -257,4 +257,13 @@ object StringsPtBr : Strings() {
         recoveryArticles = "-> /articles",
         recoveryResume = "-> /resume",
     )
+
+    override val pageTitles: PageTitles = PageTitles(
+        home = "Início | Rafael Tonholo",
+        about = "Sobre mim | Rafael Tonholo",
+        articles = "Artigos | Rafael Tonholo",
+        projects = "Trabalho | Rafael Tonholo",
+        resume = "Currículo | Rafael Tonholo",
+        notFound = "Página Não Encontrada | Rafael Tonholo",
+    )
 }
