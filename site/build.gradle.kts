@@ -1,4 +1,7 @@
 import com.varabyte.kobweb.gradle.application.util.configAsKobwebApplication
+import dev.tonholo.portfolio.buildlogic.SlugUtils
+import dev.tonholo.portfolio.buildlogic.camelCaseToKebabCase
+import dev.tonholo.portfolio.buildlogic.splitLocalizedSlug
 import kotlinx.html.link
 import java.io.File
 import java.time.LocalDate
@@ -15,6 +18,7 @@ plugins {
     alias(libs.plugins.kotlin.power.assert)
     alias(libs.plugins.detekt)
     id("portfolio.analytics")
+    id("portfolio.sitemap")
 }
 
 group = "dev.tonholo.portfolio"
@@ -24,83 +28,14 @@ val appProperties = Properties().apply {
     rootProject.rootDir.resolve("app.properties").inputStream().use { load(it) }
 }
 
-/**
- * Convert a TitleCamelCase string to kebab-case, matching Kobweb's own
- * `camelCaseToKebabCase` used to derive URL slugs from markdown filenames.
- * Acronym-aware: "ExampleABC" -> "example-abc", "ABCExample" -> "abc-example".
- */
-fun String.splitCamelCase(): List<String> {
-    val currWord = StringBuilder()
-    val words = mutableListOf<String>()
-    var lastIsUpper = false
-    forEachIndexed { i, c ->
-        val isUpper = c.isUpperCase()
-        if (isUpper) {
-            if (currWord.isNotEmpty() && (!lastIsUpper || (i < lastIndex && this[i + 1].isLowerCase()))) {
-                words.add(currWord.toString())
-                currWord.clear()
-            }
-        }
-        currWord.append(c.lowercase())
-        lastIsUpper = isUpper
-    }
-    if (currWord.isNotEmpty()) words.add(currWord.toString())
-    return words
-}
+val localizedPathSegments: List<String> = SlugUtils.LOCALIZED_PATH_SEGMENTS
+val projectSlugs: List<String> = listOf("svg-compose")
 
-fun String.camelCaseToKebabCase(): String = splitCamelCase().joinToString("-")
+val articlesMarkdownDir = layout.projectDirectory.dir("src/jsMain/resources/markdown/articles")
+val articleSlugs: List<String> = SlugUtils.findMarkdownSlugs(articlesMarkdownDir.asFile)
 
-/**
- * Lower-cased URL segments of every non-default locale supported by the site.
- * Must stay in sync with `dev.tonholo.portfolio.locale.Locale.pathSegment` for
- * every non-null value. Used to split a kebab-cased filename slug into its
- * canonical slug and locale (e.g., `bleacher-report-pt-br` -> `bleacher-report` + `pt-br`).
- */
-val localizedPathSegments = listOf("pt-br")
-
-/**
- * Splits a kebab-cased slug into (canonical, locale?). Returns (slug, null)
- * when no known locale suffix is present.
- */
-fun String.splitLocalizedSlug(): Pair<String, String?> {
-    for (lang in localizedPathSegments) {
-        val suffix = "-$lang"
-        if (this.endsWith(suffix)) {
-            return this.removeSuffix(suffix) to lang
-        }
-    }
-    return this to null
-}
-
-// Dynamic-route slugs registered with the Kobweb static exporter. Project
-// slugs stay hard-coded for `@Page("/projects/{slug}")`; the markdown-backed
-// project slugs (full case studies) are discovered by scanning
-// `src/jsMain/resources/markdown/projects/`. Article slugs are also scanned
-// so the exporter can emit one HTML per markdown file without maintaining a
-// parallel list.
-val projectSlugs = listOf(
-    "svg-compose",
-)
-
-val articlesMarkdownDir = layout.projectDirectory
-    .dir("src/jsMain/resources/markdown/articles")
-
-val articleSlugs: List<String> = articlesMarkdownDir.asFile
-    .takeIf { it.exists() }
-    ?.listFiles { file -> file.isFile && file.extension == "md" }
-    ?.map { it.nameWithoutExtension.camelCaseToKebabCase() }
-    ?.sorted()
-    .orEmpty()
-
-val projectsMarkdownDir = layout.projectDirectory
-    .dir("src/jsMain/resources/markdown/projects")
-
-val projectMarkdownSlugs: List<String> = projectsMarkdownDir.asFile
-    .takeIf { it.exists() }
-    ?.listFiles { file -> file.isFile && file.extension == "md" }
-    ?.map { it.nameWithoutExtension.camelCaseToKebabCase() }
-    ?.sorted()
-    .orEmpty()
+val projectsMarkdownDir = layout.projectDirectory.dir("src/jsMain/resources/markdown/projects")
+val projectMarkdownSlugs: List<String> = SlugUtils.findMarkdownSlugs(projectsMarkdownDir.asFile)
 
 kobweb {
     app {
@@ -649,109 +584,4 @@ tasks.matching { it.name.startsWith("detekt") }.configureEach {
 dependencies {
     detektPlugins(libs.detekt.rules.ktlint.wrapper)
     detektPlugins(libs.compose.rules.detekt)
-}
-
-val generateSitemap by tasks.registering {
-    val pagesDir = layout.projectDirectory.dir("src/jsMain/kotlin/dev/tonholo/portfolio/pages")
-    val outputFile = layout.projectDirectory.file("src/jsMain/resources/public/sitemap.xml")
-    val baseUrl = "https://tonholo.dev"
-    val appPropertiesFile = rootProject.rootDir.resolve("app.properties")
-    val lastModified = appProperties["LAST_MODIFIED"]?.toString()
-        ?: error("LAST_MODIFIED not set in app.properties")
-
-    val pageMetadata = mapOf(
-        "/" to ("weekly" to "1.0"),
-        "/about" to ("monthly" to "0.8"),
-        "/projects" to ("weekly" to "0.9"),
-        "/articles" to ("weekly" to "0.9"),
-        "/resume" to ("monthly" to "0.7"),
-    )
-
-    val dynamicProjectUrls = projectSlugs.flatMap { slug ->
-        listOf("/projects/$slug") + localizedPathSegments.map { lang -> "/projects/$lang/$slug" }
-    }
-    val markdownProjectUrls = projectMarkdownSlugs.map { kebabSlug ->
-        val (canonical, lang) = kebabSlug.splitLocalizedSlug()
-        if (lang == null) "/projects/$canonical" else "/projects/$lang/$canonical"
-    }
-    val articleUrls = articleSlugs.map { kebabSlug ->
-        val (canonical, lang) = kebabSlug.splitLocalizedSlug()
-        if (lang == null) "/articles/$canonical" else "/articles/$lang/$canonical"
-    }
-    val extraSlugs = dynamicProjectUrls + markdownProjectUrls + articleUrls
-
-    inputs.dir(pagesDir)
-    inputs.file(appPropertiesFile)
-    inputs.property("lastModified", lastModified)
-    inputs.property("extraSlugs", extraSlugs.joinToString(","))
-    outputs.file(outputFile)
-
-    doLast {
-        val pagePaths = pagesDir.asFile.walkTopDown()
-            .filter { it.isFile && it.extension == "kt" }
-            .filter { file ->
-                val text = file.readText()
-                // Include only static @Page routes; skip dynamic routes like @Page("/foo/{slug}")
-                val pageAnnotationLine = text.lines().firstOrNull { it.trimStart().startsWith("@Page") }
-                pageAnnotationLine != null && !pageAnnotationLine.contains("{")
-            }
-            .map { file ->
-                val text = file.readText()
-                // Prefer the explicit routeOverride from the @Page annotation when present
-                val routeOverride = Regex("""@Page\(routeOverride\s*=\s*"([^"]+)"""")
-                    .find(text)?.groupValues?.get(1)
-                if (routeOverride != null) {
-                    routeOverride
-                } else {
-                    val relative = file.relativeTo(pagesDir.asFile).path
-                        .removeSuffix(".kt")
-                        .replace("\\", "/")
-                    if (relative == "Index") {
-                        "/"
-                    } else {
-                        "/" + relative
-                            .replace("/Index", "")
-                            .split("/")
-                            .joinToString("/") { segment ->
-                                segment
-                                    .replace(Regex("([a-z])([A-Z])")) { m ->
-                                        "${m.groupValues[1]}-${m.groupValues[2]}"
-                                    }
-                                    .lowercase()
-                            }
-                    }
-                }
-            }
-            .toList()
-
-        val extraSlugMetadata = extraSlugs.associateWith { slug ->
-            val priority = if (slug.startsWith("/projects/")) "0.7" else "0.6"
-            ("monthly" to priority)
-        }
-        val allMetadata = pageMetadata + extraSlugMetadata
-
-        val allPaths = (pagePaths + extraSlugs).distinct().sorted()
-
-        val sitemap = buildString {
-            appendLine("""<?xml version="1.0" encoding="UTF-8"?>""")
-            appendLine("""<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">""")
-            for (path in allPaths) {
-                val (changefreq, priority) = allMetadata[path] ?: ("monthly" to "0.5")
-                appendLine("  <url>")
-                appendLine("    <loc>$baseUrl$path</loc>")
-                appendLine("    <lastmod>$lastModified</lastmod>")
-                appendLine("    <changefreq>$changefreq</changefreq>")
-                appendLine("    <priority>$priority</priority>")
-                appendLine("  </url>")
-            }
-            appendLine("</urlset>")
-        }
-        outputFile.asFile.writeText(sitemap)
-    }
-}
-
-tasks.configureEach {
-    if (name == "jsProcessResources") {
-        dependsOn(generateSitemap)
-    }
 }
