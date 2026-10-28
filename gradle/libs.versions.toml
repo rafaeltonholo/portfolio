@@ -2,7 +2,7 @@
 kotlin = "2.4.10"
 kobweb = "0.25.1"
 kobweb-cli = "0.9.23"                    # kept in sync with the workflow env var
-compose = "1.11.1"
+compose = "1.12.2"
 power-assert = "2.4.10"
 detekt = "2.0.0-alpha.6"
 compose-rules = "0.6.8"
