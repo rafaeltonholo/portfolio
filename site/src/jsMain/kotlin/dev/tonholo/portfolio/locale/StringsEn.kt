@@ -116,13 +116,18 @@ object StringsEn : Strings() {
                     "is a work in progress.",
             ),
             About.Hobby(
-                label = "Running",
-                body = "The Halifax harbourwalk in every season. 10K most weeks, a half-marathon " +
-                    "twice a year.",
+                label = "Snowboarding",
+                body = "Still learning, and not planning to stop. Falling a lot, getting back up " +
+                    "a little faster each time.",
             ),
             About.Hobby(
                 label = "Games",
-                body = "Currently playing Baldur's Gate 3.",
+                body = "Video games, currently Baldur's Gate 3.",
+            ),
+            About.Hobby(
+                label = "3D printing",
+                body = "Designing things on the computer, then waiting for them to come out of " +
+                    "the printer.",
             ),
             About.Hobby(
                 label = "Travel",

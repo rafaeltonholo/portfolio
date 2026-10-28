@@ -121,13 +121,17 @@ object StringsPtBr : Strings() {
                     "pão ainda é trabalho em andamento.",
             ),
             About.Hobby(
-                label = "Corrida",
-                body = "O harbourwalk de Halifax em todas as estações. 10K na maioria das " +
-                    "semanas, uma meia-maratona duas vezes por ano.",
+                label = "Snowboard",
+                body = "Ainda aprendendo, e sem planos de parar. Caindo bastante, levantando um " +
+                    "pouco mais rápido a cada vez.",
             ),
             About.Hobby(
                 label = "Games",
-                body = "No momento jogando Baldur's Gate 3.",
+                body = "Videogames, no momento Baldur's Gate 3.",
+            ),
+            About.Hobby(
+                label = "Impressão 3D",
+                body = "Desenhando coisas no computador e esperando elas saírem da impressora.",
             ),
             About.Hobby(
                 label = "Viagens",
