@@ -41,6 +41,7 @@ class ArticleTocSidebarTest {
         assertNotNull(TocAnchorStyle)
         assertNotNull(ShareButtonStyle)
         assertNotNull(ShareLinkStyle)
+        assertNotNull(ShareLinkArrowStyle)
         assertNotNull(SidebarListStyle)
         assertNotNull(CopyCheckmarkPopKeyframes)
     }

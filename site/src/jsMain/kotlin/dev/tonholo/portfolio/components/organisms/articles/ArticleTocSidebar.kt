@@ -17,6 +17,7 @@ import com.varabyte.kobweb.compose.ui.graphics.Colors
 import com.varabyte.kobweb.compose.ui.modifiers.alignItems
 import com.varabyte.kobweb.compose.ui.modifiers.alignSelf
 import com.varabyte.kobweb.compose.ui.modifiers.animation
+import com.varabyte.kobweb.compose.ui.modifiers.ariaHidden
 import com.varabyte.kobweb.compose.ui.modifiers.backgroundColor
 import com.varabyte.kobweb.compose.ui.modifiers.border
 import com.varabyte.kobweb.compose.ui.modifiers.color
@@ -97,6 +98,10 @@ private const val COPY_FEEDBACK_DURATION_MS = 2000
 private const val COPY_CHECKMARK_ANIMATION_MS = 240
 private const val COPY_ICON_SIZE_REM = 0.85
 private val COPY_BUTTON_GAP_PX = 6.px
+
+private const val EXTERNAL_ARROW_ICON_NAME = "arrow-up-right"
+private const val SHARE_ARROW_SIZE_REM = 0.85
+private val SHARE_LINK_GAP_PX = 6.px
 
 private const val CHECKMARK_START_PERCENT = 0
 private const val CHECKMARK_MID_PERCENT = 60
@@ -369,6 +374,7 @@ private fun CopyLinkRow(
 
 /**
  * One external share link row navigating to Twitter, LinkedIn, or Bluesky.
+ * Appends a trailing diagonal arrow icon to identify the destination as external.
  */
 @Composable
 private fun ShareLinkRow(
@@ -390,6 +396,17 @@ private fun ShareLinkRow(
                 },
         ) {
             ComposeText(label)
+            Span(
+                attrs = ShareLinkArrowStyle
+                    .toModifier()
+                    .ariaHidden(true)
+                    .toAttrs(),
+            ) {
+                PhosphorIcon(
+                    name = EXTERNAL_ARROW_ICON_NAME,
+                    size = SHARE_ARROW_SIZE_REM.cssRem,
+                )
+            }
             Span(
                 attrs = VisuallyHiddenStyle
                     .toModifier()
@@ -512,6 +529,7 @@ val ShareLinkStyle = CssStyle {
             .textDecorationLine(TextDecorationLine.None)
             .display(DisplayStyle.LegacyInlineFlex)
             .alignItems(AlignItems.Center)
+            .gap(SHARE_LINK_GAP_PX)
     }
     hover {
         val ink = if (colorMode == ColorMode.DARK) Ink.dark else Ink.light
@@ -526,6 +544,17 @@ val ShareLinkStyle = CssStyle {
         Modifier
             .minHeight(SiteDimensions.layout.minimumTouchSize)
             .padding(topBottom = SiteDimensions.size.Sm)
+    }
+}
+
+/**
+ * Base `CssStyle` for the trailing diagonal arrow glyph inside external [ShareLinkRow]s.
+ */
+val ShareLinkArrowStyle = CssStyle {
+    base {
+        Modifier
+            .display(DisplayStyle.LegacyInlineFlex)
+            .alignItems(AlignItems.Center)
     }
 }
 
