@@ -60,6 +60,7 @@ import dev.tonholo.portfolio.components.organisms.articles.TocEntry
 import dev.tonholo.portfolio.domain.model.ArticleAuthor
 import dev.tonholo.portfolio.extensions.toKebabCase
 import dev.tonholo.portfolio.generated.articles.GeneratedArticles
+import dev.tonholo.portfolio.locale.LocalStrings
 import dev.tonholo.portfolio.locale.Locale
 import dev.tonholo.portfolio.navigation.Routes
 import dev.tonholo.portfolio.state.LocalLocaleState
@@ -264,7 +265,12 @@ fun ArticleMarkdownLayout(context: PageContext, content: @Composable () -> Unit)
     var tocEntries by remember(data.slug) { mutableStateOf<List<TocEntry>>(emptyList()) }
     val activeId: String = rememberScrollActiveHeadingId(slug = data.slug, entries = tocEntries)
     val primaryAuthor: ArticleAuthor? = data.authors.firstOrNull()
-    PageLayout {
+    val pageTitle: String = if (data.title.isNotBlank()) {
+        "${data.title} | Rafael Tonholo"
+    } else {
+        LocalStrings.current.pageTitles.articles
+    }
+    PageLayout(title = pageTitle) {
         HeroSection(id = "article-shell") {
             // Handoff structure: meta row, title, and lede span the full
             // shell width above the sidebar/body grid. The two-column

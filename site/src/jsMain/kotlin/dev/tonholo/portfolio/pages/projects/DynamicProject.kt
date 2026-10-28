@@ -65,27 +65,29 @@ fun DynamicPtBrProjectPage() {
 @Composable
 private fun RenderDynamicProject(slug: String, locale: Locale) {
     SyncLocaleToUrl(locale = locale)
-    val strings = LocalStrings.current.projectDetail
-    val projects = StaticContent.projectsFor(locale = locale)
-    val index = projects.indexOfFirst { it.slug == slug }
-    val project = projects.getOrNull(index = index)
-    val nextProject = projects.getOrNull(index = index + 1)
-
+    val allStrings = LocalStrings.current
+    val strings = allStrings.projectDetail
+    val projects: List<Project> = StaticContent.projectsFor(locale = locale)
+    val index: Int = projects.indexOfFirst { it.slug == slug }
+    val project: Project? = projects.getOrNull(index = index)
+    val nextProject: Project? = projects.getOrNull(index = index + 1)
     if (project == null) {
         ProjectLayout(
             backRoute = Routes.PROJECTS,
             nextProjectName = null,
             nextRoute = null,
+            title = allStrings.pageTitles.projects,
         ) {
             Text(strings.notFoundCopy)
         }
         return
     }
-
+    val projectTitle: String = "${project.name} | Rafael Tonholo"
     ProjectLayout(
         backRoute = Routes.PROJECTS,
         nextProjectName = nextProject?.name,
         nextRoute = nextProject?.let { Routes.project(slug = it.slug, locale = locale) },
+        title = projectTitle,
     ) {
         ProjectBreadcrumb(projectName = project.name)
         ProjectDetailHero(project = project)

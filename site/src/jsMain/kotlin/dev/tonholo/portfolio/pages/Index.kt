@@ -13,6 +13,8 @@ import dev.tonholo.portfolio.components.organisms.home.NowStrip
 import dev.tonholo.portfolio.components.organisms.home.SelectedWorkGrid
 import dev.tonholo.portfolio.extensions.openInNewTab
 import dev.tonholo.portfolio.extensions.scrollToElementId
+import dev.tonholo.portfolio.locale.LocalStrings
+import dev.tonholo.portfolio.locale.Locale
 import dev.tonholo.portfolio.state.LocalLocaleState
 import dev.tonholo.portfolio.state.StaticContent
 
@@ -36,9 +38,10 @@ private const val RESUME_PDF_URL = "/docs/rafael-tonholo-resume.pdf"
 @Composable
 @Suppress("ModifierMissing")
 fun HomePage() {
-    val locale = LocalLocaleState.current.current
+    val locale: Locale = LocalLocaleState.current.current
     val analytics = LocalAnalyticsManager.current
-    PageLayout {
+    val strings = LocalStrings.current
+    PageLayout(title = strings.pageTitles.home) {
         HeroEditorial(
             onFeaturedWorkClick = { scrollToElementId(id = SELECTED_WORK_ID) },
             onDownloadCvClick = {

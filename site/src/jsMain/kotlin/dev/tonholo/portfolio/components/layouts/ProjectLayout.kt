@@ -22,6 +22,7 @@ import dev.tonholo.portfolio.components.organisms.projects.PrevNextNav
  * @param nextRoute destination path for the next link; pass `null` alongside
  *   [nextProjectName] for the final project in the series.
  * @param modifier optional [Modifier] applied to the outer `<section>`.
+ * @param title optional page title applied to [document.title] via [PageLayout].
  * @param content the project body rendered inside the shell.
  */
 @Composable
@@ -30,9 +31,10 @@ fun ProjectLayout(
     nextProjectName: String?,
     nextRoute: String?,
     modifier: Modifier = Modifier,
+    title: String? = null,
     content: @Composable () -> Unit,
 ) {
-    PageLayout {
+    PageLayout(title = title) {
         HeroSection(id = "project-shell", modifier = modifier) {
             content()
             PrevNextNav(
