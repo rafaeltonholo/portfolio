@@ -1,6 +1,7 @@
 package dev.tonholo.portfolio.components.atoms
 
 import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
@@ -51,5 +52,15 @@ class GiscusConfigTest {
             "?origin=http%3A%2F%2Fdomain%2Fpage%3F_kobwebIsExporting%3Dtrue"
         val actualResult: Boolean = GiscusConfig.isContaminatedIframe(src = inputSrc)
         assertTrue(actualResult)
+    }
+
+    @Test
+    fun givenGiscusConfig_whenCategoryConstantsChecked_thenMatchesShowAndTell() {
+        val expectedCategory: String = "Show and tell"
+        val expectedCategoryId: String = "DIC_kwDOL0CWL84DJluE"
+        val actualCategory: String = GiscusConfig.CATEGORY
+        val actualCategoryId: String = GiscusConfig.CATEGORY_ID
+        assertEquals(expected = expectedCategory, actual = actualCategory)
+        assertEquals(expected = expectedCategoryId, actual = actualCategoryId)
     }
 }
