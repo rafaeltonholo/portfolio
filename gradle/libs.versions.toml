@@ -1,5 +1,5 @@
 [versions]
-kotlin = "2.4.10"
+kotlin = "2.4.21"
 kobweb = "0.25.1"
 kobweb-cli = "0.9.23"                    # kept in sync with the workflow env var
 compose = "1.11.1"
