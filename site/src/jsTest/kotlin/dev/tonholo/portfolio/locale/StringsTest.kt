@@ -175,4 +175,30 @@ class StringsTest {
         assertEquals(expected = "Escrita.", actual = actual.title)
         assertEquals(expected = "posts", actual = actual.postsSuffix)
     }
+
+    @Test
+    fun `given EnCa locale, when pageTitles is read, then returns English page titles`() {
+        val inputLocale: Locale = Locale.EnCa
+        val strings: Strings = stringsFor(locale = inputLocale)
+        val actual: Strings.PageTitles = strings.pageTitles
+        assertEquals(expected = "Home | Rafael Tonholo", actual = actual.home)
+        assertEquals(expected = "About me | Rafael Tonholo", actual = actual.about)
+        assertEquals(expected = "Articles | Rafael Tonholo", actual = actual.articles)
+        assertEquals(expected = "Work | Rafael Tonholo", actual = actual.projects)
+        assertEquals(expected = "Resume | Rafael Tonholo", actual = actual.resume)
+        assertEquals(expected = "Page Not Found | Rafael Tonholo", actual = actual.notFound)
+    }
+
+    @Test
+    fun `given PtBr locale, when pageTitles is read, then returns Portuguese page titles`() {
+        val inputLocale: Locale = Locale.PtBr
+        val strings: Strings = stringsFor(locale = inputLocale)
+        val actual: Strings.PageTitles = strings.pageTitles
+        assertEquals(expected = "Início | Rafael Tonholo", actual = actual.home)
+        assertEquals(expected = "Sobre mim | Rafael Tonholo", actual = actual.about)
+        assertEquals(expected = "Artigos | Rafael Tonholo", actual = actual.articles)
+        assertEquals(expected = "Trabalho | Rafael Tonholo", actual = actual.projects)
+        assertEquals(expected = "Currículo | Rafael Tonholo", actual = actual.resume)
+        assertEquals(expected = "Página Não Encontrada | Rafael Tonholo", actual = actual.notFound)
+    }
 }
