@@ -1,53 +1,130 @@
-This is a [Kobweb](https://github.com/varabyte/kobweb) project bootstrapped with the `app/empty` template.
+# Portfolio
 
-This template is useful if you already know what you're doing and just want a clean slate. By default, it
-just creates a blank home page (which prints to the console so you can confirm it's working)
+Personal site of Rafael Tonholo, Android engineer based in Halifax, Nova Scotia.
+Live at [rafael.tonholo.dev](https://rafael.tonholo.dev).
 
-If you are still learning, consider instantiating the `app` template (or one of the examples) to see actual,
-working projects.
+Built with [Kobweb](https://github.com/varabyte/kobweb) (Silk UI on Compose HTML).
+Kotlin Multiplatform, JS target only. Everything is exported as a static site.
 
-## Getting Started
+## Features
 
-First, run the development server by typing the following command in a terminal under the `site` folder:
+- Pages: home, about, projects, project detail, articles, article detail, resume, and a themed 404.
+- Two languages: English and Brazilian Portuguese (`pt-BR`).
+- Light and dark modes that follow the OS.
+- Articles and project case studies written in Markdown.
+- Privacy-friendly analytics with [Umami](https://umami.is) (skipped on localhost).
+- Icons from [Phosphor Icons](https://phosphoricons.com); fonts are JetBrains Mono, Geist, and Fraunces.
+
+## Tech stack
+
+| Area      | Choice                                                              |
+|-----------|---------------------------------------------------------------------|
+| Language  | Kotlin 2.4.21                                                       |
+| Framework | Kobweb 0.25.1 (Silk, Compose HTML 1.11.1)                           |
+| Markdown  | kobwebx-markdown                                                    |
+| Build     | Gradle (Kotlin DSL), version catalog in `gradle/libs.versions.toml` |
+| Lint      | detekt 2.0.0-alpha.6 with ktlint wrapper and Compose rules          |
+| Tests     | `kotlin-test` with Power-Assert                                     |
+| Hosting   | GitHub Pages                                                        |
+
+## Requirements
+
+- JDK 21
+- [Kobweb CLI](https://github.com/varabyte/kobweb-cli) 0.9.23 (the version CI uses)
+
+## Getting started
+
+Start the dev server from the `site` folder:
 
 ```bash
-$ cd site
-$ kobweb run
+cd site
+kobweb run
 ```
 
-Open [http://localhost:8080](http://localhost:8080) with your browser to see the result.
+Open [http://localhost:8080](http://localhost:8080). Press `Q` in the terminal to stop it.
+The site reloads when you change code.
 
-You can use any editor you want for the project, but we recommend using **IntelliJ IDEA Community Edition** downloaded
-using the [Toolbox App](https://www.jetbrains.com/toolbox-app/).
-
-Press `Q` in the terminal to gracefully stop the server.
-
-### Live Reload
-
-Feel free to edit / add / delete new components, pages, and API endpoints! When you make any changes, the site will
-indicate the status of the build and automatically reload when ready.
-
-## Exporting the Project
-
-When you are ready to ship, you should shutdown the development server and then export the project using:
+## Common commands
 
 ```bash
+./gradlew :site:build                                              # Build
+./gradlew :site:detektJsMainSourceSet :site:detektJsTestSourceSet  # Lint
+./gradlew :site:jsTest                                             # Tests
+./gradlew :site:generateSitemap                                    # Write sitemap.xml
+```
+
+The top-level `:site:detekt` task has no sources and does nothing. Use the source-set tasks above.
+
+## Project layout
+
+```
+.
+├── app.properties        # VERSION, LAST_MODIFIED, UMAMI_SCRIPT_URL, UMAMI_WEBSITE_ID
+├── build-logic/          # Gradle convention code
+├── config/detekt.yml     # Lint rules
+├── site/                 # The Kobweb app (single Gradle module)
+│   └── src/
+│       ├── jsMain/kotlin/dev/tonholo/portfolio/
+│       │   ├── analytics/    # Umami injector and analytics manager
+│       │   ├── components/   # atoms, molecules, organisms, layouts
+│       │   ├── domain/       # Pure domain models
+│       │   ├── extensions/   # Kotlin extension helpers
+│       │   ├── locale/       # Hand-rolled i18n (Strings sealed class: en, pt-BR)
+│       │   ├── navigation/   # Routes and locale routing
+│       │   ├── pages/        # @Page composables
+│       │   ├── state/        # UI state holders
+│       │   └── theme/        # Design tokens
+│       ├── jsMain/resources/
+│       │   ├── markdown/     # articles/ and projects/ content
+│       │   └── public/       # Images, icons, favicons
+│       └── jsTest/           # Tests
+└── old-layout/           # Previous implementation, reference only
+```
+
+## Routes
+
+| Route              | Page           |
+|--------------------|----------------|
+| `/`                | Home           |
+| `/about`           | About          |
+| `/projects`        | Project list   |
+| `/projects/{slug}` | Project detail |
+| `/articles`        | Article list   |
+| `/articles/{slug}` | Article detail |
+| `/resume`          | Resume         |
+
+Localized pages live under a language segment, for example `/articles/pt-br/{slug}`.
+Routes that Kobweb cannot find on its own (localized slugs and detail pages) are registered
+in `site/build.gradle.kts` with `addExtraRoute`.
+
+## Content
+
+- Articles: add a Markdown file to `site/src/jsMain/resources/markdown/articles/`.
+  Name the Portuguese version with a `PtBr` suffix, for example `HelloWorldPtBr.md`.
+- Project case studies: same idea under `markdown/projects/`.
+- Slugs are picked up from the file names at build time.
+- Projects without a case study (such as `svg-compose`) are listed in `projectSlugs` in `site/build.gradle.kts`.
+
+## Deployment
+
+Pushing to `main` runs `.github/workflows/export-and-deploy-site.yml`. It:
+
+1. Runs lint and tests.
+2. Exports the site with `kobweb export`.
+3. Uploads `site/.kobweb/site/` as the GitHub Pages artifact.
+
+No `docs/` folder or `CNAME` file is committed.
+
+To try a production export locally:
+
+```bash
+cd site
 kobweb export
-```
-
-When finished, you can run a Kobweb server in production mode:
-
-```bash
 kobweb run --env prod
 ```
 
-If you want to run this command in the Cloud provider of your choice, consider disabling interactive mode since nobody
-is sitting around watching the console in that case anyway. To do that, use:
+## Contributing and AI agents
 
-```bash
-kobweb run --env prod --notty
-```
-
-Kobweb also supports exporting to a static layout which is compatible with static hosting providers, such as GitHub
-Pages, Netlify, Firebase, any presumably all the others. You can read more about that approach here:
-https://bitspittle.dev/blog/2022/staticdeploy
+- Code style, architecture, testing, and commit rules are in [`.ai/guidelines.md`](.ai/guidelines.md).
+- Repository overview and verification steps are in [`AGENTS.md`](AGENTS.md).
+- Commits follow Conventional Commits.
