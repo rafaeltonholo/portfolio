@@ -4,16 +4,24 @@ slug: git-command-line
 locale: pt-BR
 title: Linha de comando do Git
 date: 09 de out. de 2024
-description: Recursos essenciais da linha de comando do Git, dicas e fluxos de trabalho para o desenvolvimento diário, desde configurações de SSH com múltiplas contas até formatação de logs e higiene de branches.
+description: >
+    Recursos essenciais da linha de comando do Git, dicas e fluxos de trabalho para o desenvolvimento diário, 
+    desde configurações de SSH com múltiplas contas até formatação de logs e higiene de branches.
+authors:
+    -   name: rafael
+        avatar: https://rafael.tonholo.dev/images/writing.jpg
 tags:
-  - git
-  - tooling
-  - cli
+    - git
+    - tooling
+    - cli
 ---
 
-O Git é um sistema de controle de versão distribuído, gratuito e open source, que nos ajuda a organizar e gerenciar projetos com facilidade e eficiência.
+O Git é um sistema de controle de versão distribuído, gratuito e open source, que nos ajuda a organizar e gerenciar
+projetos com facilidade e eficiência.
 
-É de longe a ferramenta de SCM mais utilizada para lidar tanto com pequenos projetos quanto com grandes bases de código. Como o Git possui tantos recursos, pode ser fácil ignorar ou esquecer algumas das suas funcionalidades mais úteis no dia a dia.
+É de longe a ferramenta de SCM mais utilizada para lidar tanto com pequenos projetos quanto com grandes bases de código.
+Como o Git possui tantos recursos, pode ser fácil ignorar ou esquecer algumas das suas funcionalidades mais úteis no dia
+a dia.
 
 Aqui está um guia prático de comandos e configurações que são especialmente úteis para manter no seu kit de ferramentas.
 
@@ -35,9 +43,11 @@ Nesse caso, o repositório será clonado dentro de uma pasta chamada `minha-past
 
 ## Usando contas diferentes do GitHub (chaves SSH)
 
-Ao conciliar projetos de clientes, trabalho e projetos pessoais, você frequentemente precisa usar contas separadas do GitHub sem precisar se autenticar novamente a cada push.
+Ao conciliar projetos de clientes, trabalho e projetos pessoais, você frequentemente precisa usar contas separadas do
+GitHub sem precisar se autenticar novamente a cada push.
 
-Os aliases de host SSH tornam isso transparente. Quando você gera uma chave SSH (por exemplo, com `ed25519`), seu arquivo padrão `~/.ssh/config` geralmente se parece com isto:
+Os aliases de host SSH tornam isso transparente. Quando você gera uma chave SSH (por exemplo, com `ed25519`), seu
+arquivo padrão `~/.ssh/config` geralmente se parece com isto:
 
 ```
 Host github.com
@@ -60,7 +70,8 @@ Host secondary-github.com
   IdentityFile ~/.ssh/secondary_account_id_ed25519
 ```
 
-Com `HostName github.com`, o Git roteia a conexão para `github.com` enquanto utiliza a chave `secondary_account_id_ed25519` sempre que o hostname `secondary-github.com` for usado em uma URL remota:
+Com `HostName github.com`, o Git roteia a conexão para `github.com` enquanto utiliza a chave
+`secondary_account_id_ed25519` sempre que o hostname `secondary-github.com` for usado em uma URL remota:
 
 ```bash
 # Usa a chave SSH padrão:
@@ -74,7 +85,9 @@ Esse truque também funciona para o GitLab, Bitbucket e instâncias auto-hospeda
 
 ## Limpando branches excluídas no remoto
 
-Quando pull requests são mergeados e branches remotas são excluídas, seu repositório local ainda mantém referências a elas. Você pode podar as branches de rastreamento remoto excluídas e remover as branches locais correspondentes em um único comando:
+Quando pull requests são mergeados e branches remotas são excluídas, seu repositório local ainda mantém referências a
+elas. Você pode podar as branches de rastreamento remoto excluídas e remover as branches locais correspondentes em um
+único comando:
 
 ```bash
 git fetch -p
@@ -90,7 +103,8 @@ git branch -vv | \
 ### Como isso funciona:
 
 1. `git fetch -p`: Poda referências de rastreamento remoto que não existem mais no remoto.
-2. `git branch -vv`: Lista as branches locais com detalhes de rastreamento; branches cujo upstream foi removido são marcadas com `: gone`.
+2. `git branch -vv`: Lista as branches locais com detalhes de rastreamento; branches cujo upstream foi removido são
+   marcadas com `: gone`.
 3. `grep ': gone'`: Filtra apenas as branches cujo upstream desapareceu.
 4. `grep -v "^\*"`: Exclui a branch atualmente ativa (checkout atual).
 5. `grep -v "^\+"` e `grep -v "^- "`: Remove linhas indicadoras de worktrees.
@@ -118,6 +132,7 @@ git log --graph --oneline --decorate --all
 ```
 
 Flags úteis para combinar:
+
 - `--oneline`: Condensa cada commit ao seu hash abreviado e título.
 - `--graph`: Desenha uma árvore ASCII de branches e merges.
 - `--decorate`: Exibe ponteiros de branches e tags.
@@ -134,6 +149,7 @@ Você pode criar um alias para isso no `~/.gitconfig` para acesso rápido:
 ## Próximos tópicos para explorar
 
 Fique ligado para futuros artigos detalhados cobrindo:
+
 - Como fazer amend de commits de forma limpa sem duplicar histórico
 - Estratégias de rebase interativo e squash
 - Quando fazer merge vs. quando fazer rebase

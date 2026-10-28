@@ -1,8 +1,12 @@
 ---
 title: 'Time travel in git: recovering a screwed-up repository with reflog and reset'
 date: oct 25, 2026
-description:
-    Screwed a rebase or force-pushed by mistake? Learn how to use git reflog and reset to travel back in time and recover your repository without starting over.
+description: >
+    Screwed a rebase or force-pushed by mistake? Learn how to use git reflog and reset to travel 
+    back in time and recover your repository without starting over.
+authors:
+    -   name: rafael
+        avatar: https://rafael.tonholo.dev/images/writing.jpg
 tags:
     - git
     - rebasing
