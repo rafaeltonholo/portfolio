@@ -12,6 +12,7 @@ tags:
     - rebasing
     - reflog
     - version-control
+thumbnail: https://rafael.tonholo.dev/images/articles/git-time-travel-reflog-reset/thumbnail.png
 ---
 
 ## Context
