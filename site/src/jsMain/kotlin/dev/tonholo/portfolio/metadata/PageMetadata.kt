@@ -27,7 +27,8 @@ data class PageMetadata(
         const val TYPE_WEBSITE: String = "website"
         const val TYPE_ARTICLE: String = "article"
         const val DEFAULT_DESCRIPTION: String = "Rafael Tonholo - Android Engineer"
-        const val DEFAULT_IMAGE_URL: String = "https://rafael.tonholo.dev/logo512.png"
+        const val SITE_URL: String = "https://rafael.tonholo.dev"
+        const val DEFAULT_IMAGE_URL: String = "$SITE_URL/logo512.png"
         const val SITE_NAME: String = "Rafael Tonholo"
         const val TWITTER_SITE: String = "@rafaeltonholo"
         const val TWITTER_CARD_LARGE: String = "summary_large_image"
@@ -77,6 +78,18 @@ fun updateMetaTagByProperty(property: String, content: String): Unit =
     updateMetaTag(attributeName = "property", attributeValue = property, content = content)
 
 /**
+ * Removes the `<meta property="...">` tag from `<head>` when present.
+ *
+ * @param property the `property` attribute value.
+ */
+fun removeMetaTagByProperty(property: String) {
+    document.querySelector("meta[property='$property']")?.remove()
+}
+
+private fun String.toAbsoluteUrl(): String =
+    if (startsWith("/")) "${PageMetadata.SITE_URL}$this" else this
+
+/**
  * Applies [metadata] to the current HTML document `<head>`.
  *
  * @param metadata the [PageMetadata] payload to inject.
@@ -87,7 +100,9 @@ fun applyPageMetadata(metadata: PageMetadata, defaultTitle: String) {
     val resolvedOgTitle: String = metadata.ogTitle?.takeIf { it.isNotBlank() } ?: resolvedTitle
     val resolvedDescription: String = metadata.description?.takeIf { it.isNotBlank() }
         ?: PageMetadata.DEFAULT_DESCRIPTION
-    val resolvedImage: String = metadata.imageUrl?.takeIf { it.isNotBlank() }
+    val resolvedImage: String = metadata.imageUrl
+        ?.takeIf { it.isNotBlank() }
+        ?.toAbsoluteUrl()
         ?: PageMetadata.DEFAULT_IMAGE_URL
     document.title = resolvedTitle
     updateMetaTagByName(name = "description", content = resolvedDescription)
@@ -96,8 +111,11 @@ fun applyPageMetadata(metadata: PageMetadata, defaultTitle: String) {
     updateMetaTagByProperty(property = "og:type", content = metadata.type)
     updateMetaTagByProperty(property = "og:site_name", content = PageMetadata.SITE_NAME)
     updateMetaTagByProperty(property = "og:image", content = resolvedImage)
-    metadata.canonicalUrl?.takeIf { it.isNotBlank() }?.let { url: String ->
-        updateMetaTagByProperty(property = "og:url", content = url)
+    val canonicalUrl: String? = metadata.canonicalUrl?.takeIf { it.isNotBlank() }
+    if (canonicalUrl != null) {
+        updateMetaTagByProperty(property = "og:url", content = canonicalUrl)
+    } else {
+        removeMetaTagByProperty(property = "og:url")
     }
     val twitterCard: String = if (metadata.imageUrl.isNullOrBlank()) {
         PageMetadata.TWITTER_CARD_SUMMARY
