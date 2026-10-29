@@ -63,6 +63,7 @@ import dev.tonholo.portfolio.generated.articles.GeneratedArticles
 import dev.tonholo.portfolio.locale.LocalStrings
 import dev.tonholo.portfolio.locale.Locale
 import dev.tonholo.portfolio.metadata.PageMetadata
+import dev.tonholo.portfolio.metadata.toOgLocale
 import dev.tonholo.portfolio.navigation.Routes
 import dev.tonholo.portfolio.state.LocalLocaleState
 import dev.tonholo.portfolio.state.StaticContent
@@ -173,6 +174,20 @@ data class ArticleMarkdownLayoutData(
     val thumbnail: String = "",
 )
 
+private fun ArticleMarkdownLayoutData.canonicalUrl(): String =
+    "${PageMetadata.SITE_URL}${Routes.article(slug = slug, locale = locale)}"
+
+private fun ArticleMarkdownLayoutData.toPageMetadata(pageTitle: String): PageMetadata =
+    PageMetadata(
+        title = pageTitle,
+        ogTitle = title.ifBlank { null },
+        description = description.ifBlank { summary }.ifBlank { null },
+        canonicalUrl = canonicalUrl(),
+        imageUrl = thumbnail.ifBlank { null },
+        type = PageMetadata.TYPE_ARTICLE,
+        locale = locale.toOgLocale(),
+    )
+
 /**
  * `@InitRoute` hook Kobweb calls before rendering any page that uses
  * [ArticleMarkdownLayout]. Pulls frontmatter from the markdown context and
@@ -271,18 +286,7 @@ fun ArticleMarkdownLayout(context: PageContext, content: @Composable () -> Unit)
     } else {
         LocalStrings.current.pageTitles.articles
     }
-    val articleCanonicalUrl: String =
-        "https://rafael.tonholo.dev${Routes.article(slug = data.slug, locale = data.locale)}"
-    val articleDescription: String = data.description.ifBlank { data.summary }
-    val articleMetadata: PageMetadata = PageMetadata(
-        title = pageTitle,
-        ogTitle = data.title.ifBlank { null },
-        description = articleDescription.ifBlank { null },
-        canonicalUrl = articleCanonicalUrl,
-        imageUrl = data.thumbnail.ifBlank { null },
-        type = PageMetadata.TYPE_ARTICLE,
-    )
-    PageLayout(metadata = articleMetadata) {
+    PageLayout(metadata = data.toPageMetadata(pageTitle = pageTitle)) {
         HeroSection(id = "article-shell") {
             // Handoff structure: meta row, title, and lede span the full
             // shell width above the sidebar/body grid. The two-column
@@ -338,7 +342,7 @@ fun ArticleMarkdownLayout(context: PageContext, content: @Composable () -> Unit)
                     activeId = activeId.ifBlank { tocEntries.firstOrNull()?.id.orEmpty() },
                     onCopyLink = { copyCurrentLocation() },
                     articleTitle = data.title,
-                    articleUrl = articleCanonicalUrl,
+                    articleUrl = data.canonicalUrl(),
                 )
                 Div(attrs = Modifier.fillMaxWidth().toAttrs()) {
                     Article(attrs = ArticleMarkdownBodyStyle.toModifier().toAttrs()) {

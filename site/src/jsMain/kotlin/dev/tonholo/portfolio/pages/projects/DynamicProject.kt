@@ -16,6 +16,7 @@ import dev.tonholo.portfolio.locale.LocalStrings
 import dev.tonholo.portfolio.locale.Locale
 import dev.tonholo.portfolio.locale.Strings
 import dev.tonholo.portfolio.metadata.PageMetadata
+import dev.tonholo.portfolio.metadata.toPageMetadata
 import dev.tonholo.portfolio.navigation.Routes
 import dev.tonholo.portfolio.state.LocalLocaleState
 import dev.tonholo.portfolio.state.StaticContent
@@ -77,27 +78,17 @@ private fun RenderDynamicProject(slug: String, locale: Locale) {
             backRoute = Routes.PROJECTS,
             nextProjectName = null,
             nextRoute = null,
-            title = allStrings.pageTitles.projects,
+            metadata = PageMetadata(title = allStrings.pageTitles.projects),
         ) {
             Text(strings.notFoundCopy)
         }
         return
     }
-    val projectTitle: String = "${project.name} | Rafael Tonholo"
-    val projectCanonicalUrl: String =
-        "https://rafael.tonholo.dev${Routes.project(slug = project.slug, locale = locale)}"
-    val projectMetadata: PageMetadata = PageMetadata(
-        title = projectTitle,
-        ogTitle = project.name,
-        description = project.description,
-        canonicalUrl = projectCanonicalUrl,
-        imageUrl = project.coverImage?.ifBlank { null },
-    )
     ProjectLayout(
         backRoute = Routes.PROJECTS,
         nextProjectName = nextProject?.name,
         nextRoute = nextProject?.let { Routes.project(slug = it.slug, locale = locale) },
-        metadata = projectMetadata,
+        metadata = project.toPageMetadata(locale = locale),
     ) {
         ProjectBreadcrumb(projectName = project.name)
         ProjectDetailHero(project = project)

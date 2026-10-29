@@ -16,6 +16,7 @@ import dev.tonholo.portfolio.extensions.toKebabCase
 import dev.tonholo.portfolio.locale.LocalStrings
 import dev.tonholo.portfolio.locale.Locale
 import dev.tonholo.portfolio.metadata.PageMetadata
+import dev.tonholo.portfolio.metadata.toPageMetadata
 import dev.tonholo.portfolio.navigation.Routes
 import dev.tonholo.portfolio.state.LocalLocaleState
 import dev.tonholo.portfolio.state.StaticContent
@@ -86,28 +87,18 @@ fun ProjectMarkdownLayout(context: PageContext, content: @Composable () -> Unit)
             backRoute = Routes.PROJECTS,
             nextProjectName = null,
             nextRoute = null,
-            title = allStrings.pageTitles.projects,
+            metadata = PageMetadata(title = allStrings.pageTitles.projects),
         ) {
             Text(strings.notFoundCopy)
         }
         return
     }
-    val projectTitle: String = "${project.name} | Rafael Tonholo"
-    val projectCanonicalUrl: String =
-        "https://rafael.tonholo.dev${Routes.project(slug = data.slug, locale = data.locale)}"
     val coverImage: String? = data.coverImage ?: project.coverImage
-    val projectMetadata: PageMetadata = PageMetadata(
-        title = projectTitle,
-        ogTitle = project.name,
-        description = project.description,
-        canonicalUrl = projectCanonicalUrl,
-        imageUrl = coverImage?.ifBlank { null },
-    )
     ProjectLayout(
         backRoute = Routes.PROJECTS,
         nextProjectName = nextProject?.name,
         nextRoute = nextProject?.let { Routes.project(slug = it.slug, locale = data.locale) },
-        metadata = projectMetadata,
+        metadata = project.toPageMetadata(locale = data.locale, coverImage = coverImage),
     ) {
         ProjectBreadcrumb(projectName = project.name)
         ProjectDetailHero(project = project)
