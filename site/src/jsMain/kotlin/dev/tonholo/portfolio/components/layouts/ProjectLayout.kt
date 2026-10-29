@@ -3,6 +3,7 @@ package dev.tonholo.portfolio.components.layouts
 import androidx.compose.runtime.Composable
 import com.varabyte.kobweb.compose.ui.Modifier
 import dev.tonholo.portfolio.components.organisms.projects.PrevNextNav
+import dev.tonholo.portfolio.metadata.PageMetadata
 
 /**
  * Layout for project detail pages. Delegates the chrome (top nav, footer,
@@ -23,6 +24,7 @@ import dev.tonholo.portfolio.components.organisms.projects.PrevNextNav
  *   [nextProjectName] for the final project in the series.
  * @param modifier optional [Modifier] applied to the outer `<section>`.
  * @param title optional page title applied to [document.title] via [PageLayout].
+ * @param metadata optional [PageMetadata] injected into `<head>` via [PageLayout].
  * @param content the project body rendered inside the shell.
  */
 @Composable
@@ -32,9 +34,10 @@ fun ProjectLayout(
     nextRoute: String?,
     modifier: Modifier = Modifier,
     title: String? = null,
+    metadata: PageMetadata = PageMetadata(title = title),
     content: @Composable () -> Unit,
 ) {
-    PageLayout(title = title) {
+    PageLayout(metadata = metadata) {
         HeroSection(id = "project-shell", modifier = modifier) {
             content()
             PrevNextNav(

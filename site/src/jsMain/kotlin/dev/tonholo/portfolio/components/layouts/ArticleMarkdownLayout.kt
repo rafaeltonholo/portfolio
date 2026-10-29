@@ -62,6 +62,7 @@ import dev.tonholo.portfolio.extensions.toKebabCase
 import dev.tonholo.portfolio.generated.articles.GeneratedArticles
 import dev.tonholo.portfolio.locale.LocalStrings
 import dev.tonholo.portfolio.locale.Locale
+import dev.tonholo.portfolio.metadata.PageMetadata
 import dev.tonholo.portfolio.navigation.Routes
 import dev.tonholo.portfolio.state.LocalLocaleState
 import dev.tonholo.portfolio.state.StaticContent
@@ -270,7 +271,18 @@ fun ArticleMarkdownLayout(context: PageContext, content: @Composable () -> Unit)
     } else {
         LocalStrings.current.pageTitles.articles
     }
-    PageLayout(title = pageTitle) {
+    val articleCanonicalUrl: String =
+        "https://rafael.tonholo.dev${Routes.article(slug = data.slug, locale = data.locale)}"
+    val articleDescription: String = data.description.ifBlank { data.summary }
+    val articleMetadata: PageMetadata = PageMetadata(
+        title = pageTitle,
+        ogTitle = data.title.ifBlank { null },
+        description = articleDescription.ifBlank { null },
+        canonicalUrl = articleCanonicalUrl,
+        imageUrl = data.thumbnail.ifBlank { null },
+        type = PageMetadata.TYPE_ARTICLE,
+    )
+    PageLayout(metadata = articleMetadata) {
         HeroSection(id = "article-shell") {
             // Handoff structure: meta row, title, and lede span the full
             // shell width above the sidebar/body grid. The two-column
@@ -321,8 +333,6 @@ fun ArticleMarkdownLayout(context: PageContext, content: @Composable () -> Unit)
                 }
             }
             Div(attrs = ArticleMarkdownGridStyle.toModifier().toAttrs()) {
-                val articleCanonicalUrl: String =
-                    "https://rafael.tonholo.dev${Routes.article(slug = data.slug, locale = data.locale)}"
                 ArticleTocSidebar(
                     contents = tocEntries,
                     activeId = activeId.ifBlank { tocEntries.firstOrNull()?.id.orEmpty() },
