@@ -1,12 +1,21 @@
 package dev.tonholo.portfolio.metadata
 
 import kotlinx.browser.document
+import org.w3c.dom.Element
 import org.w3c.dom.HTMLMetaElement
+import org.w3c.dom.asList
+import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
+import kotlin.test.assertNull
 
 class PageMetadataTest {
+    @BeforeTest
+    fun removeMetaTags() {
+        document.querySelectorAll("meta").asList().forEach { (it as Element).remove() }
+    }
+
     @Test
     fun `given custom metadata, when applyPageMetadata is called, then head contains updated meta tags`() {
         // Arrange
@@ -79,4 +88,74 @@ class PageMetadataTest {
         assertNotNull(actualTwitterCardMeta)
         assertEquals(expected = PageMetadata.TWITTER_CARD_SUMMARY, actual = actualTwitterCardMeta.content)
     }
+
+    @Test
+    fun `given no ogTitle, when applyPageMetadata is called, then og title falls back to title`() {
+        // Arrange
+        val expectedTitle: String = "Only Title"
+        // Act
+        applyPageMetadata(metadata = PageMetadata(title = expectedTitle), defaultTitle = "Home")
+        // Assert
+        assertEquals(expected = expectedTitle, actual = metaContent(selector = "meta[property='og:title']"))
+    }
+
+    @Test
+    fun `given imageUrl, when applyPageMetadata is called, then twitter card is large`() {
+        // Arrange
+        val inputMetadata: PageMetadata = PageMetadata(imageUrl = "https://example.com/a.png")
+        // Act
+        applyPageMetadata(metadata = inputMetadata, defaultTitle = "Home")
+        // Assert
+        assertEquals(
+            expected = PageMetadata.TWITTER_CARD_LARGE,
+            actual = metaContent(selector = "meta[name='twitter:card']"),
+        )
+    }
+
+    @Test
+    fun `given null imageUrl, when applyPageMetadata is called, then default image is used`() {
+        // Act
+        applyPageMetadata(metadata = PageMetadata(), defaultTitle = "Home")
+        // Assert
+        assertEquals(
+            expected = PageMetadata.DEFAULT_IMAGE_URL,
+            actual = metaContent(selector = "meta[property='og:image']"),
+        )
+    }
+
+    @Test
+    fun `given relative imageUrl, when applyPageMetadata is called, then og image is absolute`() {
+        // Arrange
+        val inputMetadata: PageMetadata = PageMetadata(imageUrl = "/images/projects/hero.png")
+        // Act
+        applyPageMetadata(metadata = inputMetadata, defaultTitle = "Home")
+        // Assert
+        assertEquals(
+            expected = "${PageMetadata.SITE_URL}/images/projects/hero.png",
+            actual = metaContent(selector = "meta[property='og:image']"),
+        )
+    }
+
+    @Test
+    fun `given applied twice, when applyPageMetadata is called, then tags are updated not duplicated`() {
+        // Act
+        applyPageMetadata(metadata = PageMetadata(description = "first"), defaultTitle = "Home")
+        applyPageMetadata(metadata = PageMetadata(description = "second"), defaultTitle = "Home")
+        // Assert
+        assertEquals(expected = 1, actual = document.querySelectorAll("meta[name='description']").length)
+        assertEquals(expected = "second", actual = metaContent(selector = "meta[name='description']"))
+    }
+
+    @Test
+    fun `given previous canonical url, when applied without one, then og url is removed`() {
+        // Arrange
+        applyPageMetadata(metadata = PageMetadata(canonicalUrl = "https://example.com/a"), defaultTitle = "Home")
+        // Act
+        applyPageMetadata(metadata = PageMetadata(), defaultTitle = "Home")
+        // Assert
+        assertNull(document.querySelector("meta[property='og:url']"))
+    }
+
+    private fun metaContent(selector: String): String? =
+        document.querySelector(selector).unsafeCast<HTMLMetaElement?>()?.content
 }
