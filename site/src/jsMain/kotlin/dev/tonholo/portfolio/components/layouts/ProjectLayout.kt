@@ -23,7 +23,6 @@ import dev.tonholo.portfolio.metadata.PageMetadata
  * @param nextRoute destination path for the next link; pass `null` alongside
  *   [nextProjectName] for the final project in the series.
  * @param modifier optional [Modifier] applied to the outer `<section>`.
- * @param title optional page title applied to [document.title] via [PageLayout].
  * @param metadata optional [PageMetadata] injected into `<head>` via [PageLayout].
  * @param content the project body rendered inside the shell.
  */
@@ -33,8 +32,7 @@ fun ProjectLayout(
     nextProjectName: String?,
     nextRoute: String?,
     modifier: Modifier = Modifier,
-    title: String? = null,
-    metadata: PageMetadata = PageMetadata(title = title),
+    metadata: PageMetadata = PageMetadata(),
     content: @Composable () -> Unit,
 ) {
     PageLayout(metadata = metadata) {
