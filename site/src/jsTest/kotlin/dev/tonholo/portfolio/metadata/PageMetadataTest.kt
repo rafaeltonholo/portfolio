@@ -1,5 +1,6 @@
 package dev.tonholo.portfolio.metadata
 
+import dev.tonholo.portfolio.locale.Locale
 import kotlinx.browser.document
 import org.w3c.dom.Element
 import org.w3c.dom.HTMLMetaElement
@@ -154,6 +155,22 @@ class PageMetadataTest {
         applyPageMetadata(metadata = PageMetadata(), defaultTitle = "Home")
         // Assert
         assertNull(document.querySelector("meta[property='og:url']"))
+    }
+
+    @Test
+    fun `given pt-BR locale, when toOgLocale is called, then underscore format is returned`() {
+        // Act
+        val actual: String = Locale.PtBr.toOgLocale()
+        // Assert
+        assertEquals(expected = "pt_BR", actual = actual)
+    }
+
+    @Test
+    fun `given pt_BR locale metadata, when applyPageMetadata is called, then og locale is set`() {
+        // Act
+        applyPageMetadata(metadata = PageMetadata(locale = "pt_BR"), defaultTitle = "Home")
+        // Assert
+        assertEquals(expected = "pt_BR", actual = metaContent(selector = "meta[property='og:locale']"))
     }
 
     private fun metaContent(selector: String): String? =

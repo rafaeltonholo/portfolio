@@ -1,11 +1,13 @@
 package dev.tonholo.portfolio.metadata
 
+import dev.tonholo.portfolio.components.layouts.PageLayout
+import dev.tonholo.portfolio.locale.Locale
 import kotlinx.browser.document
 import org.w3c.dom.HTMLHeadElement
 import org.w3c.dom.HTMLMetaElement
 
 /**
- * Metadata configuration for HTML `<head>` elements managed by [dev.tonholo.portfolio.components.layouts.PageLayout].
+ * Metadata configuration for HTML `<head>` elements managed by [PageLayout].
  *
  * @property title optional document title applied to `<title>`.
  * @property ogTitle optional Open Graph title, falls back to [title].
@@ -14,6 +16,7 @@ import org.w3c.dom.HTMLMetaElement
  * @property canonicalUrl optional canonical URL applied to `og:url`.
  * @property imageUrl optional image URL applied to `og:image` and `twitter:image`.
  * @property type Open Graph object type, defaults to [PageMetadata.TYPE_WEBSITE].
+ * @property locale Open Graph locale applied to `og:locale`, defaults to [PageMetadata.DEFAULT_OG_LOCALE].
  */
 data class PageMetadata(
     val title: String? = null,
@@ -22,11 +25,13 @@ data class PageMetadata(
     val canonicalUrl: String? = null,
     val imageUrl: String? = null,
     val type: String = TYPE_WEBSITE,
+    val locale: String = DEFAULT_OG_LOCALE,
 ) {
     companion object {
         const val TYPE_WEBSITE: String = "website"
         const val TYPE_ARTICLE: String = "article"
         const val DEFAULT_DESCRIPTION: String = "Rafael Tonholo - Android Engineer"
+        const val DEFAULT_OG_LOCALE: String = "en_CA"
         const val SITE_URL: String = "https://rafael.tonholo.dev"
         const val DEFAULT_IMAGE_URL: String = "$SITE_URL/logo512.png"
         const val SITE_NAME: String = "Rafael Tonholo"
@@ -43,7 +48,7 @@ data class PageMetadata(
  * @param attributeValue the attribute value (e.g. "description" or "og:title").
  * @param content the text content to populate in the `content` attribute.
  */
-fun updateMetaTag(attributeName: String, attributeValue: String, content: String) {
+private fun updateMetaTag(attributeName: String, attributeValue: String, content: String) {
     if (attributeName.isBlank() || attributeValue.isBlank() || content.isBlank()) return
     val head: HTMLHeadElement = document.head ?: return
     val selector: String = "meta[$attributeName='$attributeValue']"
@@ -90,6 +95,11 @@ private fun String.toAbsoluteUrl(): String =
     if (startsWith("/")) "${PageMetadata.SITE_URL}$this" else this
 
 /**
+ * Converts this [Locale] to the Open Graph locale format (e.g. `pt_BR`).
+ */
+fun Locale.toOgLocale(): String = tag.replace(oldValue = "-", newValue = "_")
+
+/**
  * Applies [metadata] to the current HTML document `<head>`.
  *
  * @param metadata the [PageMetadata] payload to inject.
@@ -109,6 +119,7 @@ fun applyPageMetadata(metadata: PageMetadata, defaultTitle: String) {
     updateMetaTagByProperty(property = "og:title", content = resolvedOgTitle)
     updateMetaTagByProperty(property = "og:description", content = resolvedDescription)
     updateMetaTagByProperty(property = "og:type", content = metadata.type)
+    updateMetaTagByProperty(property = "og:locale", content = metadata.locale)
     updateMetaTagByProperty(property = "og:site_name", content = PageMetadata.SITE_NAME)
     updateMetaTagByProperty(property = "og:image", content = resolvedImage)
     val canonicalUrl: String? = metadata.canonicalUrl?.takeIf { it.isNotBlank() }
