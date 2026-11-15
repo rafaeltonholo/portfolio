@@ -3,6 +3,7 @@ package dev.tonholo.portfolio.metadata
 import dev.tonholo.portfolio.locale.Locale
 import kotlinx.browser.document
 import org.w3c.dom.Element
+import org.w3c.dom.HTMLLinkElement
 import org.w3c.dom.HTMLMetaElement
 import org.w3c.dom.asList
 import kotlin.test.BeforeTest
@@ -14,7 +15,10 @@ import kotlin.test.assertNull
 class PageMetadataTest {
     @BeforeTest
     fun removeMetaTags() {
-        document.querySelectorAll("meta").asList().forEach { (it as Element).remove() }
+        document
+            .querySelectorAll("meta, link[rel='canonical'], link[rel='alternate'], script[type='application/ld+json']")
+            .asList()
+            .forEach { (it as Element).remove() }
     }
 
     @Test
@@ -171,6 +175,86 @@ class PageMetadataTest {
         applyPageMetadata(metadata = PageMetadata(locale = "pt_BR"), defaultTitle = "Home")
         // Assert
         assertEquals(expected = "pt_BR", actual = metaContent(selector = "meta[property='og:locale']"))
+    }
+
+    @Test
+    fun `given a canonical url applied twice, when applyPageMetadata is called, then one link points to it`() {
+        // Arrange
+        val url = "https://rafael.tonholo.dev/articles/test"
+        // Act
+        applyPageMetadata(
+            metadata = PageMetadata(canonicalUrl = "https://rafael.tonholo.dev/old"),
+            defaultTitle = "Home",
+        )
+        applyPageMetadata(metadata = PageMetadata(canonicalUrl = url), defaultTitle = "Home")
+        // Assert
+        val links = document.querySelectorAll("link[rel='canonical']")
+        assertEquals(expected = 1, actual = links.length)
+        assertEquals(expected = url, actual = links.item(0).unsafeCast<HTMLLinkElement>().href)
+    }
+
+    @Test
+    fun `given previous canonical url, when applied without one, then the canonical link is removed`() {
+        // Arrange
+        applyPageMetadata(metadata = PageMetadata(canonicalUrl = "https://example.com/a"), defaultTitle = "Home")
+        // Act
+        applyPageMetadata(metadata = PageMetadata(), defaultTitle = "Home")
+        // Assert
+        assertNull(document.querySelector("link[rel='canonical']"))
+    }
+
+    @Test
+    fun `given language alternates, when applied and then replaced by a page without them, then the links follow`() {
+        // Arrange
+        val alternates = listOf(
+            AlternateLink(hreflang = "en-CA", href = "https://rafael.tonholo.dev/articles/a"),
+            AlternateLink(hreflang = "pt-BR", href = "https://rafael.tonholo.dev/articles/pt-br/a"),
+        )
+        // Act
+        applyPageMetadata(metadata = PageMetadata(alternates = alternates), defaultTitle = "Home")
+        val applied = document.querySelectorAll("link[rel='alternate']").asList()
+            .map { it.unsafeCast<HTMLLinkElement>().let { link -> link.hreflang to link.href } }
+        applyPageMetadata(metadata = PageMetadata(), defaultTitle = "Home")
+        // Assert
+        assertEquals(expected = alternates.map { it.hreflang to it.href }, actual = applied)
+        assertNull(document.querySelector("link[rel='alternate']"))
+    }
+
+    @Test
+    fun `given article metadata, when applied and then replaced by a page without it, then article tags follow`() {
+        // Arrange
+        val article = ArticleMetadata(publishedDate = "2026-11-14", authorUrl = "https://rafael.tonholo.dev/about")
+        // Act
+        applyPageMetadata(metadata = PageMetadata(article = article), defaultTitle = "Home")
+        val published = metaContent(selector = "meta[property='article:published_time']")
+        val author = metaContent(selector = "meta[property='article:author']")
+        applyPageMetadata(metadata = PageMetadata(), defaultTitle = "Home")
+        // Assert
+        assertEquals(expected = "2026-11-14", actual = published)
+        assertEquals(expected = "https://rafael.tonholo.dev/about", actual = author)
+        assertNull(document.querySelector("meta[property='article:published_time']"))
+        assertNull(document.querySelector("meta[property='article:author']"))
+    }
+
+    @Test
+    fun `given structured data applied twice, when applyPageMetadata is called, then one script holds the latest`() {
+        // Act
+        applyPageMetadata(metadata = PageMetadata(structuredData = "{\"a\":1}"), defaultTitle = "Home")
+        applyPageMetadata(metadata = PageMetadata(structuredData = "{\"a\":2}"), defaultTitle = "Home")
+        // Assert
+        val scripts = document.querySelectorAll("script[type='application/ld+json']")
+        assertEquals(expected = 1, actual = scripts.length)
+        assertEquals(expected = "{\"a\":2}", actual = scripts.item(0)?.textContent)
+    }
+
+    @Test
+    fun `given previous structured data, when applied without it, then the json-ld script is removed`() {
+        // Arrange
+        applyPageMetadata(metadata = PageMetadata(structuredData = "{}"), defaultTitle = "Home")
+        // Act
+        applyPageMetadata(metadata = PageMetadata(), defaultTitle = "Home")
+        // Assert
+        assertNull(document.querySelector("script[type='application/ld+json']"))
     }
 
     private fun metaContent(selector: String): String? =

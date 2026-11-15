@@ -58,8 +58,11 @@ fun PageLayout(
     val currentRoute: String = pageContext.route.path
     val localeState = LocalLocaleState.current
     val strings = LocalStrings.current
-    LaunchedEffect(metadata) {
-        applyPageMetadata(metadata = metadata, defaultTitle = strings.pageTitles.home)
+    val resolvedMetadata: PageMetadata = metadata.copy(
+        canonicalUrl = metadata.canonicalUrl ?: "${PageMetadata.SITE_URL}$currentRoute",
+    )
+    LaunchedEffect(resolvedMetadata) {
+        applyPageMetadata(metadata = resolvedMetadata, defaultTitle = strings.pageTitles.home)
     }
     var toastVisible: Boolean by remember { mutableStateOf(value = false) }
     LaunchedEffect(localeState.current) {
