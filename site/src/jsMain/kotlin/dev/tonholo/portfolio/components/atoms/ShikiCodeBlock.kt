@@ -40,6 +40,7 @@ import dev.tonholo.portfolio.components.atoms.shiki.ShikiTheme
 import dev.tonholo.portfolio.components.atoms.shiki.ThemeOptions
 import dev.tonholo.portfolio.components.atoms.shiki.createCodeToHastOptions
 import dev.tonholo.portfolio.components.atoms.shiki.shikiTheme
+import dev.tonholo.portfolio.extensions.unescapeHtmlEntities
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.PortfolioTokens
 import dev.tonholo.portfolio.theme.color.Paper
@@ -300,26 +301,6 @@ fun ShikiCodeBlock(code: String, modifier: Modifier = Modifier, language: String
         ShikiCodeBlockContent(parsedHtml = parsedHtml, unescapedCode = unescapedCode)
     }
 }
-
-/**
- * Replaces HTML encoded entity sequences with literal characters.
- *
- * @return clean unescaped string.
- */
-private fun String.unescapeHtmlEntities(): String = replace("&amp;", "&")
-    .replace("&lt;", "<")
-    .replace("&gt;", ">")
-    .replace("&quot;", "\"")
-    .replace("&apos;", "'")
-    .replace("&#39;", "'")
-    .replace("&#34;", "\"")
-    .replace("&#96;", "`")
-    .replace("&#123;", "{")
-    .replace("&#125;", "}")
-    .replace("&#91;", "[")
-    .replace("&#93;", "]")
-    .replace("&#40;", "(")
-    .replace("&#41;", ")")
 
 private fun ColorMode.resolveBorderColor(): Color =
     if (isDark) Paper.dark.paper3 else Paper.light.paper3

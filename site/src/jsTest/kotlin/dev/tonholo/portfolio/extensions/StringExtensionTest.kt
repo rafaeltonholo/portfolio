@@ -63,4 +63,14 @@ class StringExtensionTest {
         // Assert
         assertEquals("git-time-travel-reflog-reset", actual)
     }
+
+    @Test
+    fun `given arrows escaped by the converter, when unescapeHtmlEntities is called, then arrows are restored`() {
+        // Arrange
+        val input = "A[Model response] --&gt; B&#91;Lexer&#93;"
+        // Act
+        val actual = input.unescapeHtmlEntities()
+        // Assert
+        assertEquals("A[Model response] --> B[Lexer]", actual)
+    }
 }
