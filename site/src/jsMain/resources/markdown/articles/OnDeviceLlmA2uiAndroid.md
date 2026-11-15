@@ -28,8 +28,8 @@ Spoiler: the smallest model I tried couldn't write valid A2UI at all. So we'll w
 
 - Small models get A2UI's flat component list wrong. Qwen3-0.6B nested its components in three of five responses.
 - A2UI's compact Express format is designed for on-device models, but there's no Kotlin compiler you can ship in an app. So I wrote a small one in Kotlin Multiplatform common code and benchmarked JSON against Express on a Pixel 7 Pro.
-- So I wrote a small one in Kotlin Multiplatform common code and benchmarked JSON against Express on a Pixel 7 Pro.
 - Model size mattered more than format: Qwen3-0.6B produced 0 usable surfaces from JSON and 1 of 5 from Express, while Gemma 4 E2B handled both.
+- Express still paid off with Gemma: a 37% shorter prompt, about a third faster to the first token, and checklists that showed every item the model generated. Its JSON surfaces often dropped items.
 
 ## A quick recap
 
