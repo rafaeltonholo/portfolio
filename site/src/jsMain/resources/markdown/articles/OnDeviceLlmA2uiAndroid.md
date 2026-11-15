@@ -17,9 +17,11 @@ tags:
     - kotlin-multiplatform
 ---
 
-Imagine you're building a travel assistant. A user asks it to help pack for a trip, and the assistant answers with a list. That works, but what if the user could tick off what they've already packed, and the assistant could build that checklist on the fly, for any trip, without you designing a screen for each one?
+Ask an AI assistant to help you pack for a trip and you'll get a list, as plain text. You can read it, but you can't tick anything off.
 
-That's the promise of generative UI, and [A2UI](https://a2ui.org/) is an open-source protocol for it. There's already good documentation on how to plug the AndroidX renderer into an app, so I won't just repeat it here. Instead, let's look at how the protocol actually works, why it's shaped the way it is, and what happens when the "agent" isn't a big model in the cloud but a small one running on a three-year-old phone.
+Now imagine the answer was a real checklist instead, with checkboxes you can tap, drawn by the app with its own components. Nobody on the team designed a "packing list" screen for it. The model described the UI it wanted, and the app rendered it.
+
+That's the idea behind generative UI, and [A2UI](https://a2ui.org/) is an open-source protocol for it. There's already good documentation on how to plug the AndroidX renderer into an app, so I won't just repeat it here. Instead, let's look at how the protocol actually works, why it's shaped the way it is, and what happens when the "agent" isn't a big model in the cloud but a small one running on a three-year-old phone.
 
 Spoiler: the smallest model I tried couldn't write valid A2UI at all. So we'll write a tiny compiler in Kotlin that lets models speak a much more compact language instead, and then measure how much that actually helps.
 
@@ -227,7 +229,7 @@ It lives in its own module, [`express`](https://github.com/rafaeltonholo/portfol
 The pipeline is a classic one:
 
 ```mermaid
-flowchart LR
+flowchart TD
     A[Model response] --> B[Find the a2ui block]
     B --> C[Lexer]
     C --> D[Parser]
