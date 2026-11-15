@@ -1,6 +1,7 @@
 package dev.tonholo.portfolio.components.layouts
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -38,6 +39,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.objectFit
 import com.varabyte.kobweb.compose.ui.modifiers.overflow
 import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.compose.ui.modifiers.textDecorationLine
+import com.varabyte.kobweb.compose.ui.modifiers.width
 import com.varabyte.kobweb.compose.ui.styleModifier
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.core.PageContext
@@ -54,15 +56,25 @@ import com.varabyte.kobweb.silk.style.toModifier
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import com.varabyte.kobwebx.markdown.markdown
 import dev.tonholo.portfolio.components.atoms.GiscusWrapper
+import dev.tonholo.portfolio.components.molecules.ARTICLE_PLAIN_LINK_CLASS
+import dev.tonholo.portfolio.components.molecules.ArticleCommentsPrompt
 import dev.tonholo.portfolio.components.molecules.ArticleMetaRow
+import dev.tonholo.portfolio.components.molecules.LocalFootnoteRegistry
+import dev.tonholo.portfolio.components.molecules.footnotes.FootnoteRegistry
 import dev.tonholo.portfolio.components.organisms.articles.ArticleTocSidebar
+import dev.tonholo.portfolio.components.organisms.articles.SECTION_LEVEL
 import dev.tonholo.portfolio.components.organisms.articles.TocEntry
 import dev.tonholo.portfolio.domain.model.ArticleAuthor
 import dev.tonholo.portfolio.extensions.toKebabCase
 import dev.tonholo.portfolio.generated.articles.GeneratedArticles
 import dev.tonholo.portfolio.locale.LocalStrings
 import dev.tonholo.portfolio.locale.Locale
+import dev.tonholo.portfolio.metadata.AlternateLink
+import dev.tonholo.portfolio.metadata.ArticleMetadata
+import dev.tonholo.portfolio.metadata.ArticleStructuredData
 import dev.tonholo.portfolio.metadata.PageMetadata
+import dev.tonholo.portfolio.metadata.toAbsoluteSiteUrl
+import dev.tonholo.portfolio.metadata.toJsonLd
 import dev.tonholo.portfolio.metadata.toOgLocale
 import dev.tonholo.portfolio.navigation.Routes
 import dev.tonholo.portfolio.state.LocalLocaleState
@@ -144,9 +156,9 @@ private const val PROSE_QUOTE_BG_ALPHA_LIGHT = 0.03f
 private const val PROSE_QUOTE_BG_ALPHA_DARK = 0.04f
 private val PROSE_TABLE_BORDER_WIDTH = 1.dp
 private val PROSE_TABLE_PADDING_Y = 8.px
-private val PROSE_TABLE_PADDING_X = 12.px
-private val PROSE_TH_FONT_SIZE = 13.px
-private val PROSE_TD_FONT_SIZE = 14.px
+private val PROSE_TABLE_PADDING_X = 6.px
+private val PROSE_TH_FONT_SIZE = 12.px
+private val PROSE_TD_FONT_SIZE = 13.px
 private const val PROSE_TABLE_MARGIN_BOTTOM_EM = 1.5
 
 // Selector the runtime TOC scraper uses to find every heading under the
@@ -172,21 +184,49 @@ data class ArticleMarkdownLayoutData(
     val summary: String = "",
     val authors: List<ArticleAuthor> = emptyList(),
     val thumbnail: String = "",
+    val publishedDate: String = "",
+    val tags: List<String> = emptyList(),
+    val seoTitle: String = "",
+    val hasTranslation: Boolean = false,
 )
 
 private fun ArticleMarkdownLayoutData.canonicalUrl(): String =
     "${PageMetadata.SITE_URL}${Routes.article(slug = slug, locale = locale)}"
 
-private fun ArticleMarkdownLayoutData.toPageMetadata(pageTitle: String): PageMetadata =
-    PageMetadata(
+private fun ArticleMarkdownLayoutData.alternates(): List<AlternateLink> = if (hasTranslation) {
+    Locale.entries.map { version ->
+        AlternateLink(
+            hreflang = version.tag,
+            href = "${PageMetadata.SITE_URL}${Routes.article(slug = slug, locale = version)}",
+        )
+    }
+} else {
+    emptyList()
+}
+
+private fun ArticleMarkdownLayoutData.toPageMetadata(pageTitle: String): PageMetadata {
+    val resolvedDescription: String? = description.ifBlank { summary }.ifBlank { null }
+    return PageMetadata(
         title = pageTitle,
         ogTitle = title.ifBlank { null },
-        description = description.ifBlank { summary }.ifBlank { null },
+        description = resolvedDescription,
         canonicalUrl = canonicalUrl(),
         imageUrl = thumbnail.ifBlank { null },
         type = PageMetadata.TYPE_ARTICLE,
         locale = locale.toOgLocale(),
+        alternates = alternates(),
+        article = ArticleMetadata(publishedDate = publishedDate),
+        structuredData = ArticleStructuredData(
+            headline = title,
+            description = resolvedDescription.orEmpty(),
+            url = canonicalUrl(),
+            publishedDate = publishedDate,
+            language = locale.tag,
+            keywords = tags,
+            imageUrl = thumbnail.ifBlank { null }?.toAbsoluteSiteUrl(),
+        ).toJsonLd(),
     )
+}
 
 /**
  * `@InitRoute` hook Kobweb calls before rendering any page that uses
@@ -240,6 +280,10 @@ fun initArticleMarkdownLayout(ctx: InitRouteContext) {
             summary = summary,
             authors = authors,
             thumbnail = thumbnail,
+            publishedDate = matchedArticle?.publishedDate.orEmpty(),
+            tags = matchedArticle?.tags.orEmpty(),
+            hasTranslation = slug in GeneratedArticles.TRANSLATED_SLUGS,
+            seoTitle = frontMatter?.get("seoTitle")?.singleOrNull().orEmpty(),
         ),
     )
 }
@@ -281,11 +325,8 @@ fun ArticleMarkdownLayout(context: PageContext, content: @Composable () -> Unit)
     var tocEntries by remember(data.slug) { mutableStateOf<List<TocEntry>>(emptyList()) }
     val activeId: String = rememberScrollActiveHeadingId(slug = data.slug, entries = tocEntries)
     val primaryAuthor: ArticleAuthor? = data.authors.firstOrNull()
-    val pageTitle: String = if (data.title.isNotBlank()) {
-        "${data.title} | Rafael Tonholo"
-    } else {
-        LocalStrings.current.pageTitles.articles
-    }
+    val pageTitle: String = articlePageTitle(title = data.title, seoTitle = data.seoTitle)
+        ?: LocalStrings.current.pageTitles.articles
     PageLayout(metadata = data.toPageMetadata(pageTitle = pageTitle)) {
         HeroSection(id = "article-shell") {
             // Handoff structure: meta row, title, and lede span the full
@@ -346,7 +387,10 @@ fun ArticleMarkdownLayout(context: PageContext, content: @Composable () -> Unit)
                 )
                 Div(attrs = Modifier.fillMaxWidth().toAttrs()) {
                     Article(attrs = ArticleMarkdownBodyStyle.toModifier().toAttrs()) {
-                        content()
+                        val footnoteRegistry = remember(data.slug) { FootnoteRegistry() }
+                        CompositionLocalProvider(LocalFootnoteRegistry provides footnoteRegistry) {
+                            content()
+                        }
 
                         DisposableEffect(data.slug) {
                             tocEntries = collectTocEntries()
@@ -358,9 +402,10 @@ fun ArticleMarkdownLayout(context: PageContext, content: @Composable () -> Unit)
                         }
                     }
                     if (data.title.isNotBlank()) {
+                        ArticleCommentsPrompt(modifier = Modifier.fillMaxWidth().margin(top = 4.cssRem))
                         GiscusWrapper(
                             term = data.title,
-                            modifier = Modifier.fillMaxWidth().margin(top = 4.cssRem),
+                            modifier = Modifier.fillMaxWidth().margin(top = 1.5.cssRem),
                         )
                     }
                 }
@@ -368,6 +413,13 @@ fun ArticleMarkdownLayout(context: PageContext, content: @Composable () -> Unit)
         }
     }
 }
+
+/**
+ * Builds the browser-tab and search title: the frontmatter `seoTitle` when set, otherwise the article title, followed
+ * by the site name. Returns null when the article has no title at all.
+ */
+fun articlePageTitle(title: String, seoTitle: String): String? =
+    seoTitle.ifBlank { title }.takeIf { it.isNotBlank() }?.let { "$it | ${PageMetadata.SITE_NAME}" }
 
 /**
  * Remembers and updates the active table-of-contents entry based on viewport scroll position.
@@ -448,7 +500,7 @@ private fun collectTocEntries(): List<TocEntry> =
         val id = element.id.takeIf { it.isNotBlank() } ?: return@mapNotNull null
         val label = element.textContent?.trim().orEmpty().takeIf { it.isNotEmpty() }
             ?: return@mapNotNull null
-        TocEntry(id = id, label = label)
+        TocEntry(id = id, label = label, level = element.tagName.drop(1).toIntOrNull() ?: SECTION_LEVEL)
     }
 
 /**
@@ -646,7 +698,7 @@ val ArticleMarkdownBodyStyle = CssStyle {
             .color(ink.ink)
             .fontStyle(FontStyle.Italic)
     }
-    descendants("a") {
+    descendants("a:not(.$ARTICLE_PLAIN_LINK_CLASS)") {
         val isDark: Boolean = colorMode == ColorMode.DARK
         val accent = if (isDark) AccentMint.dark else AccentMint.light
         Modifier
@@ -655,9 +707,9 @@ val ArticleMarkdownBodyStyle = CssStyle {
     }
     descendants("table") {
         Modifier
+            .width(100.percent)
             .borderCollapse(BorderCollapse.Collapse)
             .margin(top = 0.em, bottom = PROSE_TABLE_MARGIN_BOTTOM_EM.em)
-            .maxWidth(100.percent)
     }
     descendants("th") {
         val isDark: Boolean = colorMode == ColorMode.DARK

@@ -23,6 +23,7 @@ data class Article(
     val summary: String = "",
     val authors: List<ArticleAuthor> = emptyList(),
     val thumbnail: String = "",
+    val publishedDate: String = "",
 )
 
 enum class ArticleStatus { Draft, Published }

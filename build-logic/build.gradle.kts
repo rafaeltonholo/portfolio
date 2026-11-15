@@ -17,6 +17,11 @@ dependencies {
     implementation("com.varabyte.kobwebx:kobwebx-frontmatter:0.25.1")
     implementation("com.varabyte.kobwebx.gradle:markdown:0.25.1")
     implementation("org.commonmark:commonmark:0.31.0")
+    testImplementation(kotlin("test"))
+}
+
+tasks.test {
+    useJUnitPlatform()
 }
 
 gradlePlugin {

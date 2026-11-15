@@ -41,4 +41,28 @@ class ArticleMarkdownLayoutTest {
             assertTrue(article.readTime.isNotBlank(), "Expected readTime for ${article.slug} to not be blank")
         }
     }
+
+    @Test
+    fun `given an seo title, when building the page title, then it is used with the site name`() {
+        // Act
+        val title = articlePageTitle(title = "A long article title", seoTitle = "Short title")
+        // Assert
+        assertEquals("Short title | Rafael Tonholo", title)
+    }
+
+    @Test
+    fun `given no seo title, when building the page title, then the article title is used with the site name`() {
+        // Act
+        val title = articlePageTitle(title = "A long article title", seoTitle = "")
+        // Assert
+        assertEquals("A long article title | Rafael Tonholo", title)
+    }
+
+    @Test
+    fun `given no title at all, when building the page title, then there is none`() {
+        // Act
+        val title = articlePageTitle(title = "", seoTitle = "")
+        // Assert
+        assertEquals(null, title)
+    }
 }
