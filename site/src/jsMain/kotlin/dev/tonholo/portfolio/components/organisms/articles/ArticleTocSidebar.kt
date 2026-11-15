@@ -93,6 +93,7 @@ private const val HEADING_LETTER_SPACING_EM = 0.08
 private const val ENTRY_NUMBER_PAD_LENGTH = 2
 private const val ENTRY_NUMBER_PAD_CHAR = '0'
 private const val ENTRY_SEPARATOR = " - "
+private const val SUBSECTION_INDENT_REM = 1.75
 
 private const val COPY_FEEDBACK_DURATION_MS = 2000
 private const val COPY_CHECKMARK_ANIMATION_MS = 240
@@ -139,8 +140,9 @@ val CopyCheckmarkPopKeyframes = Keyframes {
  *
  * @param id the HTML element id matching the heading.
  * @param label the display text for the heading.
+ * @param level the heading level, 2 for a section and 3 for a subsection.
  */
-data class TocEntry(val id: String, val label: String)
+data class TocEntry(val id: String, val label: String, val level: Int = SECTION_LEVEL)
 
 /**
  * All share targets supported by the article detail sidebar.
@@ -229,14 +231,16 @@ fun ArticleTocSidebar(
             text = strings.contents,
             modifier = Modifier.margin { top(0.dp) },
         )
+        val sections: List<TocSection> = remember(contents) { buildTocSections(contents) }
+        val activeSectionId: String? = sections.activeSectionId(activeId = activeId)
         Ul(attrs = SidebarListStyle.toModifier().toAttrs()) {
-            contents.forEachIndexed { index, entry ->
-                TocAnchorRow(
-                    entry = entry,
-                    index = index,
+            sections.forEachIndexed { index, section ->
+                TocSectionRow(
+                    section = section,
+                    number = index + 1,
+                    isExpanded = section.entry.id == activeSectionId,
                     activeId = activeId,
-                    mutedColor = tokens.muted.muted,
-                    activeColor = tokens.ink.ink,
+                    colors = TocColors(muted = tokens.muted.muted, active = tokens.ink.ink),
                 )
             }
         }
@@ -287,40 +291,65 @@ fun ArticleTocSidebar(
     }
 }
 
+private data class TocColors(val muted: Color, val active: Color)
+
 /**
- * One contents row: renders the two-digit counter and label inside an anchor.
+ * One numbered section in the contents. Its subsections are listed under it only while [isExpanded], which
+ * keeps the list short and shows where the reader is.
  */
 @Composable
-private fun TocAnchorRow(
-    entry: TocEntry,
-    index: Int,
+private fun TocSectionRow(
+    section: TocSection,
+    number: Int,
+    isExpanded: Boolean,
     activeId: String,
-    mutedColor: Color,
-    activeColor: Color,
+    colors: TocColors,
+) {
+    val prefix = number.toString().padStart(ENTRY_NUMBER_PAD_LENGTH, ENTRY_NUMBER_PAD_CHAR)
+    Li(attrs = Modifier.toAttrs()) {
+        TocAnchor(
+            entry = section.entry,
+            label = "$prefix$ENTRY_SEPARATOR${section.entry.label}",
+            activeId = activeId,
+            colors = colors,
+        )
+        if (isExpanded && section.subsections.isNotEmpty()) {
+            Ul(attrs = TocSubsectionListStyle.toModifier().toAttrs()) {
+                section.subsections.forEach { subsection ->
+                    Li(attrs = Modifier.toAttrs()) {
+                        TocAnchor(entry = subsection, label = subsection.label, activeId = activeId, colors = colors)
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun TocAnchor(
+    entry: TocEntry,
+    label: String,
+    activeId: String,
+    colors: TocColors,
 ) {
     val isActive = entry.id == activeId
-    val resolvedColor = if (isActive) activeColor else mutedColor
-    val number = (index + 1).toString().padStart(ENTRY_NUMBER_PAD_LENGTH, ENTRY_NUMBER_PAD_CHAR)
-    val label = "$number$ENTRY_SEPARATOR${entry.label}"
-    Li(attrs = Modifier.toAttrs()) {
-        A(
-            href = "#${entry.id}",
-            attrs = TocAnchorStyle
-                .toModifier()
-                .color(resolvedColor)
-                .toAttrs {
-                    if (isActive) {
-                        attr("aria-current", "location")
-                    }
-                    onClick { evt ->
-                        evt.preventDefault()
-                        window.history.pushState(null, "", "#${entry.id}")
-                        scrollToElementId(entry.id)
-                    }
-                },
-        ) {
-            ComposeText(label)
-        }
+    A(
+        href = "#${entry.id}",
+        attrs = TocAnchorStyle
+            .toModifier()
+            .color(if (isActive) colors.active else colors.muted)
+            .toAttrs {
+                if (isActive) {
+                    attr("aria-current", "location")
+                }
+                onClick { evt ->
+                    evt.preventDefault()
+                    window.history.pushState(null, "", "#${entry.id}")
+                    scrollToElementId(entry.id)
+                }
+            },
+    ) {
+        ComposeText(label)
     }
 }
 
@@ -570,5 +599,15 @@ val SidebarListStyle = CssStyle {
             .gap(SiteDimensions.size.Sm)
             .margin(topBottom = 0.cssRem)
             .padding(left = 0.cssRem)
+    }
+}
+
+/** Indents a section's subsections under it in the contents. */
+val TocSubsectionListStyle = CssStyle {
+    base {
+        Modifier
+            .listStyle(ListStyleType.None)
+            .padding(left = SUBSECTION_INDENT_REM.cssRem)
+            .margin(top = SiteDimensions.size.Xsm, bottom = SiteDimensions.size.Xsm)
     }
 }
