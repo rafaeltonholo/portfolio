@@ -1,5 +1,6 @@
 import dev.tonholo.portfolio.buildlogic.SlugUtils
 import dev.tonholo.portfolio.buildlogic.splitLocalizedSlug
+import dev.tonholo.portfolio.buildlogic.tasks.GenerateLlmsTxtTask
 import dev.tonholo.portfolio.buildlogic.tasks.GenerateSitemapTask
 import java.io.File
 import java.util.Properties
@@ -42,8 +43,15 @@ val generateSitemap = tasks.register<GenerateSitemapTask>("generateSitemap") {
     this.outputFile.set(layout.projectDirectory.file("src/jsMain/resources/public/sitemap.xml"))
 }
 
+val generateLlmsTxt = tasks.register<GenerateLlmsTxtTask>("generateLlmsTxt") {
+    description = "Generates llms.txt listing the published articles, projects and pages."
+    this.articlesDir.set(articlesMarkdownDir)
+    this.projectsDir.set(projectsMarkdownDir)
+    this.outputFile.set(layout.projectDirectory.file("src/jsMain/resources/public/llms.txt"))
+}
+
 tasks.configureEach {
     if (name == "jsProcessResources") {
-        dependsOn(generateSitemap)
+        dependsOn(generateSitemap, generateLlmsTxt)
     }
 }

@@ -1,0 +1,22 @@
+# Rafael Tonholo
+
+> Personal site of Rafael Tonholo, a senior Android engineer in Halifax, Nova Scotia. Case studies of production Android work and long-form, tested articles on Android and Kotlin, in English and Brazilian Portuguese.
+
+## Articles
+
+- [Git command-line](https://rafael.tonholo.dev/articles/git-command-line): Essential Git command-line features, tips, and workflows for everyday development, from multi-account SSH configs to log formatting and branch hygiene.
+- [Time travel in git: recovering a screwed-up repository with reflog and reset](https://rafael.tonholo.dev/articles/git-time-travel-reflog-reset): Screwed a rebase or force-pushed by mistake? Learn how to use git reflog and reset to travel back in time and recover your repository without starting over.
+- [Hello World!](https://rafael.tonholo.dev/articles/hello-world): In this article, the author shares his passion for mobile development in a new blog. He aims to provide advanced content on Android engineering, covering topics like Dependency Injection and Jetpack Compose, while also offering beginner-friendly insights. His goal is to deliver valuable, original content and foster knowledge sharing within the developer community.
+- [Log.d("HowTo", "@Composable fun Text()")](https://rafael.tonholo.dev/articles/log-d-how-to-composable-text): An in-depth look at how @Composable Text works in Jetpack Compose, from Material 3 down to BasicText, TextModifier, and string formatting in multiplatform apps.
+- [The day I found myself counting bytes, literally.](https://rafael.tonholo.dev/articles/the-day-i-found-myself-counting-bytes): The story of debugging a JVM MethodTooLargeException in svg-to-compose when generating the Brazilian flag, and how counting bytecode bytes solved Compose Previews.
+
+## Projects
+
+- [Bleacher Report - Centralized ads and Jetpack Compose adoption](https://rafael.tonholo.dev/projects/bleacher-report): Two initiatives at Bleacher Report: a centralized Ad Manager that eliminated ad-injection crashes and moved slot config to the backend, and the introduction of Jetpack Compose to prepare the team for the next-generation app.
+- [Pinterest - Modularizing Pinterest's codebase](https://rafael.tonholo.dev/projects/pinterest): Adopting an incremental approach and a centralized dynamic-feature dependency manager, we modularized a 9-year-old codebase with millions of users without a freeze.
+- [Thunderbird for Android - Compose state machines, Thundermail onboarding, and privacy-first architecture](https://rafael.tonholo.dev/projects/thunderbird): Modernizing a 15-year-old open-source email client: bridging legacy Android views to Jetpack Compose state machines, shipping Thundermail desktop-to-mobile onboarding, and driving privacy with a Kotlin K2 compiler plugin and RFC standards at Mozilla.
+
+## Pages
+
+- [About](https://rafael.tonholo.dev/about)
+- [Resume](https://rafael.tonholo.dev/resume)

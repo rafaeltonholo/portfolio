@@ -35,7 +35,7 @@ abstract class GenerateSitemapTask : DefaultTask() {
     abstract val outputFile: RegularFileProperty
 
     init {
-        baseUrl.convention("https://tonholo.dev")
+        baseUrl.convention(DEFAULT_BASE_URL)
     }
 
     @TaskAction
@@ -88,22 +88,41 @@ abstract class GenerateSitemapTask : DefaultTask() {
         val allMetadata: Map<String, Pair<String, String>> = basePageMetadata + extraSlugMetadata
         val allPaths: List<String> = (pagePaths + slugs).distinct().sorted()
 
-        val sitemapContent: String = buildString {
+        val sitemapContent: String = renderSitemap(
+            paths = allPaths,
+            metadata = allMetadata,
+            baseUrl = baseUrl.get(),
+            lastModified = lastModified.get(),
+        )
+
+        targetFile.parentFile.mkdirs()
+        targetFile.writeText(sitemapContent)
+    }
+
+    companion object {
+        /** The site's public host; sitemap URLs must match the canonical URLs pages declare. */
+        const val DEFAULT_BASE_URL: String = "https://rafael.tonholo.dev"
+        private val EXCLUDED_PATHS: Set<String> = setOf("/404")
+
+        /** Renders sitemap XML for [paths], leaving out pages that shouldn't be indexed, such as the 404 page. */
+        fun renderSitemap(
+            paths: List<String>,
+            metadata: Map<String, Pair<String, String>>,
+            baseUrl: String,
+            lastModified: String,
+        ): String = buildString {
             appendLine("""<?xml version="1.0" encoding="UTF-8"?>""")
             appendLine("""<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">""")
-            for (path: String in allPaths) {
-                val (changefreq: String, priority: String) = allMetadata[path] ?: ("monthly" to "0.5")
+            for (path: String in paths.filterNot { it in EXCLUDED_PATHS }) {
+                val (changefreq: String, priority: String) = metadata[path] ?: ("monthly" to "0.5")
                 appendLine("  <url>")
-                appendLine("    <loc>${baseUrl.get()}$path</loc>")
-                appendLine("    <lastmod>${lastModified.get()}</lastmod>")
+                appendLine("    <loc>$baseUrl$path</loc>")
+                appendLine("    <lastmod>$lastModified</lastmod>")
                 appendLine("    <changefreq>$changefreq</changefreq>")
                 appendLine("    <priority>$priority</priority>")
                 appendLine("  </url>")
             }
             appendLine("</urlset>")
         }
-
-        targetFile.parentFile.mkdirs()
-        targetFile.writeText(sitemapContent)
     }
 }
