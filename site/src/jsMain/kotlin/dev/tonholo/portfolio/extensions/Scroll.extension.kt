@@ -18,6 +18,18 @@ fun scrollToElementId(id: String) {
 }
 
 /**
+ * Jumps to an in-page anchor the way a plain `#id` link would: records the hash in the address bar and scrolls
+ * to the element. Kobweb's router intercepts same-page hash links, so in-page links call this from `onClick`
+ * after preventing the default navigation.
+ *
+ * @param id the target element's `id` attribute, without the leading `#`.
+ */
+fun jumpToAnchor(id: String) {
+    window.history.pushState(null, "", "#$id")
+    scrollToElementId(id)
+}
+
+/**
  * Opens a URL in a new browser tab. Thin wrapper around `window.open` that
  * sets the `noopener,noreferrer` window features so the opened page cannot
  * reach back into the opener via `window.opener`.
