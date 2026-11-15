@@ -40,3 +40,23 @@ fun String.toKebabCase(): String {
     }
     return words.joinToString(separator = "-")
 }
+
+/**
+ * Replaces HTML encoded entity sequences with literal characters.
+ *
+ * @return clean unescaped string.
+ */
+fun String.unescapeHtmlEntities(): String = replace("&amp;", "&")
+    .replace("&lt;", "<")
+    .replace("&gt;", ">")
+    .replace("&quot;", "\"")
+    .replace("&apos;", "'")
+    .replace("&#39;", "'")
+    .replace("&#34;", "\"")
+    .replace("&#96;", "`")
+    .replace("&#123;", "{")
+    .replace("&#125;", "}")
+    .replace("&#91;", "[")
+    .replace("&#93;", "]")
+    .replace("&#40;", "(")
+    .replace("&#41;", ")")
