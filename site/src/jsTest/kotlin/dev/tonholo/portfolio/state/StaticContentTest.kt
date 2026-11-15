@@ -41,13 +41,14 @@ class StaticContentTest {
     }
 
     @Test
-    fun `given StaticContent ARTICLES, when read, then it has six entries starting with the newest`() {
+    fun `given StaticContent ARTICLES, when read, then it has seven entries starting with the newest`() {
         // Arrange / Act
         val articles: List<Article> = StaticContent.ARTICLES
         // Assert
-        assertEquals(expected = 6, actual = articles.size)
+        assertEquals(expected = 7, actual = articles.size)
         assertEquals(expected = "on-device-llm-a2ui-android", actual = articles[0].slug)
-        assertEquals(expected = "git-time-travel-reflog-reset", actual = articles[1].slug)
+        assertEquals(expected = "how-a2ui-works", actual = articles[1].slug)
+        assertEquals(expected = "git-time-travel-reflog-reset", actual = articles[2].slug)
     }
 
     @Test
@@ -64,7 +65,7 @@ class StaticContentTest {
         // Arrange / Act
         val ptArticles: List<Article> = StaticContent.articlesFor(locale = Locale.PtBr)
         // Assert
-        assertEquals(expected = 6, actual = ptArticles.size)
+        assertEquals(expected = 7, actual = ptArticles.size)
         val gitTimeTravel = ptArticles.first { it.slug == "git-time-travel-reflog-reset" }
         assertTrue(actual = gitTimeTravel.title.contains("Viagem no tempo"))
     }

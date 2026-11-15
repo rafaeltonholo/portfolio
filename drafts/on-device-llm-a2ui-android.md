@@ -1,10 +1,6 @@
-# Generative UI on a phone: A2UI, an on-device model, and a tiny compiler in Kotlin
+# A2UI on a phone: an on-device model and a tiny compiler in Kotlin
 
-Ask an AI assistant to help you pack for a trip and you'll get a list, as plain text. You can read it, but you can't tick anything off.
-
-Now imagine the answer was a real checklist instead, with checkboxes you can tap, drawn by the app with its own components. Nobody on the team designed a "packing list" screen for it. The model described the UI it wanted, and the app rendered it.
-
-That's the idea behind generative UI, and [A2UI](https://a2ui.org/) is an open-source protocol for it. There's already good documentation on how to plug the AndroidX renderer into an app, so I won't just repeat it here. Instead, let's look at how the protocol actually works, why it's shaped the way it is, and what happens when the "agent" isn't a big model in the cloud but a small one running on a three-year-old phone.
+In [part one](/articles/how-a2ui-works), we looked at how [A2UI](https://a2ui.org/) lets a model describe UI as data, and why the format a renderer reads isn't necessarily the format a model should write. Now let's see what happens when the "agent" isn't a big model in the cloud but a small one running on a three-year-old phone.
 
 Spoiler: the smallest model I tried couldn't write valid A2UI at all. So we'll write a tiny compiler in Kotlin that lets models speak a much more compact language instead, and then measure how much that actually helps.
 
@@ -13,134 +9,18 @@ Spoiler: the smallest model I tried couldn't write valid A2UI at all. So we'll w
 
 ## TL;DR
 
-- A2UI describes UI as data: a flat list of components from a catalog your app registered, plus a separate data model. The model never sends code.
-- The flat list exists for streaming and partial updates, but it's exactly the shape small models get wrong. Qwen3-0.6B nested every component it wrote.
-- A2UI separates the *wire format* (what the renderer reads) from the *inference format* (what the model writes). Its compact Express format is designed for on-device models, but there's no Kotlin compiler you can ship in an app.
+- Small models get A2UI's flat component list wrong. Qwen3-0.6B nested its components in three of five responses.
+- A2UI's compact Express format is designed for on-device models, but there's no Kotlin compiler you can ship in an app. So I wrote a small one in Kotlin Multiplatform common code and benchmarked JSON against Express on a Pixel 7 Pro.
 - So I wrote a small one in Kotlin Multiplatform common code and benchmarked JSON against Express on a Pixel 7 Pro.
 - Model size mattered more than format: Qwen3-0.6B produced 0 usable surfaces from JSON and 1 of 5 from Express, while Gemma 4 E2B handled both.
-- Express still paid off with Gemma: a 37% shorter prompt, about a third faster to the first token, and checklists that showed every item the model generated. Its JSON surfaces often dropped items.
 
-## Why not just let the model write the UI?
+## A quick recap
 
-Before looking at A2UI itself, it's worth asking what the alternatives are. If you want a model to produce interactive UI, you could:
+If you've just read part one, skip this section. If not, here's what you need from it:
 
-- Ask it to generate Compose code. Except you can't compile and run code that showed up at runtime, and you really don't want to.
-- Ask it for HTML and show it in a WebView. That works, but it doesn't look or behave like the rest of your app, and you're now rendering untrusted markup.
-- Build a fixed set of screens and let the model pick one through function calling. Safe and native, but you're back to designing every screen yourself.
-
-A2UI sits in between. The app registers a *catalog* of components it knows how to render, and the agent describes a UI using only those components, as plain JSON. Here's how the spec puts it[^spec]:
-
-> The A2UI Protocol is designed for dynamically rendering user interfaces from a stream of JSON objects sent from a server (Agent). Its core philosophy emphasizes a clean separation of UI structure and application data, enabling progressive rendering as the client processes each message.
-
-Think of the catalog as a menu the app hands to the agent. The agent can combine anything on the menu, but it can't add new dishes. A `CheckBox` in the message becomes your app's Compose checkbox, with your theme and your accessibility behaviour.
-
-## Anatomy of an A2UI stream
-
-Let's look at a real one. This is the packing checklist from the sample, written by hand, in the v0.9.1 format the AndroidX renderer supports:
-
-```json
-{"version":"v0.9.1","createSurface":{"surfaceId":"packing","catalogId":"https://a2ui.org/specification/v0_9/catalogs/basic/catalog.json"}}
-{"version":"v0.9.1","updateDataModel":{"surfaceId":"packing","path":"/","value":{"items":[{"name":"Towel","packed":false},{"name":"Sunscreen","packed":true}]}}}
-{"version":"v0.9.1","updateComponents":{"surfaceId":"packing","components":[{"id":"root","component":"Column","children":["title","item0","item1"]},{"id":"title","component":"Text","text":"Weekend packing list","variant":"h2"},{"id":"item0","component":"CheckBox","label":{"path":"/items/0/name"},"value":{"path":"/items/0/packed"}},{"id":"item1","component":"CheckBox","label":{"path":"/items/1/name"},"value":{"path":"/items/1/packed"}}]}}
-```
-
-Every line is one message, and every message has the same shape: a `version` and *exactly one* other key that says what kind of message it is. Let's go through them.
-
-### `createSurface`
-
-A *surface* is the area where the generated UI lives. You can have several on screen at once, each with its own ID, components and data. The message has two required fields:
-
-- `surfaceId` names the surface. Every later message for this UI points to it.
-- `catalogId` says which catalog the agent will use.
-
-One thing that surprised me: `catalogId` looks like a URL, but it's just a name. The spec is clear about it[^spec]:
-
-> Note that `catalogId` is a string identifier, not a resolvable URI; while it is conventionally formatted as a URI ... it does not need to point to any deployed resource or downloadable file.
-
-The app and the agent simply have to agree on it. In fact, the ID baked into the AndroidX basic catalog is the `v0_9` one, even though the library speaks v0.9.1.
-
-### `updateDataModel`
-
-Each surface has its own JSON data model, completely separate from the components. This message writes into it at a [JSON Pointer](https://datatracker.ietf.org/doc/html/rfc6901) `path`. A path of `/` replaces the whole model, and something like `/items/1/packed` changes a single value. If the path doesn't exist yet, it's created; if the message has no `value`, the key is removed.
-
-### `updateComponents`
-
-This is where the UI is described, and it's the interesting one. Notice that the components are *not* nested. The `Column` doesn't contain its children; it lists their IDs:
-
-```json
-{"id":"root","component":"Column","children":["title","item0","item1"]}
-```
-
-Each component has:
-
-- `id`, a name unique within the surface
-- `component`, the type from the catalog
-- the properties that type accepts, such as `text`, `children` or `value`
-
-And one of them must have the ID `root`, which is where rendering starts.
-
-The checkboxes don't hold their label and state directly either. They *bind* to the data model with `{"path": ...}`, so changing `/items/1/packed` later updates the checkbox without touching the components.
-
-### `deleteSurface`
-
-The last server message just removes a surface, its components and its data. Nothing fancy.
-
-## Why a flat list?
-
-Ok, but why the IDs? A nested tree would be much easier to read. The spec calls this the *adjacency list model*[^spec]:
-
-> This model allows the server to send component definitions in any order. Rendering can begin as soon as the `root` component is defined, with the client filling in or updating the rest of the tree progressively as additional definitions arrive.
-
-Remember that A2UI was designed for *streams*. With a flat list:
-
-- The renderer can show `root` before the model has finished writing the rest. A child that doesn't exist yet just renders as a placeholder.
-- The agent can update one component later by sending only that component with the same ID.
-- A validator can check every reference without walking a deep tree.
-
-It's a great format for renderers. Is it a great format for a model to *write*, though? Hold that thought.
-
-## Data binding, and what goes back to the agent
-
-Input components like `CheckBox`, `TextField` and `Slider` bind their value both ways. When the user ticks a box, the renderer immediately writes `true` to `/items/0/packed` in the local data model, and anything else bound to that path updates too.
-
-What it does *not* do is tell the agent. From the spec[^spec]:
-
-> User inputs (keystrokes, toggles) do **not** automatically trigger network requests to the server. The updated state is sent to the server only when a specific **User Action** is triggered (e.g., a `Button` click).
-
-A button declares an `action` with an event name and a `context`, and the context can bind to data paths. When the user taps it, the renderer resolves those paths and sends an `action` message with the current values. So the agent only hears about what the button explicitly asks for, which is a nice privacy property. If a surface really needs the whole model on every message, `createSurface` can set `sendDataModel: true`.
-
-The same "data, not code" idea applies to logic. Validation such as "this field is required" or "this must be an email" is written as calls to named functions from the catalog, like `required` or `email`, so the agent never sends anything executable.
-
-## v0.8, v0.9, v1.0: why the version matters
-
-The A2UI site now documents v1.0 as the current version[^evolution], while the AndroidX renderer supports v0.9.1. The messages look similar, but not the same: v1.0 renames bindings from `path` to `@path`, can put components inside `createSurface`, and adds new messages. Don't send a v1.0 example to a v0.9.1 renderer.
-
-The more interesting change happened earlier, between v0.8 and v0.9. Here's the v0.9.1 spec[^spec]:
-
-> While v0.8 was optimized for LLMs that support structured output, v0.9 is designed to be embedded directly within a model's prompt. The LLM is then asked to produce JSON that matches the provided examples and schema descriptions.
-
-And the honest part right after it:
-
-> The main disadvantage of this approach is that it requires more complex post-generation validation, as the LLM is not strictly constrained by the schema.
-
-In other words, A2UI expects the model to get it wrong sometimes. The intended loop is *prompt, generate, validate*, and when validation fails, you send the error back to the model so it can try again.
-
-## Wire format vs. inference format
-
-Here's the part I found most interesting. The A2UI docs separate two things:
-
-- The *wire format* is the JSON the renderer consumes, which we just went through.
-- The *inference format* is whatever the model actually writes, which a compiler then turns into wire messages.
-
-Why would you want those to be different? The [inference formats page](https://a2ui.org/concepts/inference-formats/) lists the costs of making a model write wire JSON directly[^formats]:
-
-> Repeated keys (`"id"`, `"component"`, `"@path"`) and hand-written component identifiers make raw wire JSON roughly three times longer than positional constructor calls.
-
-And:
-
-> Deeply nested braces, quotes, and manual component IDs increase syntax and reference errors, especially on smaller, faster models.
-
-Their answer is **A2UI Express**, a compact language where the model writes nested constructor calls and a compiler does the flattening:
+- An A2UI agent sends JSON messages. `updateComponents` describes the UI as a *flat* list: a `Column` doesn't contain its children, it lists their IDs, and one component must have the ID `root`. `updateDataModel` writes the data those components bind to.
+- That JSON is the *wire format*, the one the renderer reads. The model can write something else, an *inference format*, and a compiler turns it into wire messages.
+- A2UI Express is one of those formats. The model writes nested constructor calls with positional arguments, `$/path` binds to data, and `$/path = value` writes data:
 
 ```text
 <a2ui>
@@ -152,13 +32,7 @@ item1 = CheckBox($/items/1/name, $/items/1/packed)
 </a2ui>
 ```
 
-That's the same checklist as the three JSON messages above. Arguments are positional, following the order of the properties in the catalog schema, so `Text("Weekend packing list", "h2")` means `text` and then `variant`. `$/path` binds to data, and `$/path = value` writes data. The model can even nest components inline, and the compiler will invent IDs for them.
-
-In the A2UI project's own benchmark, run on Gemini Flash, Express used 45% fewer prompt tokens and 63% fewer output tokens than wire JSON, with the same accuracy[^formats]. And the [Express spec](https://github.com/a2ui-project/a2ui/blob/main/specification/proposals/express/a2ui_express.md) says outright who it's for[^express]:
-
-> Small local models, such as Gemma 4 E2B and E4B, operate with limited context windows and reasoning budgets.
-
-There's a catch for us, though. The Express compilers live in A2UI's *agent* SDKs, which are available for TypeScript, Python and Dart[^sdks]. On the Kotlin side, AndroidX ships the renderer only. The A2UI repository does have an experimental Express compiler in its legacy JVM agent SDK, but that's a server library built on ANTLR, Jackson and Google's [Agent Development Kit](https://github.com/google/adk-python), and it isn't published to Maven. When the model runs *on the phone*, the compiler has to run on the phone too.
+The Express compilers live in A2UI's agent SDKs for TypeScript, Python and Dart[^sdks], and there's no Kotlin one you can ship in an app. When the model runs *on the phone*, the compiler has to run on the phone too.
 
 ## Picking the model
 
@@ -173,7 +47,7 @@ Gemini Nano is only offered on [a list of recent devices](https://developers.goo
 That's what [LiteRT-LM](https://github.com/google-ai-edge/LiteRT-LM/blob/main/docs/api/kotlin/getting_started.md) is for. You give it a `.litertlm` model file and it runs it with a Kotlin API. I used two models from the LiteRT community on Hugging Face:
 
 - [Qwen3-0.6B](https://huggingface.co/litert-community/Qwen3-0.6B), about 600 MB, a really small model
-- [Gemma 4 E2B](https://huggingface.co/litert-community/gemma-4-E2B-it-litert-lm), about 2.6 GB, the size the Express spec was designed for
+- [Gemma 4 E2B](https://huggingface.co/litert-community/gemma-4-E2B-it-litert-lm), about 2.6 GB, the size the Express spec was designed for[^express]
 
 You may have seen that [LiteRT now ships in Google Play services](https://developers.googleblog.com/smaller-apps-and-faster-gpu-inference-with-litert-in-google-play-services/), so apps no longer need to bundle their own ML runtime[^litert]. That announcement covers LiteRT for custom `.tflite` models. Running a language model still goes through the LiteRT-LM library, which the sample adds as a regular dependency.
 
@@ -201,7 +75,7 @@ I started the obvious way: describe the protocol in the prompt, give one example
 
 See the problem? Well, two of them. The title is copied straight from the prompt's example, but the bigger one is `children`: it should be a list of IDs, and the model put the components *inside* it. Three of the five requests came back nested like this, even though the prompt literally showed a flat list. The other two were flat, but forgot the `updateDataModel` message, so every checkbox pointed at data that didn't exist.
 
-Remember that thought we held? This is the shape that's great for renderers and hard for small models. Which is exactly the job of an inference format: let the model write the tree, and let a compiler flatten it.
+This is the question part one left open: the flat list is great for renderers, but is it a good format for a model to write? For a small one, clearly not. Which is exactly the job of an inference format: let the model write the tree, and let a compiler flatten it.
 
 ## Writing an Express compiler in Kotlin
 
@@ -341,7 +215,7 @@ Here's the business trip from the benchmark, rendered in the app from the saved 
 
 The Express prompt is 37% shorter, and the first token arrived about a third sooner, consistent with less prompt to read. Qwen showed the same drop, from 9.9 s to 6.7 s. Generation speed itself didn't change with the format.
 
-What about the output savings from that benchmark? I didn't see them here. Per checklist item, Gemma spent about 42 output tokens with JSON and 41 with Express. That's less surprising than it sounds: the prompt's example gives every checkbox its own variable, which is Express at its least compact, and the item names make up a big part of the output in both formats. Templates, which let a single line repeat a component for every item in a list, would probably change that, but the sample doesn't support them yet. LiteRT-LM reports output token counts, and those are the only token numbers I used.
+What about output tokens? The A2UI project's own benchmark, run on Gemini Flash, measured 63% fewer of them with Express than with wire JSON[^formats]. I didn't see that here. Per checklist item, Gemma spent about 42 output tokens with JSON and 41 with Express. That's less surprising than it sounds: the prompt's example gives every checkbox its own variable, which is Express at its least compact, and the item names make up a big part of the output in both formats. Templates, which let a single line repeat a component for every item in a list, would probably change that, but the sample doesn't support them yet. LiteRT-LM reports output token counts, and those are the only token numbers I used.
 
 I didn't compare the two models' speed with each other. Qwen generated about 4 tokens per second and Gemma about 7.5, even though Qwen is much smaller, and I haven't figured out why.
 
@@ -395,18 +269,14 @@ Thanks for reading this far! I hope this gives you a starting point for experime
 
 ## Sources
 
-[^spec]: A2UI v0.9.1 protocol specification, https://a2ui.org/specification/v0.9.1-a2ui/
-
-[^evolution]: A2UI v1.0 evolution guide, https://a2ui.org/specification/v1.0-evolution-guide/
-
-[^formats]: A2UI inference formats, https://a2ui.org/concepts/inference-formats/
-
-[^express]: A2UI Express proposal, https://github.com/a2ui-project/a2ui/blob/main/specification/proposals/express/a2ui_express.md
-
 [^sdks]: A2UI SDKs, https://a2ui.org/concepts/sdks/
 
 [^nano]: Gemini Nano on Android, https://developer.android.com/ai/gemini-nano
 
+[^express]: A2UI Express proposal, https://github.com/a2ui-project/a2ui/blob/main/specification/proposals/express/a2ui_express.md
+
 [^litert]: Smaller apps and faster GPU inference with LiteRT in Google Play services, https://developers.googleblog.com/smaller-apps-and-faster-gpu-inference-with-litert-in-google-play-services/
 
 [^render]: Render A2UI surfaces in your app, https://developer.android.com/develop/ui/compose/agentic/render-surfaces
+
+[^formats]: A2UI inference formats, https://a2ui.org/concepts/inference-formats/

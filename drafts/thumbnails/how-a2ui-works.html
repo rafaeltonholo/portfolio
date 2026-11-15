@@ -1,0 +1,45 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&family=JetBrains+Mono:wght@400;500;700&display=block" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1200px; height: 630px; overflow: hidden; background: #15130F; }
+  .card { position: relative; width: 1200px; height: 630px; padding: 64px 0 0 72px; color: #F2EFE6; }
+  .brand { display: flex; align-items: center; gap: 12px; font: 500 20px 'JetBrains Mono', monospace; color: #9E998E; }
+  .brand .dot { width: 14px; height: 14px; background: #7DD198; border-radius: 3px; }
+  .brand b { color: #F2EFE6; font-weight: 700; }
+  h1 { margin-top: 56px; width: 520px; font: 700 60px/1.08 'JetBrains Mono', monospace; letter-spacing: -0.02em; }
+  .sub { margin-top: 22px; width: 460px; font: 400 26px/1.35 'Geist', sans-serif; color: #B8B3A5; }
+  .right { position: absolute; right: 72px; top: 64px; width: 500px; }
+  .label { font: 500 14px 'JetBrains Mono', monospace; color: #9E998E; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 10px; }
+  .code { padding: 18px 22px; border: 1px solid #25231D; border-radius: 8px; background: #1D1B16;
+          font: 400 16px/1.75 'JetBrains Mono', monospace; color: #B8B3A5; white-space: pre; }
+  .code .k { color: #F2EFE6; } .code .b { color: #7DD198; }
+  .arrow { height: 52px; display: flex; justify-content: center; align-items: center; }
+  .surface { padding: 20px 24px 22px; border: 1px solid #3A3833; border-radius: 8px; background: #F2EFE6; color: #15130F; }
+  .surface h2 { font: 500 24px 'Geist', sans-serif; margin-bottom: 14px; }
+  .row { display: flex; align-items: center; gap: 14px; font: 400 20px 'Geist', sans-serif; padding: 6px 0; }
+  .box { width: 22px; height: 22px; border: 2px solid #15130F; border-radius: 4px; display: flex; align-items: center; justify-content: center; }
+  .box.on { background: #15130F; }
+</style></head>
+<body><div class="card">
+  <div class="brand"><span class="dot"></span><span><b>rafael</b>.tonholo.dev / articles</span></div>
+  <h1>How A2UI works</h1>
+  <p class="sub">Generative UI as data, not code</p>
+  <div class="right">
+    <div class="label">what the agent sends</div>
+    <div class="code">{<span class="k">"id"</span>:<span class="b">"root"</span>,  <span class="k">"component"</span>:"Column",
+ <span class="k">"children"</span>:[<span class="b">"title"</span>,<span class="b">"item0"</span>,<span class="b">"item1"</span>]}
+{<span class="k">"id"</span>:<span class="b">"title"</span>, <span class="k">"component"</span>:"Text", ...}
+{<span class="k">"id"</span>:<span class="b">"item0"</span>, <span class="k">"component"</span>:"CheckBox", ...}
+{<span class="k">"id"</span>:<span class="b">"item1"</span>, <span class="k">"component"</span>:"CheckBox", ...}</div>
+    <div class="arrow"><svg width="24" height="40" viewBox="0 0 24 40" fill="none" stroke="#7DD198" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v34M3 27l9 9 9-9"/></svg></div>
+    <div class="label">what the app draws</div>
+    <div class="surface">
+      <h2>Weekend packing list</h2>
+      <div class="row"><span class="box"></span>Towel</div>
+      <div class="row"><span class="box on"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="#F2EFE6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 7.5l3.5 3.5L12 3.5"/></svg></span>Sunscreen</div>
+    </div>
+  </div>
+</div></body></html>
