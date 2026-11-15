@@ -41,15 +41,13 @@ class StaticContentTest {
     }
 
     @Test
-    fun `given StaticContent ARTICLES, when read, then it has five entries starting with git-time-travel`() {
+    fun `given StaticContent ARTICLES, when read, then it has six entries starting with the newest`() {
         // Arrange / Act
         val articles: List<Article> = StaticContent.ARTICLES
         // Assert
-        assertEquals(expected = 5, actual = articles.size)
-        assertEquals(
-            expected = "git-time-travel-reflog-reset",
-            actual = articles[0].slug,
-        )
+        assertEquals(expected = 6, actual = articles.size)
+        assertEquals(expected = "on-device-llm-a2ui-android", actual = articles[0].slug)
+        assertEquals(expected = "git-time-travel-reflog-reset", actual = articles[1].slug)
     }
 
     @Test
@@ -62,13 +60,13 @@ class StaticContentTest {
     }
 
     @Test
-    fun `given StaticContent articlesFor with PtBr, when read, then it has five localized entries`() {
+    fun `given StaticContent articlesFor with PtBr, when read, then translated entries are localized`() {
         // Arrange / Act
         val ptArticles: List<Article> = StaticContent.articlesFor(locale = Locale.PtBr)
         // Assert
-        assertEquals(expected = 5, actual = ptArticles.size)
-        assertEquals(expected = "git-time-travel-reflog-reset", actual = ptArticles[0].slug)
-        assertTrue(actual = ptArticles[0].title.contains("Viagem no tempo"))
+        assertEquals(expected = 6, actual = ptArticles.size)
+        val gitTimeTravel = ptArticles.first { it.slug == "git-time-travel-reflog-reset" }
+        assertTrue(actual = gitTimeTravel.title.contains("Viagem no tempo"))
     }
 
     @Test
