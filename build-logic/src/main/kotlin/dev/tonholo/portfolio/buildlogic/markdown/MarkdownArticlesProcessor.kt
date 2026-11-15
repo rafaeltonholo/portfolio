@@ -52,6 +52,10 @@ object MarkdownArticlesProcessor {
         LocalDate.parse(dateString.trim(), articleDateFormatter)
     }.getOrElse { LocalDate.MIN }
 
+    /** Converts an article date in any supported frontmatter format to `yyyy-MM-dd`, or blank when it can't be parsed. */
+    fun toIsoDate(dateString: String): String =
+        toSortableDate(dateString).takeIf { it != LocalDate.MIN }?.toString().orEmpty()
+
     fun formatDisplayDate(rawDate: String, locale: String): String {
         val isoDate: LocalDate = runCatching {
             LocalDate.parse(rawDate.substringBefore('T').trim())
@@ -224,6 +228,7 @@ object MarkdownArticlesProcessor {
         val enRows: List<ArticleRow> = rows.filter { it.locale == "en-CA" }.sortedByDescending { toSortableDate(it.date) }
         val ptRowsBySlug: Map<String, ArticleRow> = rows.filter { it.locale == "pt-BR" }.associateBy { it.slug }
         val ptRows: List<ArticleRow> = enRows.map { enRow -> ptRowsBySlug[enRow.slug] ?: enRow }
+        val publishedDateBySlug: Map<String, String> = enRows.associate { it.slug to toIsoDate(it.date) }
 
         fun StringBuilder.appendArticleList(listName: String, listRows: List<ArticleRow>) {
             appendLine("    val $listName: List<Article> = listOf(")
@@ -247,6 +252,7 @@ object MarkdownArticlesProcessor {
                 appendLine("            summary = \"${escapeForKotlin(row.summary)}\",")
                 appendLine("            authors = $authorsLiteral,")
                 appendLine("            thumbnail = \"${escapeForKotlin(row.thumbnail)}\",")
+                appendLine("            publishedDate = \"${publishedDateBySlug[row.slug].orEmpty()}\",")
                 appendLine("        ),")
             }
             appendLine("    )")
@@ -270,6 +276,10 @@ object MarkdownArticlesProcessor {
             appendArticleList("PT_BR", ptRows)
             appendLine()
             appendLine("    val ALL: List<Article> = EN")
+            appendLine()
+            appendLine("    /** Slugs of the articles that have a real pt-BR version, not the English fallback. */")
+            val translated: String = ptRowsBySlug.keys.sorted().joinToString(separator = ", ") { "\"$it\"" }
+            appendLine("    val TRANSLATED_SLUGS: Set<String> = setOf($translated)")
             appendLine("}")
         }
     }

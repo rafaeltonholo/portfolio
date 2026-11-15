@@ -6,6 +6,7 @@ import com.varabyte.kobwebx.gradle.markdown.tasks.ConvertMarkdownTask
 import com.varabyte.kobwebx.gradle.markdown.tasks.ProcessMarkdownTask
 import dev.tonholo.portfolio.buildlogic.markdown.MarkdownArticlesProcessor
 import dev.tonholo.portfolio.buildlogic.markdown.MarkdownHandlers
+import org.gradle.api.GradleException
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.apply
@@ -43,10 +44,34 @@ class PortfolioMarkdownPlugin : Plugin<Project> {
             markdownHandlers.code.set { codeBlock -> MarkdownHandlers.formatCode(codeBlock) }
             markdownHandlers.a.set { link -> MarkdownHandlers.formatLink(link) }
             markdownHandlers.blockquote.set { blockQuote -> MarkdownHandlers.formatBlockquote(blockQuote) }
+            markdownHandlers.img.set { image -> MarkdownHandlers.formatImage(image) }
+            val defaultHeading = markdownHandlers.heading.get()
+            markdownHandlers.heading.set { heading -> MarkdownHandlers.formatHeading(defaultHeading(this, heading)) }
+            val defaultText = markdownHandlers.text.get()
+            markdownHandlers.text.set { text -> MarkdownHandlers.formatText(defaultText(this, text)) }
+            val defaultParagraph = markdownHandlers.p.get()
+            markdownHandlers.p.set { paragraph ->
+                MarkdownHandlers.formatParagraph(paragraph = paragraph, defaultCode = defaultParagraph(this, paragraph))
+            }
             doLast {
                 val genDir: File = getGenDir().get().asFile
                 MarkdownHandlers.sanitizeGeneratedSources(genDir)
+                failOnFootnoteProblems(genDir)
             }
         }
+    }
+}
+
+private fun failOnFootnoteProblems(genDir: File) {
+    val problems: List<String> = genDir.walkTopDown()
+        .filter { it.isFile && it.extension == "kt" }
+        .flatMap { file -> MarkdownHandlers.findFootnoteProblems(file.readText()).map { id -> "${file.name}: [^$id]" } }
+        .toList()
+    if (problems.isNotEmpty()) {
+        throw GradleException(
+            "These footnotes became links because their definition looks like a link reference definition. " +
+                "Start each definition with the source's name, like `[^id]: Name, https://...`:\n" +
+                problems.joinToString(separator = "\n"),
+        )
     }
 }
