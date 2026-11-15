@@ -166,6 +166,18 @@ object StringsEn : Strings() {
         shareBluesky = "on bluesky",
     )
 
+    override val articleBody: ArticleBody = ArticleBody(
+        sectionLink = "Copy link to this section",
+        sectionLinkCopied = "Link copied",
+        footnoteReference = "Source",
+        footnoteBack = "Back to the text",
+        imageOpen = "Open full size",
+        imageClose = "Close",
+        commentsTitle = "What did you think?",
+        commentsBody = "Leave a reaction or a comment below. " +
+            "Comments live in GitHub Discussions, so you'll need a GitHub account.",
+    )
+
     override val articleMeta: ArticleMeta = ArticleMeta(
         backLabel = "articles",
         authorPrefix = "by",

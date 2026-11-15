@@ -170,6 +170,18 @@ object StringsPtBr : Strings() {
         shareBluesky = "no bluesky",
     )
 
+    override val articleBody: ArticleBody = ArticleBody(
+        sectionLink = "Copiar link para esta seção",
+        sectionLinkCopied = "Link copiado",
+        footnoteReference = "Fonte",
+        footnoteBack = "Voltar ao texto",
+        imageOpen = "Abrir em tamanho real",
+        imageClose = "Fechar",
+        commentsTitle = "O que você achou?",
+        commentsBody = "Deixe uma reação ou um comentário abaixo. " +
+            "Os comentários ficam no GitHub Discussions, então você vai precisar de uma conta no GitHub.",
+    )
+
     override val articleMeta: ArticleMeta = ArticleMeta(
         backLabel = "artigos",
         authorPrefix = "por",

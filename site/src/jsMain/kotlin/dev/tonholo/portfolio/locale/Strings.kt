@@ -27,6 +27,7 @@ sealed class Strings {
     abstract val articlesList: ArticlesList
     abstract val articlesSidebar: ArticlesSidebar
     abstract val articleMeta: ArticleMeta
+    abstract val articleBody: ArticleBody
     abstract val resume: Resume
     abstract val experience: Experience
     abstract val skills: Skills
@@ -148,6 +149,18 @@ sealed class Strings {
         val shareTwitter: String,
         val shareLinkedIn: String,
         val shareBluesky: String,
+    )
+
+    /** Copy inside an article body: section links, footnotes, image zoom and the comments prompt. */
+    data class ArticleBody(
+        val sectionLink: String,
+        val sectionLinkCopied: String,
+        val footnoteReference: String,
+        val footnoteBack: String,
+        val imageOpen: String,
+        val imageClose: String,
+        val commentsTitle: String,
+        val commentsBody: String,
     )
 
     /** Copy shown by the back-to-articles meta row on the detail page. */
