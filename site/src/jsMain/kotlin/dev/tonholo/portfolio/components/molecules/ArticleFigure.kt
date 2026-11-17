@@ -89,6 +89,7 @@ private const val ROW_GAP_REM = 1.25
 private const val ZOOM_PADDING_REM = 1.5
 private const val CLOSE_BUTTON_INSET_REM = 1.0
 private const val CLOSE_ICON_REM = 1.5
+private const val CLOSE_BUTTON_PADDING_REM = 0.625
 private const val ESCAPE_KEY = "Escape"
 private const val ZOOM_BACKDROP_ALPHA = 0.88f
 private const val ZOOM_Z_INDEX = 100
@@ -142,7 +143,7 @@ private fun ZoomedImage(src: String, alt: String, onClose: () -> Unit) {
         onDispose { window.removeEventListener("keydown", onKeyDown) }
     }
     Overlay(modifier = ZoomBackdropStyle.toModifier().role("dialog").ariaLabel(alt).onClick { onClose() }) {
-        Box(modifier = Modifier.fillMaxSize().padding(ZOOM_PADDING_REM.cssRem), contentAlignment = Alignment.Center) {
+        Box(modifier = ZoomFrameStyle.toModifier().fillMaxSize(), contentAlignment = Alignment.Center) {
             Img(src = src, alt = alt, attrs = ZoomedImageStyle.toModifier().toAttrs())
         }
         Button(
@@ -250,6 +251,16 @@ val ArticleFigureRowStyle = CssStyle {
     }
 }
 
+/** The area holding the zoomed image: edge to edge on phones, padded from the medium breakpoint up. */
+val ZoomFrameStyle = CssStyle {
+    base {
+        Modifier.padding(0.cssRem)
+    }
+    Breakpoint.MD {
+        Modifier.padding(ZOOM_PADDING_REM.cssRem)
+    }
+}
+
 /** The full-size image shown in the zoom overlay. */
 val ZoomedImageStyle = CssStyle {
     base {
@@ -257,7 +268,9 @@ val ZoomedImageStyle = CssStyle {
             .maxWidth(100.percent)
             .maxHeight(100.percent)
             .objectFit(ObjectFit.Contain)
-            .borderRadius(IMAGE_BORDER_RADIUS)
+    }
+    Breakpoint.MD {
+        Modifier.borderRadius(IMAGE_BORDER_RADIUS)
     }
 }
 
@@ -278,7 +291,7 @@ val ZoomCloseButtonStyle = CssStyle {
             .position(Position.Fixed)
             .top(CLOSE_BUTTON_INSET_REM.cssRem)
             .right(CLOSE_BUTTON_INSET_REM.cssRem)
-            .padding(0.5.cssRem)
+            .padding(CLOSE_BUTTON_PADDING_REM.cssRem)
             .border(width = 0.dp, style = LineStyle.None, color = Colors.Transparent)
             .borderRadius(50.percent)
             .backgroundColor(Paper.light.paper)

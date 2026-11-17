@@ -52,6 +52,12 @@ private const val DEFINITION_GAP_EM = 0.6
 private const val DEFINITION_MARGIN_EM = 0.6
 private const val NUMBER_COLUMN_EM = 1.75
 private const val BACK_ICON_REM = 0.85
+private const val REFERENCE_TAP_PADDING_Y_EM = 1.0
+private const val REFERENCE_TAP_PADDING_X_EM = 0.45
+private const val REFERENCE_TAP_OVERLAP_X_EM = 0.3
+private const val BACK_TAP_PADDING_Y_EM = 0.75
+private const val BACK_TAP_PADDING_X_EM = 0.95
+private const val BACK_LINK_GAP_EM = 0.25
 
 /**
  * Footnote numbering for one article. The article layout provides a fresh registry per article so references
@@ -162,6 +168,8 @@ val FootnoteReferenceLinkStyle = CssStyle {
         Modifier
             .color(accent.accent)
             .textDecorationLine(TextDecorationLine.None)
+            .padding(topBottom = REFERENCE_TAP_PADDING_Y_EM.em, leftRight = REFERENCE_TAP_PADDING_X_EM.em)
+            .margin(topBottom = 0.em, leftRight = (-REFERENCE_TAP_OVERLAP_X_EM).em)
     }
     hover {
         Modifier.textDecorationLine(TextDecorationLine.Underline)
@@ -199,7 +207,14 @@ val FootnoteBackLinkStyle = CssStyle {
     base {
         val accent = if (colorMode == ColorMode.DARK) AccentMint.dark else AccentMint.light
         Modifier
-            .margin(left = DEFINITION_GAP_EM.em)
+            .display(DisplayStyle.InlineBlock)
+            .padding(topBottom = BACK_TAP_PADDING_Y_EM.em, leftRight = BACK_TAP_PADDING_X_EM.em)
+            .margin(
+                top = (-BACK_TAP_PADDING_Y_EM).em,
+                bottom = (-BACK_TAP_PADDING_Y_EM).em,
+                left = BACK_LINK_GAP_EM.em,
+                right = (-BACK_TAP_PADDING_X_EM).em,
+            )
             .color(accent.accent)
             .textDecorationLine(TextDecorationLine.None)
     }

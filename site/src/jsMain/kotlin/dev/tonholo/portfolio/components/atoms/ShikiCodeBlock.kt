@@ -12,6 +12,7 @@ import com.varabyte.kobweb.compose.css.Cursor
 import com.varabyte.kobweb.compose.css.Overflow
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.graphics.Color
+import com.varabyte.kobweb.compose.ui.graphics.Colors
 import com.varabyte.kobweb.compose.ui.modifiers.alignItems
 import com.varabyte.kobweb.compose.ui.modifiers.backgroundColor
 import com.varabyte.kobweb.compose.ui.modifiers.border
@@ -26,11 +27,13 @@ import com.varabyte.kobweb.compose.ui.modifiers.justifyContent
 import com.varabyte.kobweb.compose.ui.modifiers.letterSpacing
 import com.varabyte.kobweb.compose.ui.modifiers.lineHeight
 import com.varabyte.kobweb.compose.ui.modifiers.margin
+import com.varabyte.kobweb.compose.ui.modifiers.minHeight
 import com.varabyte.kobweb.compose.ui.modifiers.onClick
 import com.varabyte.kobweb.compose.ui.modifiers.overflow
 import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.silk.style.CssStyle
+import com.varabyte.kobweb.silk.style.selectors.descendants
 import com.varabyte.kobweb.silk.style.toModifier
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import dev.tonholo.portfolio.components.atoms.shiki.CodeToHastOptions
@@ -44,6 +47,7 @@ import dev.tonholo.portfolio.extensions.unescapeHtmlEntities
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.PortfolioTokens
 import dev.tonholo.portfolio.theme.color.Paper
+import dev.tonholo.portfolio.theme.layout.SiteDimensions
 import dev.tonholo.portfolio.theme.layout.unit.Dp
 import dev.tonholo.portfolio.theme.layout.unit.dp
 import dev.tonholo.portfolio.theme.typography.FontFamilies
@@ -53,10 +57,12 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.web.css.AlignItems
 import org.jetbrains.compose.web.css.CSSColorValue
+import org.jetbrains.compose.web.css.CSSMediaQuery
 import org.jetbrains.compose.web.css.DisplayStyle
 import org.jetbrains.compose.web.css.FlexDirection
 import org.jetbrains.compose.web.css.JustifyContent
 import org.jetbrains.compose.web.css.LineStyle
+import org.jetbrains.compose.web.css.StylePropertyValue
 import org.jetbrains.compose.web.css.StyleSheet
 import org.jetbrains.compose.web.css.backgroundColor
 import org.jetbrains.compose.web.css.borderRadius
@@ -77,6 +83,8 @@ import org.jetbrains.compose.web.dom.Pre
 import org.jetbrains.compose.web.dom.Span
 import org.jetbrains.compose.web.dom.Style
 import org.jetbrains.compose.web.dom.Text
+import kotlin.js.Json
+import kotlin.js.json
 
 private const val COPY_RESET_DELAY_MS: Long = 2000L
 
@@ -89,8 +97,32 @@ private val CARD_BORDER_RADIUS: Dp = 6.dp
 private val CARD_BORDER_WIDTH: Dp = 1.dp
 private val HEADER_PADDING_Y: Dp = 6.dp
 private val HEADER_PADDING_X: Dp = 14.dp
+private val HEADER_FONT_SIZE: Dp = 11.dp
+private const val HEADER_LETTER_SPACING_REM: Double = 0.06
+private val COARSE_POINTER = CSSMediaQuery.MediaFeature(name = "pointer", value = StylePropertyValue(value = "coarse"))
 private val FALLBACK_PADDING_Y: Dp = 16.dp
 private val FALLBACK_PADDING_X: Dp = 20.dp
+
+/**
+ * Darker stand-ins for the One Light token colours that fall below a 4.5:1 contrast ratio on the theme's
+ * `#FAFAFA` background.
+ */
+private val ONE_LIGHT_READABLE_COLORS: Json = json(
+    "#e45649" to "#d72f20",
+    "#50a14f" to "#3f7f3e",
+    "#4078f2" to "#2867f0",
+    "#c18401" to "#986801",
+    "#0184bc" to "#0179ad",
+    "#a0a1a7" to "#707179",
+)
+
+/**
+ * One Light paints text its grammar can't parse, such as a `...` line in JSON, in white, which is invisible on
+ * the theme's background. Shiki's colour replacements only cover hex colours, so the token is repainted in
+ * the generated HTML.
+ */
+private const val ONE_LIGHT_UNPARSED_TOKEN = "<span style=\"color:white"
+private const val READABLE_UNPARSED_TOKEN = "<span style=\"color:#707179"
 
 /**
  * Global stylesheet governing Shiki code block typography, line focusing, highlighting, and diffs.
@@ -149,6 +181,9 @@ val ShikiCodeBlockContainerStyle = CssStyle {
             .fontSize(CODE_FONT_SIZE)
             .lineHeight(CODE_LINE_HEIGHT)
     }
+    descendants("pre", "code") {
+        Modifier.fontFamily(*FontFamilies.MONO)
+    }
 }
 
 /**
@@ -170,6 +205,31 @@ val ShikiCodeBlockHeaderStyle = CssStyle {
             .border(width = CARD_BORDER_WIDTH, style = LineStyle.Solid, color = colorMode.resolveBorderColor())
             .backgroundColor(colorMode.resolveHeaderBg())
     }
+    cssRule(mediaQuery = COARSE_POINTER) {
+        Modifier.padding(top = 0.dp, bottom = 0.dp, left = HEADER_PADDING_X, right = 0.dp)
+    }
+}
+
+/**
+ * Base [CssStyle] for the copy button in the code fence header. On touch screens it grows to a full-size tap
+ * target.
+ */
+val ShikiCopyButtonStyle = CssStyle {
+    base {
+        Modifier
+            .border(width = 0.dp, style = LineStyle.None, color = Colors.Transparent)
+            .backgroundColor(Colors.Transparent)
+            .padding(0.dp)
+            .fontFamily(*FontFamilies.MONO)
+            .fontSize(HEADER_FONT_SIZE)
+            .letterSpacing(HEADER_LETTER_SPACING_REM.cssRem)
+            .cursor(Cursor.Pointer)
+    }
+    cssRule(mediaQuery = COARSE_POINTER) {
+        Modifier
+            .minHeight(SiteDimensions.layout.minimumTouchSize)
+            .padding(topBottom = 0.dp, leftRight = HEADER_PADDING_X)
+    }
 }
 
 /**
@@ -187,21 +247,18 @@ private fun ShikiCodeBlockHeader(language: String, unescapedCode: String) {
     Div(attrs = ShikiCodeBlockHeaderStyle.toModifier().toAttrs()) {
         Span(
             attrs = Modifier
-                .fontSize(11.dp)
+                .fontSize(HEADER_FONT_SIZE)
                 .color(tokens.muted.muted)
-                .letterSpacing(0.06.cssRem)
+                .letterSpacing(HEADER_LETTER_SPACING_REM.cssRem)
                 .toAttrs(),
         ) {
             Text(language.ifBlank { "text" }.uppercase())
         }
 
         Button(
-            attrs = Modifier
-                .border(width = 0.dp, style = LineStyle.None, color = Color.rgb(0, 0, 0))
-                .backgroundColor(Color.rgba(0, 0, 0, 0f))
+            attrs = ShikiCopyButtonStyle
+                .toModifier()
                 .color(if (hasCopied) tokens.accent.accent else tokens.muted.muted)
-                .fontSize(11.dp)
-                .cursor(Cursor.Pointer)
                 .onClick {
                     window.navigator.clipboard.writeText(unescapedCode)
                     hasCopied = true
@@ -289,9 +346,12 @@ fun ShikiCodeBlock(code: String, modifier: Modifier = Modifier, language: String
             lang = language.ifBlank { "text" }
             themes = themeOptions.themes
             defaultColor = themeOptions.defaultColor
+            colorReplacements = json(ShikiTheme.OneLight.themeName to ONE_LIGHT_READABLE_COLORS)
             transformers = shikiClient.defaultTransformers.toTypedArray()
         }
-        parsedHtml = shikiClient.codeToHtml(code = unescapedCode, options = options)
+        parsedHtml = shikiClient
+            .codeToHtml(code = unescapedCode, options = options)
+            .replace(oldValue = ONE_LIGHT_UNPARSED_TOKEN, newValue = READABLE_UNPARSED_TOKEN)
     }
 
     Style(cssRules = ShikiStylesheet.cssRules)
