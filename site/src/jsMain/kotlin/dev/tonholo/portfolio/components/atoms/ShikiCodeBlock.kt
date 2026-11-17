@@ -117,6 +117,15 @@ private val ONE_LIGHT_READABLE_COLORS: Json = json(
 )
 
 /**
+ * Lighter stand-ins for the One Dark Pro token colours (dark red and comment grey) that fall below a 4.5:1
+ * contrast ratio on the dark code block background.
+ */
+private val ONE_DARK_READABLE_COLORS: Json = json(
+    "#be5046" to "#da6a60",
+    "#5c6370" to "#8a909c",
+)
+
+/**
  * One Light paints text its grammar can't parse, such as a `...` line in JSON, in white, which is invisible on
  * the theme's background. Shiki's colour replacements only cover hex colours, so the token is repainted in
  * the generated HTML.
@@ -139,6 +148,8 @@ object ShikiStylesheet : StyleSheet() {
             display(DisplayStyle.Flex)
             flexDirection(FlexDirection.Column)
             flexGrow(1)
+            property("white-space", "pre-wrap")
+            property("overflow-wrap", "anywhere")
         }
         "pre.shiki code .line:empty" style {
             height(1.5.cssRem)
@@ -346,7 +357,10 @@ fun ShikiCodeBlock(code: String, modifier: Modifier = Modifier, language: String
             lang = language.ifBlank { "text" }
             themes = themeOptions.themes
             defaultColor = themeOptions.defaultColor
-            colorReplacements = json(ShikiTheme.OneLight.themeName to ONE_LIGHT_READABLE_COLORS)
+            colorReplacements = json(
+                ShikiTheme.OneLight.themeName to ONE_LIGHT_READABLE_COLORS,
+                ShikiTheme.OneDarkPro.themeName to ONE_DARK_READABLE_COLORS,
+            )
             transformers = shikiClient.defaultTransformers.toTypedArray()
         }
         parsedHtml = shikiClient
