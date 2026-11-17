@@ -38,7 +38,7 @@ class Shiki private constructor(
     companion object {
         private const val SHIKI_SCRIPT_ID: String = "portfolio-shiki-loader"
         private const val SHIKI_READY_EVENT: String = "portfolio-shiki-ready"
-        private const val SHIKI_VERSION: String = "1.20.0"
+        private const val SHIKI_VERSION: String = "4.6.0"
 
         private var instance: Shiki? = null
 
@@ -70,12 +70,14 @@ class Shiki private constructor(
                 val script: HTMLScriptElement = (document.createElement("script") as HTMLScriptElement).apply {
                     id = SHIKI_SCRIPT_ID
                     type = "module"
+                    // language=javascript
                     textContent = """
                         |import * as shiki from 'https://esm.run/shiki@$SHIKI_VERSION';
                         |import {
                         |  transformerNotationFocus,
                         |  transformerNotationHighlight,
                         |  transformerNotationDiff,
+                        |  transformerRenderLineNumber,
                         |} from 'https://esm.run/@shikijs/transformers@$SHIKI_VERSION';
                         |
                         |globalThis.__portfolioShiki = {
@@ -84,6 +86,7 @@ class Shiki private constructor(
                         |    transformerNotationFocus(),
                         |    transformerNotationHighlight(),
                         |    transformerNotationDiff(),
+                        |    transformerRenderLineNumber(),
                         |  ],
                         |};
                         |document.dispatchEvent(new Event('$SHIKI_READY_EVENT'));
