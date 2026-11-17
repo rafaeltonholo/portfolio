@@ -15,6 +15,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.color
 import com.varabyte.kobweb.compose.ui.modifiers.margin
 import com.varabyte.kobweb.compose.ui.modifiers.onClick
 import com.varabyte.kobweb.compose.ui.modifiers.opacity
+import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.compose.ui.modifiers.textDecorationLine
 import com.varabyte.kobweb.compose.ui.modifiers.transition
 import com.varabyte.kobweb.compose.ui.toAttrs
@@ -33,7 +34,6 @@ import org.jetbrains.compose.web.attributes.AttrsScope
 import org.jetbrains.compose.web.css.CSSMediaQuery
 import org.jetbrains.compose.web.css.StylePropertyValue
 import org.jetbrains.compose.web.css.cssRem
-import org.jetbrains.compose.web.css.em
 import org.jetbrains.compose.web.css.ms
 import org.jetbrains.compose.web.dom.A
 import org.jetbrains.compose.web.dom.H1
@@ -56,7 +56,9 @@ private const val HEADING_LEVEL_4 = 4
 private const val HEADING_LEVEL_5 = 5
 private const val COPIED_FEEDBACK_MS = 1500
 private const val SECTION_LINK_ICON_REM = 0.8
-private const val SECTION_LINK_GAP_EM = 0.4
+private const val SECTION_LINK_GAP_REM = 0.9
+private const val SECTION_LINK_TAP_PADDING_RIGHT_REM = 1.1
+private const val SECTION_LINK_TAP_PADDING_Y_REM = 0.5
 private const val TOUCH_LINK_OPACITY = 0.6
 private const val LINK_FADE_MS = 150
 
@@ -135,7 +137,13 @@ val SectionLinkStyle = CssStyle {
     base {
         val muted = if (colorMode == ColorMode.DARK) Muted.dark else Muted.light
         Modifier
-            .margin(left = SECTION_LINK_GAP_EM.em)
+            .padding(
+                top = SECTION_LINK_TAP_PADDING_Y_REM.cssRem,
+                bottom = SECTION_LINK_TAP_PADDING_Y_REM.cssRem,
+                left = SECTION_LINK_GAP_REM.cssRem,
+                right = SECTION_LINK_TAP_PADDING_RIGHT_REM.cssRem,
+            )
+            .margin(right = (-SECTION_LINK_TAP_PADDING_RIGHT_REM).cssRem)
             .color(muted.muted)
             .textDecorationLine(TextDecorationLine.None)
             .opacity(0)

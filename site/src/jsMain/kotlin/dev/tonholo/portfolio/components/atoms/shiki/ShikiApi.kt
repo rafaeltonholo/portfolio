@@ -1,5 +1,6 @@
 package dev.tonholo.portfolio.components.atoms.shiki
 
+import kotlin.js.Json
 import kotlin.js.Promise
 
 /**
@@ -15,6 +16,9 @@ external interface ShikiTransformer {
 external interface CodeToHastOptions : ThemeOptions {
     var lang: String
     var transformers: Array<ShikiTransformer>
+
+    /** Token colour overrides, keyed by theme name and then by the lowercase hex colour to replace. */
+    var colorReplacements: Json
 }
 
 /**
