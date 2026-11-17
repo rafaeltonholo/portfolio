@@ -71,6 +71,17 @@ class StaticContentTest {
     }
 
     @Test
+    fun `given StaticContent articlesFor with PtBr, when reading the a2ui articles, then both are translated`() {
+        // Arrange / Act
+        val ptArticles: List<Article> = StaticContent.articlesFor(locale = Locale.PtBr)
+        // Assert
+        val howItWorks = ptArticles.first { it.slug == "how-a2ui-works" }
+        val onDevice = ptArticles.first { it.slug == "on-device-llm-a2ui-android" }
+        assertTrue(actual = howItWorks.title.startsWith("Como o A2UI funciona"))
+        assertTrue(actual = onDevice.title.startsWith("A2UI num celular"))
+    }
+
+    @Test
     fun `given StaticContent articlesFor with PtBr, when inspecting hello-world, then rich frontmatter is parsed`() {
         // Arrange
         val ptArticles: List<Article> = StaticContent.articlesFor(locale = Locale.PtBr)
