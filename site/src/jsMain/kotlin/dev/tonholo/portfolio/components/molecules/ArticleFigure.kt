@@ -58,6 +58,7 @@ import dev.tonholo.portfolio.theme.color.Ink
 import dev.tonholo.portfolio.theme.color.Muted
 import dev.tonholo.portfolio.theme.color.Paper
 import dev.tonholo.portfolio.theme.layout.unit.dp
+import kotlinx.browser.document
 import kotlinx.browser.window
 import org.jetbrains.compose.web.css.AlignItems
 import org.jetbrains.compose.web.css.DisplayStyle
@@ -91,12 +92,15 @@ private const val CLOSE_BUTTON_INSET_REM = 1.0
 private const val CLOSE_ICON_REM = 1.5
 private const val CLOSE_BUTTON_PADDING_REM = 0.625
 private const val ESCAPE_KEY = "Escape"
+private const val TAB_KEY = "Tab"
+private const val OVERFLOW_PROPERTY = "overflow"
 private const val ZOOM_BACKDROP_ALPHA = 0.88f
 private const val ZOOM_Z_INDEX = 100
 
 /**
  * An article image with an optional caption. Tapping or clicking it opens the full-size image on top of the
- * page; Escape, the close button or a click on the backdrop closes it.
+ * page; Escape, the close button or a click on the backdrop closes it. While it is open the page behind does not
+ * scroll, focus stays on the close button, and focus returns to the image when it closes.
  *
  * @param src the image URL.
  * @param alt the text alternative describing the image.
@@ -135,12 +139,21 @@ fun ArticleFigure(
 private fun ZoomedImage(src: String, alt: String, onClose: () -> Unit) {
     val closeLabel = LocalStrings.current.articleBody.imageClose
     val currentOnClose by rememberUpdatedState(onClose)
+    val openerToRefocus = remember { document.activeElement as? HTMLElement }
     DisposableEffect(Unit) {
+        val unlockPageScroll = lockPageScroll()
         val onKeyDown: (Event) -> Unit = { event ->
-            if ((event as? KeyboardEvent)?.key == ESCAPE_KEY) currentOnClose()
+            when ((event as? KeyboardEvent)?.key) {
+                ESCAPE_KEY -> currentOnClose()
+                TAB_KEY -> event.preventDefault()
+            }
         }
         window.addEventListener("keydown", onKeyDown)
-        onDispose { window.removeEventListener("keydown", onKeyDown) }
+        onDispose {
+            window.removeEventListener("keydown", onKeyDown)
+            unlockPageScroll()
+            openerToRefocus?.focus()
+        }
     }
     Overlay(modifier = ZoomBackdropStyle.toModifier().role("dialog").ariaLabel(alt).onClick { onClose() }) {
         Box(modifier = ZoomFrameStyle.toModifier().fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -164,6 +177,18 @@ private fun ZoomedImage(src: String, alt: String, onClose: () -> Unit) {
             PhosphorIcon(name = "x", size = CLOSE_ICON_REM.cssRem)
         }
     }
+}
+
+/**
+ * Stops the page behind an overlay from scrolling.
+ *
+ * @return a function that restores the previous scroll behaviour.
+ */
+private fun lockPageScroll(): () -> Unit {
+    val bodyStyle = document.body?.style ?: return {}
+    val previousOverflow = bodyStyle.getPropertyValue(OVERFLOW_PROPERTY)
+    bodyStyle.setProperty(OVERFLOW_PROPERTY, "hidden")
+    return { bodyStyle.setProperty(OVERFLOW_PROPERTY, previousOverflow) }
 }
 
 /**
