@@ -26,7 +26,7 @@ class TypographyTest {
             actual = FontFamilies.MONO,
         )
         assertContentEquals(
-            expected = arrayOf("Geist", "-apple-system", "sans-serif"),
+            expected = arrayOf("Fira Sans", "-apple-system", "sans-serif"),
             actual = FontFamilies.SANS,
         )
         assertContentEquals(
