@@ -158,6 +158,8 @@ object StringsEn : Strings() {
 
     override val articlesSidebar: ArticlesSidebar = ArticlesSidebar(
         contents = "Contents",
+        openContents = "Open contents",
+        closeContents = "Close contents",
         share = "Share",
         shareCopyLink = "copy link",
         shareCopied = "link copied!",
