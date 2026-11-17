@@ -1,6 +1,6 @@
 ---
 title: 'How A2UI works: generative UI as data, not code'
-date: nov 14, 2026
+date: nov 17, 2026
 description: >
     How the A2UI protocol describes UI as data: surfaces, the flat component list, data binding, and why a model
     shouldn't have to write the format a renderer reads.

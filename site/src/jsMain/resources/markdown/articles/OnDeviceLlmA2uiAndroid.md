@@ -1,6 +1,6 @@
 ---
 title: 'A2UI on a phone: an on-device model and a tiny compiler in Kotlin'
-date: nov 15, 2026
+date: nov 18, 2026
 description: >
     What happened when a model running on a Pixel 7 Pro had to write A2UI, and how a tiny Express compiler in
     Kotlin helped.
