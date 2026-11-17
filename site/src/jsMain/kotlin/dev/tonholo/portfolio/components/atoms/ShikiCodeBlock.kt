@@ -10,6 +10,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import com.varabyte.kobweb.compose.css.Cursor
 import com.varabyte.kobweb.compose.css.Overflow
+import com.varabyte.kobweb.compose.css.UserSelect
+import com.varabyte.kobweb.compose.css.userSelect
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.graphics.Color
 import com.varabyte.kobweb.compose.ui.graphics.Colors
@@ -92,6 +94,18 @@ private const val UNFOCUSED_OPACITY: Float = 0.45f
 private const val FOCUSED_OPACITY: Float = 1.0f
 private const val CODE_LINE_HEIGHT: Double = 1.65
 
+private const val LINE_NUMBER_WIDTH: String = "2ch"
+private const val LINE_NUMBER_GAP: String = "1.5em"
+private const val LINE_NUMBER_OPACITY: Float = 0.5f
+private const val CODE_PADDING_LEFT: String = "0.1rem"
+private const val GUTTER_END: String = "calc($CODE_PADDING_LEFT + $LINE_NUMBER_WIDTH + 0.75em)"
+private const val GUTTER_TINT: String = "color-mix(in srgb, currentcolor 7%, transparent)"
+private const val GUTTER_RULE_COLOR: String = "color-mix(in srgb, currentcolor 18%, transparent)"
+private const val GUTTER_BACKGROUND: String =
+    "linear-gradient(to right, $GUTTER_TINT $GUTTER_END, $GUTTER_RULE_COLOR 0, " +
+        "$GUTTER_RULE_COLOR calc($GUTTER_END + 1px), transparent 0)"
+private const val LINE_GUTTER_WIDTH: String = "calc($LINE_NUMBER_WIDTH + $LINE_NUMBER_GAP)"
+
 private val CODE_FONT_SIZE: Dp = 13.dp
 private val CARD_BORDER_RADIUS: Dp = 6.dp
 private val CARD_BORDER_WIDTH: Dp = 1.dp
@@ -141,6 +155,8 @@ object ShikiStylesheet : StyleSheet() {
         "pre.shiki" style {
             margin(0.px)
             padding(1.cssRem, 1.25.cssRem)
+            property("padding-left", CODE_PADDING_LEFT)
+            property("background-image", GUTTER_BACKGROUND)
             overflowX("auto")
             backgroundColor("transparent".unsafeCast<CSSColorValue>())
         }
@@ -172,6 +188,19 @@ object ShikiStylesheet : StyleSheet() {
         }
         "pre.shiki code .diff.remove" style {
             backgroundColor("color-mix(in srgb, #ef4444 16%, transparent)".unsafeCast<CSSColorValue>())
+        }
+        "pre.shiki code .line" style {
+            property("padding-left", LINE_GUTTER_WIDTH)
+            property("text-indent", "calc(-1 * $LINE_GUTTER_WIDTH)")
+        }
+        "pre.shiki .line-number" style {
+            display(DisplayStyle.InlineBlock)
+            property("width", LINE_NUMBER_WIDTH)
+            property("margin-right", LINE_NUMBER_GAP)
+            property("text-align", "right")
+            property("text-indent", "0")
+            userSelect(UserSelect.None)
+            opacity(LINE_NUMBER_OPACITY)
         }
     }
 }
