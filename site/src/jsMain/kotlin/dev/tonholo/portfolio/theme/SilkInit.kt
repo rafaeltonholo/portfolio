@@ -126,12 +126,12 @@ fun initPageBackground(ctx: InitSilkContext) {
  */
 @InitSilk
 fun initInlineCode(ctx: InitSilkContext) {
-    ctx.stylesheet.registerStyle("html.${ColorMode.LIGHT.cssClass} :not(pre) > code") {
+    ctx.stylesheet.registerStyle("html.${ColorMode.LIGHT.cssClass} :not(pre, h2, h3) > code") {
         base {
             Modifier.applyInlineCodeStyle(isDark = false)
         }
     }
-    ctx.stylesheet.registerStyle("html.${ColorMode.DARK.cssClass} :not(pre) > code") {
+    ctx.stylesheet.registerStyle("html.${ColorMode.DARK.cssClass} :not(pre, h2, h3) > code") {
         base {
             Modifier.applyInlineCodeStyle(isDark = true)
         }

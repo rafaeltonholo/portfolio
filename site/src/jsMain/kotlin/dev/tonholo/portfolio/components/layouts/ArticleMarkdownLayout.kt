@@ -136,10 +136,11 @@ private const val PROSE_H2_LETTER_SPACING_EM = -0.015
 private const val PROSE_H2_MARGIN_TOP_EM = 2.0
 private const val PROSE_H2_MARGIN_BOTTOM_EM = 0.6
 
-private val PROSE_H3_FONT_SIZE = 18.dp
+private val PROSE_H3_FONT_SIZE = 20.dp
 private const val PROSE_H3_LETTER_SPACING_EM = -0.01
 private const val PROSE_H3_MARGIN_TOP_EM = 1.6
-private const val PROSE_H3_MARGIN_BOTTOM_EM = 0.5
+private const val PROSE_H3_MARGIN_BOTTOM_EM = 0.6
+private const val PROSE_HEADING_LINE_HEIGHT = 1.3
 
 private const val PROSE_FONT_SIZE_REM = 1.125
 private const val PROSE_LINE_HEIGHT = 1.65
@@ -160,6 +161,11 @@ private val PROSE_TABLE_PADDING_X = 6.px
 private val PROSE_TH_FONT_SIZE = 12.px
 private val PROSE_TD_FONT_SIZE = 13.px
 private const val PROSE_TABLE_MARGIN_BOTTOM_EM = 1.5
+
+private const val LIGHT_LINK_ON_CODE_CHIP_RGB = 0x27693A
+
+/** The light accent darkened to reach 4.5:1 on the grey inline code chip, where the regular accent is 3.9:1. */
+private val LIGHT_LINK_ON_CODE_CHIP = Color.rgb(LIGHT_LINK_ON_CODE_CHIP_RGB)
 
 // Selector the runtime TOC scraper uses to find every heading under the
 // markdown body. `<article>` is the body wrapper so we scope the query to
@@ -596,7 +602,7 @@ val ArticleMarkdownTitleStyle = CssStyle {
 }
 
 /**
- * Base `CssStyle` for the article lede. Uses body sans (Geist) at 22px with 1.45 line-height,
+ * Base `CssStyle` for the article lede. Uses body sans (Fira Sans) at 22px with 1.45 line-height,
  * a 48ch cap, and a 40px bottom margin, matching the typography of the rest of the site.
  */
 val ArticleMarkdownLedeStyle = CssStyle {
@@ -612,7 +618,7 @@ val ArticleMarkdownLedeStyle = CssStyle {
 
 /**
  * Base `CssStyle` for the markdown article body wrapper. Uses the site's body sans
- * (Geist) for prose paragraphs, display mono for subsection headings, styled code
+ * (Fira Sans) for prose paragraphs, display mono for subsection headings, styled code
  * badges for inline snippets, and clean blockquote/table treatments.
  */
 val ArticleMarkdownBodyStyle = CssStyle {
@@ -636,6 +642,7 @@ val ArticleMarkdownBodyStyle = CssStyle {
             .fontFamily(*FontFamilies.DISPLAY)
             .fontSize(PROSE_H2_FONT_SIZE)
             .fontWeight(FontWeight.Medium)
+            .lineHeight(PROSE_HEADING_LINE_HEIGHT)
             .letterSpacing(PROSE_H2_LETTER_SPACING_EM.em)
             .color(ink.ink)
             .margin(
@@ -652,7 +659,8 @@ val ArticleMarkdownBodyStyle = CssStyle {
         Modifier
             .fontFamily(*FontFamilies.DISPLAY)
             .fontSize(PROSE_H3_FONT_SIZE)
-            .fontWeight(FontWeight.Medium)
+            .fontWeight(FontWeight.SemiBold)
+            .lineHeight(PROSE_HEADING_LINE_HEIGHT)
             .letterSpacing(PROSE_H3_LETTER_SPACING_EM.em)
             .color(ink.ink)
             .margin(
@@ -731,7 +739,15 @@ val ArticleMarkdownBodyStyle = CssStyle {
             .padding(topBottom = PROSE_TABLE_PADDING_Y, leftRight = PROSE_TABLE_PADDING_X)
             .fontSize(PROSE_TD_FONT_SIZE)
     }
-    cssRule(" :not(pre) > code") {
+    cssRule(" :not(pre, h2, h3) > code") {
         Modifier.applyInlineCodeStyle(isDark = colorMode == ColorMode.DARK)
+    }
+    cssRule(" :is(h2, h3) > code") {
+        Modifier
+            .fontFamily(*FontFamilies.DISPLAY)
+            .fontSize(1.em)
+    }
+    cssRule(" a:not(.$ARTICLE_PLAIN_LINK_CLASS) > code") {
+        if (colorMode == ColorMode.DARK) Modifier else Modifier.color(LIGHT_LINK_ON_CODE_CHIP)
     }
 }

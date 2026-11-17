@@ -1,6 +1,7 @@
 package dev.tonholo.portfolio.components.atoms
 
 import androidx.compose.runtime.Composable
+import com.varabyte.kobweb.compose.css.OverflowWrap
 import com.varabyte.kobweb.compose.css.TextDecorationLine
 import com.varabyte.kobweb.compose.css.VerticalAlign
 import com.varabyte.kobweb.compose.ui.Modifier
@@ -8,6 +9,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.ariaHidden
 import com.varabyte.kobweb.compose.ui.modifiers.color
 import com.varabyte.kobweb.compose.ui.modifiers.display
 import com.varabyte.kobweb.compose.ui.modifiers.margin
+import com.varabyte.kobweb.compose.ui.modifiers.overflowWrap
 import com.varabyte.kobweb.compose.ui.modifiers.textDecorationLine
 import com.varabyte.kobweb.compose.ui.modifiers.verticalAlign
 import com.varabyte.kobweb.compose.ui.toAttrs
@@ -101,6 +103,7 @@ val ArticleLinkStyle = CssStyle {
             .color(accent.accent)
             .textDecorationLine(TextDecorationLine.Underline)
             .display(DisplayStyle.Inline)
+            .overflowWrap(OverflowWrap.Anywhere)
     }
     hover {
         val accent = if (colorMode == ColorMode.DARK) AccentMint.dark else AccentMint.light
