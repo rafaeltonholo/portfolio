@@ -26,7 +26,7 @@ object FontFamilies {
     )
 
     val SANS: Array<String> = arrayOf(
-        "Geist",
+        "Fira Sans",
         "-apple-system",
         "sans-serif",
     )

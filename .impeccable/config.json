@@ -10,13 +10,6 @@
   "detector": {
     "ignoreRules": [],
     "ignoreFiles": [],
-    "ignoreValues": [
-      {
-        "rule": "overused-font",
-        "value": "geist",
-        "createdAt": "2026-11-15T02:46:49.885Z",
-        "reason": "project design context: CLAUDE.md Aesthetic Direction names Geist sans as the body UI font"
-      }
-    ]
+    "ignoreValues": []
   }
 }

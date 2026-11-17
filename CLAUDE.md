@@ -91,7 +91,7 @@ for craft - not delight or playfulness.
 ### Aesthetic Direction
 
 IDE / technical craft: JetBrains Mono as display voice, Fraunces serif for
-long-form prose, Geist sans for body UI. Mint accent used rarely as the
+long-form prose, Fira Sans for body UI. Mint accent used rarely as the
 single 10% color. Both light and dark modes are first-class (auto from OS).
 
 Anti-references: generic dev portfolio template, AI-cyan-on-dark SaaS,
