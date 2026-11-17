@@ -56,6 +56,7 @@ import com.varabyte.kobweb.silk.style.toModifier
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import com.varabyte.kobwebx.markdown.markdown
 import dev.tonholo.portfolio.components.atoms.GiscusWrapper
+import dev.tonholo.portfolio.components.atoms.resolveArticleLinkColor
 import dev.tonholo.portfolio.components.molecules.ARTICLE_PLAIN_LINK_CLASS
 import dev.tonholo.portfolio.components.molecules.ArticleCommentsPrompt
 import dev.tonholo.portfolio.components.molecules.ArticleMetaRow
@@ -123,7 +124,7 @@ private const val GRID_GAP_MOBILE_REM = 1.5
 private const val TITLE_MAX_WIDTH_CH = 22.0
 private const val TITLE_MARGIN_BOTTOM_REM = 1.0
 
-// Handoff `.article-detail .lede`: serif italic, 22px / 1.45, 48ch cap, 40px
+// Handoff `.article-detail .lede`: italic, 22px / 1.45, 48ch cap, 40px
 // bottom margin.
 private const val LEDE_SIZE_REM = 1.375
 private const val LEDE_LINE_HEIGHT = 1.45
@@ -163,11 +164,6 @@ private val PROSE_TABLE_PADDING_X = 6.px
 private val PROSE_TH_FONT_SIZE = 12.px
 private val PROSE_TD_FONT_SIZE = 13.px
 private const val PROSE_TABLE_MARGIN_BOTTOM_EM = 1.5
-
-private const val LIGHT_LINK_ON_CODE_CHIP_RGB = 0x27693A
-
-/** The light accent darkened to reach 4.5:1 on the grey inline code chip, where the regular accent is 3.9:1. */
-private val LIGHT_LINK_ON_CODE_CHIP = Color.rgb(LIGHT_LINK_ON_CODE_CHIP_RGB)
 
 // Selector the runtime TOC scraper uses to find every heading under the
 // markdown body. `<article>` is the body wrapper so we scope the query to
@@ -714,10 +710,8 @@ val ArticleMarkdownBodyStyle = CssStyle {
             .fontStyle(FontStyle.Italic)
     }
     descendants("a:not(.$ARTICLE_PLAIN_LINK_CLASS)") {
-        val isDark: Boolean = colorMode == ColorMode.DARK
-        val accent = if (isDark) AccentMint.dark else AccentMint.light
         Modifier
-            .color(accent.accent)
+            .color(colorMode.resolveArticleLinkColor())
             .textDecorationLine(TextDecorationLine.Underline)
     }
     descendants("table") {
@@ -753,8 +747,5 @@ val ArticleMarkdownBodyStyle = CssStyle {
         Modifier
             .fontFamily(*FontFamilies.DISPLAY)
             .fontSize(1.em)
-    }
-    cssRule(" a:not(.$ARTICLE_PLAIN_LINK_CLASS) > code") {
-        if (colorMode == ColorMode.DARK) Modifier else Modifier.color(LIGHT_LINK_ON_CODE_CHIP)
     }
 }

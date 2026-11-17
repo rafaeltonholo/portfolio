@@ -5,6 +5,7 @@ import com.varabyte.kobweb.compose.css.OverflowWrap
 import com.varabyte.kobweb.compose.css.TextDecorationLine
 import com.varabyte.kobweb.compose.css.VerticalAlign
 import com.varabyte.kobweb.compose.ui.Modifier
+import com.varabyte.kobweb.compose.ui.graphics.Color
 import com.varabyte.kobweb.compose.ui.modifiers.ariaHidden
 import com.varabyte.kobweb.compose.ui.modifiers.color
 import com.varabyte.kobweb.compose.ui.modifiers.display
@@ -98,20 +99,30 @@ fun ArticleLink(href: String, modifier: Modifier = Modifier, content: @Composabl
  */
 val ArticleLinkStyle = CssStyle {
     base {
-        val accent = if (colorMode == ColorMode.DARK) AccentMint.dark else AccentMint.light
         Modifier
-            .color(accent.accent)
+            .color(colorMode.resolveArticleLinkColor())
             .textDecorationLine(TextDecorationLine.Underline)
             .display(DisplayStyle.Inline)
             .overflowWrap(OverflowWrap.Anywhere)
     }
     hover {
-        val accent = if (colorMode == ColorMode.DARK) AccentMint.dark else AccentMint.light
         Modifier
-            .color(accent.accent)
+            .color(colorMode.resolveArticleLinkColor())
             .textDecorationLine(TextDecorationLine.Underline)
     }
 }
+
+private const val LIGHT_LINK_RGB = 0x27693A
+
+/**
+ * The light accent darkened so links reach 4.5:1 on the grey inline code chip and the tinted callouts, where the
+ * regular accent falls just short.
+ */
+private val LIGHT_LINK_COLOR = Color.rgb(LIGHT_LINK_RGB)
+
+/** The colour article links use in this colour mode. */
+internal fun ColorMode.resolveArticleLinkColor(): Color =
+    if (isDark) AccentMint.dark.accent else LIGHT_LINK_COLOR
 
 /**
  * Base `CssStyle` for the trailing diagonal arrow glyph inside external [ArticleLink]s.
