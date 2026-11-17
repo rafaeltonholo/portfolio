@@ -14,6 +14,7 @@ import com.varabyte.kobweb.compose.dom.GenericTag
 import com.varabyte.kobweb.compose.foundation.layout.Box
 import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier
+import com.varabyte.kobweb.compose.ui.attrsModifier
 import com.varabyte.kobweb.compose.ui.graphics.Color
 import com.varabyte.kobweb.compose.ui.graphics.Colors
 import com.varabyte.kobweb.compose.ui.modifiers.alignItems
@@ -155,7 +156,14 @@ private fun ZoomedImage(src: String, alt: String, onClose: () -> Unit) {
             openerToRefocus?.focus()
         }
     }
-    Overlay(modifier = ZoomBackdropStyle.toModifier().role("dialog").ariaLabel(alt).onClick { onClose() }) {
+    Overlay(
+        modifier = ZoomBackdropStyle
+            .toModifier()
+            .role("dialog")
+            .attrsModifier { attr("aria-modal", "true") }
+            .ariaLabel(alt)
+            .onClick { onClose() },
+    ) {
         Box(modifier = ZoomFrameStyle.toModifier().fillMaxSize(), contentAlignment = Alignment.Center) {
             Img(src = src, alt = alt, attrs = ZoomedImageStyle.toModifier().toAttrs())
         }
