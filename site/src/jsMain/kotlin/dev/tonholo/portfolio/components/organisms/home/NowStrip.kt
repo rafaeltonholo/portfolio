@@ -118,7 +118,7 @@ private val WORKING_TITLE_MARGIN_BOTTOM = 12.dp
  * [Breakpoint.LG], matching the handoff media query.
  *
  * Columns:
- * 1. **working on**: mono meta label + display-font title + serif body copy.
+ * 1. **working on**: mono meta label + display-font title + body copy.
  * 2. **writing**: mono meta label + a stacked list of the three most recent
  *    entries from [StaticContent.ARTICLES]; each entry renders a small meta
  *    row (`draft|published - date`) plus a display-font title.
@@ -166,7 +166,7 @@ private const val DEFAULT_WORKING_BODY =
 
 /**
  * First column: the mono "working on" meta label, a display-font title, and
- * a serif body paragraph capped at 48ch. Mirrors the first `<div>` inside
+ * a body paragraph capped at 48ch. Mirrors the first `<div>` inside
  * `.now-grid` in the handoff JSX.
  */
 @Composable
@@ -194,7 +194,7 @@ private fun WorkingOnColumn(title: String, body: String, strings: Strings.NowStr
         }
         P(
             attrs = Modifier
-                .apply(Typography.serifBody)
+                .apply(Typography.proseBody)
                 .color(tokens.ink.ink2)
                 .margin(topBottom = 0.cssRem)
                 .maxWidth(BODY_MAX_WIDTH_CH.unsafeCast<CSSSizeValue<CSSUnit.ch>>())
@@ -331,7 +331,7 @@ private fun HobbyRow(label: String, body: String) {
 
 /**
  * Reading hobby row: like [HobbyRow] but the book title is rendered in the
- * serif font, italicized, and links out to the book.
+ * body font, italicized, and links out to the book.
  */
 @Composable
 private fun HobbyReadingRow() {
@@ -349,7 +349,7 @@ private fun HobbyReadingRow() {
             href = HOBBY_READING_URL,
             attrs = HobbyReadingLinkStyle
                 .toModifier()
-                .fontFamily(*FontFamilies.SERIF)
+                .fontFamily(*FontFamilies.BODY)
                 .fontStyle(FontStyle.Italic)
                 .toAttrs {
                     attr("target", "_blank")

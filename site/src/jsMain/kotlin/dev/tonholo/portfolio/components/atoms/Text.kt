@@ -62,8 +62,8 @@ enum class TextSlot(val style: PortfolioTypeStyle) {
     BodyLarge(style = Typography.bodyLarge),
     Body(style = Typography.body),
     BodySmall(style = Typography.bodySmall),
-    SerifLead(style = Typography.serifLead),
-    SerifBody(style = Typography.serifBody),
+    Lead(style = Typography.lead),
+    ProseBody(style = Typography.proseBody),
     MetaPlain(style = Typography.metaPlain),
     Code(style = Typography.code),
 }

@@ -127,7 +127,7 @@ sealed class Strings {
         /**
          * One entry in the hobbies grid. [label] is the accent-meta prefix
          * (for example "Cooking") and is lowercased into the `/label` slug
-         * shown above the body copy; [body] is the serif paragraph below it.
+         * shown above the body copy; [body] is the paragraph below it.
          */
         data class Hobby(val label: String, val body: String)
     }

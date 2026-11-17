@@ -71,7 +71,7 @@ private val TABS_BAR_BORDER_WIDTH_PX = 1.dp
 private val TAB_FONT_SIZE = 12.sp
 
 // ---------------------------------------------------------------------------
-// `.prose` body. Serif 19px, 1.65 line-height, max-width 66ch, color ink-2.
+// `.prose` body. Body 19px, 1.65 line-height, max-width 66ch, color ink-2.
 // `.prose p + p { margin-top: 1.2em; }`  -- Kotlin-side: the first paragraph
 // renders with no top margin, subsequent paragraphs get 1.2em top margin.
 // `.prose h3`: display font, 22px, weight 500, letter-spacing -0.015em, color
@@ -95,7 +95,7 @@ private val NOW_TIMESTAMP_FONT_SIZE = 13.dp
 
 // ---------------------------------------------------------------------------
 // Hobbies panel. Handoff inline: 2-column grid at max-width 900px, 48px gap.
-// Each cell: accent meta label (`/cooking`) + serif 17px body copy.
+// Each cell: accent meta label (`/cooking`) + body 17px body copy.
 // ---------------------------------------------------------------------------
 private const val HOBBIES_META_LETTER_SPACING_EM = 0.08
 private val HOBBIES_META_FONT_SIZE = 11.sp
@@ -423,13 +423,13 @@ val TabButtonStyle = CssStyle {
 }
 
 /**
- * Base `CssStyle` for `.prose`. Serif 19px body copy, 1.65 line-height, capped
+ * Base `CssStyle` for `.prose`. Body 19px body copy, 1.65 line-height, capped
  * at 66ch. Color is applied inline by [ProseContainer] from the active theme.
  */
 val ProseStyle = CssStyle {
     base {
         Modifier
-            .fontFamily(*FontFamilies.SERIF)
+            .fontFamily(*FontFamilies.BODY)
             .fontSize(PROSE_FONT_SIZE)
             .lineHeight(PROSE_LINE_HEIGHT)
             .maxWidth(PROSE_MAX_WIDTH_CH.unsafeCast<CSSSizeValue<CSSUnit.ch>>())
@@ -504,13 +504,13 @@ val HobbiesMetaStyle = CssStyle {
 }
 
 /**
- * Base `CssStyle` for the body copy inside a hobbies cell. Serif 17px with a
+ * Base `CssStyle` for the body copy inside a hobbies cell. Body 17px with a
  * 1.55 line-height; color is applied inline from the `ink-2` token.
  */
 val HobbiesBodyStyle = CssStyle {
     base {
         Modifier
-            .fontFamily(*FontFamilies.SERIF)
+            .fontFamily(*FontFamilies.BODY)
             .fontSize(HOBBIES_BODY_FONT_SIZE)
             .lineHeight(HOBBIES_BODY_LINE_HEIGHT)
             .margin(topBottom = 0.cssRem)

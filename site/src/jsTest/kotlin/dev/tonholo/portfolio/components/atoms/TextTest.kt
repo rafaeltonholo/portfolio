@@ -52,13 +52,13 @@ class TextTest {
     }
 
     @Test
-    fun `given TextSlot SerifLead, when style is read, then it matches Typography serifLead`() {
-        assertEquals(Typography.serifLead, TextSlot.SerifLead.style)
+    fun `given TextSlot Lead, when style is read, then it matches Typography lead`() {
+        assertEquals(Typography.lead, TextSlot.Lead.style)
     }
 
     @Test
-    fun `given TextSlot SerifBody, when style is read, then it matches Typography serifBody`() {
-        assertEquals(Typography.serifBody, TextSlot.SerifBody.style)
+    fun `given TextSlot ProseBody, when style is read, then it matches Typography proseBody`() {
+        assertEquals(Typography.proseBody, TextSlot.ProseBody.style)
     }
 
     @Test

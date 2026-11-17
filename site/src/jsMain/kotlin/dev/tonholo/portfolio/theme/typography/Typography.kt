@@ -28,8 +28,8 @@ private val H3_DISPLAY_SIZE = 26.sp
 private val BODY_LARGE_SIZE = 17.sp
 private val BODY_SIZE = 16.sp
 private val BODY_SMALL_SIZE = 14.sp
-private val SERIF_LEAD_SIZE = 20.sp
-private val SERIF_BODY_SIZE = 17.sp
+private val LEAD_SIZE = 20.sp
+private val PROSE_BODY_SIZE = 17.sp
 private val META_LABEL_SIZE = 12.sp
 private val META_SMALL_SIZE = 12.sp
 private val META_PLAIN_SIZE = 12.sp
@@ -42,8 +42,8 @@ private const val H1_LINE_HEIGHT = 1.05
 private const val H2_LINE_HEIGHT = 1.15
 private const val H3_DISPLAY_LINE_HEIGHT = 1.2
 private const val BODY_LINE_HEIGHT = 1.55
-private const val SERIF_LEAD_LINE_HEIGHT = 1.5
-private const val SERIF_BODY_LINE_HEIGHT = 1.6
+private const val LEAD_LINE_HEIGHT = 1.5
+private const val PROSE_BODY_LINE_HEIGHT = 1.6
 private const val META_LINE_HEIGHT = 1.4
 private const val CODE_LINE_HEIGHT = 1.6
 
@@ -67,8 +67,8 @@ private const val META_SMALL_LETTER_SPACING_EM = 0.06
  * | [bodyLarge]  | `.hero-a__subtitle`, `.prose p`        | 1.0625rem  | 400    | 1.55        | -              |
  * | [body]       | default body copy                      | 1rem       | 400    | 1.55        | -              |
  * | [bodySmall]  | secondary body                         | 0.875rem   | 400    | 1.55        | -              |
- * | [serifLead]  | `.article-detail .lede`, hero-b desc   | 1.25rem    | 400    | 1.5         | -              |
- * | [serifBody]  | `.prose p` serif variant               | 1.0625rem  | 400    | 1.6         | -              |
+ * | [lead]  | `.article-detail .lede`, hero-b desc   | 1.25rem    | 400    | 1.5         | -              |
+ * | [proseBody]  | `.prose p` prose variant               | 1.0625rem  | 400    | 1.6         | -              |
  * | [metaLabel]  | `.meta`, `.num`                        | 0.75rem    | 500    | 1.4         | 0.02em + uppercase |
  * | [metaSmall]  | `.meta` small variants                 | 0.6875rem  | 500    | 1.4         | 0.06em + uppercase |
  * | [metaPlain]  | long mono eyebrows (>20ch)             | 0.75rem    | 500    | 1.4         | - (natural case)  |
@@ -129,18 +129,18 @@ object Typography {
         lineHeight = BODY_LINE_HEIGHT,
     )
 
-    val serifLead: TextStyle = TextStyle(
-        family = FontFamilies.SERIF,
-        size = SERIF_LEAD_SIZE,
+    val lead: TextStyle = TextStyle(
+        family = FontFamilies.BODY,
+        size = LEAD_SIZE,
         weight = FontWeight.Normal,
-        lineHeight = SERIF_LEAD_LINE_HEIGHT,
+        lineHeight = LEAD_LINE_HEIGHT,
     )
 
-    val serifBody: TextStyle = TextStyle(
-        family = FontFamilies.SERIF,
-        size = SERIF_BODY_SIZE,
+    val proseBody: TextStyle = TextStyle(
+        family = FontFamilies.BODY,
+        size = PROSE_BODY_SIZE,
         weight = FontWeight.Normal,
-        lineHeight = SERIF_BODY_LINE_HEIGHT,
+        lineHeight = PROSE_BODY_LINE_HEIGHT,
     )
 
     val metaLabel: TextStyle = TextStyle(

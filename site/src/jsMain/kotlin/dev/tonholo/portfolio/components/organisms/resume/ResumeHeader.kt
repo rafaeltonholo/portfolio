@@ -52,7 +52,7 @@ private const val HEAD_GRID_COPY_FR = 1
 private val META_MARGIN_BOTTOM = 16.dp
 private val PARAGRAPH_MARGIN_TOP = 16.dp
 
-// Handoff `.resume-head p` serif paragraph cap.
+// Handoff `.resume-head p` paragraph cap.
 private const val PARAGRAPH_MAX_WIDTH_CH = 50.0
 
 // Mono eyebrow is a technical literal (file name) and stays untranslated.
@@ -90,7 +90,7 @@ fun ResumeHeader(modifier: Modifier = Modifier, onDownloadPdf: () -> Unit = {}) 
 
 /**
  * Left column: accent mono meta label, display title (two lines separated by
- * `<br>`), and a serif body paragraph capped at 50ch.
+ * `<br>`), and a body paragraph capped at 50ch.
  */
 @Composable
 private fun ResumeHeaderCopyColumn() {
@@ -151,14 +151,14 @@ val ResumeHeaderGridStyle = CssStyle {
 }
 
 /**
- * Base `CssStyle` for `.resume-head p`. Ports the serif paragraph under the
- * display title: [Typography.serifLead] voice, 50ch max-width, 16px top margin
+ * Base `CssStyle` for `.resume-head p`. Ports the paragraph under the
+ * display title: [Typography.lead] voice, 50ch max-width, 16px top margin
  * above the h1, zero bottom margin. Colour is applied inline from `ink-2`.
  */
 val ResumeHeaderParagraphStyle = CssStyle {
     base {
         Modifier
-            .apply(Typography.serifLead)
+            .apply(Typography.lead)
             .maxWidth(PARAGRAPH_MAX_WIDTH_CH.unsafeCast<CSSSizeValue<CSSUnit.ch>>())
             .margin(top = PARAGRAPH_MARGIN_TOP, bottom = 0.cssRem)
     }

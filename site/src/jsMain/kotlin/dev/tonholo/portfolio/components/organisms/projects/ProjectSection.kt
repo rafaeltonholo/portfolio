@@ -67,7 +67,7 @@ private val LABEL_FONT_SIZE = 11.dp
 private const val LABEL_LETTER_SPACING_EM = 0.08
 private val LABEL_STICKY_TOP = 100.dp
 
-// Handoff `.project-section .content`: serif family at 19px / 1.6, `--ink-2`
+// Handoff `.project-section .content`: body font at 19px / 1.6, `--ink-2`
 // color, capped at 60ch per the handoff rule. The spec asks for a 48ch cap on
 // the paragraph body inside the slot; the outer wrapper still matches the
 // handoff's 60ch to keep headings aligned with neighbouring sections.
@@ -226,13 +226,13 @@ val ProjectSectionLabelStyle = CssStyle {
 }
 
 /**
- * Base `CssStyle` for `.project-section .content`. Serif 19px / 1.6 body,
+ * Base `CssStyle` for `.project-section .content`. Body 19px / 1.6 body,
  * capped at 60ch. Color is applied inline by the composable.
  */
 val ProjectSectionContentStyle = CssStyle {
     base {
         Modifier
-            .fontFamily(*FontFamilies.SERIF)
+            .fontFamily(*FontFamilies.BODY)
             .fontSize(CONTENT_BODY_SIZE)
             .lineHeight(CONTENT_BODY_LINE_HEIGHT)
             .maxWidth(CONTENT_MAX_WIDTH_CH.unsafeCast<CSSSizeValue<CSSUnit.ch>>())
@@ -260,7 +260,7 @@ val ProjectSectionTitleStyle = CssStyle {
  * Shared paragraph style for copy rendered inside [ProjectSection]'s content
  * slot. Caps the paragraph body at 48ch (per the Phase 2 spec) while the
  * outer content column keeps the handoff's 60ch ceiling for non-paragraph
- * content. Inherits serif typography from [ProjectSectionContentStyle] so
+ * content. Inherits body typography from [ProjectSectionContentStyle] so
  * callers just need to chain the style onto their `<p>`.
  */
 val ProjectSectionParagraphStyle = CssStyle {

@@ -10,7 +10,6 @@ package dev.tonholo.portfolio.theme.typography
  *
  * - [MONO] is the IDE-inspired display voice (headings, meta labels, code).
  * - [SANS] is the body voice used across prose paragraphs.
- * - [SERIF] is the editorial accent for lead paragraphs and article bodies.
  *
  * [DISPLAY] and [BODY] are aliases matching the `--font-display` and
  * `--font-body` custom properties; they can be retargeted in one spot if a
@@ -29,12 +28,6 @@ object FontFamilies {
         "Fira Sans",
         "-apple-system",
         "sans-serif",
-    )
-
-    val SERIF: Array<String> = arrayOf(
-        "Fraunces",
-        "Georgia",
-        "serif",
     )
 
     val DISPLAY: Array<String> = MONO
