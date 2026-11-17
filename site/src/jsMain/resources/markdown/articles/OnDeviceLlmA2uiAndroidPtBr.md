@@ -11,6 +11,7 @@ seoTitle: 'A2UI num celular: um modelo on-device e um compilador em Kotlin'
 authors:
     -   name: rafael
         avatar: https://rafael.tonholo.dev/images/writing.jpg
+showThumbnail: false
 thumbnail: /images/articles/on-device-llm-a2ui-android/thumbnail.png
 tags:
     - android

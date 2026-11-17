@@ -8,6 +8,7 @@ seoTitle: 'A2UI on a phone: an on-device model and a Kotlin compiler'
 authors:
     -   name: rafael
         avatar: https://rafael.tonholo.dev/images/writing.jpg
+showThumbnail: false
 thumbnail: /images/articles/on-device-llm-a2ui-android/thumbnail.png
 tags:
     - android

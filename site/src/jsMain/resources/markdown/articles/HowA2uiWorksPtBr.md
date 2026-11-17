@@ -11,6 +11,7 @@ seoTitle: 'Como o A2UI funciona: UI generativa como dados, não como código'
 authors:
     -   name: rafael
         avatar: https://rafael.tonholo.dev/images/writing.jpg
+showThumbnail: false
 thumbnail: /images/articles/how-a2ui-works/thumbnail.png
 tags:
     - android
