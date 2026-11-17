@@ -143,6 +143,8 @@ sealed class Strings {
     /** Sidebar copy shown on the article detail page. */
     data class ArticlesSidebar(
         val contents: String,
+        val openContents: String,
+        val closeContents: String,
         val share: String,
         val shareCopyLink: String,
         val shareCopied: String,

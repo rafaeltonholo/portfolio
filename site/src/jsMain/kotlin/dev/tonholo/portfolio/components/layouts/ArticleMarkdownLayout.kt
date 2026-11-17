@@ -61,6 +61,8 @@ import dev.tonholo.portfolio.components.molecules.ArticleCommentsPrompt
 import dev.tonholo.portfolio.components.molecules.ArticleMetaRow
 import dev.tonholo.portfolio.components.molecules.LocalFootnoteRegistry
 import dev.tonholo.portfolio.components.molecules.footnotes.FootnoteRegistry
+import dev.tonholo.portfolio.components.organisms.articles.ARTICLE_CONTENTS_ID
+import dev.tonholo.portfolio.components.organisms.articles.ArticleContentsJump
 import dev.tonholo.portfolio.components.organisms.articles.ArticleTocSidebar
 import dev.tonholo.portfolio.components.organisms.articles.SECTION_LEVEL
 import dev.tonholo.portfolio.components.organisms.articles.TocEntry
@@ -416,6 +418,11 @@ fun ArticleMarkdownLayout(context: PageContext, content: @Composable () -> Unit)
                     }
                 }
             }
+            ArticleContentsJump(
+                contents = tocEntries,
+                activeId = activeId.ifBlank { tocEntries.firstOrNull()?.id.orEmpty() },
+                contentsId = ARTICLE_CONTENTS_ID,
+            )
         }
     }
 }
