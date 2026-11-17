@@ -4,6 +4,7 @@ import dev.tonholo.portfolio.components.organisms.articles.TocEntry
 import dev.tonholo.portfolio.generated.articles.GeneratedArticles
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
@@ -64,5 +65,22 @@ class ArticleMarkdownLayoutTest {
         val title = articlePageTitle(title = "", seoTitle = "")
         // Assert
         assertEquals(null, title)
+    }
+
+    @Test
+    fun `given no showThumbnail flag, when isThumbnailShown is called, then the thumbnail is shown`() {
+        assertTrue(isThumbnailShown(flag = null))
+        assertTrue(isThumbnailShown(flag = ""))
+    }
+
+    @Test
+    fun `given showThumbnail true, when isThumbnailShown is called, then the thumbnail is shown`() {
+        assertTrue(isThumbnailShown(flag = "true"))
+    }
+
+    @Test
+    fun `given showThumbnail false in any case, when isThumbnailShown is called, then the thumbnail is hidden`() {
+        assertFalse(isThumbnailShown(flag = "false"))
+        assertFalse(isThumbnailShown(flag = " False "))
     }
 }

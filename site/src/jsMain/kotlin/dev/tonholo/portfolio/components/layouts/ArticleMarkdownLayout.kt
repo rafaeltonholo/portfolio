@@ -188,6 +188,7 @@ data class ArticleMarkdownLayoutData(
     val summary: String = "",
     val authors: List<ArticleAuthor> = emptyList(),
     val thumbnail: String = "",
+    val showThumbnail: Boolean = true,
     val publishedDate: String = "",
     val tags: List<String> = emptyList(),
     val seoTitle: String = "",
@@ -284,6 +285,7 @@ fun initArticleMarkdownLayout(ctx: InitRouteContext) {
             summary = summary,
             authors = authors,
             thumbnail = thumbnail,
+            showThumbnail = isThumbnailShown(flag = frontMatter?.get("showThumbnail")?.singleOrNull()),
             publishedDate = matchedArticle?.publishedDate.orEmpty(),
             tags = matchedArticle?.tags.orEmpty(),
             hasTranslation = slug in GeneratedArticles.TRANSLATED_SLUGS,
@@ -363,7 +365,7 @@ fun ArticleMarkdownLayout(context: PageContext, content: @Composable () -> Unit)
                     ComposeText(data.description)
                 }
             }
-            if (data.thumbnail.isNotEmpty()) {
+            if (data.showThumbnail && data.thumbnail.isNotEmpty()) {
                 Div(
                     attrs = Modifier
                         .fillMaxWidth()
@@ -422,6 +424,14 @@ fun ArticleMarkdownLayout(context: PageContext, content: @Composable () -> Unit)
         }
     }
 }
+
+/**
+ * Reads the frontmatter `showThumbnail` flag. The thumbnail is shown on the article page unless the flag is
+ * `false`; it is still used for the share preview and the articles list.
+ *
+ * @param flag the raw frontmatter value, or null when the key is missing.
+ */
+fun isThumbnailShown(flag: String?): Boolean = flag?.trim()?.lowercase() != "false"
 
 /**
  * Builds the browser-tab and search title: the frontmatter `seoTitle` when set, otherwise the article title, followed
