@@ -59,7 +59,7 @@ private val META_MARGIN_BOTTOM = 20.dp
 private val TITLE_MARGIN_BOTTOM = 28.dp
 
 // Handoff lede paragraph: body sans (Fira Sans), 20px size, 1.55 line-height,
-// 48ch cap, `ink-2` color. The earlier build used `FontFamilies.SERIF` which
+// 48ch cap, `ink-2` color. The earlier build used `FontFamilies.BODY` which
 // drifted from the handoff's sans intro treatment.
 private val LEDE_SIZE = 20.dp
 private const val LEDE_LINE_HEIGHT = 1.55
@@ -79,7 +79,7 @@ private const val PORTRAIT_ASPECT_H = 5
 /**
  * About page header organism. Maps to `.about-hdr` in the handoff CSS: a
  * two-column layout with editorial copy on the left (mono meta label, display
- * `h1`, serif lede) and a tall 4:5 portrait placeholder on the right.
+ * `h1`, lede) and a tall 4:5 portrait placeholder on the right.
  *
  * Below [Breakpoint.LG] (900px) the grid collapses to a single column to match
  * the `@media (max-width: 900px) { .about-hdr { grid-template-columns: 1fr; } }`
@@ -126,7 +126,7 @@ private fun AboutHeaderPortrait() {
 
 /**
  * Left column: mono accent meta label, display `h1` with an accent-colored
- * serif italic span for the emphasized word, and the serif lede paragraph.
+ * italic span for the emphasized word, and the lede paragraph.
  * Mirrors the first `<div>` inside `.about-hdr` in the handoff JSX.
  */
 @Composable
