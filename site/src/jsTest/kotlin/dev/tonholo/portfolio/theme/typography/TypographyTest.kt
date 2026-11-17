@@ -29,10 +29,6 @@ class TypographyTest {
             expected = arrayOf("Fira Sans", "-apple-system", "sans-serif"),
             actual = FontFamilies.SANS,
         )
-        assertContentEquals(
-            expected = arrayOf("Fraunces", "Georgia", "serif"),
-            actual = FontFamilies.SERIF,
-        )
         assertContentEquals(expected = FontFamilies.MONO, actual = FontFamilies.DISPLAY)
         assertContentEquals(expected = FontFamilies.SANS, actual = FontFamilies.BODY)
     }
@@ -142,12 +138,12 @@ class TypographyTest {
     }
 
     @Test
-    fun `given Typography serifLead, when values are read, then they match handoff CSS`() {
+    fun `given Typography lead, when values are read, then they match handoff CSS`() {
         // Arrange / Act
-        val style = Typography.serifLead
+        val style = Typography.lead
 
         // Assert
-        assertContentEquals(expected = FontFamilies.SERIF, actual = style.family)
+        assertContentEquals(expected = FontFamilies.BODY, actual = style.family)
         assertEquals(expected = 1.25, actual = style.size.value.toDouble(), absoluteTolerance = TOLERANCE)
         assertEquals(FontWeight.Normal, style.weight)
         assertEquals(expected = 1.5, actual = style.lineHeight, absoluteTolerance = TOLERANCE)
@@ -156,12 +152,12 @@ class TypographyTest {
     }
 
     @Test
-    fun `given Typography serifBody, when values are read, then they match handoff CSS`() {
+    fun `given Typography proseBody, when values are read, then they match handoff CSS`() {
         // Arrange / Act
-        val style = Typography.serifBody
+        val style = Typography.proseBody
 
         // Assert
-        assertContentEquals(expected = FontFamilies.SERIF, actual = style.family)
+        assertContentEquals(expected = FontFamilies.BODY, actual = style.family)
         assertEquals(expected = 1.0625, actual = style.size.value.toDouble(), absoluteTolerance = TOLERANCE)
         assertEquals(FontWeight.Normal, style.weight)
         assertEquals(expected = 1.6, actual = style.lineHeight, absoluteTolerance = TOLERANCE)

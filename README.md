@@ -13,7 +13,7 @@ Kotlin Multiplatform, JS target only. Everything is exported as a static site.
 - Light and dark modes that follow the OS.
 - Articles and project case studies written in Markdown.
 - Privacy-friendly analytics with [Umami](https://umami.is) (skipped on localhost).
-- Icons from [Phosphor Icons](https://phosphoricons.com); fonts are JetBrains Mono, Fira Sans, and Fraunces.
+- Icons from [Phosphor Icons](https://phosphoricons.com); fonts are JetBrains Mono and Fira Sans.
 
 ## Tech stack
 

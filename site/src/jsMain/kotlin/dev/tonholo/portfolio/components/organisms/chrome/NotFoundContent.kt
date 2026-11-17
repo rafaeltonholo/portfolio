@@ -182,7 +182,7 @@ val NotFoundTitleStyle = CssStyle {
 }
 
 /**
- * Base `CssStyle` for the 404 lede paragraph. Serif body copy capped at 60ch
+ * Base `CssStyle` for the 404 lede paragraph. Body copy capped at 60ch
  * so the recovery narrative reads like editorial copy rather than a dump.
  */
 val NotFoundLeadStyle = CssStyle {
