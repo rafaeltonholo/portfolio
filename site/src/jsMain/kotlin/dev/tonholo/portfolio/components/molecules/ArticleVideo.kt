@@ -1,7 +1,7 @@
 package dev.tonholo.portfolio.components.molecules
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.remember
 import com.varabyte.kobweb.compose.css.ObjectFit
 import com.varabyte.kobweb.compose.dom.GenericTag
 import com.varabyte.kobweb.compose.ui.Modifier
@@ -24,7 +24,6 @@ import org.jetbrains.compose.web.css.percent
 import org.jetbrains.compose.web.css.vh
 import org.jetbrains.compose.web.dom.Text
 import org.jetbrains.compose.web.dom.Video
-import org.w3c.dom.HTMLVideoElement
 
 private const val VIDEO_MAX_HEIGHT_VH = 75
 private const val REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)"
@@ -47,29 +46,25 @@ fun ArticleVideo(
     modifier: Modifier = Modifier,
     caption: String? = null,
 ) {
+    val autoplays: Boolean = remember { !window.matchMedia(REDUCED_MOTION_QUERY).matches }
     GenericTag(name = "figure", attrs = ArticleFigureStyle.toModifier().then(modifier).toAttrs()) {
-        Video(attrs = ArticleVideoStyle.toModifier().toAttrs()) {
-            DisposableEffect(src, poster) {
-                (scopeElement as HTMLVideoElement).configureAsSilentLoop(src = src, poster = poster)
-                onDispose { }
-            }
-        }
+        Video(
+            attrs = ArticleVideoStyle.toModifier().toAttrs {
+                attr("src", src)
+                attr("poster", poster)
+                attr("controls", "")
+                attr("loop", "")
+                attr("playsinline", "")
+                if (autoplays) attr("autoplay", "")
+                ref { element ->
+                    element.muted = true
+                    onDispose { }
+                }
+            },
+        )
         caption?.let {
             GenericTag(name = "figcaption", attrs = FigureCaptionStyle.toModifier().toAttrs()) { Text(it) }
         }
-    }
-}
-
-private fun HTMLVideoElement.configureAsSilentLoop(src: String, poster: String) {
-    muted = true
-    loop = true
-    controls = true
-    asDynamic().playsInline = true
-    this.poster = poster
-    this.src = src
-    if (!window.matchMedia(REDUCED_MOTION_QUERY).matches) {
-        autoplay = true
-        play().catch { }
     }
 }
 
