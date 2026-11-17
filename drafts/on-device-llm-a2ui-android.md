@@ -153,13 +153,13 @@ Ok, but was the order really the problem? When I came back to record it for this
 | Main | components, then data | none | 0 of 13 runs |
 | Either | either | 1 s | 0 of 20 runs |
 
-Every run is in [`renderer-race.txt`](https://github.com/rafaeltonholo/portfolio/blob/main/examples/a2ui-packing/benchmark-results/renderer-race.txt).
+Every run is in [`renderer-race.txt`](https://github.com/rafaeltonholo/portfolio/blob/main/examples/a2ui-packing/benchmark-results/renderer-race.txt). Figure 1 is a real failing run, and Figure 2 is the same checklist with the data sent first.
 
 {{{ .components.molecules.ArticleFigureRow
 
-![The Weekend packing list title with two grey placeholder bars where the checkboxes should be](/images/articles/on-device-llm-a2ui-android/renderer-race-stuck.gif "A real failing run: components first, data right after. The checkboxes keep shimmering and never fill in.")
+![The Weekend packing list title with two grey placeholder bars where the checkboxes should be](/images/articles/on-device-llm-a2ui-android/renderer-race-stuck.gif "Figure 1. A real failing run: components first, data right after. The checkboxes keep shimmering and never fill in.")
 
-![A loading spinner, then the Weekend packing list appears and Towel gets ticked](/images/articles/on-device-llm-a2ui-android/renderer-race-data-first.gif "Data first, components 2.5 seconds later: it renders when they arrive, and Towel ticks. The pause before the tap is sped up.")
+![A loading spinner, then the Weekend packing list appears and Towel gets ticked](/images/articles/on-device-llm-a2ui-android/renderer-race-data-first.gif "Figure 2. Data first, components 2.5 seconds later: it renders when they arrive, and Towel ticks. The pause before the tap is sped up.")
 
 }}}
 
@@ -196,13 +196,13 @@ Passing the check doesn't mean the checklist is any good, though. Here's what Ge
 
 With JSON, Gemma usually filled the data model with five or six items but only wrote two or three checkboxes, the same number as the prompt's example. The rest of the items were there, but nothing on screen showed them. With Express, the checkboxes matched the items in all but one case. My guess is that writing `item3 = CheckBox(...)` one line at a time is easier to keep going than a long JSON array of near-identical objects, but I only have five samples, so take that as a hypothesis.
 
-Here's the business trip from the benchmark, rendered in the app from the saved responses. JSON on the left: five items in the data model, two checkboxes on screen. Express on the right: seven and seven. For the JSON side, I added the `createSurface` that the JSON prompt doesn't ask for, and nothing else changed.
+Here's the business trip from the benchmark, rendered in the app from the saved responses. Figure 3 is the JSON response: five items in the data model, two checkboxes on screen. Figure 4 is the Express response: seven and seven. For the JSON side, I added the `createSurface` that the JSON prompt doesn't ask for, and nothing else changed.
 
 {{{ .components.molecules.ArticleFigureRow
 
-![The packing app showing a Two-Day Business Trip Packing checklist with two checkboxes, Business Suit and Laptop](/images/articles/on-device-llm-a2ui-android/business-trip-json.png "Gemma's JSON response: five items in the data model, but only two checkboxes. Travel Documents, Medication and Snacks never made it to the screen.")
+![The packing app showing a Two-Day Business Trip Packing checklist with two checkboxes, Business Suit and Laptop](/images/articles/on-device-llm-a2ui-android/business-trip-json.png "Figure 3. Gemma's JSON response: five items in the data model, but only two checkboxes. Travel Documents, Medication and Snacks never made it to the screen.")
 
-![The packing app showing a Two-Day Business Trip Packing Checklist with seven checkboxes, from Suitcase to Snacks](/images/articles/on-device-llm-a2ui-android/business-trip-express.png "Gemma's Express response for the same request: seven items, seven checkboxes.")
+![The packing app showing a Two-Day Business Trip Packing Checklist with seven checkboxes, from Suitcase to Snacks](/images/articles/on-device-llm-a2ui-android/business-trip-express.png "Figure 4. Gemma's Express response for the same request: seven items, seven checkboxes.")
 
 }}}
 
@@ -221,9 +221,9 @@ I didn't compare the two models' speed with each other. Qwen generated about 4 t
 
 ### And in the app
 
-Finally, the real thing: Gemma 4 E2B, the compiler and the AndroidX renderer in the sample app, with the request "Pack for a rainy weekend in Halifax". It produced a title and five checkboxes (raincoat, warm socks, a cozy blanket, books and hot cocoa, which honestly sounds like a good weekend), and ticking one updated the local data model right away. I ran it three times while testing and got the same five items every time, and the two runs I timed took 34 and 30 seconds.
+Finally, the real thing: Gemma 4 E2B, the compiler and the AndroidX renderer in the sample app, with the request "Pack for a rainy weekend in Halifax". It produced a title and five checkboxes (raincoat, warm socks, a cozy blanket, books and hot cocoa, which honestly sounds like a good weekend), and ticking one updated the local data model right away. I ran it three times while testing and got the same five items every time, and the two runs I timed took 34 and 30 seconds. Figure 5 is a recording of one run.
 
-{{{ .components.molecules.ArticleVideo(src = "/images/articles/on-device-llm-a2ui-android/packing-app-run.mp4", poster = "/images/articles/on-device-llm-a2ui-android/packing-app-run-poster.png", caption = "Gemma 4 E2B on a Pixel 7 Pro. The 30 seconds of generation are sped up six times; the counter on the card shows the real time.") }}}
+{{{ .components.molecules.ArticleVideo(src = "/images/articles/on-device-llm-a2ui-android/packing-app-run.mp4", poster = "/images/articles/on-device-llm-a2ui-android/packing-app-run-poster.png", caption = "Figure 5. Gemma 4 E2B on a Pixel 7 Pro. The 30 seconds of generation are sped up six times; the counter on the card shows the real time.") }}}
 
 ## Handling user actions
 
