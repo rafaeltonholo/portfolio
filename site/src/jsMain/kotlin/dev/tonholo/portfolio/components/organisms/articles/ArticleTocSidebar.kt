@@ -11,6 +11,8 @@ import com.varabyte.kobweb.compose.css.ListStyleType
 import com.varabyte.kobweb.compose.css.TextAlign
 import com.varabyte.kobweb.compose.css.TextDecorationLine
 import com.varabyte.kobweb.compose.css.TextTransform
+import com.varabyte.kobweb.compose.css.Transition
+import com.varabyte.kobweb.compose.dom.GenericTag
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.graphics.Color
 import com.varabyte.kobweb.compose.ui.graphics.Colors
@@ -20,13 +22,17 @@ import com.varabyte.kobweb.compose.ui.modifiers.animation
 import com.varabyte.kobweb.compose.ui.modifiers.ariaHidden
 import com.varabyte.kobweb.compose.ui.modifiers.backgroundColor
 import com.varabyte.kobweb.compose.ui.modifiers.border
+import com.varabyte.kobweb.compose.ui.modifiers.borderRadius
+import com.varabyte.kobweb.compose.ui.modifiers.classNames
 import com.varabyte.kobweb.compose.ui.modifiers.color
 import com.varabyte.kobweb.compose.ui.modifiers.cursor
 import com.varabyte.kobweb.compose.ui.modifiers.display
 import com.varabyte.kobweb.compose.ui.modifiers.flexDirection
+import com.varabyte.kobweb.compose.ui.modifiers.flexWrap
 import com.varabyte.kobweb.compose.ui.modifiers.fontFamily
 import com.varabyte.kobweb.compose.ui.modifiers.fontSize
 import com.varabyte.kobweb.compose.ui.modifiers.gap
+import com.varabyte.kobweb.compose.ui.modifiers.justifyContent
 import com.varabyte.kobweb.compose.ui.modifiers.letterSpacing
 import com.varabyte.kobweb.compose.ui.modifiers.listStyle
 import com.varabyte.kobweb.compose.ui.modifiers.margin
@@ -35,11 +41,14 @@ import com.varabyte.kobweb.compose.ui.modifiers.onClick
 import com.varabyte.kobweb.compose.ui.modifiers.opacity
 import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.compose.ui.modifiers.position
+import com.varabyte.kobweb.compose.ui.modifiers.rotate
 import com.varabyte.kobweb.compose.ui.modifiers.scale
+import com.varabyte.kobweb.compose.ui.modifiers.scrollMargin
 import com.varabyte.kobweb.compose.ui.modifiers.textAlign
 import com.varabyte.kobweb.compose.ui.modifiers.textDecorationLine
 import com.varabyte.kobweb.compose.ui.modifiers.textTransform
 import com.varabyte.kobweb.compose.ui.modifiers.top
+import com.varabyte.kobweb.compose.ui.modifiers.transition
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.silk.style.CssStyle
 import com.varabyte.kobweb.silk.style.animation.Keyframes
@@ -56,6 +65,7 @@ import dev.tonholo.portfolio.extensions.scrollToElementId
 import dev.tonholo.portfolio.locale.LocalStrings
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.color.Ink
+import dev.tonholo.portfolio.theme.color.Paper
 import dev.tonholo.portfolio.theme.layout.SiteDimensions
 import dev.tonholo.portfolio.theme.layout.unit.dp
 import dev.tonholo.portfolio.theme.typography.FontFamilies
@@ -67,16 +77,20 @@ import org.jetbrains.compose.web.css.AnimationTimingFunction
 import org.jetbrains.compose.web.css.CSSMediaQuery
 import org.jetbrains.compose.web.css.DisplayStyle
 import org.jetbrains.compose.web.css.FlexDirection
+import org.jetbrains.compose.web.css.FlexWrap
+import org.jetbrains.compose.web.css.JustifyContent
 import org.jetbrains.compose.web.css.LineStyle
 import org.jetbrains.compose.web.css.Position
 import org.jetbrains.compose.web.css.StylePropertyValue
 import org.jetbrains.compose.web.css.cssRem
+import org.jetbrains.compose.web.css.deg
 import org.jetbrains.compose.web.css.em
 import org.jetbrains.compose.web.css.ms
 import org.jetbrains.compose.web.css.percent
 import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.dom.A
 import org.jetbrains.compose.web.dom.Aside
+import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.H2
 import org.jetbrains.compose.web.dom.Li
 import org.jetbrains.compose.web.dom.Span
@@ -94,6 +108,18 @@ private const val ENTRY_NUMBER_PAD_LENGTH = 2
 private const val ENTRY_NUMBER_PAD_CHAR = '0'
 private const val ENTRY_SEPARATOR = " - "
 private const val SUBSECTION_INDENT_REM = 1.75
+
+/** The element id of the article's contents block, used to tell when the reader has scrolled past it. */
+const val ARTICLE_CONTENTS_ID = "article-contents"
+
+private const val TOC_CARET_CLASS = "article-contents-caret"
+private const val TOC_CARET_SIZE_REM = 0.9
+private const val TOC_CARET_OPEN_ROTATION_DEG = 180
+private const val TOC_CARET_TURN_MS = 150
+private val DISCLOSURE_BORDER_WIDTH = 1.dp
+private val DISCLOSURE_BORDER_RADIUS = 6.dp
+private val DISCLOSURE_PADDING_X = 14.px
+private val SHARE_ROW_GAP = 20.px
 
 private const val COPY_FEEDBACK_DURATION_MS = 2000
 private const val COPY_CHECKMARK_ANIMATION_MS = 240
@@ -226,29 +252,40 @@ fun ArticleTocSidebar(
         .color(tokens.muted.muted)
         .then(modifier)
 
-    Aside(attrs = finalModifier.toAttrs()) {
-        SidebarHeading(
-            text = strings.contents,
-            modifier = Modifier.margin { top(0.dp) },
-        )
+    Aside(attrs = finalModifier.toAttrs { id(ARTICLE_CONTENTS_ID) }) {
         val sections: List<TocSection> = remember(contents) { buildTocSections(contents) }
-        val activeSectionId: String? = sections.activeSectionId(activeId = activeId)
-        Ul(attrs = SidebarListStyle.toModifier().toAttrs()) {
-            sections.forEachIndexed { index, section ->
-                TocSectionRow(
-                    section = section,
-                    number = index + 1,
-                    isExpanded = section.entry.id == activeSectionId,
-                    activeId = activeId,
-                    colors = TocColors(muted = tokens.muted.muted, active = tokens.ink.ink),
+        val colors = TocColors(muted = tokens.muted.muted, active = tokens.ink.ink)
+        Div(attrs = TocAlwaysOpenStyle.toModifier().toAttrs()) {
+            SidebarHeading(
+                text = strings.contents,
+                modifier = Modifier.margin { top(0.dp) },
+            )
+            TocSectionList(
+                sections = sections,
+                activeId = activeId,
+                expandedSectionId = sections.activeSectionId(activeId = activeId),
+                colors = colors,
+            )
+        }
+        GenericTag(
+            name = "details",
+            attrs = TocDisclosureStyle.toModifier().toAttrs(),
+        ) {
+            GenericTag(name = "summary", attrs = TocSummaryStyle.toModifier().color(tokens.ink.ink3).toAttrs()) {
+                ComposeText(strings.contents)
+                PhosphorIcon(
+                    name = "caret-down",
+                    modifier = TocCaretStyle.toModifier().classNames(TOC_CARET_CLASS),
+                    size = TOC_CARET_SIZE_REM.cssRem,
                 )
             }
+            TocSectionList(sections = sections, activeId = activeId, expandedSectionId = null, colors = colors)
         }
         SidebarHeading(
             text = strings.share,
             modifier = Modifier.margin { top(SiteDimensions.size.Xxl) },
         )
-        Ul(attrs = SidebarListStyle.toModifier().toAttrs()) {
+        Ul(attrs = ShareListStyle.toModifier().toAttrs()) {
             CopyLinkRow(
                 label = strings.shareCopyLink,
                 copiedLabel = strings.shareCopied,
@@ -291,7 +328,34 @@ fun ArticleTocSidebar(
     }
 }
 
-private data class TocColors(val muted: Color, val active: Color)
+internal data class TocColors(val muted: Color, val active: Color)
+
+/**
+ * The numbered list of sections. Only the section matching [expandedSectionId] lists its subsections; pass null
+ * to keep every section closed, so the list never changes height while the reader moves through the page.
+ * [onNavigate] runs after the reader picks an entry.
+ */
+@Composable
+internal fun TocSectionList(
+    sections: List<TocSection>,
+    activeId: String,
+    expandedSectionId: String?,
+    colors: TocColors,
+    onNavigate: () -> Unit = {},
+) {
+    Ul(attrs = SidebarListStyle.toModifier().toAttrs()) {
+        sections.forEachIndexed { index, section ->
+            TocSectionRow(
+                section = section,
+                number = index + 1,
+                isExpanded = section.entry.id == expandedSectionId,
+                activeId = activeId,
+                colors = colors,
+                onNavigate = onNavigate,
+            )
+        }
+    }
+}
 
 /**
  * One numbered section in the contents. Its subsections are listed under it only while [isExpanded], which
@@ -304,6 +368,7 @@ private fun TocSectionRow(
     isExpanded: Boolean,
     activeId: String,
     colors: TocColors,
+    onNavigate: () -> Unit,
 ) {
     val prefix = number.toString().padStart(ENTRY_NUMBER_PAD_LENGTH, ENTRY_NUMBER_PAD_CHAR)
     Li(attrs = Modifier.toAttrs()) {
@@ -312,12 +377,19 @@ private fun TocSectionRow(
             label = "$prefix$ENTRY_SEPARATOR${section.entry.label}",
             activeId = activeId,
             colors = colors,
+            onNavigate = onNavigate,
         )
         if (isExpanded && section.subsections.isNotEmpty()) {
             Ul(attrs = TocSubsectionListStyle.toModifier().toAttrs()) {
                 section.subsections.forEach { subsection ->
                     Li(attrs = Modifier.toAttrs()) {
-                        TocAnchor(entry = subsection, label = subsection.label, activeId = activeId, colors = colors)
+                        TocAnchor(
+                            entry = subsection,
+                            label = subsection.label,
+                            activeId = activeId,
+                            colors = colors,
+                            onNavigate = onNavigate,
+                        )
                     }
                 }
             }
@@ -331,6 +403,7 @@ private fun TocAnchor(
     label: String,
     activeId: String,
     colors: TocColors,
+    onNavigate: () -> Unit,
 ) {
     val isActive = entry.id == activeId
     A(
@@ -346,6 +419,7 @@ private fun TocAnchor(
                     evt.preventDefault()
                     window.history.pushState(null, "", "#${entry.id}")
                     scrollToElementId(entry.id)
+                    onNavigate()
                 }
             },
     ) {
@@ -478,6 +552,7 @@ val ArticleTocSidebarStyle = CssStyle {
         Modifier
             .fontFamily(*FontFamilies.MONO)
             .fontSize(SIDEBAR_FONT_SIZE)
+            .scrollMargin(top = SIDEBAR_STICKY_TOP)
     }
     Breakpoint.LG {
         Modifier
@@ -599,6 +674,82 @@ val SidebarListStyle = CssStyle {
             .gap(SiteDimensions.size.Sm)
             .margin(topBottom = 0.cssRem)
             .padding(left = 0.cssRem)
+    }
+}
+
+/** The contents as an always-open list with its heading: hidden on small screens, shown beside the article. */
+val TocAlwaysOpenStyle = CssStyle {
+    base {
+        Modifier.display(DisplayStyle.None)
+    }
+    Breakpoint.LG {
+        Modifier.display(DisplayStyle.Block)
+    }
+}
+
+/** The contents as a closed disclosure on small screens, so the article starts sooner. Hidden beside the article. */
+val TocDisclosureStyle = CssStyle {
+    base {
+        val border = if (colorMode == ColorMode.DARK) Paper.dark.paper3 else Paper.light.paper3
+        Modifier
+            .display(DisplayStyle.Block)
+            .border(width = DISCLOSURE_BORDER_WIDTH, style = LineStyle.Solid, color = border)
+            .borderRadius(DISCLOSURE_BORDER_RADIUS)
+            .padding(topBottom = 0.px, leftRight = DISCLOSURE_PADDING_X)
+    }
+    cssRule("[open]") {
+        Modifier.padding(bottom = SiteDimensions.size.Sm, left = DISCLOSURE_PADDING_X, right = DISCLOSURE_PADDING_X)
+    }
+    cssRule("[open] .$TOC_CARET_CLASS") {
+        Modifier.rotate(TOC_CARET_OPEN_ROTATION_DEG.deg)
+    }
+    Breakpoint.LG {
+        Modifier.display(DisplayStyle.None)
+    }
+}
+
+/** The row that opens and closes the contents on small screens. */
+val TocSummaryStyle = CssStyle {
+    base {
+        Modifier
+            .display(DisplayStyle.Flex)
+            .alignItems(AlignItems.Center)
+            .justifyContent(JustifyContent.SpaceBetween)
+            .minHeight(SiteDimensions.layout.minimumTouchSize)
+            .listStyle(type = ListStyleType.None)
+            .cursor(Cursor.Pointer)
+            .fontSize(HEADING_FONT_SIZE)
+            .letterSpacing(HEADING_LETTER_SPACING_EM.em)
+            .textTransform(TextTransform.Uppercase)
+    }
+    cssRule("::-webkit-details-marker") {
+        Modifier.display(DisplayStyle.None)
+    }
+}
+
+/** The caret in the contents row: points down when closed and up when open. */
+val TocCaretStyle = CssStyle {
+    base {
+        Modifier.transition(Transition.of(property = "rotate", duration = TOC_CARET_TURN_MS.ms))
+    }
+}
+
+/** The share actions: one wrapping row on small screens, a column beside the article. */
+val ShareListStyle = CssStyle {
+    base {
+        Modifier
+            .listStyle(type = ListStyleType.None)
+            .display(DisplayStyle.Flex)
+            .flexDirection(FlexDirection.Row)
+            .flexWrap(FlexWrap.Wrap)
+            .gap(rowGap = 0.px, columnGap = SHARE_ROW_GAP)
+            .margin(topBottom = 0.cssRem)
+            .padding(left = 0.cssRem)
+    }
+    Breakpoint.LG {
+        Modifier
+            .flexDirection(FlexDirection.Column)
+            .gap(SiteDimensions.size.Sm)
     }
 }
 

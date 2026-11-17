@@ -162,6 +162,8 @@ object StringsPtBr : Strings() {
 
     override val articlesSidebar: ArticlesSidebar = ArticlesSidebar(
         contents = "Conteúdo",
+        openContents = "Abrir conteúdo",
+        closeContents = "Fechar conteúdo",
         share = "Compartilhar",
         shareCopyLink = "copiar link",
         shareCopied = "link copiado!",
