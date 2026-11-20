@@ -180,6 +180,15 @@ object StringsEn : Strings() {
             "Comments live in GitHub Discussions, so you'll need a GitHub account.",
     )
 
+    override val articleThanks: ArticleThanks = ArticleThanks(
+        title = "Thanks",
+        intro = "Thanks to ",
+        outro = " for reviewing this article.",
+        listSeparator = ", ",
+        pairSeparator = " and ",
+        lastSeparator = ", and ",
+    )
+
     override val articleMeta: ArticleMeta = ArticleMeta(
         backLabel = "articles",
         authorPrefix = "by",

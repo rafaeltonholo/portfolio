@@ -184,6 +184,15 @@ object StringsPtBr : Strings() {
             "Os comentários ficam no GitHub Discussions, então você vai precisar de uma conta no GitHub.",
     )
 
+    override val articleThanks: ArticleThanks = ArticleThanks(
+        title = "Agradecimentos",
+        intro = "Obrigado a ",
+        outro = " por revisar este artigo.",
+        listSeparator = ", ",
+        pairSeparator = " e ",
+        lastSeparator = " e ",
+    )
+
     override val articleMeta: ArticleMeta = ArticleMeta(
         backLabel = "artigos",
         authorPrefix = "por",
