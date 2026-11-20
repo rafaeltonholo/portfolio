@@ -20,6 +20,8 @@ object MarkdownArticlesProcessor {
 
     data class AuthorRow(val name: String, val avatar: String)
 
+    data class ReviewerRow(val name: String, val link: String)
+
     data class ArticleRow(
         val slug: String,
         val date: String,
@@ -31,6 +33,7 @@ object MarkdownArticlesProcessor {
         val locale: String,
         val summary: String,
         val authors: List<AuthorRow>,
+        val reviewers: List<ReviewerRow>,
         val thumbnail: String,
     )
 
@@ -129,42 +132,37 @@ object MarkdownArticlesProcessor {
         return afterColon.removeSurrounding("\"").removeSurrounding("'")
     }
 
-    fun extractAuthors(frontMatterLines: List<String>): List<AuthorRow> {
-        val authorsIndex: Int = frontMatterLines.indexOfFirst { it.trimStart().startsWith("authors:") }
-        if (authorsIndex == -1) return emptyList()
-        val authorList: MutableList<AuthorRow> = mutableListOf()
-        var currentName = ""
-        var currentAvatar = ""
-        fun saveCurrent() {
-            if (currentName.isNotBlank() || currentAvatar.isNotBlank()) {
-                authorList.add(AuthorRow(name = currentName, avatar = currentAvatar))
-                currentName = ""
-                currentAvatar = ""
-            }
-        }
-        for (i: Int in (authorsIndex + 1) until frontMatterLines.size) {
-            val line: String = frontMatterLines[i]
-            if (line.isNotBlank() && !line.startsWith(" ") && !line.startsWith("\t") && !line.startsWith("-")) {
-                break
-            }
+    /**
+     * Reads a top-level frontmatter list of objects, such as `authors` or `reviewers`, into one field map per entry.
+     */
+    fun extractEntries(key: String, frontMatterLines: List<String>): List<Map<String, String>> {
+        val keyIndex: Int = frontMatterLines.indexOfFirst { it.startsWith("$key:") }
+        if (keyIndex == -1) return emptyList()
+        val entries: MutableList<MutableMap<String, String>> = mutableListOf()
+        for (line: String in frontMatterLines.drop(keyIndex + 1)) {
+            if (line.isNotBlank() && !line.first().isWhitespace() && !line.startsWith("-")) break
             val trimmed: String = line.trim()
-            if (trimmed.startsWith("-")) {
-                saveCurrent()
-                val itemContent: String = trimmed.removePrefix("-").trim()
-                if (itemContent.startsWith("name:")) {
-                    currentName = itemContent.substringAfter("name:").trim().removeSurrounding("\"").removeSurrounding("'")
-                } else if (itemContent.startsWith("avatar:")) {
-                    currentAvatar = itemContent.substringAfter("avatar:").trim().removeSurrounding("\"").removeSurrounding("'")
-                }
-            } else if (trimmed.startsWith("name:")) {
-                currentName = trimmed.substringAfter("name:").trim().removeSurrounding("\"").removeSurrounding("'")
-            } else if (trimmed.startsWith("avatar:")) {
-                currentAvatar = trimmed.substringAfter("avatar:").trim().removeSurrounding("\"").removeSurrounding("'")
-            }
+            val isNewEntry: Boolean = trimmed.startsWith("-")
+            if (isNewEntry) entries.add(mutableMapOf())
+            val field: String = if (isNewEntry) trimmed.removePrefix("-").trim() else trimmed
+            if (':' !in field) continue
+            entries.lastOrNull()?.put(
+                field.substringBefore(':').trim(),
+                field.substringAfter(':').trim().removeSurrounding("\"").removeSurrounding("'"),
+            )
         }
-        saveCurrent()
-        return authorList
+        return entries
     }
+
+    fun extractAuthors(frontMatterLines: List<String>): List<AuthorRow> =
+        extractEntries(key = "authors", frontMatterLines = frontMatterLines)
+            .map { AuthorRow(name = it["name"].orEmpty(), avatar = it["avatar"].orEmpty()) }
+            .filter { it.name.isNotBlank() || it.avatar.isNotBlank() }
+
+    fun extractReviewers(frontMatterLines: List<String>): List<ReviewerRow> =
+        extractEntries(key = "reviewers", frontMatterLines = frontMatterLines)
+            .map { ReviewerRow(name = it["name"].orEmpty(), link = it["link"].orEmpty()) }
+            .filter { it.name.isNotBlank() }
 
     fun generateArticlesObject(entries: List<MarkdownEntry>, markdownResourceDir: File): String {
         val rows: List<ArticleRow> = entries
@@ -202,6 +200,7 @@ object MarkdownArticlesProcessor {
                 val thumbnail: String = extractScalar("thumbnail", frontMatterLines)
                     ?: entry.frontMatter["thumbnail"]?.singleOrNull().orEmpty()
                 val authors: List<AuthorRow> = extractAuthors(frontMatterLines)
+                val reviewers: List<ReviewerRow> = extractReviewers(frontMatterLines)
                 val readTime: String = if (fileText.isNotEmpty()) {
                     calculateReadingTime(fileText)
                 } else {
@@ -221,6 +220,7 @@ object MarkdownArticlesProcessor {
                     locale = locale,
                     summary = summary,
                     authors = authors,
+                    reviewers = reviewers,
                     thumbnail = thumbnail,
                 )
             }
@@ -241,6 +241,13 @@ object MarkdownArticlesProcessor {
                         "ArticleAuthor(name = \"${escapeForKotlin(it.name)}\", avatar = \"${escapeForKotlin(it.avatar)}\")"
                     } + ")"
                 }
+                val reviewersLiteral: String = if (row.reviewers.isEmpty()) {
+                    "emptyList()"
+                } else {
+                    "listOf(" + row.reviewers.joinToString(separator = ", ") {
+                        "ArticleReviewer(name = \"${escapeForKotlin(it.name)}\", link = \"${escapeForKotlin(it.link)}\")"
+                    } + ")"
+                }
                 appendLine("        Article(")
                 appendLine("            slug = \"${row.slug}\",")
                 appendLine("            date = \"${escapeForKotlin(row.date)}\",")
@@ -251,6 +258,7 @@ object MarkdownArticlesProcessor {
                 appendLine("            status = ArticleStatus.${row.status},")
                 appendLine("            summary = \"${escapeForKotlin(row.summary)}\",")
                 appendLine("            authors = $authorsLiteral,")
+                appendLine("            reviewers = $reviewersLiteral,")
                 appendLine("            thumbnail = \"${escapeForKotlin(row.thumbnail)}\",")
                 appendLine("            publishedDate = \"${publishedDateBySlug[row.slug].orEmpty()}\",")
                 appendLine("        ),")
@@ -263,6 +271,7 @@ object MarkdownArticlesProcessor {
             appendLine()
             appendLine("import dev.tonholo.portfolio.domain.model.Article")
             appendLine("import dev.tonholo.portfolio.domain.model.ArticleAuthor")
+            appendLine("import dev.tonholo.portfolio.domain.model.ArticleReviewer")
             appendLine("import dev.tonholo.portfolio.domain.model.ArticleStatus")
             appendLine()
             appendLine("/**")

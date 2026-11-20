@@ -1,6 +1,8 @@
 package dev.tonholo.portfolio.buildlogic.markdown
 
 import kotlin.test.Test
+import dev.tonholo.portfolio.buildlogic.markdown.MarkdownArticlesProcessor.AuthorRow
+import dev.tonholo.portfolio.buildlogic.markdown.MarkdownArticlesProcessor.ReviewerRow
 import kotlin.test.assertEquals
 
 class MarkdownArticlesProcessorTest {
@@ -18,4 +20,100 @@ class MarkdownArticlesProcessorTest {
     fun `given an unparseable date - when converting to iso - then it is blank instead of a placeholder`() {
         assertEquals(expected = "", actual = MarkdownArticlesProcessor.toIsoDate("someday"))
     }
+
+    @Test
+    fun `given no reviewers key - when extracting reviewers - then the list is empty`() {
+        val frontMatter: List<String> = frontMatterOf(
+            """
+            title: An article
+            date: nov 17, 2026
+            """,
+        )
+
+        val reviewers: List<ReviewerRow> = MarkdownArticlesProcessor.extractReviewers(frontMatter)
+
+        assertEquals(expected = emptyList(), actual = reviewers)
+    }
+
+    @Test
+    fun `given reviewers with names and links - when extracting reviewers - then each reviewer keeps its link`() {
+        val frontMatter: List<String> = frontMatterOf(
+            """
+            reviewers:
+                -   name: Jane Doe
+                    link: https://github.com/jane
+                - name: 'John Roe'
+                  link: "https://www.linkedin.com/in/john"
+            """,
+        )
+
+        val reviewers: List<ReviewerRow> = MarkdownArticlesProcessor.extractReviewers(frontMatter)
+
+        assertEquals(
+            expected = listOf(
+                ReviewerRow(name = "Jane Doe", link = "https://github.com/jane"),
+                ReviewerRow(name = "John Roe", link = "https://www.linkedin.com/in/john"),
+            ),
+            actual = reviewers,
+        )
+    }
+
+    @Test
+    fun `given a reviewer without a link - when extracting reviewers - then the link is blank`() {
+        val frontMatter: List<String> = frontMatterOf(
+            """
+            reviewers:
+                - name: Jane Doe
+            """,
+        )
+
+        val reviewers: List<ReviewerRow> = MarkdownArticlesProcessor.extractReviewers(frontMatter)
+
+        assertEquals(expected = listOf(ReviewerRow(name = "Jane Doe", link = "")), actual = reviewers)
+    }
+
+    @Test
+    fun `given a reviewer without a name - when extracting reviewers - then the reviewer is skipped`() {
+        val frontMatter: List<String> = frontMatterOf(
+            """
+            reviewers:
+                - link: https://github.com/nobody
+                - name: Jane Doe
+            """,
+        )
+
+        val reviewers: List<ReviewerRow> = MarkdownArticlesProcessor.extractReviewers(frontMatter)
+
+        assertEquals(expected = listOf(ReviewerRow(name = "Jane Doe", link = "")), actual = reviewers)
+    }
+
+    @Test
+    fun `given authors followed by reviewers - when extracting both - then neither list takes entries from the other`() {
+        val frontMatter: List<String> = frontMatterOf(
+            """
+            authors:
+                -   name: rafael
+                    avatar: https://rafael.tonholo.dev/images/writing.jpg
+            reviewers:
+                -   name: Jane Doe
+                    link: https://github.com/jane
+            tags:
+                - android
+            """,
+        )
+
+        val authors: List<AuthorRow> = MarkdownArticlesProcessor.extractAuthors(frontMatter)
+        val reviewers: List<ReviewerRow> = MarkdownArticlesProcessor.extractReviewers(frontMatter)
+
+        assertEquals(
+            expected = listOf(AuthorRow(name = "rafael", avatar = "https://rafael.tonholo.dev/images/writing.jpg")),
+            actual = authors,
+        )
+        assertEquals(
+            expected = listOf(ReviewerRow(name = "Jane Doe", link = "https://github.com/jane")),
+            actual = reviewers,
+        )
+    }
+
+    private fun frontMatterOf(yaml: String): List<String> = yaml.trimIndent().lines()
 }
