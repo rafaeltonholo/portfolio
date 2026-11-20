@@ -60,6 +60,7 @@ import dev.tonholo.portfolio.components.atoms.resolveArticleLinkColor
 import dev.tonholo.portfolio.components.molecules.ARTICLE_PLAIN_LINK_CLASS
 import dev.tonholo.portfolio.components.molecules.ArticleCommentsPrompt
 import dev.tonholo.portfolio.components.molecules.ArticleMetaRow
+import dev.tonholo.portfolio.components.molecules.ArticleThanks
 import dev.tonholo.portfolio.components.molecules.LocalFootnoteRegistry
 import dev.tonholo.portfolio.components.molecules.footnotes.FootnoteRegistry
 import dev.tonholo.portfolio.components.organisms.articles.ARTICLE_CONTENTS_ID
@@ -68,6 +69,7 @@ import dev.tonholo.portfolio.components.organisms.articles.ArticleTocSidebar
 import dev.tonholo.portfolio.components.organisms.articles.SECTION_LEVEL
 import dev.tonholo.portfolio.components.organisms.articles.TocEntry
 import dev.tonholo.portfolio.domain.model.ArticleAuthor
+import dev.tonholo.portfolio.domain.model.ArticleReviewer
 import dev.tonholo.portfolio.extensions.toKebabCase
 import dev.tonholo.portfolio.generated.articles.GeneratedArticles
 import dev.tonholo.portfolio.locale.LocalStrings
@@ -187,6 +189,7 @@ data class ArticleMarkdownLayoutData(
     val locale: Locale = Locale.EnCa,
     val summary: String = "",
     val authors: List<ArticleAuthor> = emptyList(),
+    val reviewers: List<ArticleReviewer> = emptyList(),
     val thumbnail: String = "",
     val showThumbnail: Boolean = true,
     val publishedDate: String = "",
@@ -284,6 +287,7 @@ fun initArticleMarkdownLayout(ctx: InitRouteContext) {
             locale = locale,
             summary = summary,
             authors = authors,
+            reviewers = matchedArticle?.reviewers.orEmpty(),
             thumbnail = thumbnail,
             showThumbnail = isThumbnailShown(flag = frontMatter?.get("showThumbnail")?.singleOrNull()),
             publishedDate = matchedArticle?.publishedDate.orEmpty(),
@@ -407,6 +411,7 @@ fun ArticleMarkdownLayout(context: PageContext, content: @Composable () -> Unit)
                             onDispose { observer?.disconnect() }
                         }
                     }
+                    ArticleThanks(reviewers = data.reviewers, modifier = Modifier.fillMaxWidth().margin(top = 3.cssRem))
                     if (data.title.isNotBlank()) {
                         ArticleCommentsPrompt(modifier = Modifier.fillMaxWidth().margin(top = 4.cssRem))
                         GiscusWrapper(

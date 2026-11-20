@@ -28,6 +28,7 @@ sealed class Strings {
     abstract val articlesSidebar: ArticlesSidebar
     abstract val articleMeta: ArticleMeta
     abstract val articleBody: ArticleBody
+    abstract val articleThanks: ArticleThanks
     abstract val resume: Resume
     abstract val experience: Experience
     abstract val skills: Skills
@@ -163,6 +164,19 @@ sealed class Strings {
         val imageClose: String,
         val commentsTitle: String,
         val commentsBody: String,
+    )
+
+    /**
+     * Copy for the thanks section at the end of an article, read as
+     * "[intro] Ana, Bia[lastSeparator]Caio [outro]".
+     */
+    data class ArticleThanks(
+        val title: String,
+        val intro: String,
+        val outro: String,
+        val listSeparator: String,
+        val pairSeparator: String,
+        val lastSeparator: String,
     )
 
     /** Copy shown by the back-to-articles meta row on the detail page. */
