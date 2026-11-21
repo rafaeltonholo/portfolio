@@ -75,7 +75,7 @@ Uma coisa que me surpreendeu: o `catalogId` parece uma URL, mas é só um nome. 
 
 > Note that `catalogId` is a string identifier, not a resolvable URI; while it is conventionally formatted as a URI ... it does not need to point to any deployed resource or downloadable file.
 
-O app e o agente só precisam concordar sobre ele. Aliás, o ID que vem dentro do catálogo básico do AndroidX é o `v0_9`, mesmo a biblioteca falando v0.9.1.
+O app e o agente só precisam concordar sobre ele, e aqui nem a spec concorda totalmente com ela mesma. Os exemplos da v0.9.1 usam um ID `v0_9_1`, mas o arquivo oficial do catálogo básico da v0.9.1 declara o `v0_9`, o mesmo ID que vem dentro do catálogo básico do AndroidX, mesmo a biblioteca falando v0.9.1. O AndroidX `1.0.0-alpha02` mapeia o ID `v0_9_1` pro `v0_9`, então os dois funcionam ali. O campo `version` também é tolerante: o schema da v0.9.1 aceita tanto `"v0.9"` quanto `"v0.9.1"`.
 
 ### `updateDataModel`
 
@@ -177,6 +177,9 @@ No benchmark do próprio projeto A2UI, rodado no Gemini Flash, o Express usou 45
 > Small local models, such as Gemma 4 E2B and E4B, operate with limited context windows and reasoning budgets.
 
 Mas tem um problema pra nós. Os compiladores do Express vivem nos SDKs de *agente* do A2UI, que existem pra TypeScript, Python e Dart[^sdks]. Do lado do Kotlin, o AndroidX entrega só o renderer. O repositório do A2UI tem sim um compilador Express experimental no SDK de agente JVM antigo, mas é uma biblioteca de servidor construída em cima de ANTLR, Jackson e do [Agent Development Kit](https://github.com/google/adk-python) do Google, e ela não é publicada no Maven. Quando o modelo roda *no celular*, o compilador também precisa rodar no celular.
+
+> [!NOTE]
+> Se você abrir a proposta do Express, vai ver que ela compila pra v1.0, e todos os exemplos dela são v1.0. Isso não descarta o renderer do AndroidX: os compiladores recebem uma versão alvo, v0.9, v0.9.1 ou v1.0[^express]. Pra v0.9.1, eles escrevem os bindings como `path` em vez de `@path` e mandam `createSurface`, `updateComponents` e `updateDataModel` como mensagens separadas[^formats].
 
 ## E agora?
 

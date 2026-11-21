@@ -72,7 +72,7 @@ One thing that surprised me: `catalogId` looks like a URL, but it's just a name.
 
 > Note that `catalogId` is a string identifier, not a resolvable URI; while it is conventionally formatted as a URI ... it does not need to point to any deployed resource or downloadable file.
 
-The app and the agent simply have to agree on it. In fact, the ID baked into the AndroidX basic catalog is the `v0_9` one, even though the library speaks v0.9.1.
+The app and the agent simply have to agree on it, and here the spec doesn't fully agree with itself. Its v0.9.1 examples use a `v0_9_1` ID, but the official v0.9.1 basic catalog file declares the `v0_9` one, the same ID baked into the AndroidX basic catalog, even though the library speaks v0.9.1. AndroidX `1.0.0-alpha02` maps the `v0_9_1` ID to the `v0_9` one, so either works there. The `version` field is just as forgiving: the v0.9.1 schema accepts both `"v0.9"` and `"v0.9.1"`.
 
 ### `updateDataModel`
 
@@ -174,6 +174,9 @@ In the A2UI project's own benchmark, run on Gemini Flash, Express used 45% fewer
 > Small local models, such as Gemma 4 E2B and E4B, operate with limited context windows and reasoning budgets.
 
 There's a catch for us, though. The Express compilers live in A2UI's *agent* SDKs, which are available for TypeScript, Python and Dart[^sdks]. On the Kotlin side, AndroidX ships the renderer only. The A2UI repository does have an experimental Express compiler in its legacy JVM agent SDK, but that's a server library built on ANTLR, Jackson and Google's [Agent Development Kit](https://github.com/google/adk-python), and it isn't published to Maven. When the model runs *on the phone*, the compiler has to run on the phone too.
+
+> [!NOTE]
+> If you open the Express proposal, you'll see it compiles to v1.0, and all its examples are v1.0. That doesn't rule out the AndroidX renderer: the compilers take a target version, v0.9, v0.9.1 or v1.0[^express]. For v0.9.1, they write bindings as `path` instead of `@path` and send `createSurface`, `updateComponents` and `updateDataModel` as separate messages[^formats].
 
 ## What's next
 
