@@ -44,7 +44,7 @@ data class PageMetadata(
         const val DEFAULT_DESCRIPTION: String = "Rafael Tonholo - Android Engineer"
         const val DEFAULT_OG_LOCALE: String = "en_CA"
         const val SITE_URL: String = "https://rafael.tonholo.dev"
-        const val DEFAULT_IMAGE_URL: String = "$SITE_URL/logo512.png"
+        const val DEFAULT_IMAGE_URL: String = "$SITE_URL/images/og-default.png"
         const val SITE_NAME: String = "Rafael Tonholo"
         const val AUTHOR_URL: String = "$SITE_URL/about"
         const val TWITTER_SITE: String = "@rafaeltonholo"
