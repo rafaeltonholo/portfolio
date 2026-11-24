@@ -79,7 +79,7 @@ default today.
 
 }}}
 
-{{{ .components.organisms.projects.ProjectSection ("/ privacy &amp; standards", "Privacy checked by the compiler, and design docs before code.")
+{{{ .components.organisms.projects.ProjectSection ("/ privacy & standards", "Privacy checked by the compiler, and design docs before code.")
 
 In an email app, data classes carry email addresses, folder names, and account details. Logging one
 of them by accident can leak personal data, and hiding it by hand is easy to forget.
