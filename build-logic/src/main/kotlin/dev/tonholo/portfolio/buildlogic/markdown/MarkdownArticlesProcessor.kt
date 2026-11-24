@@ -2,6 +2,7 @@ package dev.tonholo.portfolio.buildlogic.markdown
 
 import com.varabyte.kobwebx.gradle.markdown.MarkdownEntry
 import dev.tonholo.portfolio.buildlogic.SlugUtils
+import dev.tonholo.portfolio.buildlogic.frontMatterLinesOf
 import dev.tonholo.portfolio.buildlogic.splitLocalizedSlug
 import java.io.File
 import java.time.LocalDate
@@ -24,6 +25,7 @@ object MarkdownArticlesProcessor {
 
     data class ArticleRow(
         val slug: String,
+        val pathSlug: String,
         val date: String,
         val title: String,
         val description: String,
@@ -154,6 +156,17 @@ object MarkdownArticlesProcessor {
         return entries
     }
 
+    /**
+     * Reads the slug a page uses in its URL: the last segment of its `routeOverride`, or [fallback] when it has none.
+     * A translation keeps the shared `slug` that pairs it with the original, and can use its own words in the URL.
+     */
+    fun extractPathSlug(frontMatterLines: List<String>, fallback: String): String =
+        extractScalar("routeOverride", frontMatterLines)
+            ?.trimEnd('/')
+            ?.substringAfterLast('/')
+            ?.takeIf { it.isNotBlank() }
+            ?: fallback
+
     fun extractAuthors(frontMatterLines: List<String>): List<AuthorRow> =
         extractEntries(key = "authors", frontMatterLines = frontMatterLines)
             .map { AuthorRow(name = it["name"].orEmpty(), avatar = it["avatar"].orEmpty()) }
@@ -174,12 +187,7 @@ object MarkdownArticlesProcessor {
                 val (canonicalSlug: String, lang: String?) = rawSlug.splitLocalizedSlug()
                 val markdownFile = File(markdownResourceDir, entry.filePath)
                 val fileText: String = if (markdownFile.exists()) markdownFile.readText() else ""
-                val frontMatterLines: List<String> = if (fileText.startsWith("---")) {
-                    val secondMarker: Int = fileText.indexOf("---", startIndex = 3)
-                    if (secondMarker != -1) fileText.substring(3, secondMarker).lines() else emptyList()
-                } else {
-                    emptyList()
-                }
+                val frontMatterLines: List<String> = frontMatterLinesOf(fileText)
 
                 val slug: String = extractScalar("slug", frontMatterLines)?.takeIf { it.isNotBlank() }
                     ?: entry.frontMatter["slug"]?.singleOrNull()?.takeIf { it.isNotBlank() }
@@ -211,6 +219,7 @@ object MarkdownArticlesProcessor {
 
                 ArticleRow(
                     slug = slug,
+                    pathSlug = extractPathSlug(frontMatterLines, fallback = slug),
                     date = date,
                     title = title,
                     description = description,
@@ -250,6 +259,7 @@ object MarkdownArticlesProcessor {
                 }
                 appendLine("        Article(")
                 appendLine("            slug = \"${row.slug}\",")
+                appendLine("            pathSlug = \"${row.pathSlug}\",")
                 appendLine("            date = \"${escapeForKotlin(row.date)}\",")
                 appendLine("            title = \"${escapeForKotlin(row.title)}\",")
                 appendLine("            description = \"${escapeForKotlin(row.description)}\",")
