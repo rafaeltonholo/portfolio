@@ -179,7 +179,7 @@ object StringsPtBr : Strings() {
         footnoteBack = "Voltar ao texto",
         imageOpen = "Abrir em tamanho real",
         imageClose = "Fechar",
-        commentsTitle = "O que você achou?",
+        commentsTitle = "E aí, o que achou?",
         commentsBody = "Deixe uma reação ou um comentário abaixo. " +
             "Os comentários ficam no GitHub Discussions, então você vai precisar de uma conta no GitHub.",
     )
