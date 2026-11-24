@@ -45,6 +45,7 @@ private const val TOOLTIP_Z_INDEX = 100
  * @param text the label to show.
  * @param modifier optional [Modifier] applied to the tooltip bubble.
  * @param placement where the tooltip sits relative to [target].
+ * @param placementTarget the element the tooltip points at, when it differs from the hover area [target].
  */
 @Composable
 fun Tooltip(
@@ -52,11 +53,13 @@ fun Tooltip(
     text: String,
     modifier: Modifier = Modifier,
     placement: PopupPlacement = PopupPlacement.Bottom,
+    placementTarget: ElementTarget? = null,
 ) {
     SilkTooltip(
         target = target,
         variant = SiteTooltipVariant,
         placement = placement,
+        placementTarget = placementTarget,
         modifier = modifier,
     ) {
         Span(attrs = TooltipTextStyle.toModifier().toAttrs()) { ComposeText(text) }

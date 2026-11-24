@@ -380,6 +380,13 @@ private fun StatusBadge(statusLabel: String, presenceLabel: String) {
 
     Div(attrs = badgeModifier.toAttrs()) {
         Dot(variant = DotVariant.Pulsing, color = tokens.accent.accent)
+        if (!hasRoomToOpen) {
+            Tooltip(
+                target = ElementTarget.Parent,
+                text = "$statusLabel · $presenceLabel",
+                placementTarget = ElementTarget.PreviousSibling,
+            )
+        }
         Span(
             attrs = NavMetaTextStyle
                 .toModifier()
@@ -394,9 +401,6 @@ private fun StatusBadge(statusLabel: String, presenceLabel: String) {
             MetaSeparator(color = tokens.muted.muted2)
             ComposeText(presenceLabel)
         }
-    }
-    if (!hasRoomToOpen) {
-        Tooltip(target = ElementTarget.PreviousSibling, text = "$statusLabel · $presenceLabel")
     }
 }
 
