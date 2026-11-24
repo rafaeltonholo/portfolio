@@ -125,14 +125,15 @@ private val PROJECTS_EN: List<Project> = listOf(
         name = "Thunderbird for Android",
         kinds = listOf(ProjectKind.Commercial, ProjectKind.OpenSource),
         role = "Senior Software Engineer, Mobile - Mozilla",
-        year = "2025 - present",
-        description = "Mozilla's open-source email client coming to Android. " +
-            "Compose-forward, privacy-first, built in the open with the K-9 Mail community.",
-        stack = listOf("Kotlin", "Jetpack Compose", "K-9 Mail", "OSS"),
+        year = "2025 - 2026",
+        description = "The open-source email app for Android, built in the open. " +
+            "Thundermail sign-in, a new Compose message list, a feature flag platform, " +
+            "and a Kotlin compiler plugin that keeps personal data out of logs.",
+        stack = listOf("Kotlin", "Jetpack Compose", "MVI", "K2 compiler plugin"),
         stats = listOf(
-            ProjectStat(value = "OSS", label = "fully open source"),
-            ProjectStat(value = "Mozilla", label = "affiliated"),
-            ProjectStat(value = "Compose", label = "modern UI"),
+            ProjectStat(value = "1M+", label = "monthly active users"),
+            ProjectStat(value = "4 RFCs", label = "written"),
+            ProjectStat(value = "32-53%", label = "less PR CI time"),
         ),
         externalCta = "Case study",
         coverImage = "/images/projects/thunderbird/hero.png",
@@ -199,15 +200,15 @@ private val PROJECTS_PT_BR: List<Project> = listOf(
         name = "Thunderbird para Android",
         kinds = listOf(ProjectKind.Commercial, ProjectKind.OpenSource),
         role = "Engenheiro de Software Sênior, Mobile - Mozilla",
-        year = "2025 - presente",
-        description = "Cliente de email open-source da Mozilla chegando ao Android. " +
-            "Focado em Compose, privacidade em primeiro lugar, construído no aberto " +
-            "com a comunidade K-9 Mail.",
-        stack = listOf("Kotlin", "Jetpack Compose", "K-9 Mail", "OSS"),
+        year = "2025 - 2026",
+        description = "O app de e-mail open source pro Android, feito no aberto. " +
+            "Login no Thundermail, uma nova lista de mensagens em Compose, uma plataforma " +
+            "de feature flags e um compiler plugin em Kotlin que mantém dados pessoais fora dos logs.",
+        stack = listOf("Kotlin", "Jetpack Compose", "MVI", "K2 compiler plugin"),
         stats = listOf(
-            ProjectStat(value = "OSS", label = "totalmente open source"),
-            ProjectStat(value = "Mozilla", label = "afiliado"),
-            ProjectStat(value = "Compose", label = "UI moderna"),
+            ProjectStat(value = "1M+", label = "usuários ativos por mês"),
+            ProjectStat(value = "4 RFCs", label = "escritas"),
+            ProjectStat(value = "32-53%", label = "menos tempo de CI nos PRs"),
         ),
         externalCta = "Estudo de caso",
         coverImage = "/images/projects/thunderbird/hero.png",
@@ -277,14 +278,12 @@ private val EXPERIENCE_EN: List<Experience> = listOf(
         duration = "1 yr 7 mos",
         role = "Senior Software Engineer, Mobile",
         company = "Mozilla / Thunderbird for Android - Remote - Canada",
-        body = "Helped bring Thunderbird to Android alongside broader Mozilla " +
-            "mobile work. Kotlin-first, privacy-first, Compose-forward, " +
-            "everything-in-the-open.",
+        body = "Worked on Thunderbird for Android, the open-source email app, in the open.",
         bullets = listOf(
-            "Feature work across the flagship Android app",
-            "Android, Jetpack Compose, and a long list of infrastructure bits",
-            "Contributing upstream to shared mobile libraries",
-            "Shipping to a community that genuinely cares",
+            "Built the Thundermail sign-in flow with OAuth and QR-code entry points",
+            "Moved the message list toward Jetpack Compose and MVI",
+            "Built pii-safe, a Kotlin compiler plugin that keeps personal data out of logs",
+            "Cut pull request CI time by 32-53%",
         ),
     ),
     Experience(
@@ -378,14 +377,12 @@ private val EXPERIENCE_PT_BR: List<Experience> = listOf(
         duration = "1 ano 7 meses",
         role = "Engenheiro de Software Sênior, Mobile",
         company = "Mozilla / Thunderbird para Android - Remoto - Canadá",
-        body = "Ajudei a trazer o Thunderbird para Android ao lado de outros projetos " +
-            "mobile da Mozilla. Kotlin em primeiro, privacidade em primeiro, Compose " +
-            "em primeiro, tudo aberto.",
+        body = "Trabalhei no Thunderbird para Android, o app de e-mail open source, tudo no aberto.",
         bullets = listOf(
-            "Desenvolvimento de features no app Android principal",
-            "Android, Jetpack Compose e uma longa lista de infraestrutura",
-            "Contribuindo upstream em bibliotecas mobile compartilhadas",
-            "Entregando para uma comunidade que realmente se importa",
+            "Construí o fluxo de login do Thundermail com OAuth e entrada por QR code",
+            "Levei a lista de mensagens na direção do Jetpack Compose e MVI",
+            "Construí o pii-safe, um compiler plugin em Kotlin que mantém dados pessoais fora dos logs",
+            "Reduzi o tempo de CI dos pull requests em 32-53%",
         ),
     ),
     Experience(
