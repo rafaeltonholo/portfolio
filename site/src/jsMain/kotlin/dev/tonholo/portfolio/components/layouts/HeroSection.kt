@@ -15,17 +15,17 @@ import org.jetbrains.compose.web.dom.Section
 /**
  * Outer `<section>` chrome for hero-shaped sections (page headers, article and
  * project shells, the home hero, the 404 body). Mobile-first: `base` IS the
- * mobile tier with [SiteDimensions.padding.heroTop] on top (extra breathing
- * room above the fold), [SiteDimensions.padding.section] on bottom, and
- * [SiteDimensions.size.Lg] horizontal gutter. From [Breakpoint.MD] the gutter
- * ramps up to [SiteDimensions.size.Xxl]; vertical padding scales through the
+ * mobile tier with [SiteDimensions.padding.section] on top and bottom and
+ * [SiteDimensions.size.Lg] horizontal gutter. From [Breakpoint.MD] the top grows
+ * to [SiteDimensions.padding.heroTop] (extra breathing room above the fold) and
+ * the gutter ramps up to [SiteDimensions.size.Xxl]; vertical padding scales through the
  * underlying [dev.tonholo.portfolio.theme.layout.SiteSizeVar.Xxl] CSS variable
  * so no per-organism overrides are needed.
  */
 val HeroSectionStyle = CssStyle {
     base {
         Modifier.padding(
-            top = SiteDimensions.padding.heroTop,
+            top = SiteDimensions.padding.section,
             bottom = SiteDimensions.padding.section,
             leftRight = SiteDimensions.size.Lg,
         )
