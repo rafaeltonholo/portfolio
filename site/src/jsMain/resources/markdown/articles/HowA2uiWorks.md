@@ -173,12 +173,9 @@ In the A2UI project's own benchmark, run on Gemini Flash, Express used 45% fewer
 
 > Small local models, such as Gemma 4 E2B and E4B, operate with limited context windows and reasoning budgets.
 
-There's a catch for us, though. The Express compilers live in A2UI's *agent* SDKs, which are available for TypeScript, Python and Dart[^sdks]. On the Kotlin side, AndroidX ships the renderer only. The A2UI repository does have an experimental Express compiler in its legacy JVM agent SDK, but that's a server library built on ANTLR, Jackson and Google's [Agent Development Kit](https://github.com/google/adk-python), and it isn't published to Maven. When the model runs *on the phone*, the compiler has to run on the phone too.
+There's a catch for us, though. The Express compilers live in A2UI's *agent* SDKs, which are available for TypeScript, Python and Dart[^sdks]. They can target v0.9, v0.9.1 or v1.0, so their output works with a v0.9.1 renderer, even though every example in the Express proposal is v1.0[^express]. On the Kotlin side, AndroidX ships the renderer only. The A2UI repository does have an experimental Express compiler in its legacy JVM agent SDK, but that's a server library built on ANTLR, Jackson and Google's [Agent Development Kit](https://github.com/google/adk-python), and it isn't published to Maven. When the model runs *on the phone*, the compiler has to run on the phone too.
 
-> [!NOTE]
-> If you open the Express proposal, you'll see it compiles to v1.0, and all its examples are v1.0. That doesn't rule out the AndroidX renderer: the compilers take a target version, v0.9, v0.9.1 or v1.0[^express]. For v0.9.1, they write bindings as `path` instead of `@path` and send `createSurface`, `updateComponents` and `updateDataModel` as separate messages[^formats].
-
-## Conclusion
+## Wrapping up
 
 In this article, you have learned how A2UI describes UI as data: a flat list of components from a catalog your app already knows, a separate data model, and actions that decide what goes back to the agent. The model never sends code, and your app stays in charge of how everything looks and behaves.
 
