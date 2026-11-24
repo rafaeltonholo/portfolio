@@ -6,6 +6,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import com.varabyte.kobweb.browser.dom.ElementTarget
 import com.varabyte.kobweb.compose.css.CSSLengthOrPercentageNumericValue
 import com.varabyte.kobweb.compose.css.ColorInterpolationMethod
 import com.varabyte.kobweb.compose.css.Cursor
@@ -59,6 +60,7 @@ import dev.tonholo.portfolio.components.atoms.DotVariant
 import dev.tonholo.portfolio.components.atoms.IconButton
 import dev.tonholo.portfolio.components.atoms.MetaSeparator
 import dev.tonholo.portfolio.components.atoms.PhosphorIcon
+import dev.tonholo.portfolio.components.atoms.Tooltip
 import dev.tonholo.portfolio.components.molecules.BrandMark
 import dev.tonholo.portfolio.components.molecules.LanguageSwitch
 import dev.tonholo.portfolio.components.molecules.NavLink
@@ -127,7 +129,7 @@ private const val NAV_META_OPACITY_TRANSITION_S = 0.22
 private const val STATUS_AUTO_COLLAPSE_DELAY_MS = 4500L
 
 // The open status badge only fits next to the full nav from this width; below it, the badge stays a dot and its
-// text shows as a tooltip.
+// text shows in a tooltip.
 private const val STATUS_BADGE_OPEN_QUERY = "(min-width: 80rem)"
 
 // Phosphor glyph names for the theme toggle.
@@ -374,7 +376,6 @@ private fun StatusBadge(statusLabel: String, presenceLabel: String) {
         )
         .onMouseEnter { closedByReader = false }
         .onMouseLeave { closedByReader = true }
-        .title("$statusLabel $presenceLabel")
         .ariaLabel("$statusLabel $presenceLabel")
 
     Div(attrs = badgeModifier.toAttrs()) {
@@ -393,6 +394,9 @@ private fun StatusBadge(statusLabel: String, presenceLabel: String) {
             MetaSeparator(color = tokens.muted.muted2)
             ComposeText(presenceLabel)
         }
+    }
+    if (!hasRoomToOpen) {
+        Tooltip(target = ElementTarget.PreviousSibling, text = "$statusLabel · $presenceLabel")
     }
 }
 
