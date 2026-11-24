@@ -23,7 +23,7 @@ Ask an AI assistant to help you pack for a trip and you'll get a list, as plain 
 
 Now imagine the answer was a real checklist instead, with checkboxes you can tap, drawn by the app with its own components. Nobody on the team designed a "packing list" screen for it. The model described the UI it wanted, and the app rendered it.
 
-That's the idea behind generative UI, and [A2UI](https://a2ui.org/) is an open-source protocol for it. There's already good documentation on how to plug the AndroidX renderer into an app, so I won't just repeat it here. Instead, this is a series in two parts. In this one, let's look at how the protocol actually works and why it's shaped the way it is. In part two (coming soon), we'll see what happens when the "agent" isn't a big model in the cloud but a small one running on a three-year-old phone.
+That's the idea behind generative UI, and [A2UI](https://a2ui.org/) is an open-source protocol for it. There's already good documentation on how to use the AndroidX renderer in an app, so I won't repeat it here. Instead, I want to go a level deeper, in two parts. In this first one, let's look at how the protocol actually works and why it's shaped the way it is. In part two (coming soon), we'll see what happens when the "agent" isn't a big model in the cloud but a small one running on a three-year-old phone.
 
 > [!NOTE]
 > This part follows the A2UI v0.9.1 specification, the version that [AndroidX A2UI Compose `1.0.0-alpha02`](https://developer.android.com/jetpack/androidx/releases/a2ui-compose) supports, as I read it on November 13 and 14, 2026. AndroidX A2UI is still in alpha, so expect some details to change.
