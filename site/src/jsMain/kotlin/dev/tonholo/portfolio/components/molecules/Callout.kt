@@ -77,11 +77,7 @@ private const val PARAGRAPH_BOTTOM_GAP_EM = 0.5
  * @param lightColor accent color used when rendering in light color mode.
  * @param darkColor accent color used when rendering in dark color mode.
  */
-enum class CalloutType(
-    val iconName: String,
-    val lightColor: Color,
-    val darkColor: Color,
-) {
+enum class CalloutType(val iconName: String, val lightColor: Color, val darkColor: Color) {
     NOTE(
         iconName = "info",
         lightColor = Color.rgb(LIGHT_NOTE_COLOR_HEX),
