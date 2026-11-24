@@ -70,4 +70,31 @@ class GiscusConfigTest {
         val actualContainerId: String = GiscusConfig.CONTAINER_ID
         assertEquals(expected = expectedContainerId, actual = actualContainerId)
     }
+
+    @Test
+    fun givenSearchWithGiscusSession_whenIsSignInReturnIsCalled_thenReturnsTrue() {
+        val inputSearch: String = "?giscus=abc123"
+        val actualResult: Boolean = GiscusConfig.isSignInReturn(search = inputSearch)
+        assertTrue(actualResult)
+    }
+
+    @Test
+    fun givenSearchWithGiscusSessionAfterOtherParams_whenIsSignInReturnIsCalled_thenReturnsTrue() {
+        val inputSearch: String = "?ref=twitter&giscus=abc123"
+        val actualResult: Boolean = GiscusConfig.isSignInReturn(search = inputSearch)
+        assertTrue(actualResult)
+    }
+
+    @Test
+    fun givenSearchWithoutGiscusSession_whenIsSignInReturnIsCalled_thenReturnsFalse() {
+        val inputSearch: String = "?ref=giscus-blog"
+        val actualResult: Boolean = GiscusConfig.isSignInReturn(search = inputSearch)
+        assertFalse(actualResult)
+    }
+
+    @Test
+    fun givenEmptySearch_whenIsSignInReturnIsCalled_thenReturnsFalse() {
+        val actualResult: Boolean = GiscusConfig.isSignInReturn(search = "")
+        assertFalse(actualResult)
+    }
 }

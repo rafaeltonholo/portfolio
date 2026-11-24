@@ -5,17 +5,21 @@ import androidx.compose.runtime.DisposableEffect
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.fillMaxWidth
 import com.varabyte.kobweb.compose.ui.modifiers.id
+import com.varabyte.kobweb.compose.ui.modifiers.scrollMargin
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import dev.tonholo.portfolio.state.LocalThemeState
 import dev.tonholo.portfolio.state.ThemeState
 import kotlinx.browser.document
 import kotlinx.browser.window
+import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.dom.Div
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.HTMLIFrameElement
 import org.w3c.dom.HTMLMetaElement
 import org.w3c.dom.HTMLScriptElement
+
+private const val COMMENTS_SCROLL_MARGIN_TOP_REM = 6.0
 
 /**
  * Embeds the Giscus GitHub Discussions comment widget for the specified discussion [term].
@@ -33,10 +37,12 @@ fun GiscusWrapper(term: String, modifier: Modifier = Modifier) {
         syncGiscusWidget(targetTheme = targetTheme, term = term)
         onDispose { }
     }
+    KeepCommentsInViewAfterSignIn()
     Div(
         attrs = Modifier
             .fillMaxWidth()
             .id(GiscusConfig.CONTAINER_ID)
+            .scrollMargin(top = COMMENTS_SCROLL_MARGIN_TOP_REM.cssRem)
             .then(modifier)
             .toAttrs {
                 classes("giscus")
