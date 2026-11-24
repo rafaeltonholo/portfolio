@@ -3,7 +3,7 @@ routeOverride: /articles/pt-br/como-o-a2ui-funciona
 slug: how-a2ui-works
 locale: pt-BR
 title: 'Como o A2UI funciona: UI generativa como dados, não como código'
-date: 21 de nov. de 2026
+date: 24 de nov. de 2026
 description: >
     Como o protocolo A2UI descreve a UI como dados: surfaces, a lista plana de componentes, data binding, e por que
     um modelo não deveria precisar escrever o formato que o renderer lê.
@@ -20,6 +20,8 @@ tags:
     - android
     - a2ui
     - generative-ui
+    - on-device-llm
+    - llm
 ---
 
 Peça pra uma IA te ajudar a arrumar a mala para uma viagem e ela vai te entregar uma lista com apenas texto. Até dá pra ler, mas não vai dar pra marcar nada.
