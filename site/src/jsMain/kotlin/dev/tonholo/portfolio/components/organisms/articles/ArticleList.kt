@@ -183,7 +183,7 @@ private fun ArticleRow(article: Article, isLast: Boolean, strings: Strings.Artic
     }
 
     Link(
-        path = Routes.article(slug = article.slug, locale = locale),
+        path = Routes.article(slug = article.pathSlug, locale = locale),
         modifier = rowModifier,
         variant = UndecoratedLinkVariant then UncoloredLinkVariant,
     ) {

@@ -199,13 +199,13 @@ data class ArticleMarkdownLayoutData(
 )
 
 private fun ArticleMarkdownLayoutData.canonicalUrl(): String =
-    "${PageMetadata.SITE_URL}${Routes.article(slug = slug, locale = locale)}"
+    "${PageMetadata.SITE_URL}${StaticContent.articleRoute(slug = slug, locale = locale)}"
 
 private fun ArticleMarkdownLayoutData.alternates(): List<AlternateLink> = if (hasTranslation) {
     Locale.entries.map { version ->
         AlternateLink(
             hreflang = version.tag,
-            href = "${PageMetadata.SITE_URL}${Routes.article(slug = slug, locale = version)}",
+            href = "${PageMetadata.SITE_URL}${StaticContent.articleRoute(slug = slug, locale = version)}",
         )
     }
 } else {
