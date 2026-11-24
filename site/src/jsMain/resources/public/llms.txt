@@ -15,7 +15,7 @@
 
 - [Bleacher Report - Centralized ads and Jetpack Compose adoption](https://rafael.tonholo.dev/projects/bleacher-report): Two initiatives at Bleacher Report: a centralized Ad Manager that eliminated ad-injection crashes and moved slot config to the backend, and the introduction of Jetpack Compose to prepare the team for the next-generation app.
 - [Pinterest - Modularizing Pinterest's codebase](https://rafael.tonholo.dev/projects/pinterest): Adopting an incremental approach and a centralized dynamic-feature dependency manager, we modularized a 9-year-old codebase with millions of users without a freeze.
-- [Thunderbird for Android - Compose state machines, Thundermail onboarding, and privacy-first architecture](https://rafael.tonholo.dev/projects/thunderbird): Modernizing a 15-year-old open-source email client: bridging legacy Android views to Jetpack Compose state machines, shipping Thundermail desktop-to-mobile onboarding, and driving privacy with a Kotlin K2 compiler plugin and RFC standards at Mozilla.
+- [Thunderbird for Android - a Compose message list, Thundermail sign-in, and a privacy compiler plugin](https://rafael.tonholo.dev/projects/thunderbird): What I built on Thunderbird for Android: a Compose and MVI message list bridged into the legacy screen, Thundermail sign-in from design to release, a declarative feature flag platform, and pii-safe, a Kotlin K2 compiler plugin that keeps personal data out of logs.
 
 ## Pages
 
