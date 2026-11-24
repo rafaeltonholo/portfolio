@@ -116,4 +116,31 @@ class MarkdownArticlesProcessorTest {
     }
 
     private fun frontMatterOf(yaml: String): List<String> = yaml.trimIndent().lines()
+
+    @Test
+    fun `given a route override - when extracting the path slug - then it is the last route segment`() {
+        val frontMatter: List<String> = frontMatterOf(
+            """
+            routeOverride: /articles/pt-br/como-o-a2ui-funciona
+            slug: how-a2ui-works
+            """,
+        )
+
+        val pathSlug: String = MarkdownArticlesProcessor.extractPathSlug(frontMatter, fallback = "how-a2ui-works")
+
+        assertEquals(expected = "como-o-a2ui-funciona", actual = pathSlug)
+    }
+
+    @Test
+    fun `given no route override - when extracting the path slug - then the fallback slug is used`() {
+        val frontMatter: List<String> = frontMatterOf(
+            """
+            slug: git-command-line
+            """,
+        )
+
+        val pathSlug: String = MarkdownArticlesProcessor.extractPathSlug(frontMatter, fallback = "git-command-line")
+
+        assertEquals(expected = "git-command-line", actual = pathSlug)
+    }
 }

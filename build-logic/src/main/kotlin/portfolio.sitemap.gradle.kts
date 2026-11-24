@@ -16,7 +16,6 @@ val projectSlugs: List<String> = listOf("svg-compose")
 val localizedPathSegments: List<String> = SlugUtils.LOCALIZED_PATH_SEGMENTS
 
 val articlesMarkdownDir: File = layout.projectDirectory.dir("src/jsMain/resources/markdown/articles").asFile
-val articleSlugs: List<String> = SlugUtils.findMarkdownSlugs(articlesMarkdownDir)
 
 val projectsMarkdownDir: File = layout.projectDirectory.dir("src/jsMain/resources/markdown/projects").asFile
 val projectMarkdownSlugs: List<String> = SlugUtils.findMarkdownSlugs(projectsMarkdownDir)
@@ -28,10 +27,7 @@ val markdownProjectUrls: List<String> = projectMarkdownSlugs.map { kebabSlug: St
     val (canonical: String, lang: String?) = kebabSlug.splitLocalizedSlug()
     if (lang == null) "/projects/$canonical" else "/projects/$lang/$canonical"
 }
-val articleUrls: List<String> = articleSlugs.map { kebabSlug: String ->
-    val (canonical: String, lang: String?) = kebabSlug.splitLocalizedSlug()
-    if (lang == null) "/articles/$canonical" else "/articles/$lang/$canonical"
-}
+val articleUrls: List<String> = SlugUtils.findMarkdownRoutes(directory = articlesMarkdownDir, section = "articles")
 val allExtraSlugs: List<String> = dynamicProjectUrls + markdownProjectUrls + articleUrls
 
 val generateSitemap = tasks.register<GenerateSitemapTask>("generateSitemap") {

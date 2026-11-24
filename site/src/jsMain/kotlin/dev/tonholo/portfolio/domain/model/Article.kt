@@ -19,9 +19,13 @@ data class ArticleReviewer(val name: String, val link: String = "")
 /**
  * A writing entry listed on the `/articles` page and rendered on the article
  * detail route.
+ *
+ * @property slug shared id that pairs an article with its translations.
+ * @property pathSlug the slug this version uses in its URL; a translation can use its own words.
  */
 data class Article(
     val slug: String,
+    val pathSlug: String = slug,
     val date: String,
     val title: String,
     val description: String,

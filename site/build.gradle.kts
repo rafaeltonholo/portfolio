@@ -1,6 +1,5 @@
 import com.varabyte.kobweb.gradle.application.util.configAsKobwebApplication
 import dev.tonholo.portfolio.buildlogic.SlugUtils
-import dev.tonholo.portfolio.buildlogic.splitLocalizedSlug
 import kotlinx.html.link
 import java.util.Properties
 
@@ -26,7 +25,7 @@ val localizedPathSegments: List<String> = SlugUtils.LOCALIZED_PATH_SEGMENTS
 val projectSlugs: List<String> = listOf("svg-compose")
 
 val articlesMarkdownDir = layout.projectDirectory.dir("src/jsMain/resources/markdown/articles")
-val articleSlugs: List<String> = SlugUtils.findMarkdownSlugs(articlesMarkdownDir.asFile)
+val articleRoutes: List<String> = SlugUtils.findMarkdownRoutes(directory = articlesMarkdownDir.asFile, section = "articles")
 
 val projectsMarkdownDir = layout.projectDirectory.dir("src/jsMain/resources/markdown/projects")
 val projectMarkdownSlugs: List<String> = SlugUtils.findMarkdownSlugs(projectsMarkdownDir.asFile)
@@ -100,11 +99,8 @@ kobweb {
                     )
                 }
             }
-            articleSlugs.forEach { kebabSlug ->
-                val (canonical, lang) = kebabSlug.splitLocalizedSlug()
-                val route = if (lang == null) "/articles/$canonical" else "/articles/$lang/$canonical"
-                val exportPath = if (lang == null) "articles/$canonical.html" else "articles/$lang/$canonical.html"
-                addExtraRoute(route = route, exportPath = exportPath)
+            articleRoutes.forEach { route ->
+                addExtraRoute(route = route, exportPath = "${route.removePrefix("/")}.html")
             }
             // Emit 404.html so GitHub Pages (and most static hosts) serve the
             // IDE-themed recovery screen for unknown URLs. The SPA router

@@ -1,5 +1,6 @@
 package dev.tonholo.portfolio.buildlogic
 
+import dev.tonholo.portfolio.buildlogic.markdown.MarkdownArticlesProcessor
 import java.io.File
 
 /**
@@ -54,14 +55,42 @@ object SlugUtils {
     }
 
     /**
+     * Finds the route of every markdown page in [directory], sorted like [findMarkdownSlugs]. A page's `routeOverride`
+     * frontmatter wins; otherwise the route is `/<section>/<slug>`, or `/<section>/<lang>/<slug>` for a translation
+     * such as `ArticlePtBr.md`.
+     */
+    fun findMarkdownRoutes(directory: File, section: String): List<String> =
+        markdownFiles(directory).map { file: File ->
+            routeOverrideOf(file) ?: defaultRoute(section = section, kebabSlug = camelCaseToKebabCase(file.nameWithoutExtension))
+        }
+
+    /**
      * Finds and formats all markdown file slugs in a directory.
      */
     fun findMarkdownSlugs(directory: File): List<String> =
+        markdownFiles(directory).map { camelCaseToKebabCase(it.nameWithoutExtension) }
+
+    private fun markdownFiles(directory: File): List<File> =
         directory.takeIf { it.exists() }
             ?.listFiles { file: File -> file.isFile && file.extension == "md" }
-            ?.map { camelCaseToKebabCase(it.nameWithoutExtension) }
-            ?.sorted()
+            ?.sortedBy { camelCaseToKebabCase(it.nameWithoutExtension) }
             .orEmpty()
+
+    private fun routeOverrideOf(file: File): String? =
+        MarkdownArticlesProcessor.extractScalar("routeOverride", frontMatterLinesOf(file.readText()))
+            ?.takeIf { it.isNotBlank() }
+
+    private fun defaultRoute(section: String, kebabSlug: String): String {
+        val (canonical: String, lang: String?) = splitLocalizedSlug(kebabSlug)
+        return if (lang == null) "/$section/$canonical" else "/$section/$lang/$canonical"
+    }
+}
+
+/** Returns the lines of the `---` frontmatter block at the top of a markdown [text], or an empty list. */
+fun frontMatterLinesOf(text: String): List<String> {
+    if (!text.startsWith("---")) return emptyList()
+    val closingMarker: Int = text.indexOf("---", startIndex = 3)
+    return if (closingMarker == -1) emptyList() else text.substring(3, closingMarker).lines()
 }
 
 /** Extension wrapper for [SlugUtils.camelCaseToKebabCase]. */
