@@ -169,4 +169,36 @@ class StaticContentTest {
         assertEquals(expected = SkillCategory.AlsoComfortable, actual = bucket.category)
         assertTrue(actual = bucket.skills.isNotEmpty())
     }
+
+    @Test
+    fun `given the how a2ui works article - when building its pt-BR route - then it uses the Portuguese slug`() {
+        // Arrange / Act
+        val route: String = StaticContent.articleRoute(slug = "how-a2ui-works", locale = Locale.PtBr)
+        // Assert
+        assertEquals(expected = "/articles/pt-br/como-o-a2ui-funciona", actual = route)
+    }
+
+    @Test
+    fun `given the how a2ui works article - when building its English route - then it uses the English slug`() {
+        // Arrange / Act
+        val route: String = StaticContent.articleRoute(slug = "how-a2ui-works", locale = Locale.EnCa)
+        // Assert
+        assertEquals(expected = "/articles/how-a2ui-works", actual = route)
+    }
+
+    @Test
+    fun `given an older translated article - when building its pt-BR route - then it keeps the shared slug`() {
+        // Arrange / Act
+        val route: String = StaticContent.articleRoute(slug = "git-time-travel-reflog-reset", locale = Locale.PtBr)
+        // Assert
+        assertEquals(expected = "/articles/pt-br/git-time-travel-reflog-reset", actual = route)
+    }
+
+    @Test
+    fun `given a Portuguese path slug - when finding the article slug - then the shared slug is returned`() {
+        // Arrange / Act
+        val slug: String = StaticContent.articleSlugForPath(pathSlug = "como-o-a2ui-funciona", locale = Locale.PtBr)
+        // Assert
+        assertEquals(expected = "how-a2ui-works", actual = slug)
+    }
 }

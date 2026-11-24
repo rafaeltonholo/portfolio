@@ -11,6 +11,7 @@ import dev.tonholo.portfolio.domain.model.SkillBucket
 import dev.tonholo.portfolio.domain.model.SkillCategory
 import dev.tonholo.portfolio.generated.articles.GeneratedArticles
 import dev.tonholo.portfolio.locale.Locale
+import dev.tonholo.portfolio.navigation.Routes
 
 /**
  * Seed static content keyed by [Locale]. English is the source of truth;
@@ -47,6 +48,26 @@ object StaticContent {
         Locale.EnCa -> GeneratedArticles.EN
         Locale.PtBr -> GeneratedArticles.PT_BR
     }
+
+    /**
+     * Builds the URL of the article identified by [slug] in [locale], using the slug that version has in its URL.
+     *
+     * @param slug shared id that pairs the article with its translations.
+     * @param locale the version to link to.
+     */
+    fun articleRoute(slug: String, locale: Locale): String {
+        val pathSlug: String = articlesFor(locale).firstOrNull { it.slug == slug }?.pathSlug ?: slug
+        return Routes.article(slug = pathSlug, locale = locale)
+    }
+
+    /**
+     * Finds the shared slug of the article whose [locale] version uses [pathSlug] in its URL.
+     *
+     * @param pathSlug the slug read from the URL.
+     * @param locale the version the URL belongs to.
+     */
+    fun articleSlugForPath(pathSlug: String, locale: Locale): String =
+        articlesFor(locale).firstOrNull { it.pathSlug == pathSlug }?.slug ?: pathSlug
 
     /** English (source-of-truth) experience list. Prefer [experienceFor]. */
     val EXPERIENCE: List<Experience> = EXPERIENCE_EN

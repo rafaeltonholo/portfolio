@@ -236,7 +236,7 @@ private fun WritingEntry(article: Article, strings: Strings.NowStrip) {
     val tokens: PortfolioTokens = LocalPortfolioTokens.current
     val locale: Locale = LocalLocaleState.current.current
     val analytics: AnalyticsManager = LocalAnalyticsManager.current
-    val articlePath: String = Routes.article(slug = article.slug, locale = locale)
+    val articlePath: String = Routes.article(slug = article.pathSlug, locale = locale)
     val statusLabel: String = when (article.status) {
         ArticleStatus.Draft -> strings.statusDraft
         ArticleStatus.Published -> strings.statusPublished

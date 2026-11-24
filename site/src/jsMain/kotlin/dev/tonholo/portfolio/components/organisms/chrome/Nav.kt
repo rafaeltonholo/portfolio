@@ -69,10 +69,12 @@ import dev.tonholo.portfolio.components.molecules.NavLink
 import dev.tonholo.portfolio.locale.LocalStrings
 import dev.tonholo.portfolio.locale.Locale
 import dev.tonholo.portfolio.locale.Strings
+import dev.tonholo.portfolio.navigation.LocalizedSlug
 import dev.tonholo.portfolio.navigation.Routes
 import dev.tonholo.portfolio.state.LocalLocaleState
 import dev.tonholo.portfolio.state.LocalThemeState
 import dev.tonholo.portfolio.state.LocaleState
+import dev.tonholo.portfolio.state.StaticContent
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.color.Muted
 import dev.tonholo.portfolio.theme.color.Paper
@@ -324,12 +326,18 @@ private fun switchLocale(
     val localized = Routes.parseLocalizedSlug(currentRoute) ?: return
     if (localized.locale == next) return
     val target = when (localized.section) {
-        Routes.ARTICLES -> Routes.article(slug = localized.slug, locale = next)
+        Routes.ARTICLES -> translatedArticleRoute(current = localized, next = next)
         Routes.PROJECTS -> Routes.project(slug = localized.slug, locale = next)
         else -> return
     }
     if (target == currentRoute) return
     pageContext.router.tryRoutingTo(pathQueryAndFragment = target)
+}
+
+/** The route of the article in [current] for [next], since each version of an article can use its own slug. */
+private fun translatedArticleRoute(current: LocalizedSlug, next: Locale): String {
+    val slug: String = StaticContent.articleSlugForPath(pathSlug = current.slug, locale = current.locale)
+    return StaticContent.articleRoute(slug = slug, locale = next)
 }
 
 @Composable
