@@ -64,6 +64,11 @@ kobweb {
                     href = "https://unpkg.com/@phosphor-icons/web@2.1.2/src/fill/style.css"
                 }
                 link {
+                    rel = "icon"
+                    type = "image/svg+xml"
+                    href = "/favicon.svg"
+                }
+                link {
                     rel = "apple-touch-icon"
                     href = "/logo192.png"
                 }
