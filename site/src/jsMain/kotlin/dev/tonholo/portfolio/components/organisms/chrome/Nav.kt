@@ -69,6 +69,7 @@ import dev.tonholo.portfolio.navigation.Routes
 import dev.tonholo.portfolio.state.LocalLocaleState
 import dev.tonholo.portfolio.state.LocalThemeState
 import dev.tonholo.portfolio.state.LocaleState
+import dev.tonholo.portfolio.state.rememberMediaQueryMatch
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.color.Muted
 import dev.tonholo.portfolio.theme.color.Paper
@@ -124,6 +125,10 @@ private const val NAV_META_OPACITY_TRANSITION_S = 0.22
 
 // Delay (in ms) before the status badge auto-collapses after mount.
 private const val STATUS_AUTO_COLLAPSE_DELAY_MS = 4500L
+
+// The open status badge only fits next to the full nav from this width; below it, the badge stays a dot and its
+// text shows as a tooltip.
+private const val STATUS_BADGE_OPEN_QUERY = "(min-width: 80rem)"
 
 // Phosphor glyph names for the theme toggle.
 private const val THEME_ICON_SUN = "sun"
@@ -339,11 +344,13 @@ private fun NavLinksCluster(currentRoute: String, links: List<NavLinkEntry>) {
 @Composable
 private fun StatusBadge(statusLabel: String, presenceLabel: String) {
     val tokens = LocalPortfolioTokens.current
-    var collapsed by remember { mutableStateOf(value = false) }
+    var closedByReader by remember { mutableStateOf(value = false) }
+    val hasRoomToOpen: Boolean = rememberMediaQueryMatch(query = STATUS_BADGE_OPEN_QUERY)
+    val collapsed: Boolean = closedByReader || !hasRoomToOpen
 
     LaunchedEffect(Unit) {
         delay(timeMillis = STATUS_AUTO_COLLAPSE_DELAY_MS)
-        collapsed = true
+        closedByReader = true
     }
 
     val gap = if (collapsed) 0.cssRem else NAV_META_GAP_EXPANDED
@@ -365,8 +372,8 @@ private fun StatusBadge(statusLabel: String, presenceLabel: String) {
             style = LineStyle.Solid,
             color = borderColor,
         )
-        .onMouseEnter { collapsed = false }
-        .onMouseLeave { collapsed = true }
+        .onMouseEnter { closedByReader = false }
+        .onMouseLeave { closedByReader = true }
         .title("$statusLabel $presenceLabel")
         .ariaLabel("$statusLabel $presenceLabel")
 
