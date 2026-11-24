@@ -22,7 +22,7 @@ tags:
     - generative-ui
 ---
 
-Peça pra uma IA te ajudar a arrumar a mala de uma viagem e ela te entrega uma lista, apenas em texto. Até dá pra ler, mas não vai dar pra marcar nada.
+Peça pra uma IA te ajudar a arrumar a mala para uma viagem e ela vai te entregar uma lista com apenas texto. Até dá pra ler, mas não vai dar pra marcar nada.
 
 Agora imagina que a resposta fosse um checklist de verdade, com checkboxes que você consegue interagir, desenhado pelo app com os componentes dele. Ninguém do time criou uma tela de "checklist de viagem" pra isso. O modelo descreveu a UI que queria e o app simplesmente renderizou.
 
