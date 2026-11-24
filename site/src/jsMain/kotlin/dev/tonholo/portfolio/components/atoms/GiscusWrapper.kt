@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.fillMaxWidth
+import com.varabyte.kobweb.compose.ui.modifiers.id
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import dev.tonholo.portfolio.state.LocalThemeState
@@ -35,6 +36,7 @@ fun GiscusWrapper(term: String, modifier: Modifier = Modifier) {
     Div(
         attrs = Modifier
             .fillMaxWidth()
+            .id(GiscusConfig.CONTAINER_ID)
             .then(modifier)
             .toAttrs {
                 classes("giscus")
