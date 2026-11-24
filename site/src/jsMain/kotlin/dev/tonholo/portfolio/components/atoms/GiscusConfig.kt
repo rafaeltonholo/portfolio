@@ -15,6 +15,12 @@ internal object GiscusConfig {
     const val EXPORT_QUERY_FLAG: String = "_kobwebIsExporting=true"
 
     /**
+     * Id of the element that hosts the widget. Giscus adds it as the `#` part of the address it returns readers to
+     * after they sign in with GitHub, so the page opens at the comments and not at the top.
+     */
+    const val CONTAINER_ID: String = "comments"
+
+    /**
      * Determines whether Giscus should be injected based on the current search query string.
      *
      * @param search window location search string.

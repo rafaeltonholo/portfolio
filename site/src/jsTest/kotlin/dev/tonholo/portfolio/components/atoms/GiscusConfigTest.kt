@@ -63,4 +63,11 @@ class GiscusConfigTest {
         assertEquals(expected = expectedCategory, actual = actualCategory)
         assertEquals(expected = expectedCategoryId, actual = actualCategoryId)
     }
+
+    @Test
+    fun givenGiscusConfig_whenContainerIdChecked_thenItIsTheCommentsAnchor() {
+        val expectedContainerId: String = "comments"
+        val actualContainerId: String = GiscusConfig.CONTAINER_ID
+        assertEquals(expected = expectedContainerId, actual = actualContainerId)
+    }
 }
