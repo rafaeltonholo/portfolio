@@ -26,6 +26,7 @@ import dev.tonholo.portfolio.state.resolveInitialColorMode
 import dev.tonholo.portfolio.theme.color.AccentMint
 import dev.tonholo.portfolio.theme.color.Ink
 import dev.tonholo.portfolio.theme.color.Paper
+import dev.tonholo.portfolio.theme.layout.SiteDimensions
 import dev.tonholo.portfolio.theme.layout.SiteSizeVar
 import dev.tonholo.portfolio.theme.layout.unit.dp
 import dev.tonholo.portfolio.theme.typography.FontFamilies
@@ -52,8 +53,7 @@ private const val XL_REM = 56.25
  * | MD   | 45     | 720    | "Mobile" cutoff (shell gutter flips to 48px) |
  * | LG   | 51.25  | 820    | "Tablet"      |
  * | XL   | 56.25  | 900    | "TabletLg"    |
- *
- * XXL is left at its default by omitting it; [BreakpointSizes] falls back to XL.
+ * | XXL  | 80     | 1280   | the content max width, see [SiteDimensions.layout] |
  */
 @InitSilk
 fun initBreakpoints(ctx: InitSilkContext) {
@@ -62,6 +62,7 @@ fun initBreakpoints(ctx: InitSilkContext) {
         md = MD_REM.cssRem,
         lg = LG_REM.cssRem,
         xl = XL_REM.cssRem,
+        xxl = SiteDimensions.layout.contentMaxWidth,
     )
 }
 

@@ -49,11 +49,13 @@ import com.varabyte.kobweb.compose.ui.modifiers.zIndex
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.core.PageContext
 import com.varabyte.kobweb.core.rememberPageContext
+import com.varabyte.kobweb.framework.annotations.DelicateApi
 import com.varabyte.kobweb.silk.style.CssStyle
 import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.style.extendedBy
 import com.varabyte.kobweb.silk.style.toModifier
 import com.varabyte.kobweb.silk.style.until
+import com.varabyte.kobweb.silk.theme.breakpoint.rememberBreakpoint
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import dev.tonholo.portfolio.components.atoms.Dot
 import dev.tonholo.portfolio.components.atoms.DotVariant
@@ -71,7 +73,6 @@ import dev.tonholo.portfolio.navigation.Routes
 import dev.tonholo.portfolio.state.LocalLocaleState
 import dev.tonholo.portfolio.state.LocalThemeState
 import dev.tonholo.portfolio.state.LocaleState
-import dev.tonholo.portfolio.state.rememberMediaQueryMatch
 import dev.tonholo.portfolio.theme.LocalPortfolioTokens
 import dev.tonholo.portfolio.theme.color.Muted
 import dev.tonholo.portfolio.theme.color.Paper
@@ -97,6 +98,7 @@ import org.jetbrains.compose.web.dom.Text as ComposeText
 // `.nav-inner` layout geometry.
 private val NAV_INNER_PADDING_Y = 16.dp
 private val NAV_INNER_GAP = 32.dp
+private val NAV_INNER_GAP_COMPACT = 12.dp
 private val NAV_INNER_GAP_MOBILE = 8.dp
 
 // `.nav` bottom hairline width.
@@ -128,9 +130,9 @@ private const val NAV_META_OPACITY_TRANSITION_S = 0.22
 // Delay (in ms) before the status badge auto-collapses after mount.
 private const val STATUS_AUTO_COLLAPSE_DELAY_MS = 4500L
 
-// The open status badge only fits next to the full nav from this width; below it, the badge stays a dot and its
+// The open status badge only fits next to the full nav from this breakpoint; below it, the badge stays a dot and its
 // text shows in a tooltip.
-private const val STATUS_BADGE_OPEN_QUERY = "(min-width: 80rem)"
+private val STATUS_BADGE_OPEN_BREAKPOINT = Breakpoint.XXL
 
 // Phosphor glyph names for the theme toggle.
 private const val THEME_ICON_SUN = "sun"
@@ -343,11 +345,12 @@ private fun NavLinksCluster(currentRoute: String, links: List<NavLinkEntry>) {
     }
 }
 
+@OptIn(DelicateApi::class)
 @Composable
 private fun StatusBadge(statusLabel: String, presenceLabel: String) {
     val tokens = LocalPortfolioTokens.current
     var closedByReader by remember { mutableStateOf(value = false) }
-    val hasRoomToOpen: Boolean = rememberMediaQueryMatch(query = STATUS_BADGE_OPEN_QUERY)
+    val hasRoomToOpen: Boolean = rememberBreakpoint() >= STATUS_BADGE_OPEN_BREAKPOINT
     val collapsed: Boolean = closedByReader || !hasRoomToOpen
 
     LaunchedEffect(Unit) {
@@ -445,7 +448,7 @@ val NavStyle = CssStyle {
 /**
  * Base `CssStyle` for the inner flex row. Ports `.nav-inner`: caps content at
  * the shell max-width, centers horizontally with auto margins, and layers the
- * nav's 16px vertical padding plus a 32px gap between children. Horizontal
+ * nav's 16px vertical padding plus a gap between children that grows with the width. Horizontal
  * gutters come from [ChromeShellStyle], so the nav lines up with the page content.
  */
 val NavInnerStyle = ChromeShellStyle.extendedBy {
@@ -454,12 +457,16 @@ val NavInnerStyle = ChromeShellStyle.extendedBy {
             .display(DisplayStyle.Flex)
             .alignItems(AlignItems.Center)
             .gap(NAV_INNER_GAP_MOBILE)
+            .whiteSpace(WhiteSpace.NoWrap)
             .padding {
                 top(NAV_INNER_PADDING_Y)
                 bottom(NAV_INNER_PADDING_Y)
             }
     }
-    Breakpoint.MD {
+    Breakpoint.XL {
+        Modifier.gap(NAV_INNER_GAP_COMPACT)
+    }
+    Breakpoint.XXL {
         Modifier.gap(NAV_INNER_GAP)
     }
 }
@@ -475,8 +482,8 @@ val NavLinksStyle = CssStyle {
             .gap(NAV_LINKS_GAP)
             .margin(left = auto.unsafeCast<CSSLengthOrPercentageNumericValue>())
     }
-    // The desktop link cluster is replaced by the mobile drawer below MD.
-    until(Breakpoint.MD) {
+    // The desktop link cluster is replaced by the mobile drawer below XL.
+    until(Breakpoint.XL) {
         Modifier.display(DisplayStyle.None)
     }
 }
@@ -489,7 +496,7 @@ val NavLanguageSwitchStyle = CssStyle {
     base {
         Modifier.display(DisplayStyle.LegacyInlineFlex)
     }
-    until(Breakpoint.MD) {
+    until(Breakpoint.XL) {
         Modifier.display(DisplayStyle.None)
     }
 }
@@ -504,17 +511,17 @@ val NavMobileToggleStyle = CssStyle {
     base {
         Modifier.display(DisplayStyle.LegacyInlineFlex)
     }
-    Breakpoint.MD {
+    Breakpoint.XL {
         Modifier.display(DisplayStyle.None)
     }
 }
 
 /**
- * Base `CssStyle` for the theme toggle. Below [Breakpoint.MD] the desktop links cluster that owns the auto margin is
+ * Base `CssStyle` for the theme toggle. Below [Breakpoint.XL] the desktop links cluster that owns the auto margin is
  * hidden, so the toggle takes the auto margin and sits at the right edge next to the mobile menu toggle.
  */
 val NavThemeToggleStyle = CssStyle {
-    until(Breakpoint.MD) {
+    until(Breakpoint.XL) {
         Modifier.margin(left = auto.unsafeCast<CSSLengthOrPercentageNumericValue>())
     }
 }
@@ -619,8 +626,8 @@ val NavMetaStyle = CssStyle {
     }
     // The status pill is an editorial affordance that relies on hover to
     // expand. Touch devices do not have a meaningful hover state and the
-    // pill fights for width in an already-tight nav; hide it below MD.
-    until(Breakpoint.MD) {
+    // pill fights for width in an already-tight nav; hide it below XL.
+    until(Breakpoint.XL) {
         Modifier.display(DisplayStyle.None)
     }
 }
