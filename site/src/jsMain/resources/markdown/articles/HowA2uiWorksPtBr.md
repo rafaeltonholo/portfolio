@@ -176,12 +176,9 @@ No benchmark do próprio projeto A2UI, rodado no Gemini Flash, o Express usou 45
 
 > Small local models, such as Gemma 4 E2B and E4B, operate with limited context windows and reasoning budgets.
 
-Mas tem um problema pra nós. Os compiladores do Express vivem nos SDKs de *agente* do A2UI, que existem pra TypeScript, Python e Dart[^sdks]. Do lado do Kotlin, o AndroidX entrega só o renderer. O repositório do A2UI tem sim um compilador Express experimental no SDK de agente JVM antigo, mas é uma biblioteca de servidor construída em cima de ANTLR, Jackson e do [Agent Development Kit](https://github.com/google/adk-python) do Google, e ela não é publicada no Maven. Quando o modelo roda *no celular*, o compilador também precisa rodar no celular.
+Mas tem um problema pra nós. Os compiladores do Express vivem nos SDKs de *agente* do A2UI, que existem pra TypeScript, Python e Dart[^sdks]. Eles conseguem gerar v0.9, v0.9.1 ou v1.0, então a saída deles funciona com um renderer v0.9.1, mesmo que todos os exemplos da proposta do Express sejam v1.0[^express]. Do lado do Kotlin, o AndroidX entrega só o renderer. O repositório do A2UI tem sim um compilador Express experimental no SDK de agente JVM antigo, mas é uma biblioteca de servidor construída em cima de ANTLR, Jackson e do [Agent Development Kit](https://github.com/google/adk-python) do Google, e ela não é publicada no Maven. Quando o modelo roda *no celular*, o compilador também precisa rodar no celular.
 
-> [!NOTE]
-> Se você abrir a proposta do Express, vai ver que ela compila pra v1.0, e todos os exemplos dela são v1.0. Isso não descarta o renderer do AndroidX: os compiladores recebem uma versão alvo, v0.9, v0.9.1 ou v1.0[^express]. Pra v0.9.1, eles escrevem os bindings como `path` em vez de `@path` e mandam `createSurface`, `updateComponents` e `updateDataModel` como mensagens separadas[^formats].
-
-## Conclusão
+## Pra fechar
 
 Neste artigo, você aprendeu como o A2UI descreve a UI como dados: uma lista plana de componentes de um catálogo que o seu app já conhece, um data model separado, e actions que decidem o que volta pro agente. O modelo nunca manda código, e o seu app continua no controle de como tudo aparece e se comporta.
 
