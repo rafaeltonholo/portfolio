@@ -103,13 +103,13 @@ message, folder, and database migration code.
 I also like to write things down before writing code. While I was there, I wrote 4 RFCs, 1 technical
 design, and 1 architecture decision record:
 
-- RFC 0002, the Thundermail Add Account interim screen.
-- RFC 0003, rendering inline images in plain-text messages.
-- RFC 0004 and Technical Design 0002, the new feature flag architecture. I then delivered it: one
+- [RFC 0002](https://github.com/thunderbird/thunderbird-android/blob/main/docs/engineering/rfcs/0002-thundermail-add-an-account-interim-screen.md), the Thundermail Add Account interim screen.
+- [RFC 0003](https://github.com/thunderbird/thunderbird-android/blob/main/docs/engineering/rfcs/0003-render-inline-images-in-plain-text-messages.md), rendering inline images in plain-text messages.
+- [RFC 0004](https://github.com/thunderbird/thunderbird-android/blob/main/docs/engineering/rfcs/0004-feature-flag-new-architecture.md) and [Technical Design 0002](https://github.com/thunderbird/thunderbird-android/blob/main/docs/engineering/technical-designs/0002-feature-flag-declarative-catalog.md), the new feature flag architecture. I then delivered it: one
   declarative catalog validated at build time, generated type-safe keys, a Gradle plugin, and a debug
   screen. It replaced the six factory classes, and the old code is gone.
-- RFC 0006, remote feature flags, which I built next. They are switched off for now.
-- ADR 0010, a project-wide Repository pattern, which is still marked as Proposed.
+- [RFC 0006](https://github.com/thunderbird/thunderbird-android/blob/main/docs/engineering/rfcs/0006-remote-feature-flags.md), remote feature flags, which I built next. They are switched off for now.
+- [ADR 0010](https://github.com/thunderbird/thunderbird-android/blob/main/docs/engineering/adr/0010-adopt-project-wide-repository-pattern.md), a project-wide Repository pattern, which is still marked as Proposed.
 
 }}}
 
