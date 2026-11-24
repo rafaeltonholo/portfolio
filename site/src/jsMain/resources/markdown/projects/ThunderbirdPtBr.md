@@ -80,7 +80,7 @@ e hoje vem ligado por padrão.
 
 }}}
 
-{{{ .components.organisms.projects.ProjectSection ("/ privacidade &amp; padrões", "Privacidade checada pelo compilador, e documento de design antes do código.")
+{{{ .components.organisms.projects.ProjectSection ("/ privacidade & padrões", "Privacidade checada pelo compilador, e documento de design antes do código.")
 
 Num app de e-mail, as data classes carregam endereços de e-mail, nomes de pastas e dados de conta.
 Logar uma delas sem querer pode vazar dados pessoais, e esconder isso na mão é fácil de esquecer.
