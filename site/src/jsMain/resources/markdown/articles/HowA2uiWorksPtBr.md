@@ -181,9 +181,17 @@ Mas tem um problema pra nós. Os compiladores do Express vivem nos SDKs de *agen
 > [!NOTE]
 > Se você abrir a proposta do Express, vai ver que ela compila pra v1.0, e todos os exemplos dela são v1.0. Isso não descarta o renderer do AndroidX: os compiladores recebem uma versão alvo, v0.9, v0.9.1 ou v1.0[^express]. Pra v0.9.1, eles escrevem os bindings como `path` em vez de `@path` e mandam `createSurface`, `updateComponents` e `updateDataModel` como mensagens separadas[^formats].
 
-## E agora?
+## Conclusão
 
-Então é aqui que estamos: um protocolo ótimo pra renderers, um formato compacto feito pra modelos pequenos, e nenhum jeito de compilar esse formato dentro de um app Android.
+Neste artigo, você aprendeu como o A2UI descreve a UI como dados: uma lista plana de componentes de um catálogo que o seu app já conhece, um data model separado, e actions que decidem o que volta pro agente. O modelo nunca manda código, e o seu app continua no controle de como tudo aparece e se comporta.
+
+A maior parte desse formato existe pra ajudar o renderer. A lista plana deixa a UI aparecer enquanto o stream ainda está chegando, deixa o agente atualizar um único componente e deixa a validação simples. O data model local guarda o que o usuário digita no próprio aparelho até um botão pedir.
+
+É claro que essa facilidade tem um custo, e quem paga é o modelo. O formato que o renderer quer ler não é o formato que um modelo escreve melhor. O time do A2UI sabe disso: a v0.9 trocou o structured output por prompt mais validação, e o Express existe pra que o modelo escreva algo mais curto enquanto um compilador faz o trabalho de achatar.
+
+Então, da próxima vez que você olhar um payload do A2UI, lembre: ele foi feito pra ser lido por um renderer, não escrito por um modelo. Com um modelo grande na nuvem, isso é um detalhe. Com um modelo pequeno num celular, pode ser o problema todo.
+
+## E agora?
 
 Na parte dois (em breve), vamos rodar dois modelos num Pixel 7 Pro, ver o menor deles sofrer com o JSON do wire, escrever um compilador Express minúsculo em Kotlin e medir o quanto ele realmente ajuda.
 
