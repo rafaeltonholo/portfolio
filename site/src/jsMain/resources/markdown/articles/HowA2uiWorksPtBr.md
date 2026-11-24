@@ -1,5 +1,5 @@
 ---
-routeOverride: /articles/pt-br/how-a2ui-works
+routeOverride: /articles/pt-br/como-o-a2ui-funciona
 slug: how-a2ui-works
 locale: pt-BR
 title: 'Como o A2UI funciona: UI generativa como dados, não como código'
