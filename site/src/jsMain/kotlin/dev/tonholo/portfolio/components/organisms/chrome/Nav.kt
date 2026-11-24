@@ -94,6 +94,7 @@ import org.jetbrains.compose.web.dom.Text as ComposeText
 // `.nav-inner` layout geometry.
 private val NAV_INNER_PADDING_Y = 16.dp
 private val NAV_INNER_GAP = 32.dp
+private val NAV_INNER_GAP_MOBILE = 8.dp
 
 // `.nav` bottom hairline width.
 private val NAV_BORDER_WIDTH = 1.dp
@@ -242,7 +243,7 @@ private fun NavInner(
             LanguageSwitch(current = currentLocale, onSwitch = onSwitchLocale)
         }
         IconButton(
-            modifier = Modifier.title(
+            modifier = NavThemeToggleStyle.toModifier().title(
                 if (isDark) strings.themeToggle.titleToLight else strings.themeToggle.titleToDark,
             ),
             ariaLabel = strings.themeToggle.ariaLabel,
@@ -436,11 +437,14 @@ val NavInnerStyle = ChromeShellStyle.extendedBy {
         Modifier
             .display(DisplayStyle.Flex)
             .alignItems(AlignItems.Center)
-            .gap(NAV_INNER_GAP)
+            .gap(NAV_INNER_GAP_MOBILE)
             .padding {
                 top(NAV_INNER_PADDING_Y)
                 bottom(NAV_INNER_PADDING_Y)
             }
+    }
+    Breakpoint.MD {
+        Modifier.gap(NAV_INNER_GAP)
     }
 }
 
@@ -479,16 +483,21 @@ val NavLanguageSwitchStyle = CssStyle {
  * inline nav links cluster owns the navigation surface.
  */
 val NavMobileToggleStyle = CssStyle {
-    // Pushes itself and the preceding theme-toggle to the right edge since
-    // the desktop `.nav-links` cluster (which previously owned the auto
-    // margin) is hidden on this breakpoint.
     base {
-        Modifier
-            .display(DisplayStyle.LegacyInlineFlex)
-            .margin(left = auto.unsafeCast<CSSLengthOrPercentageNumericValue>())
+        Modifier.display(DisplayStyle.LegacyInlineFlex)
     }
     Breakpoint.MD {
         Modifier.display(DisplayStyle.None)
+    }
+}
+
+/**
+ * Base `CssStyle` for the theme toggle. Below [Breakpoint.MD] the desktop links cluster that owns the auto margin is
+ * hidden, so the toggle takes the auto margin and sits at the right edge next to the mobile menu toggle.
+ */
+val NavThemeToggleStyle = CssStyle {
+    until(Breakpoint.MD) {
+        Modifier.margin(left = auto.unsafeCast<CSSLengthOrPercentageNumericValue>())
     }
 }
 
