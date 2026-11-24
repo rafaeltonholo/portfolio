@@ -2,78 +2,132 @@
 layout: .components.layouts.ProjectMarkdownLayout
 slug: thunderbird
 coverImage: /images/projects/thunderbird/hero.png
-title: Thunderbird for Android - Compose state machines, Thundermail onboarding, and privacy-first architecture
-description: "Modernizing a 15-year-old open-source email client: bridging legacy Android views to Jetpack Compose state machines, shipping Thundermail desktop-to-mobile onboarding, and driving privacy with a Kotlin K2 compiler plugin and RFC standards at Mozilla."
+title: Thunderbird for Android - a Compose message list, Thundermail sign-in, and a privacy compiler plugin
+description: "What I built on Thunderbird for Android: a Compose and MVI message list bridged into the legacy screen, Thundermail sign-in from design to release, a declarative feature flag platform, and pii-safe, a Kotlin K2 compiler plugin that keeps personal data out of logs."
 ---
 
-{{{ .components.organisms.projects.ProjectSection ("/ context", "Bringing modern Mozilla standards to a legendary open-source client.")
+{{{ .components.organisms.projects.ProjectSection ("/ context", "An old, much-loved email app that still has to keep working.")
 
-Thunderbird for Android lives alongside K-9 Mail, sharing the same multi-module codebase across distinct application flavors under Mozilla. Built on a battle-tested foundation with over 15 years of continuous development and millions of active users, evolving the platform presents a distinct engineering challenge: **modernizing a massive legacy codebase in production while preserving rock-solid email reliability across both apps**.
+From April 2025 to October 2026 I worked on Thunderbird for Android, the open-source email app,
+as a Senior Software Engineer, Mobile. Everything happens in the open, on the public
+[thunderbird-android](https://github.com/thunderbird/thunderbird-android) repository. The same
+codebase ships two apps, Thunderbird and K-9 Mail, and the app has more than a million monthly
+active users.
 
-Several critical architectural and product needs emerged:
+That means you can't stop the world to modernize it. Every change has to land while the app keeps
+shipping to beta and release, and it has to work for both apps.
 
-**1. Architectural Modernization:** The core message list and reader were tied to legacy Android Views and complex mutable state. The team needed a safe, incremental strategy to transition these central user flows to **Jetpack Compose** and **Unidirectional Data Flow (UDF)** without risking regressions across diverse IMAP, POP3, and Exchange providers.
+During that time, a few problems took most of my time:
 
-**2. Seamless Ecosystem Onboarding:** Launching Mozilla's new hosted email service, **Thundermail**, required an intuitive onboarding experience and friction-free account migration from Thunderbird Desktop to mobile via QR code scanning.
-
-**3. Privacy and Standards Leadership:** As a Mozilla project, user privacy and protocol correctness are non-negotiable. The app needed hardened keyboard privacy and formal RFCs to standardize feature flagging, notification delivery, and RFC MIME email handling.
-
-}}}
-
-{{{ .components.organisms.projects.ProjectSection ("/ legacy to compose", "Bridging legacy Android Views to a Compose state machine.")
-
-The heart of any email client is the message list and message reader. Across both apps, `MessageListFragment` and `MessageContainerView` were deeply intertwined with legacy Android Views, direct database cursors, and fragmented event handling. A complete rewrite would have been high risk and stalled ongoing feature delivery.
-
-To solve this, I designed and implemented a **bidirectional bridge connecting the legacy loading mechanisms to a modern Jetpack Compose state machine**.
-
-We encapsulated message list actions—such as active/focused message tracking, selection modes (`selectedMessages`, Select All, Deselect All), and scroll-to-message side effects—into a reactive unidirectional state machine. This allowed Compose UI items to drive the user interface while seamlessly synchronizing with the underlying background services and database observers.
-
-Additionally, I implemented **Unified Folder support** within this new state architecture. The state machine dynamically resolves account indicator badges and sorting criteria per folder, guaranteeing consistent behavior whether viewing a single folder or a aggregated inbox spanning multiple accounts.
-
-In the message reader, I converted legacy Java data structures (`AttachmentViewInfo.java` to Kotlin) and introduced `AttachmentUiItem` mappers. This enabled us to integrate **Compose-rendered attachment components directly into the legacy `MessageContainerView`**, paving the way for a smooth, screen-by-screen transition to declarative UI.
+- The message list, the main screen of the app, was built on legacy Android Views, with its state
+  spread all over the place. That caused bugs and inconsistencies, and replacing it in one go was
+  not an option.
+- Thunderbird was launching Thundermail, its own email service, and the Android app needed a way to
+  sign in to it.
+- Personal data could end up in logs, and the only protection was each developer remembering to
+  hide it.
+- Feature flags lived in six separate factory classes, one per app and build type, so it was easy to
+  get them wrong.
 
 }}}
 
-{{{ .components.organisms.projects.ProjectSection ("/ thundermail sync", "Delivering desktop-to-mobile onboarding and QR migration.")
+{{{ .components.organisms.projects.ProjectSection ("/ legacy to compose", "A new message list in Compose, plugged into the old screen.")
 
-To support Mozilla's strategic launch of **Thundermail**, I spearheaded the end-to-end mobile onboarding experience.
+The new message list is fully written in Jetpack Compose and uses MVI. The hard part was not the UI,
+it was getting there without a rewrite and without a feature freeze.
 
-I authored the formal RFC for the **Thundermail Add Account interim screen**, establishing the UX flow that guides new and existing users between standard IMAP configurations and Thundermail sign-in. To maintain brand consistency, I developed custom design system components, including `ThundermailButtonPanel` and auto-resizing brand typography (`UsingBrandTypography`, `TextDisplayMediumAutoResize`) optimized for diverse Android screen sizes.
+The idea of using a ViewModel-based state machine came out of a weekly tech meeting where the team
+looked at the problem together. From there, I designed the whole message list state machine as a
+diagram with every state and transition, presented it to the team, and then built it. The
+`MessageListStateMachine` is a direct translation of that diagram.
 
-A major barrier in mobile email adoption is configuring complex server hostnames, ports, and encryption protocols. To eliminate this friction, I implemented **cross-platform QR code migration** leveraging `QrCodeScannerActivityContract` and `K9MigrationManager`. Users can export their accounts from Thunderbird Desktop and scan the QR code on Android, transferring their settings instantly.
+To keep each screen's definition short, I built a generic `StateMachine` with a Kotlin DSL. Side
+effects live in their own handlers, and the state machine keeps a history of its states, with diffs
+and pretty-printed logs. When something goes wrong, you can read exactly how the screen got there.
 
-I also hardened the OAuth authentication pipeline, addressing browser lifecycle edge cases and providing graceful error handling when external browsers are unavailable or authorization is interrupted.
+Then I connected the new list to the legacy `MessageListFragment` through a two-way bridge, so the
+Compose state machine could use the existing loading code and item actions. On top of that came
+selection, active message tracking, scrolling, swipe actions, sorting, and unified folder support.
+It was the biggest single effort of my time there, with about 69 merged pull requests.
+
+The new message list is built and integrated, but it is still behind a feature flag that is off by
+default. The work was paused a few times when priorities changed, first for Thundermail, then for
+the feature flag work.
+
+I did something similar in the message reader. To bring back the attachment list, I wrote a new one
+in Compose and placed it inside the legacy `MessageContainerView`, converting
+`AttachmentViewInfo` from Java to Kotlin along the way. That way, the piece is ready for when the
+reader moves to Compose.
 
 }}}
 
-{{{ .components.organisms.projects.ProjectSection ("/ privacy & standards", "Privacy-by-design with Kotlin compiler plugins and RFC leadership.")
+{{{ .components.organisms.projects.ProjectSection ("/ thundermail", "Thundermail sign-in, from design to release.")
 
-Reflecting Mozilla's core commitment to digital privacy, I designed and implemented a custom **Kotlin K2 Compiler Plugin (`pii-safe`)** to eliminate Personally Identifiable Information (PII) leakage at compile time (`#11532`, `#11533`, `#11534`).
+I built the Android onboarding for Thundermail: new onboarding screens, a "Sign in with Thundermail"
+flow over OAuth, and a "Scan QR code" entry point. It works on both Thunderbird and K-9 Mail, so the
+shared pieces live in a common module.
 
-In a large, multi-module email client, logging data classes (such as account credentials, email addresses, and folder metadata) can inadvertently expose sensitive user data in debug outputs or crash logs. Manual string redaction is notoriously error-prone, noisy, and difficult to maintain at scale.
+I also built some of the design system pieces it needed, like `ThundermailButtonPanel` and
+`TextDisplayMediumAutoResize`, and handled the cases where sign-in goes wrong. If the user cancels,
+or there is no browser to open the OAuth page, the app now shows a clear error instead of getting
+stuck on the redirect screen.
 
-To solve this systematically, I engineered a compiler-enforced privacy architecture:
+After launch, I wrote RFC 0002 for a Thundermail Add Account interim screen and then built that screen.
 
-- **Gradle Subplugin & Annotations:** Created `@LoggingPii.HasPii`, `@LoggingPii.Mask`, and `@LoggingPii.Hide` annotations backed by a dedicated Gradle integration subplugin (`PiiSafeGradleSubplugin`).
-- **Frontend IR (FIR) Checkers:** Built K2 FIR validation checkers (`HasPiiPropagationChecker`, `HasPiiRequiresAnnotatedPropertyChecker`) that catch omissions as compile errors during developer builds—preventing unmasked PII models from ever compiling.
-- **Synthetic IR `toString()` Generation:** Implemented a backend IR generator (`ToStringOverridePiiSafeBodyGenerator`) that synthetically generates a privacy-hardened `toString()` override for annotated data classes. Sensitive fields are masked or hidden automatically without reflection or runtime overhead.
+Thundermail onboarding reached beta on May 8, 2026 and release on June 3, 2026, and it is on by
+default today.
 
-Beyond compiler architecture, I authored several project-wide **Architectural RFCs** and actively led technical PR reviews across privacy and core systems:
+}}}
 
-- **RFC #11223 (Declarative Feature Flag Architecture):** Designed a type-safe, compile-time catalog for feature flags across the multi-module project, replacing scattered flag definitions with an extensible architecture.
-- **RFC #11180 (Inline Images in Plain-Text Messages):** Solved a historic email interoperability issue where inline attachments inside plain-text messages caused rendering artifacts across different mail clients, resolving the issue in strict adherence to RFC MIME standards while preserving existing `cid:` behavior.
-- **Notification & Delivery Reliability Specification:** Formulated detailed architectural proposals for background sync and push delivery reliability in Doze mode.
+{{{ .components.organisms.projects.ProjectSection ("/ privacy &amp; standards", "Privacy checked by the compiler, and design docs before code.")
+
+In an email app, data classes carry email addresses, folder names, and account details. Logging one
+of them by accident can leak personal data, and hiding it by hand is easy to forget.
+
+So I designed and built **pii-safe**, a Kotlin K2 compiler plugin
+([#11532](https://github.com/thunderbird/thunderbird-android/pull/11532),
+[#11533](https://github.com/thunderbird/thunderbird-android/pull/11533),
+[#11534](https://github.com/thunderbird/thunderbird-android/pull/11534)). It works like this:
+
+- Developers mark a class with `@PiiSafe.HasPii`, and its sensitive properties with
+  `@PiiSafe.Mask` or `@PiiSafe.Hide`. A Gradle plugin (`PiiSafeGradleSubplugin`) applies the
+  compiler plugin to the module.
+- FIR checkers (`HasPiiPropagationChecker`, `HasPiiRequiresAnnotatedPropertyChecker`) fail the
+  build when the marking is incomplete.
+- An IR generator (`ToStringOverridePiiSafeBodyGenerator`) writes a safe `toString()` for the
+  marked classes, masking or hiding the sensitive fields, with no reflection at runtime.
+
+It is merged and in use. Four modules apply the plugin, and its annotations are used in the core
+message, folder, and database migration code.
+
+I also like to write things down before writing code. While I was there, I wrote 4 RFCs, 1 technical
+design, and 1 architecture decision record:
+
+- RFC 0002, the Thundermail Add Account interim screen.
+- RFC 0003, rendering inline images in plain-text messages.
+- RFC 0004 and Technical Design 0002, the new feature flag architecture. I then delivered it: one
+  declarative catalog validated at build time, generated type-safe keys, a Gradle plugin, and a debug
+  screen. It replaced the six factory classes, and the old code is gone.
+- RFC 0006, remote feature flags, which I built next. They are switched off for now.
+- ADR 0010, a project-wide Repository pattern, which is still marked as Proposed.
 
 }}}
 
 {{{ .components.organisms.projects.ProjectSection ("/ outcomes", "Outcomes and impact.")
 
-{{{ .components.organisms.projects.ProjectOutcomes ("Compose", "core message list & reader bridged", "QR sync", "desktop-to-mobile onboarding", "compiler", "PII-safe K2 compiler plugin") }}}
+{{{ .components.organisms.projects.ProjectOutcomes ("Jun 2026", "Thundermail sign-in in release", "4 modules", "using pii-safe", "32-53%", "less pull request CI time") }}}
 
-The Compose bridge architecture proved that a 15-year-old codebase can be modernised incrementally **without regressions or feature freezes**. The message list now benefits from reactive Compose state management while remaining compatible with legacy database loaders.
+Thundermail sign-in went from design to the release version, and Android users can sign in to
+Thundermail from the app today.
 
-The Thundermail integration and QR code migration drastically reduced onboarding friction, giving Thunderbird users a seamless bridge between desktop and mobile.
+pii-safe turned privacy into something the build checks, instead of something each developer has to
+remember. The feature flag catalog does the same for flags: mistakes now show up at build time.
 
-Simultaneously, the PII-safe K2 compiler plugin and architectural RFCs reinforced Thunderbird's position as a privacy-respecting, standards-compliant email client for the open web.
+I also split the pull request CI workflow into separate jobs and turned on Gradle caching, which cut
+pull request CI time from 44-62 minutes to 29-31 minutes in side-by-side runs. Every contributor
+gets that on every pull request.
+
+The new message list is not in users' hands yet, but the hard part is done. It runs on a state
+machine the team can read and debug, and it plugs into the legacy screen without a feature freeze.
 
 }}}
