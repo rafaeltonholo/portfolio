@@ -175,7 +175,7 @@ In the A2UI project's own benchmark, run on Gemini Flash, Express used 45% fewer
 
 The Express compilers live in A2UI's *agent* SDKs, which are available for TypeScript, Python and Dart[^sdks]. They can target v0.9, v0.9.1 or v1.0, so their output works with a v0.9.1 renderer like the AndroidX one, even though every example in the Express proposal is v1.0[^express].
 
-There's a catch for us, though. When the model runs *on the phone*, the compiler has to run on the phone too, and none of those SDKs is for Kotlin. AndroidX ships the renderer only. The A2UI repository does have an experimental Express compiler in its legacy JVM agent SDK, but that's a server library built on ANTLR, Jackson and Google's [Agent Development Kit](https://github.com/google/adk-python), and it isn't published to Maven. So, today, there's no Express compiler you can ship inside an Android app.
+There's a catch for us, though. When the model runs *on the phone*, the compiler has to run on the phone too, and none of those SDKs is for Kotlin. AndroidX ships the renderer only. The A2UI repository does have an experimental Express compiler in its legacy JVM agent SDK, but that's a server library built on ANTLR, Jackson and Google's [Agent Development Kit](https://github.com/google/adk-python), and it isn't published to Maven. So, today, there's no Express compiler you can ship inside an Android app, and we may need to write our own to make that happen. But how?
 
 ## Wrapping up
 
