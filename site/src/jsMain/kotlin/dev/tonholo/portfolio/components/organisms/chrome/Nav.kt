@@ -251,18 +251,20 @@ private fun NavInner(
         ) {
             PhosphorIcon(name = if (isDark) THEME_ICON_SUN else THEME_ICON_MOON)
         }
-        val mobileToggleModifier = NavMobileToggleStyle.toModifier().attrsModifier {
+        val mobileToggleModifier = Modifier.attrsModifier {
             attr("aria-expanded", menuOpen.toString())
             attr("aria-controls", MOBILE_DRAWER_ID)
         }
-        IconButton(
-            modifier = mobileToggleModifier,
-            ariaLabel = strings.nav.mobileMenuAriaLabel,
-            onClick = onToggleMenu,
-        ) {
-            PhosphorIcon(
-                name = if (menuOpen) MOBILE_MENU_ICON_CLOSE else MOBILE_MENU_ICON_OPEN,
-            )
+        Div(attrs = NavMobileToggleStyle.toModifier().toAttrs()) {
+            IconButton(
+                modifier = mobileToggleModifier,
+                ariaLabel = strings.nav.mobileMenuAriaLabel,
+                onClick = onToggleMenu,
+            ) {
+                PhosphorIcon(
+                    name = if (menuOpen) MOBILE_MENU_ICON_CLOSE else MOBILE_MENU_ICON_OPEN,
+                )
+            }
         }
     }
 }
@@ -479,8 +481,10 @@ val NavLanguageSwitchStyle = CssStyle {
 }
 
 /**
- * Base `CssStyle` for the mobile drawer toggle. Hidden on desktop where the
- * inline nav links cluster owns the navigation surface.
+ * Base `CssStyle` wrapping the mobile drawer toggle. Hidden on desktop where the
+ * inline nav links cluster owns the navigation surface. It sits on a wrapper,
+ * like [NavLanguageSwitchStyle], because on the button itself it would tie with
+ * the `display` of the IconButton style and lose whenever that rule comes later.
  */
 val NavMobileToggleStyle = CssStyle {
     base {
