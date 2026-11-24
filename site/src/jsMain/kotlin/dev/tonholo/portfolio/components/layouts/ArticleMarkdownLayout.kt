@@ -332,8 +332,9 @@ fun ArticleMarkdownLayout(context: PageContext, content: @Composable () -> Unit)
             localeState.set(data.locale)
         }
     }
-    var tocEntries by remember(data.slug) { mutableStateOf<List<TocEntry>>(emptyList()) }
-    val activeId: String = rememberScrollActiveHeadingId(slug = data.slug, entries = tocEntries)
+    val pageKey: String = data.canonicalUrl()
+    var tocEntries by remember(pageKey) { mutableStateOf<List<TocEntry>>(emptyList()) }
+    val activeId: String = rememberScrollActiveHeadingId(pageKey = pageKey, entries = tocEntries)
     val primaryAuthor: ArticleAuthor? = data.authors.firstOrNull()
     val pageTitle: String = articlePageTitle(title = data.title, seoTitle = data.seoTitle)
         ?: LocalStrings.current.pageTitles.articles
@@ -397,12 +398,12 @@ fun ArticleMarkdownLayout(context: PageContext, content: @Composable () -> Unit)
                 )
                 Div(attrs = Modifier.fillMaxWidth().toAttrs()) {
                     Article(attrs = ArticleMarkdownBodyStyle.toModifier().toAttrs()) {
-                        val footnoteRegistry = remember(data.slug) { FootnoteRegistry() }
+                        val footnoteRegistry = remember(pageKey) { FootnoteRegistry() }
                         CompositionLocalProvider(LocalFootnoteRegistry provides footnoteRegistry) {
                             content()
                         }
 
-                        DisposableEffect(data.slug) {
+                        DisposableEffect(pageKey) {
                             tocEntries = collectTocEntries()
                             val observer = observeHeadingsIfEmpty(
                                 entries = tocEntries,
@@ -448,13 +449,13 @@ fun articlePageTitle(title: String, seoTitle: String): String? =
 /**
  * Remembers and updates the active table-of-contents entry based on viewport scroll position.
  *
- * @param slug current article slug used as a key for state reset.
+ * @param pageKey identifies the page and its language; the active heading resets when it changes.
  * @param entries list of collected table-of-contents entries.
  * @return anchor id of the heading element currently considered active.
  */
 @Composable
-fun rememberScrollActiveHeadingId(slug: String, entries: List<TocEntry>): String {
-    var activeId by remember(slug) { mutableStateOf("") }
+fun rememberScrollActiveHeadingId(pageKey: String, entries: List<TocEntry>): String {
+    var activeId by remember(pageKey) { mutableStateOf("") }
     DisposableEffect(entries) {
         if (entries.isEmpty()) {
             return@DisposableEffect onDispose {}
