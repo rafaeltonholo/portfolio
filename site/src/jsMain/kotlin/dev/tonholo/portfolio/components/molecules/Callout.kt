@@ -25,6 +25,8 @@ import com.varabyte.kobweb.silk.style.toModifier
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import dev.tonholo.portfolio.components.atoms.PhosphorIcon
 import dev.tonholo.portfolio.components.atoms.PhosphorWeight
+import dev.tonholo.portfolio.locale.LocalStrings
+import dev.tonholo.portfolio.locale.Strings.CalloutTitles
 import dev.tonholo.portfolio.state.LocalThemeState
 import dev.tonholo.portfolio.state.ThemeState
 import dev.tonholo.portfolio.theme.color.AccentAlternates
@@ -72,53 +74,59 @@ private const val PARAGRAPH_BOTTOM_GAP_EM = 0.5
  * `IMPORTANT`, `WARNING`, `CAUTION`) alongside standard blockquotes (`QUOTE`).
  *
  * @param iconName canonical Phosphor icon name for this callout type.
- * @param defaultTitle default uppercase title label rendered in the header.
  * @param lightColor accent color used when rendering in light color mode.
  * @param darkColor accent color used when rendering in dark color mode.
  */
 enum class CalloutType(
     val iconName: String,
-    val defaultTitle: String,
     val lightColor: Color,
     val darkColor: Color,
 ) {
     NOTE(
         iconName = "info",
-        defaultTitle = "Note",
         lightColor = Color.rgb(LIGHT_NOTE_COLOR_HEX),
         darkColor = Color.rgb(DARK_NOTE_COLOR_HEX),
     ),
     TIP(
         iconName = "lightbulb",
-        defaultTitle = "Tip",
         lightColor = AccentMint.light.accent,
         darkColor = AccentMint.dark.accent,
     ),
     IMPORTANT(
         iconName = "warning-circle",
-        defaultTitle = "Important",
         lightColor = AccentAlternates.purple.light.accent,
         darkColor = AccentAlternates.purple.dark.accent,
     ),
     WARNING(
         iconName = "warning",
-        defaultTitle = "Warning",
         lightColor = AccentAlternates.amber.light.accent,
         darkColor = AccentAlternates.amber.dark.accent,
     ),
     CAUTION(
         iconName = "warning-octagon",
-        defaultTitle = "Caution",
         lightColor = AccentAlternates.crimson.light.accent,
         darkColor = AccentAlternates.crimson.dark.accent,
     ),
     QUOTE(
         iconName = "quotes",
-        defaultTitle = "",
         lightColor = AccentMint.light.accent,
         darkColor = AccentMint.dark.accent,
     ),
     ;
+
+    /**
+     * Resolves the header label for this callout in the active locale. A [QUOTE] has no header, so its title is blank.
+     *
+     * @param titles the localized callout labels.
+     */
+    fun title(titles: CalloutTitles): String = when (this) {
+        NOTE -> titles.note
+        TIP -> titles.tip
+        IMPORTANT -> titles.important
+        WARNING -> titles.warning
+        CAUTION -> titles.caution
+        QUOTE -> ""
+    }
 
     /**
      * Resolves the prominent accent color for the callout border and title header.
@@ -161,7 +169,7 @@ fun Callout(
     val isDark: Boolean = themeState.current.isDark
     val accentColor: Color = type.resolveAccentColor(isDark = isDark)
     val backgroundColor: Color = type.resolveBackgroundColor(isDark = isDark)
-    val resolvedTitle: String = title ?: type.defaultTitle
+    val resolvedTitle: String = title ?: type.title(titles = LocalStrings.current.calloutTitles)
 
     Div(
         attrs = CalloutContainerStyle

@@ -29,6 +29,7 @@ sealed class Strings {
     abstract val articleMeta: ArticleMeta
     abstract val articleBody: ArticleBody
     abstract val articleThanks: ArticleThanks
+    abstract val calloutTitles: CalloutTitles
     abstract val resume: Resume
     abstract val experience: Experience
     abstract val skills: Skills
@@ -177,6 +178,15 @@ sealed class Strings {
         val listSeparator: String,
         val pairSeparator: String,
         val lastSeparator: String,
+    )
+
+    /** Header labels of the GitHub-style callouts in article bodies, such as `> [!NOTE]`. */
+    data class CalloutTitles(
+        val note: String,
+        val tip: String,
+        val important: String,
+        val warning: String,
+        val caution: String,
     )
 
     /** Copy shown by the back-to-articles meta row on the detail page. */

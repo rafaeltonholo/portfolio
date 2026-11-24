@@ -1,6 +1,8 @@
 package dev.tonholo.portfolio.components.molecules
 
 import com.varabyte.kobweb.compose.ui.graphics.Color
+import dev.tonholo.portfolio.locale.StringsEn
+import dev.tonholo.portfolio.locale.StringsPtBr
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.pow
@@ -19,13 +21,21 @@ class CalloutTest {
     }
 
     @Test
-    fun `given GitHub callout types, when default title is checked, then each matches GitHub alert title`() {
-        assertEquals("Note", CalloutType.NOTE.defaultTitle)
-        assertEquals("Tip", CalloutType.TIP.defaultTitle)
-        assertEquals("Important", CalloutType.IMPORTANT.defaultTitle)
-        assertEquals("Warning", CalloutType.WARNING.defaultTitle)
-        assertEquals("Caution", CalloutType.CAUTION.defaultTitle)
-        assertEquals("", CalloutType.QUOTE.defaultTitle)
+    fun `given english strings - when resolving callout titles - then each matches the GitHub alert title`() {
+        val titles = StringsEn.calloutTitles
+
+        val resolved: List<String> = CalloutType.entries.map { it.title(titles = titles) }
+
+        assertEquals(expected = listOf("Note", "Tip", "Important", "Warning", "Caution", ""), actual = resolved)
+    }
+
+    @Test
+    fun `given portuguese strings - when resolving callout titles - then each title is translated`() {
+        val titles = StringsPtBr.calloutTitles
+
+        val resolved: List<String> = CalloutType.entries.map { it.title(titles = titles) }
+
+        assertEquals(expected = listOf("Nota", "Dica", "Importante", "Aviso", "Cuidado", ""), actual = resolved)
     }
 
     @Test
