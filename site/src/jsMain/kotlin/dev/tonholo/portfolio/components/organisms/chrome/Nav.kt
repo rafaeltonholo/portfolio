@@ -431,8 +431,7 @@ val NavStyle = CssStyle {
  * Base `CssStyle` for the inner flex row. Ports `.nav-inner`: caps content at
  * the shell max-width, centers horizontally with auto margins, and layers the
  * nav's 16px vertical padding plus a 32px gap between children. Horizontal
- * gutters come from [ChromeShellStyle], which keeps the 48px desktop gutter
- * rather than zeroing it like the page-body shell does.
+ * gutters come from [ChromeShellStyle], so the nav lines up with the page content.
  */
 val NavInnerStyle = ChromeShellStyle.extendedBy {
     base {
