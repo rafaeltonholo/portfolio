@@ -193,6 +193,14 @@ object StringsPtBr : Strings() {
         lastSeparator = " e ",
     )
 
+    override val calloutTitles: CalloutTitles = CalloutTitles(
+        note = "Nota",
+        tip = "Dica",
+        important = "Importante",
+        warning = "Aviso",
+        caution = "Cuidado",
+    )
+
     override val articleMeta: ArticleMeta = ArticleMeta(
         backLabel = "artigos",
         authorPrefix = "por",

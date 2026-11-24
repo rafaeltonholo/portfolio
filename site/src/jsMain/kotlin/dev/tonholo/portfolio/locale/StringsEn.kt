@@ -189,6 +189,14 @@ object StringsEn : Strings() {
         lastSeparator = ", and ",
     )
 
+    override val calloutTitles: CalloutTitles = CalloutTitles(
+        note = "Note",
+        tip = "Tip",
+        important = "Important",
+        warning = "Warning",
+        caution = "Caution",
+    )
+
     override val articleMeta: ArticleMeta = ArticleMeta(
         backLabel = "articles",
         authorPrefix = "by",
