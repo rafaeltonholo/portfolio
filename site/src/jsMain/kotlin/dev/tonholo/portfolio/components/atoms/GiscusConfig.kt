@@ -1,5 +1,7 @@
 package dev.tonholo.portfolio.components.atoms
 
+import org.w3c.dom.url.URLSearchParams
+
 /**
  * Configuration and evaluation rules for Giscus widget integration.
  */
@@ -20,6 +22,11 @@ internal object GiscusConfig {
      */
     const val CONTAINER_ID: String = "comments"
 
+    /** How long after a sign-in return the page keeps the comments in view while the article above it loads. */
+    const val SIGN_IN_SCROLL_WINDOW_MS: Double = 5_000.0
+
+    private const val SESSION_QUERY_PARAM: String = "giscus"
+
     /**
      * Determines whether Giscus should be injected based on the current search query string.
      *
@@ -27,6 +34,15 @@ internal object GiscusConfig {
      * @return true if Giscus should run, false during static site export.
      */
     fun shouldInject(search: String): Boolean = !search.contains(EXPORT_QUERY_FLAG)
+
+    /**
+     * Tells whether the reader just came back from signing in with GitHub, which Giscus marks with a `giscus` query
+     * parameter holding the new session.
+     *
+     * @param search window location search string.
+     */
+    fun isSignInReturn(search: String): Boolean =
+        URLSearchParams(search).get(SESSION_QUERY_PARAM) != null
 
     /**
      * Identifies whether an existing iframe was baked during static export or points to localhost.
