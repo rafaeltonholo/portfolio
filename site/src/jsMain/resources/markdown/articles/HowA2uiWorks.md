@@ -178,9 +178,17 @@ There's a catch for us, though. The Express compilers live in A2UI's *agent* SDK
 > [!NOTE]
 > If you open the Express proposal, you'll see it compiles to v1.0, and all its examples are v1.0. That doesn't rule out the AndroidX renderer: the compilers take a target version, v0.9, v0.9.1 or v1.0[^express]. For v0.9.1, they write bindings as `path` instead of `@path` and send `createSurface`, `updateComponents` and `updateDataModel` as separate messages[^formats].
 
-## What's next
+## Conclusion
 
-So here's where we are: a protocol that's great for renderers, a compact format made for small models, and no way to compile that format inside an Android app.
+In this article, you have learned how A2UI describes UI as data: a flat list of components from a catalog your app already knows, a separate data model, and actions that decide what goes back to the agent. The model never sends code, and your app stays in charge of how everything looks and behaves.
+
+Most of that shape is there to help the renderer. The flat list lets the UI show up while the stream is still coming in, lets the agent update a single component, and makes validation simple. The local data model keeps what the user types on the device until a button asks for it.
+
+Of course, that convenience has a cost, and the model pays it. The format a renderer wants to read isn't the format a model is best at writing. The A2UI team knows this: v0.9 moved from structured output to prompting plus validation, and Express exists so the model can write something shorter while a compiler does the flattening.
+
+So the next time you look at an A2UI payload, remember: it was designed to be read by a renderer, not written by a model. With a big model in the cloud, that's a detail. With a small model on a phone, it might be the whole problem.
+
+## What's next
 
 In part two (coming soon), we'll run two models on a Pixel 7 Pro, watch the smaller one struggle with wire JSON, write a tiny Express compiler in Kotlin, and measure how much it actually helps.
 
