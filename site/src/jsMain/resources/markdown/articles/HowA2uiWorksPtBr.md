@@ -22,9 +22,9 @@ tags:
     - generative-ui
 ---
 
-Pede pra uma IA te ajudar a arrumar a mala de uma viagem e ela te devolve uma lista, em texto puro. Dá pra ler, mas não dá pra marcar nada.
+Peça pra uma IA te ajudar a arrumar a mala de uma viagem e ela te entrega uma lista, apenas em texto. Até dá pra ler, mas não vai dar pra marcar nada.
 
-Agora imagina que a resposta fosse um checklist de verdade, com checkboxes que você consegue tocar, desenhado pelo app com os componentes dele. Ninguém do time desenhou uma tela de "lista de mala" pra isso. O modelo descreveu a UI que queria e o app renderizou.
+Agora imagina que a resposta fosse um checklist de verdade, com checkboxes que você consegue interagir, desenhado pelo app com os componentes dele. Ninguém do time criou uma tela de "checklist de viagem" pra isso. O modelo descreveu a UI que queria e o app simplesmente renderizou.
 
 Essa é a ideia por trás da UI generativa, e o [A2UI](https://a2ui.org/) é um protocolo open-source pra isso. Já existe uma documentação boa de como plugar o renderer do AndroidX num app, então não vou só repetir ela aqui. Em vez disso, essa é uma série em duas partes. Nessa, vamos ver como o protocolo funciona de verdade e por que ele tem esse formato. Na parte dois (em breve), vamos ver o que acontece quando o "agente" não é um modelo gigante na nuvem, mas um pequeno rodando num celular de três anos atrás.
 
@@ -54,7 +54,7 @@ Pensa no catálogo como um cardápio que o app entrega pro agente. O agente pode
 
 ## Anatomia de um stream A2UI
 
-Bora olhar um de verdade. Esse é o checklist de mala do sample, escrito na mão, no formato v0.9.1 que o renderer do AndroidX suporta:
+Bora olhar um de verdade. Esse é o checklist de viagem do sample, escrito à mão, no formato v0.9.1 que o renderer do AndroidX suporta:
 
 ```json
 {"version":"v0.9.1","createSurface":{"surfaceId":"packing","catalogId":"https://a2ui.org/specification/v0_9/catalogs/basic/catalog.json"}}
@@ -101,11 +101,11 @@ Os checkboxes também não guardam o label e o estado direto. Eles fazem *bind* 
 
 ### `deleteSurface`
 
-A última mensagem do servidor só remove uma surface, os componentes e os dados dela. Nada de mais.
+A última mensagem do servidor só remove uma surface, os componentes e os dados dela. Nada demais.
 
 ## Por que uma lista plana?
 
-Ok, mas por que esses IDs? Uma árvore aninhada seria bem mais fácil de ler. A especificação chama isso de *adjacency list model*[^spec]:
+Tá, mas pra que esses IDs? Uma árvore aninhada seria bem mais fácil de ler. A especificação chama isso de *adjacency list model*[^spec]:
 
 > This model allows the server to send component definitions in any order. Rendering can begin as soon as the `root` component is defined, with the client filling in or updating the rest of the tree progressively as additional definitions arrive.
 
@@ -115,7 +115,7 @@ Lembra que o A2UI foi pensado pra *streams*. Com uma lista plana:
 - O agente consegue atualizar um componente depois mandando só ele, com o mesmo ID.
 - Um validador consegue checar todas as referências sem precisar andar por uma árvore profunda.
 
-É um formato ótimo pra renderers. Mas será que é um formato ótimo pra um modelo *escrever*? Guarda essa dúvida, porque a parte dois coloca isso à prova.
+É um formato ótimo pra renderers. Mas será que é um formato ótimo pra um modelo *escrever*? Segura essa dúvida, porque na parte dois a gente vê isso mais a fundo.
 
 ## Data binding, e o que volta pro agente
 
@@ -125,7 +125,7 @@ O que ele *não* faz é avisar o agente. Da especificação[^spec]:
 
 > User inputs (keystrokes, toggles) do **not** automatically trigger network requests to the server. The updated state is sent to the server only when a specific **User Action** is triggered (e.g., a `Button` click).
 
-Um botão declara uma `action` com um nome de evento e um `context`, e o contexto pode fazer bind com paths de dados. Quando o usuário toca, o renderer resolve esses paths e manda uma mensagem `action` com os valores atuais. Então o agente só fica sabendo do que o botão pediu explicitamente, o que é uma propriedade de privacidade bem legal. Se uma surface realmente precisa do modelo inteiro em toda mensagem, o `createSurface` pode setar `sendDataModel: true`.
+Um botão declara uma `action` com um nome de evento e um `context`, e o contexto pode fazer bind com paths de dados. Quando o usuário toca, o renderer resolve esses paths e manda uma mensagem `action` com os valores atuais. Então o agente só fica sabendo do que o botão pediu explicitamente, o que é essencial para privacidade. Se uma surface realmente precisa do modelo inteiro em toda mensagem, o `createSurface` pode setar `sendDataModel: true`.
 
 A mesma ideia de "dados, não código" vale pra lógica. Validações como "esse campo é obrigatório" ou "isso precisa ser um email" são escritas como chamadas a funções nomeadas do catálogo, tipo `required` ou `email`, então o agente nunca manda nada executável.
 
@@ -178,7 +178,7 @@ No benchmark do próprio projeto A2UI, rodado no Gemini Flash, o Express usou 45
 
 Os compiladores do Express vivem nos SDKs de *agente* do A2UI, que existem pra TypeScript, Python e Dart[^sdks]. Eles conseguem gerar v0.9, v0.9.1 ou v1.0, então a saída deles funciona com um renderer v0.9.1 como o do AndroidX, mesmo que todos os exemplos da proposta do Express sejam v1.0[^express].
 
-Mas tem um problema pra nós. Quando o modelo roda *no celular*, o compilador também precisa rodar no celular, e nenhum desses SDKs é pra Kotlin. O AndroidX entrega só o renderer. O repositório do A2UI tem sim um compilador Express experimental no SDK de agente JVM antigo, mas é uma biblioteca de servidor construída em cima de ANTLR, Jackson e do [Agent Development Kit](https://github.com/google/adk-python) do Google, e ela não é publicada no Maven. Então, hoje, não existe um compilador Express que você possa colocar dentro de um app Android, e talvez a gente precise escrever o nosso pra isso acontecer. Mas como?
+Mas aí a gente tem um problema. Quando o modelo roda *no celular*, o compilador também precisa rodar no celular, e nenhum desses SDKs é pra Kotlin. O AndroidX entrega só o renderer. O repositório do A2UI tem sim um compilador Express experimental no SDK de agente JVM antigo, mas é uma biblioteca de servidor construída em cima de ANTLR, Jackson e do [Agent Development Kit](https://github.com/google/adk-python) do Google, e ela não é publicada no Maven. Então, hoje, não existe um compilador Express que você possa colocar dentro de um app Android, e talvez a gente precise escrever o nosso pra isso acontecer. Mas como?
 
 ## Pra fechar
 
@@ -188,13 +188,13 @@ A maior parte desse formato existe pra ajudar o renderer. A lista plana deixa a 
 
 É claro que essa facilidade tem um custo, e quem paga é o modelo. O formato que o renderer quer ler não é o formato que um modelo escreve melhor. O time do A2UI sabe disso: a v0.9 trocou o structured output por prompt mais validação, e o Express existe pra que o modelo escreva algo mais curto enquanto um compilador faz o trabalho de achatar.
 
-Então, da próxima vez que você olhar um payload do A2UI, lembre: ele foi feito pra ser lido por um renderer, não escrito por um modelo. Com um modelo grande na nuvem, isso é um detalhe. Com um modelo pequeno num celular, pode ser o problema todo.
+Então, da próxima vez que você olhar um payload do A2UI, lembra: ele foi feito pra ser lido por um renderer, não escrito por um modelo. Com um modelo grande na nuvem, isso é um detalhe. Com um modelo pequeno num celular, pode ser o problema todo.
 
 ## E agora?
 
 Na parte dois (em breve), vamos rodar dois modelos num Pixel 7 Pro, ver o menor deles sofrer com o JSON do wire, escrever um compilador Express minúsculo em Kotlin e medir o quanto ele realmente ajuda.
 
-Valeu por ler, e até lá!
+Valeu demais por ler, e até a próxima!
 
 ## Fontes
 
