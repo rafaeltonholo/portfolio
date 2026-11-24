@@ -92,8 +92,8 @@ object StringsEn : Strings() {
             "it - incrementally, without a freeze - taught me more about architecture than " +
             "any book ever has.",
         storyHeadingToday = "Today",
-        storyBodyToday = "Most recently built Thunderbird for Android at Mozilla - " +
-            "Kotlin-first, privacy-first, Compose-forward, and shipping in the open. " +
+        storyBodyToday = "Most recently worked on Thunderbird for Android at Mozilla, a privacy-focused, " +
+            "open-source email app written in Kotlin and moving from XML Views to Jetpack Compose. " +
             "Now open to new opportunities in senior mobile engineering and architecture.",
         nowUpdatedPrefix = "// updated oct 2026",
         nowHeadingWorking = "Looking for",

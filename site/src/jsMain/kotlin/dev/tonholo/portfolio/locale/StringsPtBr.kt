@@ -95,8 +95,8 @@ object StringsPtBr : Strings() {
             "Modularizar o projeto - de forma incremental, sem freeze - me ensinou mais sobre " +
             "arquitetura do que qualquer livro.",
         storyHeadingToday = "Hoje",
-        storyBodyToday = "Mais recentemente construindo o Thunderbird para Android na Mozilla - " +
-            "Kotlin em primeiro lugar, privacidade em primeiro lugar, Compose à frente e tudo em open source. " +
+        storyBodyToday = "Mais recentemente trabalhei no Thunderbird para Android na Mozilla, um app de e-mail " +
+            "open source focado em privacidade, escrito em Kotlin e migrando das XML Views pro Jetpack Compose. " +
             "Agora aberto a novas oportunidades em engenharia mobile sênior e arquitetura.",
         nowUpdatedPrefix = "// atualizado em out 2026",
         nowHeadingWorking = "Buscando",
